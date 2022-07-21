@@ -21,32 +21,32 @@ public class QMember extends EntityPathBase<Member> {
 
     public final QBaseEntity _super = new QBaseEntity(this);
 
-    public final StringPath account_no = createString("account_no");
+    public final StringPath accountNo = createString("accountNo");
 
     public final StringPath address = createString("address");
 
-    public final NumberPath<Integer> bank_code = createNumber("bank_code", Integer.class);
+    public final NumberPath<Integer> bankCode = createNumber("bankCode", Integer.class);
 
     public final StringPath email = createString("email");
 
     //inherited
     public final NumberPath<Long> id = _super.id;
 
-    public final StringPath member_id = createString("member_id");
+    public final StringPath memberId = createString("memberId");
 
-    public final StringPath member_name = createString("member_name");
+    public final StringPath memberName = createString("memberName");
 
     public final NumberPath<Integer> mileage = createNumber("mileage", Integer.class);
 
     public final StringPath nickname = createString("nickname");
 
-    public final NumberPath<Integer> notice_email = createNumber("notice_email", Integer.class);
+    public final NumberPath<Integer> noticeEmail = createNumber("noticeEmail", Integer.class);
 
-    public final NumberPath<Integer> notice_kakao = createNumber("notice_kakao", Integer.class);
+    public final NumberPath<Integer> noticeKakao = createNumber("noticeKakao", Integer.class);
 
     public final StringPath phone = createString("phone");
 
-    public final StringPath profile_url = createString("profile_url");
+    public final StringPath profileUrl = createString("profileUrl");
 
     public final StringPath pwd = createString("pwd");
 

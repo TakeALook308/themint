@@ -11,19 +11,19 @@ import javax.persistence.Entity;
 @Getter
 @Setter
 public class Member extends BaseEntity{
-    String member_id;
-    String member_name;
+    String memberId;
+    String memberName;
     String nickname;
     String email;
     String address;
     String phone;
-    String profile_url;
-    int bank_code;
-    String account_no;
+    String profileUrl;
+    int bankCode;
+    String accountNo;
     int score;
     int mileage;
-    int notice_kakao;
-    int notice_email;
+    int noticeKakao;
+    int noticeEmail;
 
     @JsonIgnore
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
