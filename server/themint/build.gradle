@@ -2,7 +2,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 buildscript {
 	ext {
-		springBootVer = '2.7.1'
+		springBootVer = '2.5.6'
 		querydslVer = '5.0.0'
 		querydslPluginVer = '1.0.10'
 		springDependencyMgmtVer = '1.0.11'
@@ -19,6 +19,8 @@ plugins {
 	id 'java'
 	id 'war'
 }
+
+apply plugin: 'com.ewerk.gradle.plugins.querydsl'
 
 group = 'com.takealook'
 version = '0.0.1-SNAPSHOT'
@@ -58,7 +60,6 @@ dependencies {
 
 	implementation("com.querydsl:querydsl-jpa:${querydslVer}")
 	implementation("com.querydsl:querydsl-apt:${querydslVer}")
-	implementation("com.querydsl:querydsl-core:${querydslVer}")
 
 	annotationProcessor("com.querydsl:querydsl-apt:${querydslVer}:jpa")
 
@@ -73,8 +74,8 @@ dependencies {
 
 	implementation("com.auth0:java-jwt:3.10.3")
 
-	implementation("io.springfox:springfox-swagger2:3.0.0")
-	implementation("io.springfox:springfox-swagger-ui:3.0.0")
+//	implementation("io.springfox:springfox-swagger2:3.0.0")
+//	implementation("io.springfox:springfox-swagger-ui:3.0.0")
 	implementation("io.springfox:springfox-data-rest:3.0.0")
 	implementation("io.springfox:springfox-bean-validators:3.0.0")
 	implementation("io.springfox:springfox-boot-starter:3.0.0")
@@ -90,30 +91,43 @@ dependencies {
 }
 
 //querydsl 추가 시작
-def querydslSrcDir = 'src/main/generated'
-
+def querydslDir = 'src/main/generated'
 querydsl {
-	library = "com.querydsl:querydsl-apt"
 	jpa = true
-	querydslSourcesDir = querydslSrcDir
+	querydslSourcesDir = querydslDir
+	//library = "com.querydsl:querydsl-apt"
 }
 
-compileQuerydsl{
-	options.annotationProcessorPath = configurations.querydsl
+sourceSets {
+//    main {
+//        java {
+//            srcDirs = ['src/main/java', querydslDir]
+//        }
+//    }
+	main.java.srcDir querydslDir
 }
-
 configurations {
 	querydsl.extendsFrom compileClasspath
 }
 
-sourceSets {
-	main {
-		java {
-			srcDirs = ['src/main/java', querydslSrcDir]
-		}
-	}
+compileQuerydsl {
+	options.annotationProcessorPath = configurations.querydsl
+}
+
+tasks.withType(JavaCompile) {
+	options.generatedSourceOutputDirectory = file(querydslDir)
+}
+
+clean.doLast {
+	file(querydslDir).deleteDir()
 }
 //querydsl 추가 끝
+
+tasks {
+	processResources {
+		duplicatesStrategy = org.gradle.api.file.DuplicatesStrategy.INCLUDE
+	}
+}
 
 tasks.named('test') {
 	useJUnitPlatform()
