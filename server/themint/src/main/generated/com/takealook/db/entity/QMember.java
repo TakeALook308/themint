@@ -19,8 +19,6 @@ public class QMember extends EntityPathBase<Member> {
 
     public static final QMember member = new QMember("member1");
 
-    public final QBaseEntity _super = new QBaseEntity(this);
-
     public final StringPath accountNo = createString("accountNo");
 
     public final StringPath address = createString("address");
@@ -29,14 +27,9 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath email = createString("email");
 
-    //inherited
-    public final NumberPath<Long> id = _super.id;
-
     public final StringPath memberId = createString("memberId");
 
     public final StringPath memberName = createString("memberName");
-
-    public final NumberPath<Integer> mileage = createNumber("mileage", Integer.class);
 
     public final StringPath nickname = createString("nickname");
 
@@ -51,6 +44,8 @@ public class QMember extends EntityPathBase<Member> {
     public final StringPath pwd = createString("pwd");
 
     public final NumberPath<Integer> score = createNumber("score", Integer.class);
+
+    public final NumberPath<Long> seq = createNumber("seq", Long.class);
 
     public QMember(String variable) {
         super(Member.class, forVariable(variable));
