@@ -1,12 +1,10 @@
-import styled from 'styled-components';
-import Router from './Router';
-import InputBox from './components/common/InputBox';
+//pages
+import MainPage from './Routes/Main';
 
-function App() {
+function App(props) {
   return (
     <div>
-      <Router />
-      <InputBox text="제목" type="text" placeholder="제목" widthValue="500px"></InputBox>
+      <MainPage />
     </div>
   );
 }
