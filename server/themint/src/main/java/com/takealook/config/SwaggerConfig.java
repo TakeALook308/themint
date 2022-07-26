@@ -2,8 +2,11 @@ package com.takealook.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.ApiKey;
 import springfox.documentation.service.AuthorizationScope;
 import springfox.documentation.service.SecurityReference;
@@ -28,13 +31,24 @@ public class SwaggerConfig {
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2).useDefaultResponseMessages(false)
+                .apiInfo(apiInfo())
                 .select()
                 .apis(RequestHandlerSelectors.any())
+                .apis(RequestHandlerSelectors.basePackage("com.takealook.api.controller"))
                 .paths(PathSelectors.ant("/api/**"))
+//                .paths(PathSelectors.any())
                 .build()
+                .groupName("API 1.0.0")
                 .securityContexts(newArrayList(securityContext()))
-                .securitySchemes(newArrayList(apiKey()))
-                ;
+                .securitySchemes(newArrayList(apiKey()));
+    }
+
+    private ApiInfo apiInfo() {
+        return new ApiInfoBuilder()
+                .title("TheMint Swagger")
+                .description("TheMint swagger config")
+                .version("1.0")
+                .build();
     }
 
     private ApiKey apiKey() {

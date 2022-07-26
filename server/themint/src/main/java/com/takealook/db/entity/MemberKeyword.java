@@ -11,10 +11,10 @@ import javax.persistence.Id;
 @Entity
 @Getter
 @Setter
-public class MemberKeyword extends BaseEntity {
+public class MemberKeyword {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int seq;
-    int memberSeq;
+    Long seq;
+    Long memberSeq;
     String keywordName;
 }

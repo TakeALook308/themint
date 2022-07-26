@@ -19,14 +19,11 @@ public class QMemberKeyword extends EntityPathBase<MemberKeyword> {
 
     public static final QMemberKeyword memberKeyword = new QMemberKeyword("memberKeyword");
 
-    public final QBaseEntity _super = new QBaseEntity(this);
-
-    //inherited
-    public final NumberPath<Long> id = _super.id;
-
     public final StringPath keywordName = createString("keywordName");
 
-    public final NumberPath<Integer> memberSeq = createNumber("memberSeq", Integer.class);
+    public final NumberPath<Long> memberSeq = createNumber("memberSeq", Long.class);
+
+    public final NumberPath<Long> seq = createNumber("seq", Long.class);
 
     public QMemberKeyword(String variable) {
         super(MemberKeyword.class, forVariable(variable));

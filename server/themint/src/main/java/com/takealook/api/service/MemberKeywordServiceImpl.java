@@ -5,7 +5,12 @@ import com.takealook.db.entity.MemberKeyword;
 import com.takealook.db.repository.MemberKeywordRepository;
 import com.takealook.db.repository.MemberKeywordRepositorySupport;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
 public class MemberKeywordServiceImpl implements MemberKeywordService{
     @Autowired
     MemberKeywordRepository memberKeywordRepository;
@@ -14,7 +19,18 @@ public class MemberKeywordServiceImpl implements MemberKeywordService{
     MemberKeywordRepositorySupport memberKeywordRepositorySupport;
 
     @Override
-    public MemberKeyword createMemberKeyword(MemberKeywordRegisterPostReq memberKeywordRegisterPostReq) {
+    public MemberKeyword createMemberKeyword(Long memberSeq, String keywordName) {
         return null;
+    }
+
+    @Override
+    public List<MemberKeyword> getMemberKeywordListByMemberSeq(Long memberSeq) {
+        List<MemberKeyword> list = memberKeywordRepositorySupport.findKeywordNameByMemberSeq(memberSeq).orElse(null);
+        return list;
+    }
+
+    @Override
+    public void deleteKeyword(Long memberSeq, String keywordName) {
+//        MemberKeyword
     }
 }
