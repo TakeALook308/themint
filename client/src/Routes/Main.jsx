@@ -1,8 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import AuctionCard from '../components/common/AuctionCard';
 
 function Main(props) {
-  return <div></div>;
+  return (
+    <div>
+      <AuctionCard />
+    </div>
+  );
 }
 
 export default Main;
