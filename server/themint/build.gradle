@@ -17,7 +17,6 @@ plugins {
 	id 'com.github.node-gradle.node' version '2.2.3'
 	id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
 	id 'java'
-	id 'war'
 }
 
 apply plugin: 'com.ewerk.gradle.plugins.querydsl'
@@ -53,6 +52,10 @@ dependencies {
 	runtimeOnly("mysql:mysql-connector-java")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+	// test 관련
+	testImplementation("org.junit.vintage:junit-vintage-engine"){
+		exclude group: "org.hamcrest", module: "hamcrest-core"
+	}
 
 	implementation('commons-io:commons-io:2.6')
 	implementation("org.apache.commons:commons-collections4:4.4")
@@ -60,7 +63,8 @@ dependencies {
 
 	implementation("com.querydsl:querydsl-jpa:${querydslVer}")
 	implementation("com.querydsl:querydsl-apt:${querydslVer}")
-
+	// QueryDSL 버전 명시
+	implementation("com.querydsl:querydsl-core:${querydslVer}")
 	annotationProcessor("com.querydsl:querydsl-apt:${querydslVer}:jpa")
 
 	implementation("com.squareup.retrofit2:retrofit:2.7.1")
@@ -73,12 +77,9 @@ dependencies {
 	testImplementation("com.jayway.jsonpath:json-path:2.4.0")
 
 	implementation("com.auth0:java-jwt:3.10.3")
-
-//	implementation("io.springfox:springfox-swagger2:3.0.0")
-//	implementation("io.springfox:springfox-swagger-ui:3.0.0")
-	implementation("io.springfox:springfox-data-rest:3.0.0")
-	implementation("io.springfox:springfox-bean-validators:3.0.0")
-	implementation("io.springfox:springfox-boot-starter:3.0.0")
+	// swagger
+	implementation "io.springfox:springfox-boot-starter:3.0.0"
+	implementation "io.springfox:springfox-swagger-ui:3.0.0"
 
 	annotationProcessor(
 			"javax.persistence:javax.persistence-api",

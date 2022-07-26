@@ -1,4 +1,4 @@
-package com.takealook.themint;
+package com.takealook;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
