@@ -1,6 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 
+function DefaultButton({ title, widthValue }) {
+  return <Button widthValue={widthValue}>{title}</Button>;
+}
+
+export default DefaultButton;
+
 const Button = styled.button`
   background-color: ${(props) => props.theme.colors.mainBlack};
   border-color: ${(props) => props.theme.colors.mainMint};
@@ -11,9 +17,3 @@ const Button = styled.button`
   margin: 5px;
   width: ${(props) => props.widthValue || '450px'};
 `;
-
-function DefaultButton({ title, widthValue }) {
-  return <Button widthValue={widthValue}>{title}</Button>;
-}
-
-export default DefaultButton;

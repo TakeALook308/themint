@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-function Card({ title, children }) {
+function LikeCard({ title, children }) {
   return (
     <StyledCard>
       {title && <h1>{title}</h1>}
@@ -11,19 +11,18 @@ function Card({ title, children }) {
   );
 }
 
-export default Card;
-
+export default LikeCard;
 const StyledCard = styled.div`
   margin: 8;
   padding: 8;
   background-color: white;
   color: black;
+  width: 420px;
   height: 300px;
   margin-bottom: 5px;
-  margin-right: 5px;
 `;
 
 const CardImg = styled.img`
-  max-height: 300px;
+  max-height: 200px;
   object-fit: scale-down;
 `;
