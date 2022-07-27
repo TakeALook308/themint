@@ -1,15 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
-import StreamCard from './StreamPostListItem';
+import StreamCard from './StreamListItem';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 function StreamList(props) {
   return (
     <Wrapper>
       <SlideButtonRight>
-        <button>오른쪽 버튼</button>
+        <NavigateNextIcon />
       </SlideButtonRight>
       <SlideButtonLeft>
-        <button>왼쪽 버튼</button>
+        <NavigateBeforeIcon />
       </SlideButtonLeft>
       <StreamCard title="경매 게시글 제목" post="경매 게시글 내용">
         <p>경매 썸네일</p>

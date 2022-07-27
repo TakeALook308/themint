@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import Card from './PostListItem';
+import AuctionCard from './AuctionCard';
+import { Link } from 'react-router-dom';
 
-const TOTAL_CARDS = 2;
+const TOTAL_CARDS = 10;
 
 function PostList() {
   const [currentCard, setCurrentCard] = useState(0);
@@ -28,41 +29,29 @@ function PostList() {
     slideRef.current.style.transition = 'all 1s ease-in-out';
     slideRef.current.style.transform = `translateX(-${currentCard}00%)`;
   }, [currentCard]);
+
   return (
     <Wrapper>
-      <h3>실시간 임박 경매</h3>
-      <p>더보기</p>
+      <ListHeader>
+        <h3>실시간 임박 경매</h3>
+        <Link to="/categories/:categoryName">
+          <p>더보기</p>
+        </Link>
+      </ListHeader>
       <hr></hr>
       <button onClick={PrevCard}>이전</button>
       <button onClick={NextCard}>다음</button>
+      {currentCard}
       <Container ref={slideRef}>
-        <Card title="경매 게시글 제목">
-          <p>Card 내용을 입력</p>
-        </Card>
-        <Card title="경매 게시글 제목">
-          <p>Card 내용을 입력</p>
-        </Card>
-        <Card title="경매 게시글 제목">
-          <p>Card 내용을 입력</p>
-        </Card>
-        <Card title="경매 게시글 제목">
-          <p>Card 내용을 입력</p>
-        </Card>
-        <Card title="경매 게시글 제목">
-          <p>Card 내용을 입력</p>
-        </Card>
-        <Card title="경매 게시글 제목">
-          <p>Card 내용을 입력</p>
-        </Card>
-        <Card title="경매 게시글 제목">
-          <p>Card 내용을 입력</p>
-        </Card>
-        <Card title="경매 게시글 제목">
-          <p>Card 내용을 입력</p>
-        </Card>
-        <Card title="경매 게시글 제목">
-          <p>Card 내용을 입력</p>
-        </Card>
+        <AuctionCard />
+        <AuctionCard />
+        <AuctionCard />
+        <AuctionCard />
+        <AuctionCard />
+        <AuctionCard />
+        <AuctionCard />
+        <AuctionCard />
+        <AuctionCard />
       </Container>
     </Wrapper>
   );
@@ -78,8 +67,15 @@ const Wrapper = styled.div`
   overflow: hidden;
 `;
 
-const Container = styled.div`
-  margin: 0 auto;
+const ListHeader = styled.div`
   display: flex;
+  justify-content: space-between;
+`;
+
+const Container = styled.div`
+  max-width: 100%;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
   height: 300px;
 `;

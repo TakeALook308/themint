@@ -1,19 +1,32 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import InputBox from './InputBox';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 
 function NavigationBar(props) {
   return (
     <Wrapper>
-      <NavLogo>더 민트</NavLogo>
+      <Link to="/">
+        <NavLogo>더민트</NavLogo>
+      </Link>
       <NavSearch>
         <InputBox type="text" placeholder="검색창" widthValue="500px"></InputBox>
       </NavSearch>
       <NavItem>
-        <a href="#">카테고리</a>
-        <a href="#">경매생성</a>
-        <button>알림</button>
-        <button>프로필</button>
+        <Link to="/categories/:categoryName">
+          <p>카테고리</p>
+        </Link>
+        <Link to="/">
+          <p>경매생성</p>
+        </Link>
+        <Link to="/">
+          <NotificationsNoneIcon />
+        </Link>
+        <Link to="/profile/:userId">
+          <PersonOutlineIcon />
+        </Link>
       </NavItem>
     </Wrapper>
   );
@@ -40,10 +53,11 @@ const NavLogo = styled.p`
   font-style: normal;
   font-size: 40px;
   color: ${(props) => props.theme.colors.mainMint};
-  margin-right: auto;
 `;
 
-const NavSearch = styled.div``;
+const NavSearch = styled.div`
+  margin-left: auto;
+`;
 
 const NavItem = styled.div`
   width: 300px;
@@ -52,3 +66,5 @@ const NavItem = styled.div`
   margin-left: auto;
   align-items: center;
 `;
+
+// 아이콘 오류 해결 https://stackoverflow.com/questions/69708504/module-not-found-cant-resolve-mui-icons-material-filedownload

@@ -1,35 +1,31 @@
 import React from 'react';
 import styled from 'styled-components';
-import LikeCard from './LikeListItem';
+import AuctionCard from './AuctionCard';
+import { Link } from 'react-router-dom';
 
 function LikeList(props) {
   return (
     <Wrapper>
-      <h3>관심 경매</h3>
-      <p>더보기</p>
+      <ListHeader>
+        <h3>민트님의 관심 경매</h3>
+        <Link to="/categories/:categoryName">
+          <p>더보기</p>
+        </Link>
+      </ListHeader>
       <hr></hr>
       <Container>
-        <LikeCard title="경매 게시글 제목">
-          <p>Card 내용을 입력</p>
-        </LikeCard>
-        <LikeCard title="경매 게시글 제목">
-          <p>Card 내용을 입력</p>
-        </LikeCard>
-        <LikeCard title="경매 게시글 제목">
-          <p>Card 내용을 입력</p>
-        </LikeCard>
-        <LikeCard title="경매 게시글 제목">
-          <p>Card 내용을 입력</p>
-        </LikeCard>
-        <LikeCard title="경매 게시글 제목">
-          <p>Card 내용을 입력</p>
-        </LikeCard>
-        <LikeCard title="경매 게시글 제목">
-          <p>Card 내용을 입력</p>
-        </LikeCard>
-        <LikeCard title="경매 게시글 제목">
-          <p>Card 내용을 입력</p>
-        </LikeCard>
+        <AuctionCard />
+        <AuctionCard />
+        <AuctionCard />
+        <AuctionCard />
+        <AuctionCard />
+        <AuctionCard />
+        <AuctionCard />
+        <AuctionCard />
+        <AuctionCard />
+        <AuctionCard />
+        <AuctionCard />
+        <AuctionCard />
       </Container>
     </Wrapper>
   );
@@ -43,6 +39,11 @@ const Wrapper = styled.div`
   background-color: ${(props) => props.theme.colors.subBlack};
   margin-bottom: 10px;
   overflow: hidden;
+`;
+
+const ListHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;
 
 const Container = styled.div`
