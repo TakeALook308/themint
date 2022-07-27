@@ -1,5 +1,4 @@
 import React, { useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import StreamItem from './common/StreamItem';
 // Import Swiper React components
@@ -24,17 +23,20 @@ function SwiperList() {
         <Swiper
           effect={'coverflow'}
           coverflowEffect={{
-            rotate: 50,
-            stretch: 0,
+            rotate: 10,
+            stretch: 100,
             depth: 100,
             modifier: 1,
             slideShadows: true,
           }}
-          slidesPerView={3}
-          spaceBetween={30}
+          slideToClickedSlide={true}
+          centerInsufficientSlides={true}
+          centeredSlides={true}
+          initialSlide={6}
+          slidesPerView={5}
+          spaceBetween={0}
           navigation={true}
           modules={[Navigation, EffectCoverflow]}
-          slidesOffsetBefore={23}
           className="mySwiper">
           <SwiperSlide>
             <StreamItem />

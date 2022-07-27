@@ -22,7 +22,6 @@ function SwiperList() {
         </Link>
       </ListHeader>
       <hr></hr>
-
       <>
         <Swiper
           slidesPerColumn={3}
@@ -30,6 +29,7 @@ function SwiperList() {
           spaceBetween={30}
           navigation={true}
           slidesOffsetBefore={23}
+          slideToClickedSlide={true}
           modules={[Navigation]}
           className="mySwiper">
           <SwiperSlide>

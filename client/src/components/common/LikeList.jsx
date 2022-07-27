@@ -29,6 +29,7 @@ function SwiperList() {
           navigation={true}
           modules={[Navigation]}
           slidesOffsetBefore={23}
+          slideToClickedSlide={true}
           className="mySwiper">
           <SwiperSlide>
             <AuctionCard />

@@ -18,23 +18,12 @@ function StreamItem() {
 
 export default StreamItem;
 
-const Wrapper = styled.div`
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: ${(props) => props.theme.colors.pointBlack};
-  color: ${(props) => props.theme.colors.white};
-`;
-
 const Card = styled.div`
   position: relative;
   background: ${(props) => props.theme.colors.pointGray};
-  width: 400px;
-  height: 500px;
-  margin: 0 auto;
+  width: 450px;
+  height: 300px;
+  margin: 0;
 `;
 
 const CardContent = styled.div`
@@ -46,7 +35,7 @@ const CardContent = styled.div`
 const CardText = styled.div`
   position: relative;
   width: 100%;
-  height: 200px;
+  height: 150px;
   display: flex;
   justify-content: center;
   align-items: center;
