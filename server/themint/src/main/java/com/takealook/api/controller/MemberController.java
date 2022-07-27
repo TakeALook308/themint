@@ -5,16 +5,20 @@ import com.takealook.api.response.MemberFindMemberIdRes;
 import com.takealook.api.response.MemberLoginPostRes;
 import com.takealook.api.response.MemberViewRes;
 import com.takealook.api.service.MemberService;
-import com.takealook.common.auth.JwtAuthenticationFilter;
+import com.takealook.common.auth.MemberDetails;
 import com.takealook.common.model.response.BaseResponseBody;
 import com.takealook.common.util.JwtTokenUtil;
 import com.takealook.db.entity.Member;
-import com.takealook.db.repository.MemberRepositorySupport;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
+
+import java.util.concurrent.ThreadLocalRandom;
+
 
 @Api(value = "멤버 API", tags = {"Member"})
 @RestController
@@ -46,16 +50,17 @@ public class MemberController {
             return ResponseEntity.ok(MemberLoginPostRes.of(200, "success", JwtTokenUtil.getToken(memberId)));
         }
         // 유효하지 않는 패스워드인 경우, 로그인 실패
-        return ResponseEntity.status(401).body(MemberLoginPostRes.of(401, "Invalid Password", null));
+        return ResponseEntity.status(409).body(MemberLoginPostRes.of(409, "Invalid Password", null));
     }
 
     // 내 정보 조회
-    // JWT 토큰 필요 (미완성)
-//    @GetMapping("my")
-//    public ResponseEntity<?> getMember() {
-//        Member member = memberService.getMemberByMemberSeq();
-//        return ResponseEntity.status(200).body(MemberViewRes.of(member));
-//    }
+    @GetMapping("my")
+    public ResponseEntity<?> getMember(@ApiIgnore Authentication authentication) {
+        MemberDetails memberDetails = (MemberDetails)authentication.getDetails();
+        Long memberSeq = memberDetails.getMemberSeq();
+        Member member = memberService.getMemberByMemberSeq(memberSeq);
+        return ResponseEntity.status(200).body(MemberViewRes.of(member));
+    }
 
     // 회원 정보 조회
     @GetMapping("{seq}")
@@ -65,16 +70,57 @@ public class MemberController {
     }
 
     // 회원 정보 수정
-    // JWT 토큰 필요 (미완성)
-    public ResponseEntity<?> updateMyInfo(@RequestBody MemberUpdatePostReq memberUpdatePostReq) {
-        return ResponseEntity.status(200).body("Success");
+    @PatchMapping
+    public ResponseEntity<?> updateMyInfo(@RequestBody MemberUpdatePostReq memberUpdatePostReq, @ApiIgnore Authentication authentication) {
+        MemberDetails memberDetails = (MemberDetails)authentication.getDetails();
+        Long memberSeq = memberDetails.getMemberSeq();
+        memberService.updateMember(memberSeq, memberUpdatePostReq);
+        return ResponseEntity.status(200).body("success");
     }
 
+    // 비밀번호 변경
+    @PatchMapping("/password")
+    public ResponseEntity<?> changePassword (@RequestBody String pwd, @ApiIgnore Authentication authentication) {
+        MemberDetails memberDetails = (MemberDetails)authentication.getDetails();
+        Long memberSeq = memberDetails.getMemberSeq();
+        memberService.updateMemberPassword(memberSeq, pwd);
+        return ResponseEntity.status(200).body("success");
+    }
+
+
+    /////////////////// 비밀번호 재설정 (비밀번호 찾기) start ////////////////////////
+    // 1. 이메일 체크
+    @GetMapping("/password/{email}")
+    public ResponseEntity<?> checkEmail (@PathVariable("email") String email) {
+        Member member = memberService.getMemberByEmail(email);
+        if (member == null) {
+            return ResponseEntity.status(409).body("fail");
+        }
+        return ResponseEntity.status(200).body("success");
+    }
+    // 2. 인증번호 확인
+    // 미완성
+    @PostMapping("/password")
+    public ResponseEntity<?> sendEmail(@RequestBody String email) {
+        memberService.sendEmail(email);
+        return ResponseEntity.status(200).body("success");
+    }
+    // 3. 비밀번호 재설정
+    @PatchMapping("password/change")
+    public ResponseEntity<?> setNewPassword (@RequestBody String email, String pwd) {
+        memberService.setNewPassword(email, pwd);
+
+        return ResponseEntity.status(200).body("success");
+    }
+    /////////////////// 비밀번호 재설정 (비밀번호 찾기) end ////////////////////////
+
     // 회원 탈퇴
-    // JWT 토큰 필요 (미완성)
-    public ResponseEntity<?> deleteMember(@RequestBody MemberDeleteReq memberDeleteReq) {
-        memberService.deleteMember(memberDeleteReq);
-        return ResponseEntity.status(200).body("Success");
+    @DeleteMapping
+    public ResponseEntity<?> deleteMember(@ApiIgnore Authentication authentication) {
+        MemberDetails memberDetails = (MemberDetails)authentication.getDetails();
+        Long memberSeq = memberDetails.getMemberSeq();
+        memberService.deleteMember(memberSeq);
+        return ResponseEntity.status(200).body("success");
     }
 
 
@@ -86,7 +132,7 @@ public class MemberController {
         if (member == null) {
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
         }
-        return ResponseEntity.status(401).body(BaseResponseBody.of(401, "fail"));
+        return ResponseEntity.status(409).body(BaseResponseBody.of(409, "fail"));
     }
 
     // 닉네임 중복 검사
@@ -97,7 +143,7 @@ public class MemberController {
         if (member == null) {
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
         }
-        return ResponseEntity.status(401).body(BaseResponseBody.of(401, "fail"));
+        return ResponseEntity.status(409).body(BaseResponseBody.of(409, "fail"));
     }
 
     // 아이디 중복 검사
@@ -108,7 +154,7 @@ public class MemberController {
         if (member == null) {
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
         }
-        return ResponseEntity.status(401).body(BaseResponseBody.of(401, "fail"));
+        return ResponseEntity.status(409).body(BaseResponseBody.of(409, "fail"));
     }
 
     // 아이디 찾기
@@ -116,7 +162,7 @@ public class MemberController {
     public ResponseEntity<MemberFindMemberIdRes> findMemberId(@RequestBody MemberFindMemberIdReq memberFindMemberIdReq) {
         String memberId = memberService.FindMemberId(memberFindMemberIdReq);
         if (memberId == null) {
-            return ResponseEntity.status(200).body(MemberFindMemberIdRes.of(401, "fail", null));
+            return ResponseEntity.status(200).body(MemberFindMemberIdRes.of(409, "fail", null));
         }
         return ResponseEntity.status(200).body(MemberFindMemberIdRes.of(200, "success", memberId));
     }

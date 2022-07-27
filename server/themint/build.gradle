@@ -89,6 +89,12 @@ dependencies {
 	annotationProcessor("org.projectlombok:lombok:1.18.20")
 
 	testCompileOnly('org.springframework.boot:spring-boot-starter-test')
+
+	// 이메일 전송 위해
+	// https://mvnrepository.com/artifact/javax.mail/mail
+//	implementation group: 'javax.mail', name: 'mail', version: '1.4'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
 }
 
 //querydsl 추가 시작
