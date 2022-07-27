@@ -1,12 +1,18 @@
-import styled from "styled-components";
-import Router from "./Router";
+import styled from 'styled-components';
+import Router from './Router';
 
 function App() {
   return (
-    <div>
+    <Container>
       <Router />
-    </div>
+    </Container>
   );
 }
 
 export default App;
+
+const Container = styled.div`
+  width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+`;
