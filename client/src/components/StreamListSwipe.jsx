@@ -1,64 +1,73 @@
 import React, { useRef, useState } from 'react';
-import AuctionCard from './AuctionCard';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import StreamItem from './common/StreamItem';
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
+import 'swiper/css/effect-coverflow';
 
 // import required modules
-import { Navigation } from 'swiper';
+import { Navigation, EffectCoverflow } from 'swiper';
 
 function SwiperList() {
   return (
     <Wrapper>
       <ListHeader>
-        <h3>민트님의 관심 경매</h3>
-        <Link to="/categories/:categoryName">
-          <p>더보기</p>
-        </Link>
+        <h3>현재 진행중인 실시간 경매</h3>
       </ListHeader>
       <hr></hr>
       <>
         <Swiper
+          effect={'coverflow'}
+          coverflowEffect={{
+            rotate: 50,
+            stretch: 0,
+            depth: 100,
+            modifier: 1,
+            slideShadows: true,
+          }}
           slidesPerView={3}
           spaceBetween={30}
           navigation={true}
-          modules={[Navigation]}
+          modules={[Navigation, EffectCoverflow]}
           slidesOffsetBefore={23}
           className="mySwiper">
           <SwiperSlide>
-            <AuctionCard />
+            <StreamItem />
           </SwiperSlide>
           <SwiperSlide>
-            <AuctionCard />
+            <StreamItem />
           </SwiperSlide>
           <SwiperSlide>
-            <AuctionCard />
+            <StreamItem />
           </SwiperSlide>
           <SwiperSlide>
-            <AuctionCard />
+            <StreamItem />
           </SwiperSlide>
           <SwiperSlide>
-            <AuctionCard />
+            <StreamItem />
           </SwiperSlide>
           <SwiperSlide>
-            <AuctionCard />
+            <StreamItem />
           </SwiperSlide>
           <SwiperSlide>
-            <AuctionCard />
+            <StreamItem />
           </SwiperSlide>
           <SwiperSlide>
-            <AuctionCard />
+            <StreamItem />
           </SwiperSlide>
           <SwiperSlide>
-            <AuctionCard />
+            <StreamItem />
           </SwiperSlide>
           <SwiperSlide>
-            <AuctionCard />
+            <StreamItem />
+          </SwiperSlide>
+          <SwiperSlide>
+            <StreamItem />
           </SwiperSlide>
         </Swiper>
       </>
@@ -80,6 +89,3 @@ const ListHeader = styled.div`
   display: flex;
   justify-content: space-between;
 `;
-
-// 스와이퍼 옵션
-// https://velog.io/@function_dh/JavaScript-Swiper-%EC%82%AC%EC%9A%A9%EB%B2%95-%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%93%9C-%EA%B5%AC%ED%98%84

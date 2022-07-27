@@ -1,15 +1,15 @@
 import React from 'react';
 import NavigationBar from '../components/common/NavigationBar';
 import Footer from '../components/common/Footer';
-import StreamList from '../components/common/StreamList';
 import PostList from '../components/common/PostList';
 import LikeList from '../components/common/LikeList';
+import SwiperList from '../components/StreamListSwipe';
 
 function Main(props) {
   return (
     <div>
       <NavigationBar />
-      <StreamList />
+      <SwiperList />
       <PostList />
       <LikeList />
       <Footer />

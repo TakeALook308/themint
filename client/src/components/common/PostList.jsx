@@ -1,63 +1,74 @@
-import React, { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
+import React, { useRef, useState } from 'react';
 import AuctionCard from './AuctionCard';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
+// Import Swiper React components
+import { Swiper, SwiperSlide } from 'swiper/react';
 
-const TOTAL_CARDS = 10;
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+// import required modules
+import { Navigation } from 'swiper';
 
-function PostList() {
-  const [currentCard, setCurrentCard] = useState(0);
-  const slideRef = useRef(null);
-
-  const NextCard = () => {
-    if (currentCard >= TOTAL_CARDS) {
-      setCurrentCard(0);
-    } else {
-      setCurrentCard(currentCard + 1);
-    }
-  };
-
-  const PrevCard = () => {
-    if (currentCard === 0) {
-      setCurrentCard(TOTAL_CARDS);
-    } else {
-      setCurrentCard(currentCard - 1);
-    }
-  };
-
-  useEffect(() => {
-    slideRef.current.style.transition = 'all 1s ease-in-out';
-    slideRef.current.style.transform = `translateX(-${currentCard}00%)`;
-  }, [currentCard]);
-
+function SwiperList() {
   return (
     <Wrapper>
       <ListHeader>
-        <h3>실시간 임박 경매</h3>
+        <h3>실시간 경매</h3>
         <Link to="/categories/:categoryName">
           <p>더보기</p>
         </Link>
       </ListHeader>
       <hr></hr>
-      <button onClick={PrevCard}>이전</button>
-      <button onClick={NextCard}>다음</button>
-      {currentCard}
-      <Container ref={slideRef}>
-        <AuctionCard />
-        <AuctionCard />
-        <AuctionCard />
-        <AuctionCard />
-        <AuctionCard />
-        <AuctionCard />
-        <AuctionCard />
-        <AuctionCard />
-        <AuctionCard />
-      </Container>
+
+      <>
+        <Swiper
+          slidesPerColumn={3}
+          slidesPerView={3}
+          spaceBetween={30}
+          navigation={true}
+          slidesOffsetBefore={23}
+          modules={[Navigation]}
+          className="mySwiper">
+          <SwiperSlide>
+            <AuctionCard />
+          </SwiperSlide>
+          <SwiperSlide>
+            <AuctionCard />
+          </SwiperSlide>
+          <SwiperSlide>
+            <AuctionCard />
+          </SwiperSlide>
+          <SwiperSlide>
+            <AuctionCard />
+          </SwiperSlide>
+          <SwiperSlide>
+            <AuctionCard />
+          </SwiperSlide>
+          <SwiperSlide>
+            <AuctionCard />
+          </SwiperSlide>
+          <SwiperSlide>
+            <AuctionCard />
+          </SwiperSlide>
+          <SwiperSlide>
+            <AuctionCard />
+          </SwiperSlide>
+          <SwiperSlide>
+            <AuctionCard />
+          </SwiperSlide>
+          <SwiperSlide>
+            <AuctionCard />
+          </SwiperSlide>
+        </Swiper>
+      </>
     </Wrapper>
   );
 }
 
-export default PostList;
+export default SwiperList;
 
 const Wrapper = styled.div`
   max-width: calc(100% - 50px);
@@ -70,12 +81,4 @@ const Wrapper = styled.div`
 const ListHeader = styled.div`
   display: flex;
   justify-content: space-between;
-`;
-
-const Container = styled.div`
-  max-width: 100%;
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  height: 300px;
 `;

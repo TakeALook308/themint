@@ -1,18 +1,39 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import InputBox from './InputBox';
+import { useState } from 'react';
+
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import { IconButton } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import InputBase from '@mui/material/InputBase';
 
 function NavigationBar(props) {
+  const [search, setSearch] = useState('');
+  const navigate = useNavigate();
+
   return (
     <Wrapper>
       <Link to="/">
         <NavLogo>더민트</NavLogo>
       </Link>
       <NavSearch>
-        <InputBox type="text" placeholder="검색창" widthValue="500px"></InputBox>
+        <InputBase
+          style={{ padding: 0 }}
+          value={search}
+          placeholder="검색하기"
+          inputProps={{ 'aria-label': '검색하기' }}
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              navigate(`/`);
+            }
+          }}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <IconButton>
+          <SearchIcon type="submit" aria-label="search" onClick={() => navigate(`/`)} />
+        </IconButton>
       </NavSearch>
       <NavItem>
         <Link to="/categories/:categoryName">
@@ -57,12 +78,18 @@ const NavLogo = styled.p`
 
 const NavSearch = styled.div`
   margin-left: auto;
+  display: flex;
+  background-color: ${(props) => props.theme.colors.pointBlack};
+  height: 40px;
+  border: none;
+  border-radius: 5px;
+  width: 400px;
 `;
 
 const NavItem = styled.div`
   width: 300px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   margin-left: auto;
   align-items: center;
 `;
