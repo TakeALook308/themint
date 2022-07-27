@@ -18,6 +18,37 @@ function AuctionCard() {
   const profileUrl =
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiiGVRNg8egZNHf7d7-jeEA3JKgNTkStDZPQ&usqp=CAU';
 
+  const CalculateTime = () => {
+    const auctionStartTime = new Date(auctions.startTime);
+    const today = new Date();
+    const diff = auctionStartTime - today;
+    const diffDay = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const diffHour = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const diffMin = Math.floor((diff / (1000 * 60)) % 60);
+
+    if (diffDay > 1) {
+      const year = auctionStartTime.getFullYear();
+      const month = makeTwoDigitNumber(auctionStartTime.getMonth() + 1);
+      const date = makeTwoDigitNumber(auctionStartTime.getDate());
+      const hour = makeTwoDigitNumber(auctionStartTime.getHours());
+      const miniute = makeTwoDigitNumber(auctionStartTime.getMinutes());
+
+      setAuctionTime({
+        time: `${year}년 ${month}월 ${date}일 ${hour}시 ${miniute}분`,
+        moreThenOneDay: true,
+      });
+    } else if (diffHour >= 1) {
+      setAuctionTime({ time: `${diffHour} 시간 전`, moreThenOneDay: false });
+    } else {
+      setAuctionTime({ time: `${diffMin} 분 전`, moreThenOneDay: false });
+    }
+  };
+
+  const makeTwoDigitNumber = (time) => String(time).padStart(2, '0');
+
+  useEffect(() => {
+    CalculateTime();
+  }, []);
   return (
     <CardContainer>
       <div>
