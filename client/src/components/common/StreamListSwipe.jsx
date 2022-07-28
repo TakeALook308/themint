@@ -1,6 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import StreamItem from './common/StreamItem';
+import StreamCard from './StreamCard';
+
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 
@@ -12,82 +13,80 @@ import 'swiper/css/effect-coverflow';
 // import required modules
 import { Navigation, EffectCoverflow } from 'swiper';
 
-function SwiperList() {
+function StreamList() {
   return (
     <Wrapper>
       <ListHeader>
         <h3>현재 진행중인 실시간 경매</h3>
       </ListHeader>
       <hr></hr>
-      <>
+      <SwipeContainer>
         <Swiper
           effect={'coverflow'}
           coverflowEffect={{
-            rotate: 10,
+            rotate: 15,
             stretch: 100,
             depth: 100,
             modifier: 1,
-            slideShadows: true,
           }}
-          slideToClickedSlide={true}
-          centerInsufficientSlides={true}
-          centeredSlides={true}
-          initialSlide={6}
-          slidesPerView={5}
-          spaceBetween={0}
+          watchOverflow={true}
           navigation={true}
+          centeredSlides={true}
+          initialSlide={2}
+          slidesPerView={2}
+          spaceBetween={0}
+          loop={true}
           modules={[Navigation, EffectCoverflow]}
           className="mySwiper">
           <SwiperSlide>
-            <StreamItem />
+            <StreamCard />
           </SwiperSlide>
           <SwiperSlide>
-            <StreamItem />
+            <StreamCard />
           </SwiperSlide>
           <SwiperSlide>
-            <StreamItem />
+            <StreamCard />
           </SwiperSlide>
           <SwiperSlide>
-            <StreamItem />
+            <StreamCard />
           </SwiperSlide>
           <SwiperSlide>
-            <StreamItem />
+            <StreamCard />
           </SwiperSlide>
           <SwiperSlide>
-            <StreamItem />
+            <StreamCard />
           </SwiperSlide>
           <SwiperSlide>
-            <StreamItem />
+            <StreamCard />
           </SwiperSlide>
           <SwiperSlide>
-            <StreamItem />
+            <StreamCard />
           </SwiperSlide>
           <SwiperSlide>
-            <StreamItem />
+            <StreamCard />
           </SwiperSlide>
           <SwiperSlide>
-            <StreamItem />
-          </SwiperSlide>
-          <SwiperSlide>
-            <StreamItem />
+            <StreamCard />
           </SwiperSlide>
         </Swiper>
-      </>
+      </SwipeContainer>
     </Wrapper>
   );
 }
 
-export default SwiperList;
+export default StreamList;
 
 const Wrapper = styled.div`
-  max-width: calc(100% - 50px);
+  max-width: 1024px;
   margin: auto;
-  background-color: ${(props) => props.theme.colors.subBlack};
-  margin-bottom: 10px;
-  overflow: hidden;
+  margin-bottom: 20px;
 `;
 
 const ListHeader = styled.div`
   display: flex;
   justify-content: space-between;
+`;
+
+const SwipeContainer = styled.div`
+  padding: 10px;
 `;

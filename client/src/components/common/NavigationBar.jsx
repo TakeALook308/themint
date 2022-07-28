@@ -5,9 +5,10 @@ import { useState } from 'react';
 
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import InputBase from '@mui/material/InputBase';
 import { IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import InputBase from '@mui/material/InputBase';
+import ChatIcon from '@mui/icons-material/Chat';
 
 function NavigationBar(props) {
   const [search, setSearch] = useState('');
@@ -43,6 +44,9 @@ function NavigationBar(props) {
           <p>경매생성</p>
         </Link>
         <Link to="/">
+          <ChatIcon />
+        </Link>
+        <Link to="/">
           <NotificationsNoneIcon />
         </Link>
         <Link to="/profile/:userId">
@@ -56,17 +60,17 @@ function NavigationBar(props) {
 export default NavigationBar;
 
 const Wrapper = styled.div`
-  padding: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: ${(props) => props.theme.colors.mainBlack};
-  max-width: calc(100% - 50px);
+  max-width: 1024px;
   margin: auto;
-  margin-bottom: 20px;
 `;
 
-const NavLogo = styled.p`
+const NavLogo = styled.div`
   font-family: 'PyeongChangPeace-Bold';
   src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-02@1.0/PyeongChangPeace-Bold.woff2')
     format('woff2');
@@ -80,16 +84,17 @@ const NavSearch = styled.div`
   margin-left: auto;
   display: flex;
   background-color: ${(props) => props.theme.colors.pointBlack};
-  height: 40px;
+  height: 44px;
   border: none;
   border-radius: 5px;
   width: 400px;
+  justify-content: space-between;
 `;
 
 const NavItem = styled.div`
-  width: 300px;
+  width: 280px;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   margin-left: auto;
   align-items: center;
 `;

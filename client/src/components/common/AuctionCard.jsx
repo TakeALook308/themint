@@ -44,7 +44,7 @@ export default AuctionCard;
 const CardContainer = styled.article`
   position: relative;
   background-color: blue;
-  width: 400px;
+  width: 300px;
   border-radius: 5px;
   overflow: hidden;
   a {
