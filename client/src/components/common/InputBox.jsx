@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 import React from 'react';
 
-function InputBox({ text, type, placeholder, widthValue }) {
+function InputBox({ text, type, widthValue }) {
   return (
     <div>
+      <Input type={type} widthValue={widthValue}></Input>
       <Label>{text}</Label>
-      <Input type={type} placeholder={placeholder} widthValue={widthValue}></Input>
     </div>
   );
 }
@@ -20,10 +20,14 @@ const Input = styled.input`
   width: ${(props) => props.widthValue || '100%'};
 `;
 
-const Label = styled.p`
+const Label = styled.span`
   font-size: 14px;
   color: ${(props) => props.theme.colors.white};
-  padding: 5px;
+  position: absolute;
+  left: 0;
+  padding: 10px;
+  pointer-events: none;
+  color: ${(props) => props.theme.colors.textGray};
 `;
 
 export default InputBox;
