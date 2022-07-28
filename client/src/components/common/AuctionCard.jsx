@@ -86,12 +86,7 @@ export default AuctionCard;
 
 const CardContainer = styled.article`
   position: relative;
-<<<<<<< HEAD
-  background-color: blue;
-  width: 300px;
-=======
   width: 100%;
->>>>>>> 8c3e246949c453ab8f5abae92bd63d0b6daead3d
   border-radius: 5px;
   overflow: hidden;
   transition: all 0.3s ease-in;

@@ -9,8 +9,6 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-// import required modules
-import { Navigation } from 'swiper';
 
 function PostList() {
   return (
@@ -26,15 +24,12 @@ function PostList() {
         <Swiper
           slidesPerColumn={3}
           slidesPerView={3}
-          spaceBetween={0}
-          navigation={true}
+          spaceBetween={30}
           slideToClickedSlide={true}
           allowTouchMove={false}
           initialSlide={1}
           centeredSlides={true}
           loop={true}
-          slidesOffsetBefore={17}
-          modules={[Navigation]}
           className="mySwiper">
           <SwiperSlide>
             <AuctionCard />

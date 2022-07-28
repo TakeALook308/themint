@@ -9,6 +9,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/effect-coverflow';
+import './SwiperCSS.css';
 
 // import required modules
 import { Navigation, EffectCoverflow } from 'swiper';
@@ -16,17 +17,14 @@ import { Navigation, EffectCoverflow } from 'swiper';
 function StreamList() {
   return (
     <Wrapper>
-      <ListHeader>
-        <h3>현재 진행중인 실시간 경매</h3>
-      </ListHeader>
       <hr></hr>
       <SwipeContainer>
         <Swiper
           effect={'coverflow'}
           coverflowEffect={{
-            rotate: 15,
+            rotate: 50,
             stretch: 100,
-            depth: 100,
+            depth: 130,
             modifier: 1,
           }}
           watchOverflow={true}
@@ -35,6 +33,8 @@ function StreamList() {
           initialSlide={2}
           slidesPerView={2}
           spaceBetween={0}
+          allowTouchMove={false}
+          slideShadows={true}
           loop={true}
           modules={[Navigation, EffectCoverflow]}
           className="mySwiper">
@@ -82,11 +82,7 @@ const Wrapper = styled.div`
   margin-bottom: 20px;
 `;
 
-const ListHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-`;
-
 const SwipeContainer = styled.div`
   padding: 10px;
+  border-radius: 5px;
 `;

@@ -88,6 +88,7 @@ const NavSearch = styled.div`
   border: none;
   border-radius: 5px;
   width: 400px;
+  padding-left: 20px;
   justify-content: space-between;
 `;
 
