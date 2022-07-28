@@ -21,7 +21,7 @@ public interface MemberService {
     Member getMemberByEmail(String email);
 
     // 이메일 송신
-    void sendEmail(String email);
+    int sendEmail(int randNum, String email);
 
     void setNewPassword(String email, String pwd);
 

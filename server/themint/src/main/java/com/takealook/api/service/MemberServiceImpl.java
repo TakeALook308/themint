@@ -5,6 +5,8 @@ import com.takealook.db.entity.Member;
 import com.takealook.db.repository.MemberRepository;
 import com.takealook.db.repository.MemberRepositorySupport;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
+import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,13 +24,16 @@ import java.util.concurrent.ThreadLocalRandom;
 public class MemberServiceImpl implements MemberService {
 
     @Autowired
-    MemberRepository memberRepository;
+    private MemberRepository memberRepository;
 
     @Autowired
-    MemberRepositorySupport memberRepositorySupport;
+    private MemberRepositorySupport memberRepositorySupport;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private MailSender sender;
 
     @Override
     public Member createMember(MemberRegisterPostReq memberRegisterPostReq) {
@@ -48,18 +53,19 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Member getMemberByMemberSeq(Long seq) {
-        return memberRepository.findBySeq(seq).get();
+        return memberRepository.findBySeq(seq);
+
     }
 
     @Override
     public void updateMember(Long seq, MemberUpdatePostReq memberUpdatePostReq) {
         memberRepositorySupport.updateMemberInfo(seq, memberUpdatePostReq);
     }
+
     @Override
     public void updateMemberPassword(Long seq, String pwd) {
         memberRepositorySupport.updateMemberPassword(seq, passwordEncoder.encode(pwd));
     }
-
 
 
     @Override
@@ -84,48 +90,18 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void sendEmail(String email) {
-        int randNum = ThreadLocalRandom.current().nextInt(100000, 1000000); // 랜덤 숫자 6자리
-//        SimpleMailMessage msg = new SimpleMailMessage();
-//        msg.setTo(email);
-//        msg.setFrom(MAIL_ADDRESS);
-//        msg.setSubject("더 민트 비밀번호 재설정 인증번호");
-//        msg.setText("인증번호는 " + randNum + "입니다.");
-//        sender.send(msg);
-        String host = "smtp.naver.com";
-        String user = "etminho12@naver.com";
-        String password = "uk19681311@@";
-
-        // SMTP 서버 정보를 설정한다.
-        Properties props = new Properties();
-        props.put("mail.smtp.host", host);
-        props.put("mail.smtp.port", 587);
-        props.put("mail.smtp.auth", "true");
-
-        Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(user, password);
-            }
-        });
-
+    public int sendEmail(int randNum, String email) {
         try {
-            MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(user));
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
-
-            // 메일 제목
-            message.setSubject("더민트 인증번호 전송");
-
-            // 메일 내용
-            String body = "인증번호는 " + randNum + "입니다!";
-            message.setText(body);
-
-            // send the message
-            Transport.send(message);
-            System.out.println("Success Message Send");
-
-        } catch (MessagingException e) {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(email);
+            message.setFrom("etminho12@naver.com");
+            message.setSubject("[더민트] 비밀번호 찾기 - 임시 비밀번호 안내드립니다.");
+            message.setText("임시 비밀번호 : " + randNum);
+            sender.send(message);
+            return 1;
+        } catch (Exception e) {
             e.printStackTrace();
+            return 0;
         }
     }
 
@@ -143,6 +119,7 @@ public class MemberServiceImpl implements MemberService {
         String memberName = memberFindMemberIdReq.getMemberName();
         String phone = memberFindMemberIdReq.getPhone();
         Member member = memberRepository.findByMemberNameAndPhone(memberName, phone);
+        if (member == null) return null;
         return member.getMemberId();
     }
 

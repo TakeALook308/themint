@@ -11,11 +11,12 @@ import java.util.Optional;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
-    Optional<Member> findBySeq(Long memberSeq);
+    Member findBySeq(Long memberSeq);
     Member findByMemberId(String memberId);
     Member findByNickname(String nickname);
 
     Member findByEmail(String email);
+    @Transactional
     void deleteMemberBySeq(Long memberSeq);
     Member findByMemberNameAndPhone(String memberName, String Phone);
 
