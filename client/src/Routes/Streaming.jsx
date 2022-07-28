@@ -1,7 +1,12 @@
 import React from 'react';
+import StreamingComponent from '../components/StreamingComponent';
 
 function Streaming(props) {
-  return <div>경매 스트리밍</div>;
+  return (
+    <div>
+      <StreamingComponent />
+    </div>
+  );
 }
 
 export default Streaming;
