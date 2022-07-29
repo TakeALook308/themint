@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import AuctionCard from './AuctionCard';
+import AuctionCard from '../../common/AuctionCard';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 // Import Swiper React components
@@ -15,23 +15,23 @@ import './SwiperCSS.css';
 import { Navigation } from 'swiper';
 
 function PostList() {
-  const [loading, setLoading] = useState(true);
-  const [auctions, setAuctions] = useState([]);
-  const getAuctions = async () => {
-    const json = await (await fetch(`#`)).json();
-    setAuctions(json.data.auctions);
-    setLoading(false);
-  };
-  useEffect(() => {
-    getAuctions();
-  }, []);
+  // const [loading, setLoading] = useState(true);
+  // const [auctions, setAuctions] = useState([]);
+  // const getAuctions = async () => {
+  //   const json = await (await fetch(`#`)).json();
+  //   setAuctions(json.data.auctions);
+  //   setLoading(false);
+  // };
+  // useEffect(() => {
+  //   getAuctions();
+  // }, []);
   return (
     <Wrapper>
       <hr></hr>
       <ListHeader>
         <h3>실시간 임박 경매</h3>
         <Link to="/categories/:categoryName">
-          <p>더보기 ></p>
+          <p>더보기</p>
         </Link>
       </ListHeader>
       <SwipeContainer>

@@ -1,20 +1,14 @@
 import React from 'react';
-import PostList from '../components/common/PostList';
-import MovieList from '../components/common/MovieList';
-import StreamList from '../components/common/StreamListSwipe';
-import NavigationBar from '../components/common/NavigationBar';
-import Footer from '../components/common/Footer';
-import Banner from '../components/common/Banner';
+import Banner from '../components/ui/Banner';
+import StreamList from '../components/list/main/StreamListSwipe';
+import PostList from '../components/list/main/PostList';
 
 function Main(props) {
   return (
     <div>
-      <NavigationBar />
       <Banner />
       <StreamList />
       <PostList />
-      <MovieList />
-      <Footer />
     </div>
   );
 }

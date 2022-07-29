@@ -8,7 +8,7 @@ import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import SearchIcon from '@mui/icons-material/Search';
 import ChatIcon from '@mui/icons-material/Chat';
 
-function NavigationBar({ props }) {
+function NavigationBar({ categoryName }) {
   // 검색기능의구현
   // const [search, setSearch] = useState('');
   // const onSearch = (e) => {
@@ -53,7 +53,7 @@ function NavigationBar({ props }) {
         ></SearchBox>
       </NavSearch>
       <NavItemText>
-        <Link to="/categories/:categoryName">
+        <Link to={`/categories/${categoryName}`}>
           <p>카테고리</p>
         </Link>
         <Link to="/">

@@ -1,10 +1,8 @@
 .swiper-button-prev {
-  color: white;    
-  width: 18px;  
+  color: white;     
 }
 .swiper-button-prev:hover {  
     opacity:.6;  
-    filter: drop-shadow(0 0 10px 0 blue inset);
 }
 
 .swiper-button-next {

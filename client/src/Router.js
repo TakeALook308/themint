@@ -13,10 +13,12 @@ import Streaming from './Routes/Streaming';
 import AuctionDetail from './Routes/AuctionDetail';
 import PurchaseHistoryDetail from './Routes/PurchaseHistoryDetail';
 import Talks from './Routes/Talks';
+import NavigationBar from './components/ui/NavigationBar';
 
 function Router() {
   return (
     <BrowserRouter>
+      <NavigationBar />
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/login" element={<Login />} />
