@@ -1,5 +1,5 @@
 import React from 'react';
-import StreamingComponent from '../components/StreamingComponent';
+import StreamingComponent from '../components/webRTC/StreamingComponent';
 
 function Streaming(props) {
   return (

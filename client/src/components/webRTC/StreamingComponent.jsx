@@ -3,22 +3,21 @@ import { OpenVidu } from 'openvidu-browser';
 import React, { Component } from 'react';
 import UserVideoComponent from './UserVideoComponent';
 
-const OPENVIDU_SERVER_URL = 'https://i7a308.p.ssafy.io:8443';
-const OPENVIDU_SERVER_SECRET = 'themint';
+const OPENVIDU_SERVER_URL = 'https://' + window.location.hostname + ':4443';
+const OPENVIDU_SERVER_SECRET = 'MY_SECRET';
 
 class StreamingComponent extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      mySessionId: 'SessionA',
+      mySessionId: String(Math.floor(Math.random() * 100)),
       myUserName: 'Participant' + Math.floor(Math.random() * 100),
       session: undefined,
       mainStreamManager: undefined,
       publisher: undefined,
       subscribers: [],
     };
-
     this.joinSession = this.joinSession.bind(this);
     this.leaveSession = this.leaveSession.bind(this);
     this.switchCamera = this.switchCamera.bind(this);
@@ -139,9 +138,7 @@ class StreamingComponent extends Component {
                 insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
                 mirror: false, // Whether to mirror your local video or not
               });
-
               // --- 6) Publish your stream ---
-
               mySession.publish(publisher);
 
               // Set the main video in the page to display our webcam and store our Publisher
@@ -177,7 +174,7 @@ class StreamingComponent extends Component {
     this.setState({
       session: undefined,
       subscribers: [],
-      mySessionId: 'SessionA',
+      mySessionId: this.state.mySessionId,
       myUserName: 'Participant' + Math.floor(Math.random() * 100),
       mainStreamManager: undefined,
       publisher: undefined,
