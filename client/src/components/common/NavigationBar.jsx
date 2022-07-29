@@ -1,17 +1,38 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useState } from 'react';
+// import { useState } from 'react';
 
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
-import InputBase from '@mui/material/InputBase';
-import { IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ChatIcon from '@mui/icons-material/Chat';
 
-function NavigationBar(props) {
-  const [search, setSearch] = useState('');
+function NavigationBar({ props }) {
+  // 검색기능의구현
+  // const [search, setSearch] = useState('');
+  // const onSearch = (e) => {
+  //   e.preventDefault();
+  //   if (search === null || search === '') {
+  //     // 검색어가 없을 경우 전체 리스트 반환
+  //     axios.get(common.baseURL + 'user').then((res) => {
+  //       setLists(res.data.auctionList);
+  //       setCurrentPosts(res.data.auctionList.slice(indexOfFirstPost, indexOfLastPost));
+  //     });
+  //   } else {
+  //     // 검색 구현
+  //     const filterData = lists.filter((row) => row.auctionId.includes(search));
+  //     setLists(filterData);
+  //     setCurrentPosts(filterData.slice(indexOfFirstPost, indexOfLastPost));
+  //     setCurrentPage(1);
+  //   }
+  //   setSearch(``);
+  // };
+
+  // const onChangeSearch = (e) => {
+  //   e.preventDefault();
+  //   setSearch(e.target.value);
+  // };
   const navigate = useNavigate();
 
   return (
@@ -19,30 +40,27 @@ function NavigationBar(props) {
       <Link to="/">
         <NavLogo>더민트</NavLogo>
       </Link>
-      <NavSearch>
-        <InputBase
-          style={{ padding: 0 }}
-          value={search}
+      <NavSearch
+      // onSubmit={(e) => onSearch(e)}
+      >
+        <SearchIcon type="submit" aria-label="search" onClick={() => navigate(`/`)} />
+        <SearchBox
+          type="text"
+          // value={search}
           placeholder="검색하기"
           inputProps={{ 'aria-label': '검색하기' }}
-          onKeyPress={(e) => {
-            if (e.key === 'Enter') {
-              navigate(`/`);
-            }
-          }}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <IconButton>
-          <SearchIcon type="submit" aria-label="search" onClick={() => navigate(`/`)} />
-        </IconButton>
+          // onChange={onChangeSearch}
+        ></SearchBox>
       </NavSearch>
-      <NavItem>
+      <NavItemText>
         <Link to="/categories/:categoryName">
           <p>카테고리</p>
         </Link>
         <Link to="/">
           <p>경매생성</p>
         </Link>
+      </NavItemText>
+      <NavItemIcon>
         <Link to="/">
           <ChatIcon />
         </Link>
@@ -52,7 +70,7 @@ function NavigationBar(props) {
         <Link to="/profile/:userId">
           <PersonOutlineIcon />
         </Link>
-      </NavItem>
+      </NavItemIcon>
     </Wrapper>
   );
 }
@@ -64,7 +82,7 @@ const Wrapper = styled.div`
   padding-bottom: 10px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   background: ${(props) => props.theme.colors.mainBlack};
   max-width: 1024px;
   margin: auto;
@@ -78,25 +96,42 @@ const NavLogo = styled.div`
   font-style: normal;
   font-size: 40px;
   color: ${(props) => props.theme.colors.mainMint};
+  width: 112px;
 `;
 
 const NavSearch = styled.div`
-  margin-left: auto;
   display: flex;
   background-color: ${(props) => props.theme.colors.pointBlack};
-  height: 44px;
   border: none;
   border-radius: 5px;
-  width: 400px;
-  padding-left: 20px;
-  justify-content: space-between;
+  align-items: center;
+  padding-left: 10px;
 `;
 
-const NavItem = styled.div`
-  width: 280px;
+const SearchBox = styled.input`
+  background-color: ${(props) => props.theme.colors.pointBlack};
+  height: 35px;
+  border: none;
+  border-radius: 5px;
+  margin-left: 10px;
+  color: ${(props) => props.theme.colors.white};
+  width: 380px;
+  &:focus {
+    outline: none;
+  }
+`;
+
+const NavItemText = styled.div`
+  width: 150px;
   display: flex;
   justify-content: space-between;
-  margin-left: auto;
+  align-items: center;
+`;
+
+const NavItemIcon = styled.div`
+  width: 130px;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
 `;
 

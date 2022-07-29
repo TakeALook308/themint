@@ -17,7 +17,6 @@ import { Navigation, EffectCoverflow } from 'swiper';
 function StreamList() {
   return (
     <Wrapper>
-      <hr></hr>
       <SwipeContainer>
         <Swiper
           effect={'coverflow'}
@@ -83,6 +82,11 @@ const Wrapper = styled.div`
 `;
 
 const SwipeContainer = styled.div`
-  padding: 10px;
   border-radius: 5px;
 `;
+
+// navigation button을 직접 만들고 아래의 클래스를 줘도 동작
+// 그런데 버튼 컴포넌트를 만들면 위에서 return을 했음에도 unused error가 발생
+
+// prevEl: '.prev',
+// nextEl: '.next',
