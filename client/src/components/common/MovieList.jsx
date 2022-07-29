@@ -13,17 +13,20 @@ import './SwiperCSS.css';
 
 // import required modules
 import { Navigation } from 'swiper';
+import Movie from './Movie';
 
 function LikeList() {
   const [loading, setLoading] = useState(true);
-  const [auctions, setAuctions] = useState([]);
-  const getAuctions = async () => {
-    const json = await (await fetch(`#`)).json();
-    setAuctions(json.data.auctions);
+  const [movies, setMovies] = useState([]);
+  const getMoives = async () => {
+    const json = await (
+      await fetch(`https://yts.mx/api/v2/list_movies.json?minimum_rating=8.8&sort_by=year`)
+    ).json();
+    setMovies(json.data.movies);
     setLoading(false);
   };
   useEffect(() => {
-    getAuctions();
+    getMoives();
   }, []);
   return (
     <Wrapper>
@@ -47,36 +50,21 @@ function LikeList() {
           navigation={true}
           modules={[Navigation]}
           className="mySwiper">
-          <SwiperSlide>
-            <AuctionCard />
-          </SwiperSlide>
-          <SwiperSlide>
-            <AuctionCard />
-          </SwiperSlide>
-          <SwiperSlide>
-            <AuctionCard />
-          </SwiperSlide>
-          <SwiperSlide>
-            <AuctionCard />
-          </SwiperSlide>
-          <SwiperSlide>
-            <AuctionCard />
-          </SwiperSlide>
-          <SwiperSlide>
-            <AuctionCard />
-          </SwiperSlide>
-          <SwiperSlide>
-            <AuctionCard />
-          </SwiperSlide>
-          <SwiperSlide>
-            <AuctionCard />
-          </SwiperSlide>
-          <SwiperSlide>
-            <AuctionCard />
-          </SwiperSlide>
-          <SwiperSlide>
-            <AuctionCard />
-          </SwiperSlide>
+          {loading ? (
+            <h1>Loading</h1>
+          ) : (
+            <div>
+              {movies.map((movie) => (
+                <SwiperSlide>
+                  <Movie
+                    medium_cover_image={movie.medium_cover_image}
+                    title={movie.title}
+                    summary={movie.summary}
+                  />
+                </SwiperSlide>
+              ))}
+            </div>
+          )}
         </Swiper>
       </SwipeContainer>
     </Wrapper>

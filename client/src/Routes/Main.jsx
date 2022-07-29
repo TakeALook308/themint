@@ -1,6 +1,6 @@
 import React from 'react';
 import PostList from '../components/common/PostList';
-import LikeList from '../components/common/LikeList';
+import MovieList from '../components/common/MovieList';
 import StreamList from '../components/common/StreamListSwipe';
 import NavigationBar from '../components/common/NavigationBar';
 import Footer from '../components/common/Footer';
@@ -13,7 +13,7 @@ function Main(props) {
       <Banner />
       <StreamList />
       <PostList />
-      <LikeList />
+      <MovieList />
       <Footer />
     </div>
   );
