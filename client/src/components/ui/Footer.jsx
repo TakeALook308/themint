@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import ChatIcon from '@mui/icons-material/Chat';
+import { Link } from 'react-router-dom';
 
 function Footer(props) {
   return (
