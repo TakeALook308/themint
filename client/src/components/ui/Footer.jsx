@@ -25,9 +25,15 @@ function Footer(props) {
           </p>
         </FooterText>
         <FooterItem>
-          <YouTubeIcon />
-          <InstagramIcon />
-          <ChatIcon />
+          <Link to="/">
+            <YouTubeIcon />
+          </Link>
+          <Link to="/">
+            <InstagramIcon />
+          </Link>
+          <Link to="/">
+            <ChatIcon />
+          </Link>
         </FooterItem>
       </FooterBody>
     </Wrapper>
