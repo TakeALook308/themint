@@ -14,6 +14,7 @@ import AuctionDetail from './Routes/AuctionDetail';
 import PurchaseHistoryDetail from './Routes/PurchaseHistoryDetail';
 import Talks from './Routes/Talks';
 import NavigationBar from './components/ui/NavigationBar';
+import Footer from './components/ui/Footer';
 
 function Router() {
   return (
@@ -35,6 +36,7 @@ function Router() {
         <Route path="/auctions/:auctionsId" element={<AuctionDetail />} />
         <Route path="/puchase-history/purchseId" element={<PurchaseHistoryDetail />} />
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 }
