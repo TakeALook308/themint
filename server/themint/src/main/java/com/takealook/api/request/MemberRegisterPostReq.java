@@ -18,7 +18,8 @@ public class MemberRegisterPostReq {
     String memberId;
     @ApiModelProperty(name = "멤버 Password", example = "your_password")
     String pwd;
-
+    @ApiModelProperty(name = "멤버 Name", example = "정민호")
+    String memberName;
     @ApiModelProperty(name = "멤버 nickname", example = "minogood")
     String nickname;
 

@@ -1,8 +1,6 @@
 package com.takealook.api.service;
 
-import com.takealook.api.request.MemberDeleteReq;
-import com.takealook.api.request.MemberRegisterPostReq;
-import com.takealook.api.request.MemberUpdatePostReq;
+import com.takealook.api.request.*;
 import com.takealook.db.entity.Member;
 
 public interface MemberService {
@@ -13,14 +11,32 @@ public interface MemberService {
     // 회원 정보 보기
     Member getMemberByMemberSeq(Long seq);
 
-    // 내 정보 조회
-
     // 회원 정보 수정
-    void updateMember(MemberUpdatePostReq memberUpdatePostReq);
+    void updateMember(Long seq, MemberUpdatePostReq memberUpdatePostReq);
+
+    // 비밀번호 변경
+    void updateMemberPassword(Long seq, String pwd);
+
+    // 이메일 체크
+    Member getMemberByEmail(String email);
+
+    // 이메일 송신
+    int sendEmail(int randNum, String email);
+
+    void setNewPassword(String email, String pwd);
 
     // 회원 삭제
-    void deleteMember(MemberDeleteReq memberDeleteReq);
+    void deleteMember(Long memberSeq);
 
     // 아이디로 회원 찾기
     Member getMemberByMemberId(String memberId);
+
+    // 닉네임으로 회원 찾기
+    Member getMemberByNickname(String nickname);
+
+    // 아이디 찾기
+    String FindMemberId(MemberFindMemberIdReq memberFindMemberIdReq);
+
+    // 신뢰도 수정
+    void updateMemberScore(MemberScoreUpdatePatchReq memberScoreUpdatePatchReq);
 }

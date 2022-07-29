@@ -17,7 +17,6 @@ public class MemberUpdatePostReq {
     String profileUrl;
     int bankCode;
     String accountNo;
-    int score;
     int noticeKakao;
     int noticeEmail;
 
