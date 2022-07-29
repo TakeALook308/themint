@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-function AuctionCard() {
+function AuctionCard({ imageUrl2 }) {
   const [auctionTime, setAuctionTime] = useState({ moreThenOneDay: false, time: '' });
   // TODO: 데이터 교체하기
   const auctions = {
@@ -56,7 +56,10 @@ function AuctionCard() {
           <div>
             <picture>
               <img
-                src={auctions.auctionImage.imageUrl}
+                src={
+                  // auctions.auctionImage.imageUrl
+                  imageUrl2
+                }
                 alt="닌텐도 스위치"
                 width="400"
                 height="300"

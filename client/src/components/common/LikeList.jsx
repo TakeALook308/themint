@@ -14,7 +14,7 @@ import './SwiperCSS.css';
 // import required modules
 import { Navigation } from 'swiper';
 
-function PostList(props) {
+function LikeList(props) {
   const [loading, setLoading] = useState(true);
   const [auctions, setAuctions] = useState([]);
   const getAuctions = async () => {
@@ -29,7 +29,7 @@ function PostList(props) {
     <Wrapper>
       <hr></hr>
       <ListHeader>
-        <h3>실시간 임박 경매</h3>
+        <h3>Mint님의 관심 카테고리</h3>
         <Link to="/categories/:categoryName">
           <p>더보기 ></p>
         </Link>
@@ -48,21 +48,17 @@ function PostList(props) {
           modules={[Navigation]}
           className="mySwiper">
           <SwiperSlide>
-            <AuctionCard imageUrl2={'https://img.hankyung.com/photo/202203/01.29355184.1.jpg'} />
-          </SwiperSlide>
-          <SwiperSlide>
             <AuctionCard
-              imageUrl2={
-                'https://images.samsung.com/kdp/cms_contents/149353/742ac997-8faa-47b3-9621-ecaf144992bf.jpg?$ORIGIN_JPG$'
-              }
+              imageUrl2={'https://www.muji.com/wp-content/uploads/sites/12/2021/02/026.jpg'}
             />
           </SwiperSlide>
           <SwiperSlide>
             <AuctionCard
-              imageUrl2={
-                'https://img.kr.news.samsung.com/kr/wp-content/uploads/2017/01/%EC%82%BC%EC%84%B1-%EB%85%B8%ED%8A%B8%EB%B6%81-%EC%98%A4%EB%94%94%EC%84%B8%EC%9D%B4_%EB%B8%94%EB%9E%99_01-e1484127080285.jpg'
-              }
+              imageUrl2={'https://i.pinimg.com/736x/cc/2d/9a/cc2d9a1ec09d4bb0a31cc9df7c581bdb.jpg'}
             />
+          </SwiperSlide>
+          <SwiperSlide>
+            <AuctionCard imageUrl2={'https://cdn.hellodd.com/news/photo/201909/69577_craw1.jpg'} />
           </SwiperSlide>
           <SwiperSlide>
             <AuctionCard />
@@ -91,7 +87,7 @@ function PostList(props) {
   );
 }
 
-export default PostList;
+export default LikeList;
 
 const Wrapper = styled.div`
   max-width: 1024px;

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import AuctionCard from './AuctionCard';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 // Import Swiper React components
@@ -14,6 +13,7 @@ import './SwiperCSS.css';
 // import required modules
 import { Navigation } from 'swiper';
 import Movie from './Movie';
+import SkeletonAuctionCard from './SkeletonAuctionCard';
 
 function LikeList() {
   const [loading, setLoading] = useState(true);
@@ -51,7 +51,9 @@ function LikeList() {
           modules={[Navigation]}
           className="mySwiper">
           {loading ? (
-            <h1>Loading</h1>
+            <SwiperSlide>
+              <SkeletonAuctionCard />
+            </SwiperSlide>
           ) : (
             <div>
               {movies.map((movie) => (
