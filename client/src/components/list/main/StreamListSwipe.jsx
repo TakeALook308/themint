@@ -33,7 +33,6 @@ function StreamList() {
           slidesPerView={2}
           spaceBetween={0}
           allowTouchMove={false}
-          slideShadows={true}
           loop={true}
           modules={[Navigation, EffectCoverflow]}
           className="mySwiper">

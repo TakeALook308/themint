@@ -36,7 +36,7 @@ function PostList() {
       </ListHeader>
       <SwipeContainer>
         <Swiper
-          slidesPerColumn={3}
+          slidespercolumn={3}
           slidesPerView={3}
           spaceBetween={30}
           slideToClickedSlide={false}

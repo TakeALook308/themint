@@ -42,7 +42,7 @@ function Footer(props) {
 }
 export default Footer;
 
-const Wrapper = styled.div`
+const Wrapper = styled.footer`
   border-top: solid;
   border-top-width: 2px;
   border-top-color: ${(props) => props.theme.colors.subBlack};
