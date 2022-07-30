@@ -5,8 +5,8 @@ function useObserver({
   onIntersect,
   hasMore,
   root = null,
-  rootMargin = '0px',
-  threshold = 1.0,
+  rootMargin = '-100px',
+  threshold = 0,
 }) {
   useEffect(() => {
     let observer;
@@ -23,7 +23,7 @@ function useObserver({
 
     if (!hasMore) observer && observer.disconnect();
     return () => observer && observer.disconnect();
-  }, [target, rootMargin, threshold]);
+  }, [hasMore, target, rootMargin, threshold]);
 }
 
 export default useObserver;
