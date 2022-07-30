@@ -91,7 +91,7 @@ const Wrapper = styled.div`
   margin-bottom: 10px;
 `;
 
-const ListHeader = styled.div`
+const ListHeader = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: baseline;
@@ -101,6 +101,7 @@ const ListHeader = styled.div`
     'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
   > h3 {
     font-size: 20px;
+    font-weight: bold;
   }
 `;
 

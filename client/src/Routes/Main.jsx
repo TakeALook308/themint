@@ -23,9 +23,10 @@ const Container = styled.div`
   margin-left: auto;
   margin-right: auto;
   position: relative;
-  top: 60px;
+  padding-top: 1px;
 `;
 
 const BannerContainer = styled.div`
   margin-bottom: 1.25rem;
+  margin-top: 60px;
 `;
