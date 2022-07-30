@@ -3,8 +3,30 @@ import Banner from '../components/ui/Banner';
 import StreamList from '../components/list/main/StreamListSwipe';
 import PostList from '../components/list/main/PostList';
 import styled from 'styled-components';
+import { useInfiniteQuery } from 'react-query';
+import { instance } from '../utils/api/api';
 
 function Main(props) {
+  const fetchPage = async ({ pageParam = 0 }) => {
+    const { data } = await instance.get({ startIndex: pageParam });
+    return {
+      result: data,
+      nextPage: pageParam + 1,
+      isLast: data.isLast,
+    };
+  };
+
+  const {
+    fetchNextPage,
+    fetchPreviousPage,
+    hasNextPage,
+    hasPreviousPage,
+    isFetchingNextPage,
+    isFetchingPreviousPage,
+    ...result
+  } = useInfiniteQuery('[]', ({ pageParam = 1 }) => {
+    console.log(pageParam);
+  });
   return (
     <Container>
       <BannerContainer>
