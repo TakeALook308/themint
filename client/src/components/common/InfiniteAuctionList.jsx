@@ -1,12 +1,10 @@
-import styled from '@emotion/styled/types/base';
 import React, { useRef } from 'react';
 import { useInfiniteQuery } from 'react-query';
+import styled from 'styled-components';
 import { getAuctionList } from '../../utils/api/getAuctionApi';
-import useObserver from '../utils/hooks/useObserver';
-import AuctionCard from './common/AuctionCard';
-import SkeletonAuctionCard from './common/SkeletonAuctionCard';
+import useObserver from '../../utils/hooks/useObserver';
 
-function InfiniteAuctionList({ url, queryKey }) {
+function InfiniteAuctionList({ url, queryKey, CardComponent, SkeltonCardComponent }) {
   const bottom = useRef(null);
   let pageNo = 1;
   const getInterestingAuctionList = async ({ pageNo = 1 }) => {
@@ -39,7 +37,7 @@ function InfiniteAuctionList({ url, queryKey }) {
       {status === 'loading' && (
         <GridContainer>
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <SkeletonAuctionCard key={i} />
+            <SkeltonCardComponent key={i} />
           ))}
         </GridContainer>
       )}
@@ -48,7 +46,7 @@ function InfiniteAuctionList({ url, queryKey }) {
         data.pages.map((group, index) => (
           <GridContainer key={index}>
             {group.results.map((_) => (
-              <AuctionCard />
+              <CardComponent />
             ))}
           </GridContainer>
         ))}
@@ -56,7 +54,7 @@ function InfiniteAuctionList({ url, queryKey }) {
       {isFetchingNextPage && (
         <GridContainer>
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <SkeletonAuctionCard key={i} />
+            <SkeltonCardComponent key={i} />
           ))}
         </GridContainer>
       )}

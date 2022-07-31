@@ -1,7 +1,7 @@
 import { instance } from './api';
 
 export const auctionListApis = {
-  SEARCH_AUCTION_LIST_API: (word, key, category) =>
+  SEARCH_AUCTION_LIST_API: (word = '', key = '', category = 1) =>
     `/api/auction?word=${word}&key=${key}&category=${category}`,
 };
 
