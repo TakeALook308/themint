@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from 'react';
 import { useInfiniteQuery } from 'react-query';
 import { instance } from '../utils/api/api';
 import useObserver from '../utils/hooks/useObserver';
+import AuctionCard from './common/AuctionCard';
 import SkeletonAuctionCard from './common/SkeletonAuctionCard';
 
 function InterestingAuctionList() {
@@ -15,7 +16,7 @@ function InterestingAuctionList() {
     return res?.data;
   };
 
-  const OFFSET = 30;
+  const OFFSET = 9;
   const { data, error, fetchNextPage, isFetchingNextPage, status } = useInfiniteQuery(
     'auctionList',
     getInterestingAuctionList,
@@ -43,16 +44,19 @@ function InterestingAuctionList() {
       {status === 'error' && <p>{error.message}</p>}
       {status === 'success' &&
         data.pages.map((group, index) => (
-          <div key={index}>
+          <div
+            key={index}
+            style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridGap: '1rem' }}>
             {group.results.map((pokemon) => (
-              <p key={pokemon.name}>{pokemon.name}</p>
+              // <p key={pokemon.name}>{pokemon.name}</p>
+              <AuctionCard />
             ))}
           </div>
         ))}
       <div ref={bottom} />
       {isFetchingNextPage && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' }}>
-          {[1, 2, 3].map((i) => (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridGap: '1rem' }}>
+          {[1, 2, 3, 4, 5, 6].map((i) => (
             <SkeletonAuctionCard key={i} />
           ))}
         </div>
