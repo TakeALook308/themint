@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import CateCard from './CateCard';
+import CateCard from '../../ui/category/CateCard';
 
 function CateCardList(props) {
   return (
@@ -34,22 +34,20 @@ export default CateCardList;
 
 const Wrapper = styled.div`
   margin: auto;
-  width: 1040px;
+  width: 100%;
 `;
 
-const CateCardContainer = styled.div`
+const CateCardContainer = styled.main`
   width: 100%;
   margin: auto;
   display: flex;
   flex-wrap: wrap;
 `;
 
-const ListHeader = styled.div`
+const ListHeader = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 20px;
-  margin-top: 20px;
   font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue',
     'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
   > h3 {

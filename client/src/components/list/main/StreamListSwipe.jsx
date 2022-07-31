@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import StreamCard from './StreamCard';
+import StreamCard from '../../ui/main/StreamCard';
 
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -33,7 +33,6 @@ function StreamList(props) {
           slidesPerView={2}
           spaceBetween={0}
           allowTouchMove={false}
-          slideShadows={true}
           loop={true}
           modules={[Navigation, EffectCoverflow]}
           className="mySwiper">

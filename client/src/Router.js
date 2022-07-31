@@ -13,10 +13,13 @@ import Streaming from './Routes/Streaming';
 import AuctionDetail from './Routes/AuctionDetail';
 import PurchaseHistoryDetail from './Routes/PurchaseHistoryDetail';
 import Talks from './Routes/Talks';
+import NavigationBar from './components/ui/common/NavigationBar';
+import Footer from './components/ui/common/Footer';
 
 function Router() {
   return (
     <BrowserRouter>
+      <NavigationBar />
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/login" element={<Login />} />
@@ -33,6 +36,7 @@ function Router() {
         <Route path="/auctions/:auctionsId" element={<AuctionDetail />} />
         <Route path="/puchase-history/purchseId" element={<PurchaseHistoryDetail />} />
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 }

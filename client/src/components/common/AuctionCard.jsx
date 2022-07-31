@@ -170,6 +170,7 @@ const AuctionInfoContainer = styled.div`
     flex-direction: column;
     justify-content: space-evenly;
     p {
+      font-weight: bold;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;

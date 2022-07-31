@@ -99,6 +99,7 @@ const AuctionText = styled.div`
     white-space: wrap;
     text-overflow: ellipsis;
     line-height: 30px;
+    font-weight: bold;
   }
   overflow: hidden;
   > p {

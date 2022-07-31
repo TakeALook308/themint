@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import AuctionCard from './AuctionCard';
+import AuctionCard from '../../common/AuctionCard';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 // Import Swiper React components
@@ -14,29 +14,29 @@ import './SwiperCSS.css';
 // import required modules
 import { Navigation } from 'swiper';
 
-function PostList(props) {
-  const [loading, setLoading] = useState(true);
-  const [auctions, setAuctions] = useState([]);
-  const getAuctions = async () => {
-    const json = await (await fetch(`#`)).json();
-    setAuctions(json.data.auctions);
-    setLoading(false);
-  };
-  useEffect(() => {
-    getAuctions();
-  }, []);
+function PostList() {
+  // const [loading, setLoading] = useState(true);
+  // const [auctions, setAuctions] = useState([]);
+  // const getAuctions = async () => {
+  //   const json = await (await fetch(`#`)).json();
+  //   setAuctions(json.data.auctions);
+  //   setLoading(false);
+  // };
+  // useEffect(() => {
+  //   getAuctions();
+  // }, []);
   return (
     <Wrapper>
       <hr></hr>
       <ListHeader>
         <h3>실시간 임박 경매</h3>
         <Link to="/categories/:categoryName">
-          <p>더보기 ></p>
+          <p>더보기</p>
         </Link>
       </ListHeader>
       <SwipeContainer>
         <Swiper
-          slidesPerColumn={3}
+          slidespercolumn={3}
           slidesPerView={3}
           spaceBetween={30}
           slideToClickedSlide={false}
@@ -99,7 +99,7 @@ const Wrapper = styled.div`
   margin-bottom: 10px;
 `;
 
-const ListHeader = styled.div`
+const ListHeader = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: baseline;
@@ -109,6 +109,7 @@ const ListHeader = styled.div`
     'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
   > h3 {
     font-size: 20px;
+    font-weight: bold;
   }
 `;
 

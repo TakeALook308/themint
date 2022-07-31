@@ -8,7 +8,7 @@ import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import SearchIcon from '@mui/icons-material/Search';
 import ChatIcon from '@mui/icons-material/Chat';
 
-function NavigationBar({ props }) {
+function NavigationBar({ categoryName }) {
   // 검색기능의구현
   // const [search, setSearch] = useState('');
   // const onSearch = (e) => {
@@ -36,48 +36,61 @@ function NavigationBar({ props }) {
   const navigate = useNavigate();
 
   return (
-    <Wrapper>
-      <Link to="/">
-        <NavLogo>더민트</NavLogo>
-      </Link>
-      <NavSearch
-      // onSubmit={(e) => onSearch(e)}
-      >
-        <SearchIcon type="submit" aria-label="search" onClick={() => navigate(`/`)} />
-        <SearchBox
-          type="text"
-          // value={search}
-          placeholder="검색하기"
-          inputProps={{ 'aria-label': '검색하기' }}
-          // onChange={onChangeSearch}
-        ></SearchBox>
-      </NavSearch>
-      <NavItemText>
-        <Link to="/categories/:categoryName">
-          <p>카테고리</p>
-        </Link>
+    <Container>
+      <Wrapper>
         <Link to="/">
-          <p>경매생성</p>
+          <NavLogo>더민트</NavLogo>
         </Link>
-      </NavItemText>
-      <NavItemIcon>
-        <Link to="/">
-          <ChatIcon />
-        </Link>
-        <Link to="/">
-          <NotificationsNoneIcon />
-        </Link>
-        <Link to="/profile/:userId">
-          <PersonOutlineIcon />
-        </Link>
-      </NavItemIcon>
-    </Wrapper>
+        <NavList>
+          <NavSearch
+          // onSubmit={(e) => onSearch(e)}
+          >
+            <SearchIcon type="submit" aria-label="search" onClick={() => navigate(`/`)} />
+            <SearchBox
+              type="text"
+              // value={search}
+              placeholder="검색하기"
+              inputProps={{ 'aria-label': '검색하기' }}
+              // onChange={onChangeSearch}
+            ></SearchBox>
+          </NavSearch>
+          <NavItemText>
+            <Link to={`/categories/${categoryName}`}>
+              <p>카테고리</p>
+            </Link>
+            <Link to="/">
+              <p>경매생성</p>
+            </Link>
+          </NavItemText>
+          <NavItemIcon>
+            <Link to="/">
+              <ChatIcon />
+            </Link>
+            <Link to="/">
+              <NotificationsNoneIcon />
+            </Link>
+            <Link to="/profile/:userId">
+              <PersonOutlineIcon />
+            </Link>
+          </NavItemIcon>
+        </NavList>
+      </Wrapper>
+    </Container>
   );
 }
 
 export default NavigationBar;
 
-const Wrapper = styled.div`
+const Container = styled.header`
+  max-width: 100%;
+  position: fixed;
+  margin: 0 auto;
+  right: 0;
+  left: 0;
+  z-index: 100;
+`;
+
+const Wrapper = styled.nav`
   padding-top: 10px;
   padding-bottom: 10px;
   display: flex;
@@ -85,7 +98,12 @@ const Wrapper = styled.div`
   justify-content: space-between;
   background: ${(props) => props.theme.colors.mainBlack};
   max-width: 1024px;
-  margin: auto;
+  margin: 0 auto;
+`;
+
+const NavList = styled.div`
+  width: 100%;
+  display: flex;
 `;
 
 const NavLogo = styled.div`
@@ -106,6 +124,7 @@ const NavSearch = styled.div`
   border-radius: 5px;
   align-items: center;
   padding-left: 10px;
+  margin-left: auto;
 `;
 
 const SearchBox = styled.input`
@@ -126,6 +145,7 @@ const NavItemText = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-left: auto;
 `;
 
 const NavItemIcon = styled.div`
@@ -133,6 +153,7 @@ const NavItemIcon = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-left: auto;
 `;
 
 // 아이콘 오류 해결 https://stackoverflow.com/questions/69708504/module-not-found-cant-resolve-mui-icons-material-filedownload
