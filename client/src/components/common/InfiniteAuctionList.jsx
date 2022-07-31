@@ -1,35 +1,30 @@
-// TODO: 서버 api 완성 시 삭제 예정 컴포넌트
-import axios from 'axios';
-import React, { useEffect, useRef } from 'react';
+import styled from '@emotion/styled/types/base';
+import React, { useRef } from 'react';
 import { useInfiniteQuery } from 'react-query';
-import { instance } from '../utils/api/api';
+import { getAuctionList } from '../../utils/api/getAuctionApi';
 import useObserver from '../utils/hooks/useObserver';
 import AuctionCard from './common/AuctionCard';
 import SkeletonAuctionCard from './common/SkeletonAuctionCard';
 
-function InterestingAuctionList() {
+function InfiniteAuctionList({ url, queryKey }) {
   const bottom = useRef(null);
-  const getInterestingAuctionList = async ({ pageParam = OFFSET }) => {
-    const res = await axios.get(
-      `https://pokeapi.co/api/v2/pokemon?limit=${OFFSET}&offset=${pageParam}`,
-    );
-    console.log(res);
+  let pageNo = 1;
+  const getInterestingAuctionList = async ({ pageNo = 1 }) => {
+    const res = await getAuctionList(`${url}&pageno=${pageNo}`);
     return res?.data;
   };
 
-  const OFFSET = 9;
   const { data, error, fetchNextPage, isFetchingNextPage, status } = useInfiniteQuery(
-    'auctionList',
+    queryKey,
     getInterestingAuctionList,
     {
       getNextPageParam: (lastPage) => {
-        const { next } = lastPage;
-        if (next) return Number(new URL(next).searchParams.get('offset'));
+        const { hasMore } = lastPage;
+        if (hasMore) return pageNo++;
         return false;
       },
     },
   );
-  console.log(data);
 
   const onIntersect = ([entry]) => entry.isIntersecting && fetchNextPage();
 
@@ -41,29 +36,38 @@ function InterestingAuctionList() {
   });
   return (
     <div>
-      {status === 'loading' && <p>불러오는 중</p>}
-      {status === 'error' && <p>{error.message}</p>}
-      {status === 'success' &&
-        data.pages.map((group, index) => (
-          <div
-            key={index}
-            style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridGap: '1rem' }}>
-            {group.results.map((pokemon) => (
-              // <p key={pokemon.name}>{pokemon.name}</p>
-              <AuctionCard />
-            ))}
-          </div>
-        ))}
-      <div ref={bottom} />
-      {isFetchingNextPage && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridGap: '1rem' }}>
+      {status === 'loading' && (
+        <GridContainer>
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <SkeletonAuctionCard key={i} />
           ))}
-        </div>
+        </GridContainer>
+      )}
+      {status === 'error' && <p>{error.message}</p>}
+      {status === 'success' &&
+        data.pages.map((group, index) => (
+          <GridContainer key={index}>
+            {group.results.map((_) => (
+              <AuctionCard />
+            ))}
+          </GridContainer>
+        ))}
+      <div ref={bottom} />
+      {isFetchingNextPage && (
+        <GridContainer>
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <SkeletonAuctionCard key={i} />
+          ))}
+        </GridContainer>
       )}
     </div>
   );
 }
 
-export default InterestingAuctionList;
+export default InfiniteAuctionList;
+
+const GridContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 1rem;
+`;
