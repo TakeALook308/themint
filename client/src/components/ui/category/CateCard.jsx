@@ -3,9 +3,13 @@ import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 
 function CateCard({ categoryName }) {
+  const categories = {
+    seq: 1,
+    name: '전체보기',
+  };
   return (
-    <NavStyle to={`/categories/${categoryName}`}>
-      <p>{categoryName}</p>
+    <NavStyle to={`/categories/${categories.seq}}`}>
+      <p>{categories.name}</p>
     </NavStyle>
   );
 }
@@ -34,6 +38,7 @@ const NavStyle = styled(NavLink)`
     color: ${(props) => props.theme.colors.white};
     background-color: ${(props) => props.theme.colors.subMint};
     position: relative;
+    font-weight: bold;
   }
   > p {
     margin-top: 20px;

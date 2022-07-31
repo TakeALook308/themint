@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import StreamCard from '../../ui/main/StreamCard';
+import StreamCard from './StreamCard';
 
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
