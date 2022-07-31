@@ -3,7 +3,7 @@ import Banner from '../components/ui/Banner';
 import StreamList from '../components/list/main/StreamListSwipe';
 import PostList from '../components/list/main/PostList';
 import styled from 'styled-components';
-// import InterestingAuctionList from '../components/InterestingAuctionList';
+import InterestingAuctionList from '../components/InterestingAuctionList';
 import InfiniteAuctionList from '../components/common/InfiniteAuctionList';
 import { auctionListApis } from '../utils/api/getAuctionApi';
 import AuctionCard from '../components/common/AuctionCard';

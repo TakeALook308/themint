@@ -124,7 +124,6 @@ const CardContainer = styled.article`
         bottom: 20px;
         right: 5%;
         width: 15%;
-        /* height: 50px; */
         border: 2px solid transparent;
         overflow: hidden;
         border-radius: 50%;

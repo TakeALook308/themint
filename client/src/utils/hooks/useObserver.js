@@ -1,17 +1,16 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 function useObserver({
   target,
   onIntersect,
   hasMore,
+  isError,
   root = null,
   rootMargin = '-100px',
   threshold = 0,
 }) {
   useEffect(() => {
     let observer;
-    console.log(hasMore);
-
     if (target && target.current) {
       observer = new IntersectionObserver(onIntersect, {
         root,
@@ -20,8 +19,7 @@ function useObserver({
       });
       observer.observe(target.current);
     }
-
-    if (!hasMore) observer && observer.disconnect();
+    if (!hasMore || isError) observer && observer.disconnect();
     return () => observer && observer.disconnect();
   }, [hasMore, target, rootMargin, threshold]);
 }

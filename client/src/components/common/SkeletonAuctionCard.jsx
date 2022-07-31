@@ -11,7 +11,11 @@ function SkeletonAuctionCard() {
               <ShineBox></ShineBox>
               <ShineBox></ShineBox>
             </div>
-            <ShineBox></ShineBox>
+            <ShineBox>
+              <div>
+                <div></div>
+              </div>
+            </ShineBox>
           </div>
         </div>
       </div>
@@ -61,7 +65,7 @@ const CardContainer = styled(ShineBox)`
         left: 0;
         bottom: 0;
         width: 100%;
-        height: 100px;
+        height: 33%;
         background: linear-gradient(
           1.15deg,
           #0d0c0f 1.06%,
@@ -80,26 +84,37 @@ const CardContainer = styled(ShineBox)`
             justify-content: space-evenly;
             height: 100%;
             width: 80%;
+            gap: 10px;
             > div {
               background-color: ${(props) => props.theme.colors.textGray};
               &:first-child {
                 width: 100%;
-                height: 30%;
+                height: 100%;
                 background-size: 100px 500px;
               }
               &:last-child {
                 width: 50%;
-                height: 30%;
+                height: 100%;
                 background-size: 50px 500px;
               }
             }
           }
           &:last-child {
-            width: 50px;
-            height: 50px;
+            position: relative;
+            width: 15%;
             background-color: ${(props) => props.theme.colors.textGray};
             border-radius: 50%;
             background-size: 30px 500px;
+            > div {
+              position: relative;
+              width: 100%;
+              padding-top: 100%;
+              > div {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+              }
+            }
           }
         }
       }
