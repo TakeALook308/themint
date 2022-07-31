@@ -17,6 +17,7 @@ class StreamingComponent extends Component {
       mainStreamManager: undefined,
       publisher: undefined,
       subscribers: [],
+      makers: undefined,
     };
 
     this.joinSession = this.joinSession.bind(this);
@@ -75,7 +76,7 @@ class StreamingComponent extends Component {
     // --- 1) Get an OpenVidu object ---
 
     this.OV = new OpenVidu();
-
+    this.OV.enableProdMode();
     // --- 2) Init a session ---
 
     this.setState(
@@ -119,6 +120,7 @@ class StreamingComponent extends Component {
         this.getToken().then((token) => {
           // First param is the token got from OpenVidu Server. Second param can be retrieved by every user on event
           // 'streamCreated' (property Stream.connection.data), and will be appended to DOM as the user's nickname
+
           mySession
             .connect(token, { clientData: this.state.myUserName })
             .then(async () => {
@@ -282,7 +284,13 @@ class StreamingComponent extends Component {
               />
             </div>
             {/* ------------------------------------------- */}
-
+            <input
+              className="btn btn-large btn-success"
+              type="button"
+              id="buttonSwitchCamera"
+              onClick={this.switchCamera}
+              value="Switch Camera"
+            />
             <div id="video-container" className="col-md-6">
               {this.state.publisher !== undefined ? (
                 <div
@@ -291,6 +299,15 @@ class StreamingComponent extends Component {
                   <UserVideoComponent streamManager={this.state.publisher} />
                 </div>
               ) : null}
+              {this.state.subscribers.map((sub, i) => (
+                <div
+                  key={i}
+                  className="stream-container col-md-6 col-xs-6"
+                  onClick={() => this.handleMainVideoStream(sub)}>
+                  <span>{this.state.initPublisher}</span>
+                  <UserVideoComponent streamManager={sub} />
+                </div>
+              ))}
             </div>
           </div>
         ) : null}
