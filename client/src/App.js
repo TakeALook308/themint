@@ -1,12 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import styled from 'styled-components';
 import Router from './Router';
 
 function App(props) {
+  const [queryClient] = useState(() => new QueryClient());
+
   return (
-    <Container>
-      <Router></Router>
-    </Container>
+    <>
+      <Container>
+        <QueryClientProvider client={queryClient}>
+          <Router></Router>
+        </QueryClientProvider>
+      </Container>
+    </>
   );
 }
 

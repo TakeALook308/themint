@@ -1,10 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import CateCardList from '../components/ui/category/CateCardList';
+import SortListBtn from '../components/ui/category/CategorySortList';
 
 function Category({ categoryName }) {
   return (
     <Container>
+      <SortListBtn></SortListBtn>
       <CateListContainer>
         <CateCardList categoryName={categoryName} />
       </CateListContainer>

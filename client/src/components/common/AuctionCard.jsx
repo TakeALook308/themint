@@ -76,9 +76,11 @@ function AuctionCard({ imageUrl2 }) {
           </div>
         </Link>
         <Link to="/">
-          <picture>
-            <img src={profileUrl} alt="유저 피로필" width="50" height="50" />
-          </picture>
+          <div>
+            <picture>
+              <img src={profileUrl} alt="유저 피로필" width="50" height="50" />
+            </picture>
+          </div>
         </Link>
       </div>
     </CardContainer>
@@ -123,9 +125,8 @@ const CardContainer = styled.article`
       &:last-child {
         position: absolute;
         bottom: 20px;
-        right: 20px;
-        width: 50px;
-        height: 50px;
+        right: 5%;
+        width: 15%;
         border: 2px solid transparent;
         overflow: hidden;
         border-radius: 50%;
@@ -133,13 +134,20 @@ const CardContainer = styled.article`
           `linear-gradient(#fff, #fff), linear-gradient(to right, ${props.theme.colors.mainMint} 0%, ${props.theme.colors.subMint} 100%)`};
         background-origin: border-box;
         background-clip: content-box, border-box;
-        picture {
+        > div {
           position: relative;
-          height: 50px;
-          width: 50px;
-          img {
-            width: 100%;
+          width: 100%;
+          padding-top: 100%;
+          picture {
+            position: absolute;
+            left: 0;
+            top: 0;
             height: 100%;
+            width: 100%;
+            img {
+              width: 100%;
+              height: 100%;
+            }
           }
         }
       }
@@ -159,7 +167,7 @@ const AuctionInfoContainer = styled.div`
   );
   left: 0;
   bottom: 0;
-  padding: 1.25rem;
+  padding: 5%;
   display: flex;
   justify-content: space-between;
   align-items: center;

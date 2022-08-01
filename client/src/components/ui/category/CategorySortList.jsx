@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import axios from axios;
+import { getAuctionList } from '../../../utils/api/getAuctionApi';
 
-function SortListBtn() {
+
+function SortListBtn({url, sortBy }) {
   const selectList = ['최신순', '가격순', '인기순', '판매자 신뢰도'];
-  const [SortBy, setSortBy] = useState('최신순');
+  const [sortBy, setSortBy] = useState('최신순');
   const handleSortBy = (e) => {
     setSortBy(e.target.value);
+    console.log(sortBy)
+    const res = await getAuctionList(`${url}&sortBy=${sortBy}`)
+    return res?.data;
   };
-  useEffect;(()=> {
-    axios.get("url"), {
-      params: key,      
-    }
-  }, [SortBy])
 
   return (
-    <SortSelect onChange={handleSortBy} value={SortBy}>
+    <SortSelect onChange={handleSortBy} value={sortBy}>
       {selectList.map((item) => (
-        <SortOption value={item} key={item} />
+        <SortOption value={item} key={item}></SortOption>
       ))}
     </SortSelect>
   );

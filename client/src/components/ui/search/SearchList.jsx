@@ -2,15 +2,15 @@ import React from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 
-function SearchList(props) {
+function SearchList(search,keyword) {
   return (
     <Container>
       <SearchListHeader>{search}의 검색결과</SearchListHeader>
       <SearchListNav>
-        <NavStyle to={`/api/product?word=&key=`}>
+        <NavStyle to={`/api/product?word=${keyword}`}>
           <HeaderCard>상품명</HeaderCard>
         </NavStyle>
-        <NavStyle to={`/api/auction?word=&key=&category=&pageno=`}>
+        <NavStyle to={`/api/auction?word=${keyword}`}>
           <HeaderCard>경매</HeaderCard>
         </NavStyle>
         <NavStyle to={`/api/member?word=${keyword}`}>
