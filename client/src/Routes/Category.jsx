@@ -2,11 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 import CateCardList from '../components/ui/category/CateCardList';
 import SortListBtn from '../components/ui/category/CategorySortList';
-
+import Dropdown from '../components/ui/category/SelectBox';
 function Category({ categoryName }) {
   return (
     <Container>
       <SortListBtn></SortListBtn>
+      <Dropdown />
       <CateListContainer>
         <CateCardList categoryName={categoryName} />
       </CateListContainer>
