@@ -13,8 +13,8 @@ import Streaming from './Routes/Streaming';
 import AuctionDetail from './Routes/AuctionDetail';
 import PurchaseHistoryDetail from './Routes/PurchaseHistoryDetail';
 import Talks from './Routes/Talks';
-import NavigationBar from './components/ui/NavigationBar';
-import Footer from './components/ui/Footer';
+import NavigationBar from './components/ui/common/NavigationBar';
+import Footer from './components/ui/common/Footer';
 
 function Router() {
   return (

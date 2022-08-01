@@ -8,11 +8,17 @@ function AuctionCard({ imageUrl2 }) {
   const auctions = {
     seq: 1,
     memberSeq: 1,
+    membertrust: 1,
+    like: 1,
     title: '닌텐도 스위치 이것만 있으면 그냥 인생은 끝장난거 입니다.',
+    categorySeq: '전체보기',
     startTime: 'Thu Jul 28 2022 09:00:00 GMT+0900 ',
     auctionImage: {
       seq: 1,
       imageUrl: 'https://images.gnwcdn.com/2022/articles/2022-07-01-15-35/hero_top_sp.jpg',
+    },
+    products: {
+      startPrice: '14000',
     },
   };
   const profileUrl =
@@ -76,11 +82,9 @@ function AuctionCard({ imageUrl2 }) {
           </div>
         </Link>
         <Link to="/">
-          <div>
-            <picture>
-              <img src={profileUrl} alt="유저 피로필" width="50" height="50" />
-            </picture>
-          </div>
+          <picture>
+            <img src={profileUrl} alt="유저 피로필" width="50" height="50" />
+          </picture>
         </Link>
       </div>
     </CardContainer>
@@ -125,8 +129,9 @@ const CardContainer = styled.article`
       &:last-child {
         position: absolute;
         bottom: 20px;
-        right: 5%;
-        width: 15%;
+        right: 20px;
+        width: 50px;
+        height: 50px;
         border: 2px solid transparent;
         overflow: hidden;
         border-radius: 50%;
@@ -134,20 +139,13 @@ const CardContainer = styled.article`
           `linear-gradient(#fff, #fff), linear-gradient(to right, ${props.theme.colors.mainMint} 0%, ${props.theme.colors.subMint} 100%)`};
         background-origin: border-box;
         background-clip: content-box, border-box;
-        > div {
+        picture {
           position: relative;
-          width: 100%;
-          padding-top: 100%;
-          picture {
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
+          height: 50px;
+          width: 50px;
+          img {
             width: 100%;
-            img {
-              width: 100%;
-              height: 100%;
-            }
+            height: 100%;
           }
         }
       }
@@ -167,7 +165,7 @@ const AuctionInfoContainer = styled.div`
   );
   left: 0;
   bottom: 0;
-  padding: 5%;
+  padding: 1.25rem;
   display: flex;
   justify-content: space-between;
   align-items: center;

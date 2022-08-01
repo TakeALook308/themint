@@ -5,6 +5,7 @@ import { RecoilRoot } from 'recoil';
 import { ThemeProvider } from 'styled-components';
 import GlobalStyles from './style/GlobalStyle';
 import { theme } from './style/theme';
+import registerServiceWorker from './lib/registerServiceWorker';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -17,3 +18,4 @@ root.render(
     </RecoilRoot>
   </React.StrictMode>,
 );
+registerServiceWorker();

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import StreamCard from '../../common/StreamCard';
+import StreamCard from './StreamCard';
 
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -14,7 +14,7 @@ import './SwiperCSS.css';
 // import required modules
 import { Navigation, EffectCoverflow } from 'swiper';
 
-function StreamList() {
+function StreamList(props) {
   return (
     <Wrapper>
       <SwipeContainer>
@@ -37,13 +37,25 @@ function StreamList() {
           modules={[Navigation, EffectCoverflow]}
           className="mySwiper">
           <SwiperSlide>
-            <StreamCard />
+            <StreamCard
+              imageUrl2={
+                'http://img1.tmon.kr/cdn3/deals/2021/05/03/5970233942/front_8dc27_7evrq.jpg'
+              }
+            />
           </SwiperSlide>
           <SwiperSlide>
-            <StreamCard />
+            <StreamCard
+              imageUrl2={
+                'https://post-phinf.pstatic.net/MjAyMDA4MTNfMTc0/MDAxNTk3MzE2OTU2NTgw.Qfi-8E3Rj7AINcNchrJcjOvcHZTtaRchauWqrm5wct8g.uoO2LZcHvsO-49w6wJNJlEBlBy0TzVKEEoSWNHHxd9gg.JPEG/DSC05566.jpg?type=w1200'
+              }
+            />
           </SwiperSlide>
           <SwiperSlide>
-            <StreamCard />
+            <StreamCard
+              imageUrl2={
+                'https://blog.kakaocdn.net/dn/lzoyc/btrc8Ah8OZq/13BD3KwRf9mWw2NrKlebI1/img.png'
+              }
+            />
           </SwiperSlide>
           <SwiperSlide>
             <StreamCard />

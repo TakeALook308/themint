@@ -1,7 +1,7 @@
 import React from 'react';
-import Banner from '../components/ui/Banner';
-import StreamList from '../components/list/main/StreamListSwipe';
-import PostList from '../components/list/main/PostList';
+import Banner from '../components/ui/main/Banner';
+import StreamList from '../components/ui/main/StreamListSwipe';
+import PostList from '../components/ui/main/PostList';
 import styled from 'styled-components';
 import InterestingAuctionList from '../components/InterestingAuctionList';
 import InfiniteAuctionList from '../components/common/InfiniteAuctionList';
@@ -39,5 +39,5 @@ const Container = styled.div`
 
 const BannerContainer = styled.div`
   margin-bottom: 1.25rem;
-  margin-top: 60px;
+  margin-top: 70px;
 `;
