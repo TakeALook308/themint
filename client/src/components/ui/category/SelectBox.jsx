@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { getAuctionList } from '../../../utils/api/getAuctionApi';
 
-const Dropdown = ({ url, category }) => {
+const Dropdown = ({ url, sortBy }) => {
   const dropdownItems = [
     { value: 1, name: '최신순' },
     { value: 2, name: '가격순' },
@@ -19,8 +19,8 @@ const Dropdown = ({ url, category }) => {
     setValue(e.target.value);
     console.log(e.target.value);
     setIsActive((prev) => !prev);
-    const category = value;
-    const res = await getAuctionList(`${url}}?word=&key=${category}&category=&pageno=`);
+    const sortBy = value;
+    const res = await getAuctionList(`${url}}?word=&key=${sortBy}&category=&pageno=`);
     return res?.data;
   };
 
