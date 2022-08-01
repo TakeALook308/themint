@@ -1,4 +1,3 @@
-import { ConstructionOutlined } from '@mui/icons-material';
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { getAuctionList } from '../../../utils/api/getAuctionApi';
@@ -11,7 +10,6 @@ const Dropdown = ({ url, category }) => {
     { value: 4, name: '판매자 신뢰도' },
   ];
   const [isActive, setIsActive] = useState(false);
-
   const [value, setValue] = useState(1);
   const onActiveToggle = useCallback(() => {
     setIsActive((prev) => !prev);
@@ -21,7 +19,8 @@ const Dropdown = ({ url, category }) => {
     setValue(e.target.value);
     console.log(e.target.value);
     setIsActive((prev) => !prev);
-    const res = await getAuctionList(`${url}}?word=&key=${value}&category=&pageno=`);
+    const category = value;
+    const res = await getAuctionList(`${url}}?word=&key=${category}&category=&pageno=`);
     return res?.data;
   };
 
