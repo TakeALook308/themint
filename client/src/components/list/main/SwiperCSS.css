@@ -1,0 +1,14 @@
+.swiper-button-prev {
+  color: white;     
+}
+.swiper-button-prev:hover {  
+    opacity:.6;  
+}
+
+.swiper-button-next {
+  color: white;  
+}
+
+.swiper-button-next:hover {  
+  opacity:.6;  
+}

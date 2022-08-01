@@ -55,6 +55,7 @@ const Middle = styled.div`
   flex-direction: column;
   width: 50%;
   margin: 10px 5px 10px;
+  gap: 10px;
 `;
 
 const Right = styled.div`
@@ -62,6 +63,7 @@ const Right = styled.div`
   flex-direction: column;
   width: 25%;
   margin: 10px 10px 10px 5px;
+  gap: 10px;
 `;
 
 export default Streaming;

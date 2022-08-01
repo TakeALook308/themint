@@ -1,10 +1,11 @@
+import React from 'react';
 import styled from 'styled-components';
 import Router from './Router';
 
-function App() {
+function App(props) {
   return (
     <Container>
-      <Router />
+      <Router></Router>
     </Container>
   );
 }
@@ -12,7 +13,7 @@ function App() {
 export default App;
 
 const Container = styled.div`
-  max-width: 1440px;
+  max-width: 1024px;
   margin-left: auto;
   margin-right: auto;
 `;
