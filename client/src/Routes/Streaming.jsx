@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import StreamingComponent from '../components/StreamingComponent';
+import StreamingComponent from '../components/webRTC/StreamingComponent';
 import StreamingHeader from '../components/Streaming/StreamingHeader';
 import AuctionList from '../components/Streaming/AuctionList';
 import StreamChat from '../components/Streaming/StreamChat';

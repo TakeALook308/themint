@@ -2,6 +2,7 @@ import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
 import React, { Component } from 'react';
 import UserVideoComponent from './UserVideoComponent';
+import UserVideo from './UserVideo';
 
 const OPENVIDU_SERVER_URL = 'https://' + window.location.hostname + ':4443';
 const OPENVIDU_SERVER_SECRET = 'MY_SECRET';
@@ -293,7 +294,7 @@ class StreamingComponent extends Component {
                 <div
                   className="stream-container col-md-6 col-xs-6"
                   onClick={() => this.handleMainVideoStream(this.state.publisher)}>
-                  <UserVideoComponent streamManager={this.state.publisher} />
+                  <UserVideo streamManager={this.state.publisher} />
                 </div>
               ) : null}
               {this.state.subscribers.map((sub, i) => (
@@ -302,7 +303,7 @@ class StreamingComponent extends Component {
                   className="stream-container col-md-6 col-xs-6"
                   onClick={() => this.handleMainVideoStream(sub)}>
                   <span>{this.state.initPublisher}</span>
-                  <UserVideoComponent streamManager={sub} />
+                  <UserVideo streamManager={sub} />
                 </div>
               ))}
             </div>
