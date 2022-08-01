@@ -6,7 +6,7 @@ function CateCardList(props) {
   return (
     <Wrapper>
       <ListHeader>
-        <h3>카테고리></h3>
+        <h3>카테고리&gt;</h3>
       </ListHeader>
       <CateCardContainer>
         <CateCard categoryName={'전체보기'} />
