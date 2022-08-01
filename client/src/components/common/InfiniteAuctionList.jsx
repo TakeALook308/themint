@@ -8,7 +8,7 @@ function InfiniteAuctionList({ url, queryKey, CardComponent, SkeltonCardComponen
   const [isError, setIsError] = useState(false);
   const bottom = useRef(null);
   let pageNo = 1;
-  const getInterestingAuctionList = async ({ pageNo = 1 }) => {
+  const getTargetAuctionList = async ({ pageNo = 1 }) => {
     try {
       const res = await getAuctionList(`${url}&pageno=${pageNo}`);
       return res?.data;
@@ -19,7 +19,7 @@ function InfiniteAuctionList({ url, queryKey, CardComponent, SkeltonCardComponen
 
   const { data, error, fetchNextPage, isFetchingNextPage, status } = useInfiniteQuery(
     queryKey,
-    getInterestingAuctionList,
+    getTargetAuctionList,
     {
       getNextPageParam: (lastPage) => {
         if (lastPage?.hasOwnProperty('hasMore')) {
