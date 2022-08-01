@@ -50,8 +50,6 @@ const ListHeader = styled.div`
   align-items: baseline;
   margin-bottom: 20px;
   margin-top: 20px;
-  font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue',
-    'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
   > h3 {
     font-size: 20px;
   }
