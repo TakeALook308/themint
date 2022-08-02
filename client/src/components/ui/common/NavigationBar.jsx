@@ -1,44 +1,28 @@
-import React, { useEffect } from 'react';
-import { Link, useNavigate, useState } from 'react-router-dom';
-import { getAuctionList } from '../../../utils/api/getAuctionApi';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import axios from 'axios';
-// import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import SearchIcon from '@mui/icons-material/Search';
 import ChatIcon from '@mui/icons-material/Chat';
 
-function NavigationBar({ url, searchKeyWord, categoryName }) {
-  const [searchKeyWord, setSearchKeyWord] = useState('');
+function NavigationBar({ url, keyword, categoryName }) {
+  const [search, setSearch] = useState('');
   const onChangeSearch = (e) => {
     e.preventDefault();
-    setSearchKeyWord(e.target.value);
+    setSearch(e.target.value);
+  };
+  const navigate = useNavigate();
+  const onClick = () => {
+    navigate(`${url}&keyword=${keyword}`);
   };
 
-  
-  const onSearch = async (e) => {
-    if (search === null || serach === '') {
-      axios.get(`${url}`).then((res) => {
-        return res.data;
-      });
-    } else {
-      const res = await getAuctionList(`${url}}?word=&key=${search}&category=&pageno=`);
-      return res?.data;
-    }
+  const onSubmit = () => {
+    navigate(`${url}&keyword=${keyword}`);
   };
-  const onIconSearch = async (e) => {
-    if (search === null || serach === '') {
-      axios.get(`${url}`).then((res) => {
-        return res.data;
-      });
-    } else {
-      const res = await getAuctionList(`${url}}?word=&key=${search}&category=&pageno=`);
-      return res?.data;
-    }
-  };
-  
+
   return (
     <Container>
       <Wrapper>
@@ -46,8 +30,8 @@ function NavigationBar({ url, searchKeyWord, categoryName }) {
           <NavLogo>더민트</NavLogo>
         </Link>
         <NavList>
-          <NavSearch onSubmit={(e) => onSearch(e)}>
-            <SearchIcon type="submit" aria-label="search" onClick={(e) => onIconSearch(e)} />
+          <NavSearch onSubmit={onSubmit}>
+            <SearchIcon type="submit" aria-label="search" onClick={onClick} />
             <SearchBox
               type="text"
               value={search}
