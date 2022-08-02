@@ -34,6 +34,7 @@ public class MemberKeywordController {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
         MemberKeyword memberKeyword = memberKeywordService.createMemberKeyword(memberSeq, keywordName);
+        System.out.println(memberKeyword.getKeywordName());
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
     }
 
