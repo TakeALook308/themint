@@ -34,6 +34,10 @@ public class MemberKeywordServiceImpl implements MemberKeywordService{
 
     @Override
     public void deleteKeyword(Long memberSeq, String keywordName) {
-//        MemberKeyword
+        MemberKeyword memberKeyword = MemberKeyword.builder()
+                .memberSeq(memberSeq)
+                .keywordName(keywordName)
+                .build();
+        memberKeywordRepository.deleteByMemberSeqAndKeywordName(memberSeq, keywordName);
     }
 }
