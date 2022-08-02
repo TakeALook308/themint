@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 
-function SearchList(search,keyword) {
+function SearchList({ search, keyword }) {
   return (
     <Container>
       <SearchListHeader>{search}의 검색결과</SearchListHeader>

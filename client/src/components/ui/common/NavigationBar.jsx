@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate, useState } from 'react-router-dom';
+import { getAuctionList } from '../../../utils/api/getAuctionApi';
 import styled from 'styled-components';
 import axios from 'axios';
 // import { useState } from 'react';
@@ -9,7 +10,35 @@ import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import SearchIcon from '@mui/icons-material/Search';
 import ChatIcon from '@mui/icons-material/Chat';
 
-function NavigationBar({ url, search, categoryName }) {
+function NavigationBar({ url, searchKeyWord, categoryName }) {
+  const [searchKeyWord, setSearchKeyWord] = useState('');
+  const onChangeSearch = (e) => {
+    e.preventDefault();
+    setSearchKeyWord(e.target.value);
+  };
+
+  
+  const onSearch = async (e) => {
+    if (search === null || serach === '') {
+      axios.get(`${url}`).then((res) => {
+        return res.data;
+      });
+    } else {
+      const res = await getAuctionList(`${url}}?word=&key=${search}&category=&pageno=`);
+      return res?.data;
+    }
+  };
+  const onIconSearch = async (e) => {
+    if (search === null || serach === '') {
+      axios.get(`${url}`).then((res) => {
+        return res.data;
+      });
+    } else {
+      const res = await getAuctionList(`${url}}?word=&key=${search}&category=&pageno=`);
+      return res?.data;
+    }
+  };
+  
   return (
     <Container>
       <Wrapper>
@@ -17,15 +46,16 @@ function NavigationBar({ url, search, categoryName }) {
           <NavLogo>더민트</NavLogo>
         </Link>
         <NavList>
-          {/* <NavSearch onSubmit={(e) => onSearch(e)}>
-            <SearchIcon type="submit" aria-label="search" onClick={() => navigate(`/`)} />
+          <NavSearch onSubmit={(e) => onSearch(e)}>
+            <SearchIcon type="submit" aria-label="search" onClick={(e) => onIconSearch(e)} />
             <SearchBox
               type="text"
               value={search}
               placeholder="검색하기"
               inputProps={{ 'aria-label': '검색하기' }}
-              onChange={onChangeSearch}></SearchBox>
-          </NavSearch> */}
+              onChange={onChangeSearch}
+            />
+          </NavSearch>
           <NavItemText>
             <Link to={`/categories/${categoryName}`}>
               <p>카테고리</p>
