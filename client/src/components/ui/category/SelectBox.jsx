@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { getAuctionList } from '../../../utils/api/getAuctionApi';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 const Dropdown = ({ url, sortBy }) => {
   const dropdownItems = [
@@ -27,7 +28,12 @@ const Dropdown = ({ url, sortBy }) => {
   return (
     <DropdownContainer>
       <DropdownBody onClick={onActiveToggle}>
-        <DropdownSelect>정렬순서 🔻</DropdownSelect>
+        <DropdownSelect>
+          정렬순서
+          <span>
+            <ArrowDropDownIcon />
+          </span>
+        </DropdownSelect>
       </DropdownBody>
       <DropdownMenu isActive={isActive}>
         {dropdownItems.map((item) => (
@@ -70,6 +76,10 @@ const DropdownBody = styled.div`
 
 const DropdownSelect = styled.p`
   font-weight: bold;
+  > span {
+    position: absolute;
+    right: 0px;
+  }
 `;
 
 const DropdownMenu = styled.ul`
