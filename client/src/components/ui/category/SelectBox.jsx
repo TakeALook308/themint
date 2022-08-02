@@ -90,6 +90,7 @@ const DropdownMenu = styled.ul`
   position: absolute;
   opacity: 0.7;
   border: none;
+  z-index: 5;
 `;
 
 const DropdownItemContainer = styled.li`
