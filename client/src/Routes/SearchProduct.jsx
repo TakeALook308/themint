@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import SearchNav from '../components/ui/search/SearchNav';
 import Dropdown from '../components/ui/category/SelectBox';
 
-function SearchProduct(props) {
+function SearchProduct({ search }) {
   return (
     <Container>
       <SearchHeader>

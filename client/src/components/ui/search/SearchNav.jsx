@@ -2,17 +2,17 @@ import React from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 
-function SearchNav({ keyword }) {
+function SearchNav({ search }) {
   return (
     <Container>
       <SearchListNav>
-        <NavStyle to={`/search/products/:keyword`}>
+        <NavStyle to={`/search/products/${search}`}>
           <p>상품명</p>
         </NavStyle>
-        <NavStyle to={`search/auction?word=${keyword}`}>
-          <pd>경매</pd>
+        <NavStyle to={`search/auction?word=${search}`}>
+          <p>경매</p>
         </NavStyle>
-        <NavStyle to={`search/member?word=${keyword}`}>
+        <NavStyle to={`search/member?word=${search}`}>
           <p>프로필</p>
         </NavStyle>
       </SearchListNav>

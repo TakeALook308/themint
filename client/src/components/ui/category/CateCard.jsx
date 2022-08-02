@@ -14,7 +14,7 @@ export default CateCard;
 
 const NavStyle = styled(NavLink)`
   color: ${(props) => props.theme.colors.white};
-  width: 250px;
+  width: 252px;
   height: 70px;
   font-size: 20px;
   font-weight: 400;

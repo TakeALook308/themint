@@ -8,19 +8,24 @@ import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import SearchIcon from '@mui/icons-material/Search';
 import ChatIcon from '@mui/icons-material/Chat';
 
-function NavigationBar({ url, keyword, categoryName }) {
+function NavigationBar({ url, categoryName }) {
   const [search, setSearch] = useState('');
   const onChangeSearch = (e) => {
     e.preventDefault();
     setSearch(e.target.value);
+
+    console.log(keyword);
   };
+  const keyword = search;
   const navigate = useNavigate();
   const onClick = () => {
-    navigate(`${url}&keyword=${keyword}`);
+    navigate(`/search/products/${keyword}`);
+    console.log(keyword);
   };
 
   const onSubmit = () => {
-    navigate(`${url}&keyword=${keyword}`);
+    console.log(keyword);
+    navigate(`/search/products/${keyword}`);
   };
 
   return (
@@ -103,7 +108,7 @@ const NavLogo = styled.div`
   width: 112px;
 `;
 
-const NavSearch = styled.div`
+const NavSearch = styled.form`
   display: flex;
   background-color: ${(props) => props.theme.colors.pointBlack};
   border: none;
