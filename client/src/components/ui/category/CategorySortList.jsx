@@ -1,49 +1,36 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import axios from axios;
 
-function SortList() {
-  const selectList = ['1', '2', '3', '4'];
-  const [sort, setSort] = useState('1');
-  const handleSort = (e) => {
-    setSort(e.target.value);
-    axios
-      .get('url', {
-        params: {
-          key: 1,
-        },
-      })
-      .then(() => {})
-      .catch(() => {})
-      .finally(() => {});
+function SortListBtn() {
+  const selectList = ['최신순', '가격순', '인기순', '판매자 신뢰도'];
+  const [SortBy, setSortBy] = useState('최신순');
+  const handleSortBy = (e) => {
+    setSortBy(e.target.value);
   };
+  useEffect;(()=> {
+    axios.get("url"), {
+      params: key,      
+    }
+  }, [SortBy])
 
   return (
-    <Container>
-      <SelectBox onChange={handleSort} value={sort}>
-        {selectList.map((item) => (
-          <OptionBox value={item} key={item}>
-            {item}
-          </OptionBox>
-        ))}
-      </SelectBox>
-    </Container>
+    <SortSelect onChange={handleSortBy} value={SortBy}>
+      {selectList.map((item) => (
+        <SortOption value={item} key={item} />
+      ))}
+    </SortSelect>
   );
 }
 
-export default SortList;
-const Container = styled.container`
-  width: 100%;
-  height: 30px;
-  margin-bottom: 10px;
-  display: flex;
-  justify-content: end;
-`;
-const SelectBox = styled.select`
+export default SortListBtn;
+
+const SortSelect = styled.select`
+  position: relative;
   width: 10%;
 `;
-const OptionBox = styled.option`
-  width: 10%;
+
+const SortOption = styled.option`
   background-color: ${(props) => props.theme.colors.mainBlack};
-  opacity: 0.7;
+  font-size: ${(props) => props.theme.fontSizes.p};
 `;
