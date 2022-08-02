@@ -1,14 +1,10 @@
 package com.takealook.api.controller;
 
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.takealook.api.request.*;
 import com.takealook.api.response.*;
 import com.takealook.api.service.MemberService;
-import com.takealook.common.auth.JwtAuthenticationFilter;
 import com.takealook.common.auth.MemberDetails;
 import com.takealook.common.model.response.BaseResponseBody;
-import com.takealook.common.util.JwtAuthenticationUtil;
 import com.takealook.common.util.JwtTokenUtil;
 import com.takealook.db.entity.Member;
 import io.swagger.annotations.Api;
@@ -18,8 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.concurrent.ThreadLocalRandom;
 
 
@@ -33,9 +27,6 @@ public class MemberController {
 
     @Autowired
     PasswordEncoder passwordEncoder;
-
-    @Autowired
-    JwtAuthenticationUtil jwtAuthenticationUtil;
 
     // 회원 가입
     @PostMapping
@@ -62,14 +53,12 @@ public class MemberController {
 
     // 내 정보 조회
     @GetMapping("my")
-    public ResponseEntity<?> getMember(HttpServletRequest request) {
-        String memberId = jwtAuthenticationUtil.GetMemberIdByJwt(request);
-        if (memberId != null) {
-            // jwt 토큰에 포함된 계정 정보(memberId) 통해 실제 디비에 해당 정보의 계정이 있는지 조회.
-            Member member = memberService.getMemberByMemberId(memberId);
-            if (member != null) {
-                return ResponseEntity.status(200).body(MemberInfoRes.of(member));
-            }
+    public ResponseEntity<?> getMember(@ApiIgnore Authentication authentication) {
+        MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
+        Long memberSeq = memberDetails.getMemberSeq();
+        Member member = memberService.getMemberByMemberSeq(memberSeq);
+        if (member != null) {
+            return ResponseEntity.status(200).body(MemberInfoRes.of(member));
         }
         return ResponseEntity.status(409).body("fail");
     }
@@ -84,30 +73,26 @@ public class MemberController {
 
     // 회원 정보 수정
     @PatchMapping
-    public ResponseEntity<?> updateMyInfo(@RequestBody MemberUpdatePostReq memberUpdatePostReq, HttpServletRequest request) {
-        String memberId = jwtAuthenticationUtil.GetMemberIdByJwt(request);
-        if (memberId != null) {
-            // jwt 토큰에 포함된 계정 정보(memberId) 통해 실제 디비에 해당 정보의 계정이 있는지 조회.
-            Member member = memberService.getMemberByMemberId(memberId);
-            if (member != null) {
-                memberService.updateMember(member.getSeq(), memberUpdatePostReq);
-                return ResponseEntity.status(200).body("success");
-            }
+    public ResponseEntity<?> updateMyInfo(@RequestBody MemberUpdatePostReq memberUpdatePostReq, @ApiIgnore Authentication authentication) {
+        MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
+        Long memberSeq = memberDetails.getMemberSeq();
+        Member member = memberService.getMemberByMemberSeq(memberSeq);
+        if (member != null) {
+            memberService.updateMember(member.getSeq(), memberUpdatePostReq);
+            return ResponseEntity.status(200).body("success");
         }
         return ResponseEntity.status(409).body("fail");
     }
 
     // 비밀번호 변경
     @PatchMapping("/password")
-    public ResponseEntity<?> changePassword(@RequestBody String pwd, HttpServletRequest request) {
-        String memberId = jwtAuthenticationUtil.GetMemberIdByJwt(request);
-        if (memberId != null) {
-            // jwt 토큰에 포함된 계정 정보(memberId) 통해 실제 디비에 해당 정보의 계정이 있는지 조회.
-            Member member = memberService.getMemberByMemberId(memberId);
-            if (member != null) {
-                memberService.updateMemberPassword(member.getSeq(), pwd);
-                return ResponseEntity.status(200).body("success");
-            }
+    public ResponseEntity<?> changePassword(@RequestBody String pwd, @ApiIgnore Authentication authentication) {
+        MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
+        Long memberSeq = memberDetails.getMemberSeq();
+        Member member = memberService.getMemberByMemberSeq(memberSeq);
+        if (member != null) {
+            memberService.updateMemberPassword(member.getSeq(), pwd);
+            return ResponseEntity.status(200).body("success");
         }
         return ResponseEntity.status(409).body("fail");
     }
@@ -142,15 +127,13 @@ public class MemberController {
 
     // 회원 탈퇴
     @DeleteMapping
-    public ResponseEntity<?> deleteMember(HttpServletRequest request) {
-        String memberId = jwtAuthenticationUtil.GetMemberIdByJwt(request);
-        if (memberId != null) {
-            // jwt 토큰에 포함된 계정 정보(memberId) 통해 실제 디비에 해당 정보의 계정이 있는지 조회.
-            Member member = memberService.getMemberByMemberId(memberId);
-            if (member != null) {
-                memberService.deleteMember(member.getSeq());
-                return ResponseEntity.status(200).body("success");
-            }
+    public ResponseEntity<?> deleteMember(@ApiIgnore Authentication authentication) {
+        MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
+        Long memberSeq = memberDetails.getMemberSeq();
+        Member member = memberService.getMemberByMemberSeq(memberSeq);
+        if (member != null) {
+            memberService.deleteMember(member.getSeq());
+            return ResponseEntity.status(200).body("success");
         }
         return ResponseEntity.status(200).body("success");
     }
