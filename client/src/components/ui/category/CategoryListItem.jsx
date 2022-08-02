@@ -11,7 +11,7 @@ function AuctionCard({ imageUrl2 }) {
     membertrust: 1,
     like: 1,
     title: '닌텐도 스위치 이것만 있으면 그냥 인생은 끝장난거 입니다.',
-    categorySeq: '전체보기',
+    categorySeq: '전자기기',
     startTime: 'Thu Jul 28 2022 09:00:00 GMT+0900 ',
     auctionImage: {
       seq: 1,
