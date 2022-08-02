@@ -25,6 +25,7 @@ export default CateCardList;
 
 const Wrapper = styled.div`
   margin: auto;
+  margin-bottom: 10px;
   width: 100%;
 `;
 

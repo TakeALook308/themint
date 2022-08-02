@@ -47,7 +47,7 @@ const Dropdown = ({ url, sortBy }) => {
 export default Dropdown;
 
 export const DropdownContainer = styled.div`
-  width: 12%;
+  width: 9%;
 
   &:hover {
     cursor: pointer;
@@ -58,6 +58,7 @@ const DropdownBody = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  height: 40px;
   color: ${(props) => props.theme.colors.white};
   background-color: ${(props) => props.theme.colors.mainBlack};
   padding: 5px;
