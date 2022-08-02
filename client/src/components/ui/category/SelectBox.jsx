@@ -10,6 +10,7 @@ const Dropdown = ({ url, sortBy }) => {
     { value: 3, name: '인기순' },
     { value: 4, name: '판매자 신뢰도' },
   ];
+  const [sortName, setSortName] = useState('최신순');
   const [isActive, setIsActive] = useState(false);
   const [value, setValue] = useState(1);
   const onActiveToggle = useCallback(() => {
@@ -18,7 +19,8 @@ const Dropdown = ({ url, sortBy }) => {
 
   const onSelectItem = async (e) => {
     setValue(e.target.value);
-    console.log(e.target.value);
+    setSortName(e.target.innerText);
+    console.log(e.target.innerText);
     setIsActive((prev) => !prev);
     const sortBy = value;
     const res = await getAuctionList(`${url}}?word=&key=${sortBy}&category=&pageno=`);
@@ -26,35 +28,43 @@ const Dropdown = ({ url, sortBy }) => {
   };
 
   return (
-    <DropdownContainer>
-      <DropdownBody onClick={onActiveToggle}>
-        <DropdownSelect>
-          정렬순서
-          <span>
-            <ArrowDropDownIcon />
-          </span>
-        </DropdownSelect>
-      </DropdownBody>
-      <DropdownMenu isActive={isActive}>
-        {dropdownItems.map((item) => (
-          <DropdownItemContainer
-            id="item"
-            key={item.value}
-            value={item.value}
-            onClick={onSelectItem}>
-            {item.name}
-          </DropdownItemContainer>
-        ))}
-      </DropdownMenu>
-    </DropdownContainer>
+    <Wrapper>
+      <DropdownContainer>
+        <DropdownBody onClick={onActiveToggle}>
+          <DropdownSelect>
+            {sortName}
+            <span>
+              <ArrowDropDownIcon />
+            </span>
+          </DropdownSelect>
+        </DropdownBody>
+        <DropdownMenu isActive={isActive}>
+          {dropdownItems.map((item) => (
+            <DropdownItemContainer
+              id="item"
+              key={item.value}
+              value={item.value}
+              name={item.name}
+              onClick={onSelectItem}>
+              {item.name}
+            </DropdownItemContainer>
+          ))}
+        </DropdownMenu>
+      </DropdownContainer>
+    </Wrapper>
   );
 };
 
 export default Dropdown;
 
-export const DropdownContainer = styled.div`
-  width: 9%;
+const Wrapper = styled.div`
+  display: flex;
+  justify-content: end;
+  margin-bottom: 20px;
+`;
 
+export const DropdownContainer = styled.main`
+  width: 11%;
   &:hover {
     cursor: pointer;
   }
@@ -72,6 +82,7 @@ const DropdownBody = styled.div`
   border-top-right-radius: 5px;
   border: none;
   border-bottom: 2px solid ${(props) => props.theme.colors.white};
+  z-index: 6;
 `;
 
 const DropdownSelect = styled.p`
@@ -84,12 +95,14 @@ const DropdownSelect = styled.p`
 
 const DropdownMenu = styled.ul`
   display: ${(props) => (props.isActive ? `block` : `none`)};
-  width: 12;
+  margin-top: 5px;
+  width: 12%;
+  height: 100px;
   color: ${(props) => props.theme.colors.white};
   background-color: ${(props) => props.theme.colors.mainBlack};
   position: absolute;
   opacity: 0.7;
-  border: none;
+  border-radius: 5px;
   z-index: 5;
 `;
 

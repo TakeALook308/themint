@@ -14,9 +14,9 @@ function Category({ categoryName }) {
       <CateListContainer>
         <CateCardList categoryName={categoryName} />
       </CateListContainer>
-      <DropdownContainer>
-        <Dropdown />
-      </DropdownContainer>
+
+      <Dropdown />
+
       <InfiniteAuctionList
         url={auctionListApis.SEARCH_AUCTION_LIST_API()}
         queryKey={'interestingAuctionList'}
@@ -40,10 +40,4 @@ const Container = styled.div`
 const CateListContainer = styled.header`
   margin-bottom: 1.25rem;
   margin-top: 70px;
-`;
-
-const DropdownContainer = styled.div`
-  display: flex;
-  justify-content: end;
-  margin-bottom: 20px;
 `;
