@@ -21,7 +21,7 @@ function Router() {
     <BrowserRouter>
       <NavigationBar />
       <Routes>
-        <Route path="/" element={<Main />} />
+        {/* <Route path="/" element={<Main />} /> */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/main" element={<Main />} />
