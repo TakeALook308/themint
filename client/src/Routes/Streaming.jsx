@@ -6,6 +6,7 @@ import AuctionList from '../components/Streaming/AuctionList';
 import StreamChat from '../components/Streaming/StreamChat';
 import AuctionBidding from '../components/Streaming/AuctionBidding';
 import AuctionInfo from '../components/Streaming/AuctionInfo';
+import AuctionStreaming from '../components/webRTC/AuctionStreaming';
 function Streaming(props) {
   return (
     <First>
@@ -15,7 +16,8 @@ function Streaming(props) {
         </Left>
         <Middle>
           <AuctionInfo />
-          <StreamingComponent />
+          {/* <StreamingComponent /> */}
+          <AuctionStreaming />
         </Middle>
         <Right>
           <AuctionBidding />
