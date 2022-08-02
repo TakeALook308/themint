@@ -1,21 +1,23 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import CateCard from './CateCard';
 
-function CateCardList(props) {
-  const categories = {
-    name: '전체보기',
-  };
+function CateCardList({ categoryName }) {
+  const [cateroryLable, setCategoryLable] = useState('');
+  useEffect((categoryName) => {
+    setCategoryLable(categoryName);
+  }, []);
+
   return (
     <Wrapper>
       <ListHeader>
         <h3>
           카테고리>
-          <span>{categories.name}</span>
+          <span>{cateroryLable}</span>
         </h3>
       </ListHeader>
       <CateCardContainer>
-        <CateCard />
+        <CateCard categoryName={categoryName} />
       </CateCardContainer>
     </Wrapper>
   );
