@@ -6,7 +6,7 @@ function useObserver({
   hasMore,
   isError,
   root = null,
-  rootMargin = '-100px',
+  rootMargin = '-200px',
   threshold = 0,
 }) {
   useEffect(() => {
