@@ -1,15 +1,28 @@
-import React, { useEffect } from 'react';
-import { Link, useNavigate, useState } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import axios from 'axios';
-// import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import SearchIcon from '@mui/icons-material/Search';
 import ChatIcon from '@mui/icons-material/Chat';
 
-function NavigationBar({ url, search, categoryName }) {
+function NavigationBar({ url, keyword, categoryName }) {
+  const [search, setSearch] = useState('');
+  const onChangeSearch = (e) => {
+    e.preventDefault();
+    setSearch(e.target.value);
+  };
+  const navigate = useNavigate();
+  const onClick = () => {
+    navigate(`${url}&keyword=${keyword}`);
+  };
+
+  const onSubmit = () => {
+    navigate(`${url}&keyword=${keyword}`);
+  };
+
   return (
     <Container>
       <Wrapper>
@@ -17,15 +30,16 @@ function NavigationBar({ url, search, categoryName }) {
           <NavLogo>더민트</NavLogo>
         </Link>
         <NavList>
-          {/* <NavSearch onSubmit={(e) => onSearch(e)}>
-            <SearchIcon type="submit" aria-label="search" onClick={() => navigate(`/`)} />
+          <NavSearch onSubmit={onSubmit}>
+            <SearchIcon type="submit" aria-label="search" onClick={onClick} />
             <SearchBox
               type="text"
               value={search}
               placeholder="검색하기"
               inputProps={{ 'aria-label': '검색하기' }}
-              onChange={onChangeSearch}></SearchBox>
-          </NavSearch> */}
+              onChange={onChangeSearch}
+            />
+          </NavSearch>
           <NavItemText>
             <Link to={`/categories/${categoryName}`}>
               <p>카테고리</p>
