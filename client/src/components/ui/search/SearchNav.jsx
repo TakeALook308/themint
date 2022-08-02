@@ -2,50 +2,47 @@ import React from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 
-function SearchList({ search, keyword }) {
+function SearchNav({ keyword }) {
   return (
     <Container>
-      <SearchListHeader>{search}의 검색결과</SearchListHeader>
       <SearchListNav>
-        <NavStyle to={`/api/product?word=${keyword}`}>
-          <HeaderCard>상품명</HeaderCard>
+        <NavStyle to={`/search/products/:keyword`}>
+          <p>상품명</p>
         </NavStyle>
-        <NavStyle to={`/api/auction?word=${keyword}`}>
-          <HeaderCard>경매</HeaderCard>
+        <NavStyle to={`search/auction?word=${keyword}`}>
+          <pd>경매</pd>
         </NavStyle>
-        <NavStyle to={`/api/member?word=${keyword}`}>
-          <HeaderCard>프로필</HeaderCard>
+        <NavStyle to={`search/member?word=${keyword}`}>
+          <p>프로필</p>
         </NavStyle>
       </SearchListNav>
     </Container>
   );
 }
-export default SearchList;
+export default SearchNav;
 
-const Container = styled.Container`
+const Container = styled.div`
   position: relative;
-  width: 100%;
-`;
-
-const SearchListHeader = styled.header`
   width: 100%;
 `;
 
 const SearchListNav = styled.nav`
   width: 100%;
-`;
-
-const HeaderCard = styled.card`
-  width: 100%;
+  display: flex;
+  text-align: center;
+  margin-bottom: 20px;
 `;
 
 const NavStyle = styled(NavLink)`
   color: ${(props) => props.theme.colors.white};
   width: 341px;
   height: 67px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 28px;
   text-align: center;
-  background-color: ${(props) => props.theme.colors.pointBlack};
+  background-color: ${(props) => props.theme.colors.mainBlack};
   border-bottom: 2px solid ${(props) => props.theme.colors.subMint};
 
   outline: invert;
@@ -58,11 +55,11 @@ const NavStyle = styled(NavLink)`
   }
   &.active {
     color: ${(props) => props.theme.colors.white};
+    background-color: ${(props) => props.theme.colors.mainBlack};
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
     font-weight: bold;
-    border: 2px solid ${(props) => props.theme.colors.subMint};
-    border-bottom: 2px solid ${(props) => props.theme.colors.mainBlack};
-  }
-  > p {
-    margin-top: 10px;
+    border: 3px solid ${(props) => props.theme.colors.subMint};
+    border-bottom: none;
   }
 `;

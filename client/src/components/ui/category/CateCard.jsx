@@ -2,14 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 
-function CateCard({ categoryName }) {
-  const categories = {
-    seq: 1,
-    name: '전체보기',
-  };
+function CateCard({ categoryName, categoryKey }) {
   return (
-    <NavStyle to={`/categories/${categories.seq}}`}>
-      <p>{categories.name}</p>
+    <NavStyle to={`/categories/${categoryKey}`}>
+      <p>{categoryName}</p>
     </NavStyle>
   );
 }
@@ -18,7 +14,7 @@ export default CateCard;
 
 const NavStyle = styled(NavLink)`
   color: ${(props) => props.theme.colors.white};
-  width: 252px;
+  width: 250px;
   height: 70px;
   font-size: 20px;
   font-weight: 400;

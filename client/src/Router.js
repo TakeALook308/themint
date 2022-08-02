@@ -15,6 +15,7 @@ import PurchaseHistoryDetail from './Routes/PurchaseHistoryDetail';
 import Talks from './Routes/Talks';
 import NavigationBar from './components/ui/common/NavigationBar';
 import Footer from './components/ui/common/Footer';
+import SearchProduct from './Routes/SearchProduct';
 
 function Router() {
   return (
@@ -32,6 +33,7 @@ function Router() {
         <Route path="/accounts/phone-number" element={<AccountsPhoneNumber />} />
         <Route path="/accounts/withdrawl" element={<AccountsWithdrawl />} />
         <Route path="/streamings/:roomNumber" element={<Streaming />} />
+        <Route path="/search/products/:keyword" element={<SearchProduct />} />
         <Route path="/talks" element={<Talks />} />
         <Route path="/auctions/:auctionsId" element={<AuctionDetail />} />
         <Route path="/puchase-history/purchseId" element={<PurchaseHistoryDetail />} />
