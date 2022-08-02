@@ -97,7 +97,7 @@ dependencies {
 
 	// 이메일 전송 위해
 	// https://mvnrepository.com/artifact/javax.mail/mail
-//	implementation group: 'javax.mail', name: 'mail', version: '1.4'
+//   implementation group: 'javax.mail', name: 'mail', version: '1.4'
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
 }
@@ -157,7 +157,7 @@ configurations {
 }
 
 //task webpack(type: NpmTask, dependsOn: 'npmInstall') {
-//	args = ['run','build']
+//   args = ['run','build']
 //}
 
 // processResources is a Java task. Run the webpack bundling before this task using the 'build' task in the package.json
