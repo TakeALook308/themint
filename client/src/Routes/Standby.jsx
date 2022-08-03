@@ -155,79 +155,86 @@ function Standby() {
   };
   return (
     <Container>
-      <Wrapper>
-        <AuctionCreatorVideoContainer>
-          {publisher && <UserVideoComponent streamManager={publisher} />}
-        </AuctionCreatorVideoContainer>
-        <SettingWrapper>
-          <SettingBox>
-            {video === 1 ? (
+      <AuctionCreatorVideoContainer>
+        <VideoWrapper>{publisher && <UserVideoComponent streamManager={publisher} />}</VideoWrapper>
+      </AuctionCreatorVideoContainer>
+      <SettingWrapper>
+        <SettingBox>
+          {video === 1 ? (
+            <div>
+              <IconWrapper
+                as="button"
+                active={true}
+                onClick={() => {
+                  videoControll(0);
+                }}>
+                <BsFillCameraVideoFill />
+              </IconWrapper>
+              <ContentText>비디오 중지</ContentText>
+            </div>
+          ) : (
+            <div>
+              <IconWrapper
+                as="button"
+                onClick={() => {
+                  videoControll(1);
+                }}>
+                <BsFillCameraVideoOffFill />
+              </IconWrapper>
+              <ContentText>비디오 시작</ContentText>
+            </div>
+          )}
+          <SettingIcons>
+            {isSpeaking ? (
               <div>
-                <IconWrapper
-                  as="button"
-                  active={true}
-                  onClick={() => {
-                    videoControll(0);
-                  }}>
-                  <BsFillCameraVideoFill />
+                <IconWrapper active={true}>
+                  <BsFillMicFill />
                 </IconWrapper>
-                <ContentText>비디오 중지</ContentText>
+                <ContentText>음성 인식중</ContentText>
               </div>
             ) : (
               <div>
-                <IconWrapper
-                  as="button"
-                  onClick={() => {
-                    videoControll(1);
-                  }}>
-                  <BsFillCameraVideoOffFill />
+                <IconWrapper>
+                  <BsFillMicFill />
                 </IconWrapper>
-                <ContentText>비디오 시작</ContentText>
+                <ContentText>마이크 체크</ContentText>
               </div>
             )}
-            <SettingIcons>
-              {isSpeaking ? (
-                <div>
-                  <IconWrapper active={true}>
-                    <BsFillMicFill />
-                  </IconWrapper>
-                  <ContentText>음성 인식중</ContentText>
-                </div>
-              ) : (
-                <div>
-                  <IconWrapper>
-                    <BsFillMicFill />
-                  </IconWrapper>
-                  <ContentText>마이크 체크</ContentText>
-                </div>
-              )}
-            </SettingIcons>
-            <SettingIcons>
-              <IconWrapper exit={true} as="button" onClick={movoToStreaming}>
-                <IoExit />
-              </IconWrapper>
-              <ContentText>경매장 입장</ContentText>
-            </SettingIcons>
-          </SettingBox>
-        </SettingWrapper>
-      </Wrapper>
+          </SettingIcons>
+          <SettingIcons>
+            <IconWrapper exit={true} as="button" onClick={movoToStreaming}>
+              <IoExit />
+            </IconWrapper>
+            <ContentText>경매장 입장</ContentText>
+          </SettingIcons>
+        </SettingBox>
+      </SettingWrapper>
     </Container>
   );
 }
 
 export default Standby;
 
-const Container = styled.div`
+const Container = styled.main`
   max-width: 1024px;
   margin-left: auto;
   margin-right: auto;
   position: relative;
-  padding-top: 1px;
+  padding-top: 68px;
   min-height: calc(100vh - 259px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 `;
 
-const Wrapper = styled.div`
-  margin-top: 68px;
+const VideoWrapper = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: ${(props) => props.theme.colors.subBlack};
+  top: 0;
+  left: 0;
 `;
 
 const AuctionCreatorVideoContainer = styled.div`
@@ -235,6 +242,8 @@ const AuctionCreatorVideoContainer = styled.div`
   border-radius: 25px;
   overflow: hidden;
   width: 80%;
+  padding-top: 60%;
+  height: 0;
   margin: 0 auto;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 `;
@@ -245,7 +254,7 @@ const SettingIcons = styled.div`
 
 const SettingWrapper = styled.div`
   position: relative;
-  padding: 1rem;
+  padding: 2rem;
 `;
 const SettingBox = styled.div`
   display: flex;
@@ -253,7 +262,7 @@ const SettingBox = styled.div`
   align-items: center;
   color: black;
   font-size: 2vw;
-  gap: 3rem;
+  gap: 2.5rem;
 `;
 
 const IconWrapper = styled.div`
