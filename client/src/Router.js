@@ -15,7 +15,10 @@ import PurchaseHistoryDetail from './Routes/PurchaseHistoryDetail';
 import Talks from './Routes/Talks';
 import NavigationBar from './components/ui/common/NavigationBar';
 import Footer from './components/ui/common/Footer';
-
+import ProfileReviews from './Routes/ProfileReviews';
+import ProfileSalesHistory from './Routes/ProfileSalesHistory';
+import ProfilePurchaseHistory from './Routes/ProfilePurchaseHistory';
+import ProfileInterest from './Routes/ProfileInterests';
 function Router() {
   return (
     <BrowserRouter>
@@ -26,7 +29,12 @@ function Router() {
         <Route path="/register" element={<Register />} />
         <Route path="/main" element={<Main />} />
         <Route path="/categories/:categoryName" element={<Category />} />
-        <Route path="/profile/:userId" element={<Profile />} />
+        <Route path="/profile/:userId" element={<Profile />}>
+          <Route exact path="" element={<ProfileReviews />} />
+          <Route path="saleshistory" element={<ProfileSalesHistory />} />
+          <Route path="purchasehistory" element={<ProfilePurchaseHistory />} />
+          <Route path="interest" element={<ProfileInterest />} />
+        </Route>
         <Route path="/accounts/edit" element={<AccountsEdit />} />
         <Route path="/accounts/password" element={<AccountsPassword />} />
         <Route path="/accounts/phone-number" element={<AccountsPhoneNumber />} />
