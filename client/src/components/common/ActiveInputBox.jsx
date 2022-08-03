@@ -9,7 +9,7 @@ function ActiveInputBox({ text, name, type, placeholder, required }) {
         id={name}
         name={name}
         placeholder={placeholder || ' '}
-        required={required ? 'required' : ''}
+        required={required}
       />
       {text ? <label for={name}>{text}</label> : null}
     </ActiveInput>
