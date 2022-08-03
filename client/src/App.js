@@ -1,14 +1,26 @@
+import React, { useState } from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import styled from 'styled-components';
 import Router from './Router';
-import InputBox from './components/common/InputBox';
 
-function App() {
+function App(props) {
+  const [queryClient] = useState(() => new QueryClient());
+
   return (
-    <div>
-      <Router />
-      <InputBox text="제목" type="text" placeholder="제목" widthValue="500px"></InputBox>
-    </div>
+    <>
+      <Container>
+        <QueryClientProvider client={queryClient}>
+          <Router></Router>
+        </QueryClientProvider>
+      </Container>
+    </>
   );
 }
 
 export default App;
+
+const Container = styled.div`
+  max-width: 1024px;
+  margin-left: auto;
+  margin-right: auto;
+`;
