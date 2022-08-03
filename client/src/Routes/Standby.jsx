@@ -149,6 +149,8 @@ function Standby() {
     }
   };
 
+  console.log('isSpeak', isSpeaking);
+
   return (
     <Container>
       <Wrapper>
@@ -244,7 +246,7 @@ function Standby() {
                   fontSize: '20px',
                   color: 'white',
                 }}>
-                미팅룸 입장
+                경매장 입장
               </div>
             </SettingIcons>
           </SettingBox>
