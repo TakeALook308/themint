@@ -6,18 +6,19 @@ import styled from 'styled-components';
 import { myInformationState } from '../atoms';
 import UserVideoComponent from '../components/UserVideoComponent';
 import { BsFillCameraVideoFill, BsFillCameraVideoOffFill, BsFillMicFill } from 'react-icons/bs';
-import { RiBrushFill } from 'react-icons/ri';
 import { IoExit } from 'react-icons/io5';
-import { AiFillStar } from 'react-icons/ai';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const OPENVIDU_SERVER_URL = 'https://i7a308.p.ssafy.io:8443';
 const OPENVIDU_SERVER_SECRET = 'themint';
 
 function Standby() {
   const memberId = 'ney9083';
+  const navigate = useNavigate();
+  const { auctionId } = useParams();
   const userInfo = useRecoilValue(myInformationState);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [video, setVideo] = useState(0);
+  const [video, setVideo] = useState(0); // 1 ON, 0 OFF
   const [publisher, setPublisher] = useState('');
 
   const OV = new OpenVidu();
@@ -33,11 +34,8 @@ function Standby() {
     console.log('스탠바이 세션 입장 ', standbySessionId);
     getToken(standbySessionId).then((token) => {
       standbySession
-        .connect(token, {
-          // 추가로 넘겨주고 싶은 데이터
-        })
+        .connect(token, {})
         .then(() => {
-          // 연결 후에 내 정보 담기
           let pub = OV.initPublisher(undefined, {
             audioSource: undefined,
             videoSource: undefined,
@@ -48,6 +46,7 @@ function Standby() {
             insertMode: 'APPEND',
             mirror: false,
           });
+          console.log('video active', pub.stream.videoActive);
           standbySession.publish(pub);
           setPublisher(pub);
         })
@@ -140,114 +139,74 @@ function Standby() {
     standbyJoin(testSession, userInfo.memberId);
   }, []);
 
+  useEffect(() => {
+    if (publisher?.stream?.videoActive) {
+      setVideo(1);
+    }
+  }, [publisher]);
   const videoControll = (num) => {
     setVideo(num);
-    if (publisher.stream.videoActive === true) {
-      publisher.publishVideo(false);
-    } else {
-      publisher.publishVideo(true);
-    }
+    publisher.publishVideo(!publisher.stream.videoActive);
   };
 
-  console.log('isSpeak', isSpeaking);
-
+  const movoToStreaming = () => {
+    leaveSession();
+    navigate(`/streamings/${auctionId}`);
+  };
   return (
     <Container>
       <Wrapper>
-        <StarScreen>{publisher && <UserVideoComponent streamManager={publisher} />}</StarScreen>
+        <AuctionCreatorVideoContainer>
+          {publisher && <UserVideoComponent streamManager={publisher} />}
+        </AuctionCreatorVideoContainer>
         <SettingWrapper>
           <SettingBox>
-            {video === 0 ? (
+            {video === 1 ? (
               <div>
-                <div style={{ textAlign: 'center' }}>
-                  <BsFillCameraVideoFill
-                    style={{
-                      cursor: 'pointer',
-                      color: 'green',
-                    }}
-                    onClick={() => {
-                      videoControll(1);
-                    }}
-                  />
-                </div>
-                <div
-                  style={{
-                    fontSize: '20px',
-                    color: 'white',
+                <IconWrapper
+                  as="button"
+                  active={true}
+                  onClick={() => {
+                    videoControll(0);
                   }}>
-                  비디오 중지
-                </div>
+                  <BsFillCameraVideoFill />
+                </IconWrapper>
+                <ContentText>비디오 중지</ContentText>
               </div>
             ) : (
               <div>
-                <div style={{ textAlign: 'center' }}>
-                  <BsFillCameraVideoOffFill
-                    style={{
-                      cursor: 'pointer',
-                      color: 'white',
-                    }}
-                    onClick={() => {
-                      videoControll(0);
-                    }}
-                  />
-                </div>
-                <div
-                  style={{
-                    fontSize: '20px',
-                    color: 'white',
+                <IconWrapper
+                  as="button"
+                  onClick={() => {
+                    videoControll(1);
                   }}>
-                  비디오 시작
-                </div>
+                  <BsFillCameraVideoOffFill />
+                </IconWrapper>
+                <ContentText>비디오 시작</ContentText>
               </div>
             )}
             <SettingIcons>
               {isSpeaking ? (
                 <div>
-                  <div style={{ textAlign: 'center' }}>
-                    <BsFillMicFill style={{ color: 'green' }} />
-                  </div>
-                  <div
-                    style={{
-                      fontSize: '20px',
-                      color: 'white',
-                    }}>
-                    음성 인식중
-                  </div>
+                  <IconWrapper active={true}>
+                    <BsFillMicFill />
+                  </IconWrapper>
+                  <ContentText>음성 인식중</ContentText>
                 </div>
               ) : (
                 <div>
-                  <div
-                    style={{
-                      textAlign: 'center',
-                      color: 'white',
-                    }}>
+                  <IconWrapper>
                     <BsFillMicFill />
-                  </div>
-                  <div
-                    style={{
-                      fontSize: '20px',
-                      color: 'white',
-                    }}>
-                    마이크 체크
-                  </div>
+                  </IconWrapper>
+                  <ContentText>마이크 체크</ContentText>
                 </div>
               )}
             </SettingIcons>
             <SettingIcons>
-              <div
-                style={{
-                  textAlign: 'center',
-                  color: 'white',
-                }}>
+              <IconWrapper exit={true} as="button" onClick={movoToStreaming}>
                 <IoExit />
-              </div>
-              <div
-                style={{
-                  fontSize: '20px',
-                  color: 'white',
-                }}>
-                경매장 입장
-              </div>
+              </IconWrapper>
+              <ContentText>경매장 입장</ContentText>
             </SettingIcons>
           </SettingBox>
         </SettingWrapper>
@@ -271,29 +230,52 @@ const Wrapper = styled.div`
   margin-top: 68px;
 `;
 
-const StarScreen = styled.div`
+const AuctionCreatorVideoContainer = styled.div`
   position: relative;
-  border-radius: 50px;
+  border-radius: 25px;
   overflow: hidden;
+  width: 80%;
+  margin: 0 auto;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 `;
 
 const SettingIcons = styled.div`
-  margin-left: 5vw;
   cursor: pointer;
 `;
 
 const SettingWrapper = styled.div`
   position: relative;
-  top: 15%;
-  left: 34vw;
-  width: 30vw;
-  height: 7vh;
+  padding: 1rem;
 `;
 const SettingBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 6.8vh;
   color: black;
   font-size: 2vw;
+  gap: 3rem;
+`;
+
+const IconWrapper = styled.div`
+  width: 4rem;
+  height: 4rem;
+  background-color: ${(props) =>
+    props.active ? props.theme.colors.mainMint : props.theme.colors.white};
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+  &:hover {
+    background-color: ${(props) => props.exit && props.theme.colors.pointRed};
+    transition: all 200ms ease-in;
+  }
+`;
+
+const ContentText = styled.p`
+  font-size: ${(props) => props.theme.fontSizes.p};
+  color: ${(props) => props.theme.colors.white};
 `;
