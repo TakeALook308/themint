@@ -34,7 +34,7 @@ function NavigationBar({ categoryName }) {
   //   setSearch(e.target.value);
   // };
   const navigate = useNavigate();
-
+  if (window.location.pathname.startsWith('/streamings')) return null;
   return (
     <Container>
       <Wrapper>

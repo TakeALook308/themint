@@ -3,22 +3,23 @@ import { OpenVidu } from 'openvidu-browser';
 import React, { Component } from 'react';
 import UserVideoComponent from './UserVideoComponent';
 
-const OPENVIDU_SERVER_URL = 'https://' + window.location.hostname + ':4443';
-const OPENVIDU_SERVER_SECRET = 'MY_SECRET';
+const OPENVIDU_SERVER_URL = 'https://i7a308.p.ssafy.io:8443';
+const OPENVIDU_SERVER_SECRET = 'themint';
 
 class StreamingComponent extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      mySessionId: String(Math.floor(Math.random() * 100)),
+      mySessionId: 'SessionA',
       myUserName: 'Participant' + Math.floor(Math.random() * 100),
       session: undefined,
       mainStreamManager: undefined,
       publisher: undefined,
       subscribers: [],
-      makers: undefined,
+      makers: false,
     };
+
     this.joinSession = this.joinSession.bind(this);
     this.leaveSession = this.leaveSession.bind(this);
     this.switchCamera = this.switchCamera.bind(this);
@@ -123,32 +124,36 @@ class StreamingComponent extends Component {
           mySession
             .connect(token, { clientData: this.state.myUserName })
             .then(async () => {
-              var devices = await this.OV.getDevices();
-              var videoDevices = devices.filter((device) => device.kind === 'videoinput');
+              if (this.state.makers) {
+                var devices = await this.OV.getDevices();
+                var videoDevices = devices.filter((device) => device.kind === 'videoinput');
 
-              // --- 5) Get your own camera stream ---
+                // --- 5) Get your own camera stream ---
 
-              // Init a publisher passing undefined as targetElement (we don't want OpenVidu to insert a video
-              // element: we will manage it on our own) and with the desired properties
-              let publisher = this.OV.initPublisher(undefined, {
-                audioSource: undefined, // The source of audio. If undefined default microphone
-                videoSource: videoDevices[0].deviceId, // The source of video. If undefined default webcam
-                publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
-                publishVideo: true, // Whether you want to start publishing with your video enabled or not
-                resolution: '1280x720', // The resolution of your video
-                frameRate: 60, // The frame rate of your video
-                insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
-                mirror: false, // Whether to mirror your local video or not
-              });
-              // --- 6) Publish your stream ---
-              mySession.publish(publisher);
+                // Init a publisher passing undefined as targetElement (we don't want OpenVidu to insert a video
+                // element: we will manage it on our own) and with the desired properties
+                let publisher = this.OV.initPublisher(undefined, {
+                  audioSource: undefined, // The source of audio. If undefined default microphone
+                  videoSource: videoDevices[0].deviceId, // The source of video. If undefined default webcam
+                  publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
+                  publishVideo: true, // Whether you want to start publishing with your video enabled or not
+                  resolution: '1280x720', // The resolution of your video
+                  frameRate: 60, // The frame rate of your video
+                  insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
+                  mirror: false, // Whether to mirror your local video or not
+                });
 
-              // Set the main video in the page to display our webcam and store our Publisher
-              this.setState({
-                currentVideoDevice: videoDevices[0],
-                mainStreamManager: publisher,
-                publisher: publisher,
-              });
+                // --- 6) Publish your stream ---
+
+                mySession.publish(publisher);
+
+                // Set the main video in the page to display our webcam and store our Publisher
+                this.setState({
+                  currentVideoDevice: videoDevices[0],
+                  mainStreamManager: publisher,
+                  publisher: publisher,
+                });
+              }
             })
             .catch((error) => {
               console.log(
@@ -176,7 +181,7 @@ class StreamingComponent extends Component {
     this.setState({
       session: undefined,
       subscribers: [],
-      mySessionId: this.state.mySessionId,
+      mySessionId: 'SessionA',
       myUserName: 'Participant' + Math.floor(Math.random() * 100),
       mainStreamManager: undefined,
       publisher: undefined,
@@ -223,7 +228,6 @@ class StreamingComponent extends Component {
     const mySessionId = this.state.mySessionId;
     const myUserName = this.state.myUserName;
 
-    console.log('state', this.state);
     return (
       <div className="container">
         {this.state.session === undefined ? (
@@ -282,6 +286,7 @@ class StreamingComponent extends Component {
               />
             </div>
             {/* ------------------------------------------- */}
+            <p>{this.state.makers}</p>
             <input
               className="btn btn-large btn-success"
               type="button"
@@ -320,7 +325,7 @@ class StreamingComponent extends Component {
    * These methods retrieve the mandatory user token from OpenVidu Server.
    * This behavior MUST BE IN YOUR SERVER-SIDE IN PRODUCTION (by using
    * the API REST, openvidu-java-client or openvidu-node-client):
-   *   1) Initialize a Session in OpenVidu Server	(POST /openvidu/api/sessions)
+   *   1) Initialize a Session in OpenVidu Server   (POST /openvidu/api/sessions)
    *   2) Create a Connection in OpenVidu Server (POST /openvidu/api/sessions/<SESSION_ID>/connection)
    *   3) The Connection.token must be consumed in Session.connect() method
    */
@@ -343,6 +348,7 @@ class StreamingComponent extends Component {
         })
         .then((response) => {
           console.log('CREATE SESION', response);
+          this.state.makers = true;
           resolve(response.data.id);
         })
         .catch((response) => {
