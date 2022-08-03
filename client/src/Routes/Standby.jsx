@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 import { myInformationState } from '../atoms';
-import UserVideoComponent from '../components/UserVideoComponent';
+import UserVideoComponent from '../components/webRTC/UserVideoComponent';
 import { BsFillCameraVideoFill, BsFillCameraVideoOffFill, BsFillMicFill } from 'react-icons/bs';
 import { IoExit } from 'react-icons/io5';
 import { useNavigate, useParams } from 'react-router-dom';
