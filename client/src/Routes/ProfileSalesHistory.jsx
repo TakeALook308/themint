@@ -1,31 +1,17 @@
-// import React from 'react';
-// import styled from 'styled-components';
-// import { useState } from 'react';
-// import getAuctionList from '../utils/api/getAuctionApi';
+import React from 'react';
+import styled from 'styled-components';
+import IsellingButton from '../components/ui/profile/IsSellingButton';
 
-// function ProfileSalesHistory(props) {
-//   const [isSold, setIsSold] = useState('selling');
+function ProfileSalesHistory(props) {
+  return (
+    <Container>
+      <IsellingButton />
+    </Container>
+  );
+}
 
-//   const onSelling = async () => {
-//     setIsSold('selling');
-//     const res = await getAuctionList(`/selling`);
-//     return res?.data;
-//   };
-//   const onSold = async () => {
-//     setIsSold('Sold');
-//     const res = await getAuctionList(`/sold`);
-//   };
-//   return (
-//     <ButtonNav>
-//       <button onClick={onSelling}>판매중</button>
-//       <button onClick={onSold}>판매완료</button>
-//     </ButtonNav>
-//   );
-// }
+export default ProfileSalesHistory;
 
-// export default ProfileSalesHistory;
-
-// const ButtonNav = styled.nav`
-//   width: 100%;
-//   height: 50px;
-// `;
+const Container = styled.div`
+  width: 100%;
+`;

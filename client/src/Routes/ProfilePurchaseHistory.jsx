@@ -1,9 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
-import { NavLink } from 'react-router-dom';
+import IsPurchasingButton from '../components/ui/profile/IsPurchasingButton';
 
 function ProfilePurchaseHistory(props) {
-  return <div>구매완료</div>;
+  return (
+    <Container>
+      <IsPurchasingButton />
+    </Container>
+  );
 }
 
 export default ProfilePurchaseHistory;
+
+const Container = styled.div`
+  width: 100%;
+`;

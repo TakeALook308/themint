@@ -52,7 +52,7 @@ const Header = styled.header`
 
 const HeaderContainer = styled.div`
   display: flex;
-  margin-bottom: 20px;
+  margin-bottom: 50px;
 `;
 
 const NavStyle = styled(NavLink)`
