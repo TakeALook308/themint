@@ -1,7 +1,22 @@
 import React from 'react';
+import styled from 'styled-components';
+import ReviewCard from '../components/ui/profile/ReviewCard';
 
 function ProfileReviews(props) {
-  return <div>프로필 리뷰</div>;
+  return (
+    <Container>
+      <ReviewCard />
+      <ReviewCard />
+      <ReviewCard />
+      <ReviewCard />
+      <ReviewCard />
+      <ReviewCard />
+      <ReviewCard />
+      <ReviewCard />
+    </Container>
+  );
 }
 
 export default ProfileReviews;
+
+const Container = styled.div``;

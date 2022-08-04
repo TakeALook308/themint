@@ -1,7 +1,17 @@
 import React from 'react';
+import styled from 'styled-components';
+import IsPurchasingButton from '../components/ui/profile/IsPurchasingButton';
 
 function ProfilePurchaseHistory(props) {
-  return <div>프로필 구매 내역</div>;
+  return (
+    <Container>
+      <IsPurchasingButton />
+    </Container>
+  );
 }
 
 export default ProfilePurchaseHistory;
+
+const Container = styled.div`
+  width: 100%;
+`;

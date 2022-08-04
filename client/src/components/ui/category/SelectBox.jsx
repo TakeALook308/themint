@@ -63,7 +63,7 @@ const Wrapper = styled.div`
   margin-bottom: 20px;
 `;
 
-export const DropdownContainer = styled.main`
+const DropdownContainer = styled.main`
   width: 11%;
   &:hover {
     cursor: pointer;
