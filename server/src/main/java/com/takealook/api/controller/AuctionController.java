@@ -1,6 +1,7 @@
 package com.takealook.api.controller;
 
 import com.takealook.api.request.AuctionRegisterPostReq;
+import com.takealook.api.request.AuctionUpdatePatchReq;
 import com.takealook.api.response.AuctionRes;
 import com.takealook.api.service.AuctionImageService;
 import com.takealook.api.service.AuctionService;
@@ -63,5 +64,25 @@ public class AuctionController {
         return ResponseEntity.status(200).body(AuctionRes.of(auction, productList, auctionImageList, member));
     }
 
+    @PatchMapping
+    public ResponseEntity<? extends BaseResponseBody> modifyAuction(@RequestBody AuctionUpdatePatchReq auctionUpdatePatchReq, @ApiIgnore Authentication authentication){
+        MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
+        Long memberSeq = memberDetails.getMemberSeq();
+        auctionService.updateAuction(memberSeq, auctionUpdatePatchReq);
+        productService.updateProductList(auctionUpdatePatchReq.getProductList());
+        auctionImageService.updateAuctionImageList(auctionUpdatePatchReq.getAuctionImageList());
+        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
 
+        // 물품이나 사진이 삭제되는 경우도 고려
+    }
+
+    @DeleteMapping("/{auctionSeq}")
+    public ResponseEntity<? extends BaseResponseBody> deleteAuction(@PathVariable Long auctionSeq,@ApiIgnore Authentication authentication){
+        MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
+        Long memberSeq = memberDetails.getMemberSeq();
+        productService.deleteProductList(auctionSeq);
+        auctionImageService.deleteAuctionImageList(auctionSeq);
+        auctionService.deleteAuction(memberSeq, auctionSeq);
+        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
+    }
 }

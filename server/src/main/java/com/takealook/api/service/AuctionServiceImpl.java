@@ -2,7 +2,7 @@ package com.takealook.api.service;
 
 import com.takealook.api.request.AuctionImageRegisterPostReq;
 import com.takealook.api.request.AuctionRegisterPostReq;
-import com.takealook.api.request.AuctionUpdatePostReq;
+import com.takealook.api.request.AuctionUpdatePatchReq;
 import com.takealook.api.request.ProductRegisterPostReq;
 import com.takealook.common.model.request.BaseSearchRequest;
 import com.takealook.db.entity.Auction;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class AuctionServiceImpl implements AuctionService{
+public class AuctionServiceImpl implements AuctionService {
 
     @Autowired
     AuctionRepository auctionRepository;
@@ -49,21 +49,21 @@ public class AuctionServiceImpl implements AuctionService{
         // 방금 저장한 경매 seq 뽑아서 product, auctionimage에 넣어야 함
         auction = auctionRepository.findFirstByMemberSeqOrderBySeqDesc(memberSeq);
 
-        for(ProductRegisterPostReq productRegisterPostReq : auctionRegisterPostReq.getProductList()){
+        for (ProductRegisterPostReq productRegisterPostReq : auctionRegisterPostReq.getProductList()) {
             Product product = Product.builder()
-                            .auctionSeq(auction.getSeq()) //임시값
-                            .productName(productRegisterPostReq.getProductName())
-                            .startPrice(productRegisterPostReq.getStartPrice())
-                            .status(0)
-                            .build();
+                    .auctionSeq(auction.getSeq()) //임시값
+                    .productName(productRegisterPostReq.getProductName())
+                    .startPrice(productRegisterPostReq.getStartPrice())
+                    .status(0)
+                    .build();
             productRepository.save(product);
         }
 
-        for(AuctionImageRegisterPostReq auctionImageRegisterPostReq : auctionRegisterPostReq.getAuctionImageList()){
+        for (AuctionImageRegisterPostReq auctionImageRegisterPostReq : auctionRegisterPostReq.getAuctionImageList()) {
             AuctionImage auctionImage = AuctionImage.builder()
-                            .auctionSeq(auction.getSeq()) //임시값
-                            .imageUrl(auctionImageRegisterPostReq.getImageUrl())
-                            .build();
+                    .auctionSeq(auction.getSeq()) //임시값
+                    .imageUrl(auctionImageRegisterPostReq.getImageUrl())
+                    .build();
             auctionImageRepository.save(auctionImage);
         }
 
@@ -82,12 +82,25 @@ public class AuctionServiceImpl implements AuctionService{
     }
 
     @Override
-    public void updateAuction(Long auctionSeq, AuctionUpdatePostReq auctionUpdatePostReq) {
-
+    public void updateAuction(Long memberSeq, AuctionUpdatePatchReq auctionUpdatePatchReq) {
+        Auction auction = Auction.builder()
+                .seq(auctionUpdatePatchReq.getSeq())
+                .memberSeq(memberSeq)
+                .title(auctionUpdatePatchReq.getTitle())
+                .content(auctionUpdatePatchReq.getContent())
+                .categorySeq(auctionUpdatePatchReq.getCategorySeq())
+                .startTime(auctionUpdatePatchReq.getStartTime())
+                .build();
+        auctionRepository.save(auction);
     }
 
     @Override
-    public void deleteAuction(Long auctionSeq) {
-
+    public void deleteAuction(Long memberSeq, Long auctionSeq) {
+        Auction auction = auctionRepository.findBySeq(auctionSeq).orElse(null);
+        if(auction != null && auction.getMemberSeq() == memberSeq){
+            auctionRepository.delete(auction);
+        } else{
+            // 예외처리
+        }
     }
 }

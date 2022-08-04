@@ -18,4 +18,24 @@ public class AuctionImageServiceImpl implements AuctionImageService{
         List<AuctionImage> auctionImageList = auctionImageRepository.findByAuctionSeq(auctionSeq).orElse(null);
         return auctionImageList;
     }
+
+    @Override
+    public void updateAuctionImageList(List<AuctionImage> auctionImageList) {
+        for(AuctionImage auctionImage : auctionImageList){
+            if(auctionImage.getSeq() != 0){
+                auctionImageRepository.save(auctionImage);
+            } else{
+                AuctionImage newAuctionImage = AuctionImage.builder()
+                        .auctionSeq(auctionImage.getAuctionSeq())
+                        .imageUrl(auctionImage.getImageUrl())
+                        .build();
+                auctionImageRepository.save(newAuctionImage);
+            }
+        }
+    }
+
+    @Override
+    public void deleteAuctionImageList(Long auctionSeq) {
+        auctionImageRepository.deleteAllByAuctionSeq(auctionSeq);
+    }
 }
