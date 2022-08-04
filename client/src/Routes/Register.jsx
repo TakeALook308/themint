@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { ActiveInput } from '../style/style';
 import ActiveInputBox from '../components/common/ActiveInputBox';
 import DefaultButton from '../components/common/DefaultButton';
-import { checkForDuplicates, userApis } from '../utils/api/userApi';
+import { getData, userApis } from '../utils/api/userApi';
 import debounce from '../utils/functions/debounce';
 import { REGISTER_MESSAGE } from '../utils/constants/constant';
 
@@ -22,18 +22,20 @@ function Register(props) {
     console.log(data);
   };
 
-  const checkMemberId = async (value) => {
-    console.log(value);
+  const checkMemberId = async (e) => {
+    const { target } = e;
+    if (!target?.value) return;
     try {
-      const response = await checkForDuplicates(userApis.ID_DUPLICATE_CHECK_API(watch().memberId));
+      const response = await getData(userApis.ID_DUPLICATE_CHECK_API(target?.value));
       if (response.status === 200) return true;
-      return false;
     } catch {
-      console.log('false라고 해라...');
-      return false;
+      setError('memberId', { message: REGISTER_MESSAGE.DUPLICATED_ID }, { shouldFocus: true });
     }
   };
 
+  const onIdChange = async (value) => {
+    processChange(value);
+  };
   const processChange = debounce(async (value) => await checkMemberId(value));
 
   return (
@@ -45,19 +47,28 @@ function Register(props) {
             name="memberId"
             id="memberId"
             type="text"
+            maxLength={20}
+            minLength={5}
             {...register('memberId', {
               required: REGISTER_MESSAGE.REQUIRED_ID,
-              minLength: 6,
-              maxLength: 20,
+              minLength: {
+                value: 6,
+                message: REGISTER_MESSAGE.ID_LENGTH,
+              },
+              maxLength: {
+                value: 20,
+                message: REGISTER_MESSAGE.ID_LENGTH,
+              },
               pattern: {
                 value: /^[a-zA-Z0-9]*$/,
                 message: REGISTER_MESSAGE.ONLY_ENGLISH_AND_NUMBER,
               },
-              validate: {
-                duplicate: async (value) =>
-                  processChange(value) ? REGISTER_MESSAGE.DUPLICATED_ID : true,
-              },
+              // validate: {
+              //   duplicate: async (value) =>
+              //     checkMemberId(value) ? REGISTER_MESSAGE.DUPLICATED_ID : true,
+              // },
             })}
+            onChange={onIdChange}
             placeholder=" "
             required
           />

@@ -22,6 +22,7 @@ function Main(props) {
         CardComponent={AuctionCard}
         SkeltonCardComponent={SkeletonAuctionCard}
       />
+      <InterestingAuctionList />
     </Container>
   );
 }
