@@ -94,6 +94,11 @@ dependencies {
 
 	testCompileOnly('org.springframework.boot:spring-boot-starter-test')
 
+	// data format
+	implementation('com.fasterxml.jackson.datatype:jackson-datatype-jdk8')
+	implementation('com.fasterxml.jackson.datatype:jackson-datatype-jsr310')
+	implementation('com.fasterxml.jackson.core:jackson-databind:2.12.4')
+
 	// 이메일 전송 위해
 	// https://mvnrepository.com/artifact/javax.mail/mail
 //   implementation group: 'javax.mail', name: 'mail', version: '1.4'

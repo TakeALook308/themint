@@ -23,13 +23,15 @@ public class QAuction extends EntityPathBase<Auction> {
 
     public final StringPath content = createString("content");
 
+    public final StringPath hash = createString("hash");
+
     public final StringPath link = createString("link");
 
     public final NumberPath<Long> memberSeq = createNumber("memberSeq", Long.class);
 
     public final NumberPath<Long> seq = createNumber("seq", Long.class);
 
-    public final DateTimePath<java.time.LocalDateTime> startTime = createDateTime("startTime", java.time.LocalDateTime.class);
+    public final StringPath startTime = createString("startTime");
 
     public final StringPath title = createString("title");
 
