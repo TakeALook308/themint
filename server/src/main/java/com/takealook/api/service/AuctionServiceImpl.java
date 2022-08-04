@@ -47,11 +47,11 @@ public class AuctionServiceImpl implements AuctionService{
         auctionRepository.save(auction);
 
         // 방금 저장한 경매 seq 뽑아서 product, auctionimage에 넣어야 함
-
+        auction = auctionRepository.findFirstByMemberSeqOrderBySeqDesc(memberSeq);
 
         for(ProductRegisterPostReq productRegisterPostReq : auctionRegisterPostReq.getProductList()){
             Product product = Product.builder()
-                            .auctionSeq(1L) //임시값
+                            .auctionSeq(auction.getSeq()) //임시값
                             .productName(productRegisterPostReq.getProductName())
                             .startPrice(productRegisterPostReq.getStartPrice())
                             .status(0)
@@ -61,7 +61,7 @@ public class AuctionServiceImpl implements AuctionService{
 
         for(AuctionImageRegisterPostReq auctionImageRegisterPostReq : auctionRegisterPostReq.getAuctionImageList()){
             AuctionImage auctionImage = AuctionImage.builder()
-                            .auctionSeq(1L) //임시값
+                            .auctionSeq(auction.getSeq()) //임시값
                             .imageUrl(auctionImageRegisterPostReq.getImageUrl())
                             .build();
             auctionImageRepository.save(auctionImage);
