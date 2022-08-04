@@ -5,6 +5,7 @@ import com.takealook.api.request.AuctionRegisterPostReq;
 import com.takealook.api.request.AuctionUpdatePatchReq;
 import com.takealook.api.request.ProductRegisterPostReq;
 import com.takealook.common.model.request.BaseSearchRequest;
+import com.takealook.common.util.HashUtil;
 import com.takealook.db.entity.Auction;
 import com.takealook.db.entity.AuctionImage;
 import com.takealook.db.entity.Product;
@@ -15,6 +16,7 @@ import com.takealook.db.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -38,6 +40,7 @@ public class AuctionServiceImpl implements AuctionService {
 
         // title, content, categorySeq, startTime, productlist(productname, startprice), auctionImagelist(imageurl)
         Auction auction = Auction.builder()
+                .hash(HashUtil.MD5(LocalDateTime.now().toString() + memberSeq))
                 .memberSeq(memberSeq)
                 .title(auctionRegisterPostReq.getTitle())
                 .content(auctionRegisterPostReq.getContent())
@@ -51,7 +54,7 @@ public class AuctionServiceImpl implements AuctionService {
 
         for (ProductRegisterPostReq productRegisterPostReq : auctionRegisterPostReq.getProductList()) {
             Product product = Product.builder()
-                    .auctionSeq(auction.getSeq()) //임시값
+                    .auctionSeq(auction.getSeq())
                     .productName(productRegisterPostReq.getProductName())
                     .startPrice(productRegisterPostReq.getStartPrice())
                     .status(0)
@@ -61,7 +64,7 @@ public class AuctionServiceImpl implements AuctionService {
 
         for (AuctionImageRegisterPostReq auctionImageRegisterPostReq : auctionRegisterPostReq.getAuctionImageList()) {
             AuctionImage auctionImage = AuctionImage.builder()
-                    .auctionSeq(auction.getSeq()) //임시값
+                    .auctionSeq(auction.getSeq())
                     .imageUrl(auctionImageRegisterPostReq.getImageUrl())
                     .build();
             auctionImageRepository.save(auctionImage);
@@ -71,8 +74,8 @@ public class AuctionServiceImpl implements AuctionService {
     }
 
     @Override
-    public Auction getAuctionBySeq(Long auctionSeq) {
-        Auction auction = auctionRepository.findBySeq(auctionSeq).get();
+    public Auction getAuctionByHash(String hash) {
+        Auction auction = auctionRepository.findByHash(hash).get();
         return auction;
     }
 

@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface AuctionService {
     Auction createAuction(Long memberSeq, AuctionRegisterPostReq auctionRegisterPostReq);
-    Auction getAuctionBySeq(Long auctionSeq);
+    Auction getAuctionByHash(String hash);
     List<Auction> getAuctionList(BaseSearchRequest baseSearchRequest);
     void updateAuction(Long memberSeq, AuctionUpdatePatchReq auctionUpdatePostReq);
     void deleteAuction(Long memberSeq, Long auctionSeq);

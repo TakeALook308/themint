@@ -20,7 +20,8 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public void updateProductList(List<Product> productList) {
+    public void updateProductList(Long auctionSeq, List<Product> productList) {
+        productRepository.deleteAllByAuctionSeq(auctionSeq);
         for(Product product : productList){
             if(product.getSeq() != 0){
                 productRepository.save(product);

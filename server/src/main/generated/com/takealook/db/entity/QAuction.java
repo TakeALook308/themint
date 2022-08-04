@@ -23,6 +23,8 @@ public class QAuction extends EntityPathBase<Auction> {
 
     public final StringPath content = createString("content");
 
+    public final StringPath hash = createString("hash");
+
     public final StringPath link = createString("link");
 
     public final NumberPath<Long> memberSeq = createNumber("memberSeq", Long.class);

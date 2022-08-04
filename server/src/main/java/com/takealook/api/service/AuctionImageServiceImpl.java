@@ -20,7 +20,8 @@ public class AuctionImageServiceImpl implements AuctionImageService{
     }
 
     @Override
-    public void updateAuctionImageList(List<AuctionImage> auctionImageList) {
+    public void updateAuctionImageList(Long auctionSeq, List<AuctionImage> auctionImageList) {
+        auctionImageRepository.deleteAllByAuctionSeq(auctionSeq);
         for(AuctionImage auctionImage : auctionImageList){
             if(auctionImage.getSeq() != 0){
                 auctionImageRepository.save(auctionImage);

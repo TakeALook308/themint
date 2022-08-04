@@ -21,6 +21,7 @@ public class Auction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long seq;
+    String hash;
     Long memberSeq;
     String title;
     String content;

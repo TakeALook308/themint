@@ -54,9 +54,10 @@ public class AuctionController {
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
     }
 
-    @GetMapping("/{auctionSeq}")
-    public ResponseEntity<AuctionRes> getAuctionDetail(@PathVariable Long auctionSeq){
-        Auction auction = auctionService.getAuctionBySeq(auctionSeq);
+    @GetMapping("/{auctionHash}")
+    public ResponseEntity<AuctionRes> getAuctionDetail(@PathVariable String auctionHash){
+        Auction auction = auctionService.getAuctionByHash(auctionHash);
+        Long auctionSeq = auction.getSeq();
         List<Product> productList = productService.getProductListByAuctionSeq(auctionSeq);
         List<AuctionImage> auctionImageList = auctionImageService.getAuctionImageListByAuctionSeq(auctionSeq);
         Member member = memberService.getMemberByMemberSeq(auction.getMemberSeq());
@@ -69,17 +70,18 @@ public class AuctionController {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
         auctionService.updateAuction(memberSeq, auctionUpdatePatchReq);
-        productService.updateProductList(auctionUpdatePatchReq.getProductList());
-        auctionImageService.updateAuctionImageList(auctionUpdatePatchReq.getAuctionImageList());
+        productService.updateProductList(auctionUpdatePatchReq.getSeq(), auctionUpdatePatchReq.getProductList());
+        auctionImageService.updateAuctionImageList(auctionUpdatePatchReq.getSeq(), auctionUpdatePatchReq.getAuctionImageList());
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
 
         // 물품이나 사진이 삭제되는 경우도 고려
     }
 
-    @DeleteMapping("/{auctionSeq}")
-    public ResponseEntity<? extends BaseResponseBody> deleteAuction(@PathVariable Long auctionSeq,@ApiIgnore Authentication authentication){
+    @DeleteMapping("/{auctionHash}")
+    public ResponseEntity<? extends BaseResponseBody> deleteAuction(@PathVariable String auctionHash,@ApiIgnore Authentication authentication){
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
+        Long auctionSeq = auctionService.getAuctionByHash(auctionHash).getSeq();
         productService.deleteProductList(auctionSeq);
         auctionImageService.deleteAuctionImageList(auctionSeq);
         auctionService.deleteAuction(memberSeq, auctionSeq);

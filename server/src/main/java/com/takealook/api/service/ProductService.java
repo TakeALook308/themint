@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface ProductService {
     List<Product> getProductListByAuctionSeq(Long auctionSeq);
-    void updateProductList(List<Product> productList);
+    void updateProductList(Long auctionSeq, List<Product> productList);
     void deleteProductList(Long auctionSeq);
 }
