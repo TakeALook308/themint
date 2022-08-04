@@ -1,24 +1,26 @@
 package com.takealook.api.controller;
 
 import com.takealook.api.request.AuctionRegisterPostReq;
+import com.takealook.api.response.AuctionRes;
+import com.takealook.api.service.AuctionImageService;
 import com.takealook.api.service.AuctionService;
 import com.takealook.api.service.MemberService;
+import com.takealook.api.service.ProductService;
 import com.takealook.common.auth.MemberDetails;
 import com.takealook.common.model.response.BaseResponseBody;
 import com.takealook.common.util.JwtAuthenticationUtil;
 import com.takealook.db.entity.Auction;
+import com.takealook.db.entity.AuctionImage;
 import com.takealook.db.entity.Member;
+import com.takealook.db.entity.Product;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Api(value = "경매 API", tags = {"Auction"})
 @RestController
@@ -30,6 +32,12 @@ public class AuctionController {
 
     @Autowired
     MemberService memberService;
+
+    @Autowired
+    ProductService productService;
+
+    @Autowired
+    AuctionImageService auctionImageService;
 
     @Autowired
     JwtAuthenticationUtil jwtAuthenticationUtil;
@@ -44,5 +52,16 @@ public class AuctionController {
         }
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
     }
+
+    @GetMapping("/{auctionSeq}")
+    public ResponseEntity<AuctionRes> getAuctionDetail(@PathVariable Long auctionSeq){
+        Auction auction = auctionService.getAuctionBySeq(auctionSeq);
+        List<Product> productList = productService.getProductListByAuctionSeq(auctionSeq);
+        List<AuctionImage> auctionImageList = auctionImageService.getAuctionImageListByAuctionSeq(auctionSeq);
+        Member member = memberService.getMemberByMemberSeq(auction.getMemberSeq());
+
+        return ResponseEntity.status(200).body(AuctionRes.of(auction, productList, auctionImageList, member));
+    }
+
 
 }

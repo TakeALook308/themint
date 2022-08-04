@@ -34,6 +34,8 @@ public class AuctionServiceImpl implements AuctionService{
 
     @Override
     public Auction createAuction(Long memberSeq, AuctionRegisterPostReq auctionRegisterPostReq) {
+        // 화상회의 링크 생성해야 함!!!!!!!!!!!!!!!!!!!!!!!!!!
+
         // title, content, categorySeq, startTime, productlist(productname, startprice), auctionImagelist(imageurl)
         Auction auction = Auction.builder()
                 .memberSeq(memberSeq)
@@ -70,7 +72,8 @@ public class AuctionServiceImpl implements AuctionService{
 
     @Override
     public Auction getAuctionBySeq(Long auctionSeq) {
-        return null;
+        Auction auction = auctionRepository.findBySeq(auctionSeq).get();
+        return auction;
     }
 
     @Override

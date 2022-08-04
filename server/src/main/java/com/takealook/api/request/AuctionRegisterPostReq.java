@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -21,11 +20,10 @@ public class AuctionRegisterPostReq {
     String content;
     @ApiModelProperty(name = "카테고리 번호", example = "2")
     Long categorySeq;
-    @ApiModelProperty(name = "경매 시작 시간", example = "")
-    LocalDateTime startTime;
+    @ApiModelProperty(name = "경매 시작 시간", example = "2022:08:10 15:00:00")
+    String startTime;
     @ApiModelProperty(name = "", example = "")
     List<ProductRegisterPostReq> productList;
     @ApiModelProperty(name = "", example = "")
     List<AuctionImageRegisterPostReq> auctionImageList;
-
 }

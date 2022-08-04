@@ -1,9 +1,9 @@
 package com.takealook.api.service;
 
-import com.takealook.api.request.*;
+import com.takealook.api.request.AuctionRegisterPostReq;
+import com.takealook.api.request.AuctionUpdatePostReq;
 import com.takealook.common.model.request.BaseSearchRequest;
 import com.takealook.db.entity.Auction;
-import com.takealook.db.entity.Member;
 
 import java.util.List;
 
