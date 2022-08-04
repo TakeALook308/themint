@@ -6,14 +6,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MemberFindMemberIdRes extends BaseResponseBody {
+public class MemberFindMemberIdRes {
     String memberId;
 
-    public static MemberFindMemberIdRes of (Integer statusCode, String message, String memberId){
+    public static MemberFindMemberIdRes of (String memberId){
        MemberFindMemberIdRes res = new MemberFindMemberIdRes();
        res.setMemberId(memberId);
-       res.setStatusCode(statusCode);
-       res.setMessage(message);
        return res;
     }
 }

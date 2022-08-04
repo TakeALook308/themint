@@ -6,14 +6,18 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MemberLoginPostRes extends BaseResponseBody {
+public class MemberLoginPostRes {
     String accessToken;
+    Long memberSeq;
+    String memberId;
+    String nickname;
 
-    public static MemberLoginPostRes of (Integer statusCode, String message, String accessToken) {
+    public static MemberLoginPostRes of (String accessToken, Long memberSeq, String memberId, String nickname) {
         MemberLoginPostRes res = new MemberLoginPostRes();
-        res.setStatusCode(statusCode);
-        res.setMessage(message);
         res.setAccessToken(accessToken);
+        res.setMemberSeq(memberSeq);
+        res.setMemberId(memberId);
+        res.setNickname(nickname);
         return res;
     }
 }

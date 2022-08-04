@@ -30,24 +30,24 @@ public class MemberController {
 
     // 회원 가입
     @PostMapping
-    public ResponseEntity<BaseResponseBody> registerMember(@RequestBody MemberRegisterPostReq memberRegisterPostReq) {
+    public ResponseEntity<?> registerMember(@RequestBody MemberRegisterPostReq memberRegisterPostReq) {
         Member member = memberService.createMember(memberRegisterPostReq);
-        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
+        return ResponseEntity.status(200).body("success");
     }
 
     // 로그인
     @PostMapping("/login")
-    public ResponseEntity<MemberLoginPostRes> login(@RequestBody MemberLoginPostReq memberLoginPostReq) {
+    public ResponseEntity<?> login(@RequestBody MemberLoginPostReq memberLoginPostReq) {
         String memberId = memberLoginPostReq.getMemberId();
         String pwd = memberLoginPostReq.getPwd();
 
         Member member = memberService.getMemberByMemberId(memberId);
         // 로그인 요청한 유저의 패스워드와 같은 경우 (유효한 패스워드인지 확인)
         if (member != null && passwordEncoder.matches(pwd, member.getPwd())) {
-            return ResponseEntity.ok(MemberLoginPostRes.of(200, "success", JwtTokenUtil.getToken(memberId)));
+            return ResponseEntity.status(200).body(MemberLoginPostRes.of(JwtTokenUtil.getToken(memberId), member.getSeq(), member.getMemberId(), member.getNickname()));
         }
         // 유효하지 않는 패스워드인 경우, 로그인 실패
-        return ResponseEntity.status(409).body(MemberLoginPostRes.of(409, "Invalid Password", null));
+        return ResponseEntity.status(409).body("fail");
     }
 
 
@@ -108,13 +108,13 @@ public class MemberController {
     }
 
     // 2. 인증번호 확인
-    // 미완성
     @PostMapping("/password")
     public ResponseEntity<?> sendEmail(@RequestBody String email) {
         int randNum = ThreadLocalRandom.current().nextInt(100000, 1000000);
         int result = memberService.sendEmail(randNum, email);
-        if (result == 0) return ResponseEntity.status(409).body(BaseResponseBody.of(409, "fail"));
-        return ResponseEntity.status(200).body(MemberRandomNumberRes.of(200, "success", randNum));
+        // 메일 전송 실패 시
+        if (result == 0) return ResponseEntity.status(409).body("fail");
+        return ResponseEntity.status(200).body(MemberRandomNumberRes.of(randNum));
     }
 
     // 3. 비밀번호 재설정
@@ -135,41 +135,41 @@ public class MemberController {
             memberService.deleteMember(member.getSeq());
             return ResponseEntity.status(200).body("success");
         }
-        return ResponseEntity.status(200).body("success");
+        return ResponseEntity.status(409).body("fail");
     }
 
 
     // 아이디 중복 검사
     @GetMapping("/id/{memberId}")
-    public ResponseEntity<BaseResponseBody> memberIdDuplicateCheck(@PathVariable("memberId") String memberId) {
+    public ResponseEntity<?> memberIdDuplicateCheck(@PathVariable("memberId") String memberId) {
         Member member = memberService.getMemberByMemberId(memberId);
         // 검색 결과가 없으면 (중복된 아이디가 없다면) success
         if (member == null) {
-            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
+            return ResponseEntity.status(200).body("success");
         }
-        return ResponseEntity.status(409).body(BaseResponseBody.of(409, "fail"));
+        return ResponseEntity.status(409).body("fail");
     }
 
     // 닉네임 중복 검사
     @GetMapping("/nickname/{nickname}")
-    public ResponseEntity<BaseResponseBody> nicknameDuplicateCheck(@PathVariable("nickname") String nickname) {
+    public ResponseEntity<?> nicknameDuplicateCheck(@PathVariable("nickname") String nickname) {
         Member member = memberService.getMemberByNickname(nickname);
         // 검색 결과가 없으면 (중복된 닉네임이 없다면) success
         if (member == null) {
-            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
+            return ResponseEntity.status(200).body("success");
         }
-        return ResponseEntity.status(409).body(BaseResponseBody.of(409, "fail"));
+        return ResponseEntity.status(409).body("fail");
     }
 
     // 아이디 중복 검사
     @GetMapping("/email/{email}")
-    public ResponseEntity<BaseResponseBody> emailDuplicateCheck(@PathVariable("email") String email) {
+    public ResponseEntity<?> emailDuplicateCheck(@PathVariable("email") String email) {
         Member member = memberService.getMemberByEmail(email);
         // 검색 결과가 없으면 (중복된 이메일이 없다면) success
         if (member == null) {
-            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
+            return ResponseEntity.status(200).body("success");
         }
-        return ResponseEntity.status(409).body(BaseResponseBody.of(409, "fail"));
+        return ResponseEntity.status(409).body("fail");
     }
 
     // 아이디 찾기
@@ -177,17 +177,17 @@ public class MemberController {
     public ResponseEntity<?> findMemberId(@RequestBody MemberFindMemberIdReq memberFindMemberIdReq) {
         String memberId = memberService.FindMemberId(memberFindMemberIdReq);
         if (memberId == null) {
-            return ResponseEntity.status(409).body(BaseResponseBody.of(409, "fail"));
+            return ResponseEntity.status(409).body("fail");
         }
-        return ResponseEntity.status(200).body(MemberFindMemberIdRes.of(200, "success", memberId));
+        return ResponseEntity.status(200).body(MemberFindMemberIdRes.of(memberId));
     }
 
     // 신뢰도 수정
     @PatchMapping("/score")
-    public ResponseEntity<BaseResponseBody> updateScore(@RequestBody MemberScoreUpdatePatchReq memberScoreUpdatePatchReq) {
+    public ResponseEntity<?> updateScore(@RequestBody MemberScoreUpdatePatchReq memberScoreUpdatePatchReq) {
         Member member = memberService.getMemberByMemberSeq(memberScoreUpdatePatchReq.getSeq());
-        if (member == null) return ResponseEntity.status(409).body(BaseResponseBody.of(409, "fail"));
+        if (member == null) return ResponseEntity.status(409).body("fail");
         memberService.updateMemberScore(memberScoreUpdatePatchReq);
-        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
+        return ResponseEntity.status(200).body("success");
     }
 }
