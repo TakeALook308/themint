@@ -5,6 +5,7 @@ import com.takealook.api.service.ChatRoomService;
 import com.takealook.common.auth.MemberDetails;
 import com.takealook.db.entity.ChatRoom;
 import com.takealook.db.entity.ChatRoomMember;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -13,6 +14,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
+@Api(value = "채팅방 API", tags = {"ChatRoom"})
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/chat")

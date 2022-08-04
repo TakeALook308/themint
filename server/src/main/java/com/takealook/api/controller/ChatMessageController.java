@@ -5,13 +5,14 @@ import com.takealook.api.service.ChatRoomService;
 import com.takealook.chat.RedisPublisher;
 import com.takealook.common.auth.MemberDetails;
 import com.takealook.db.entity.ChatMessage;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import springfox.documentation.annotations.ApiIgnore;
-
+@Api(value = "채팅메시지 API", tags = {"ChatMessage"})
 @RequiredArgsConstructor
 @Controller
 public class ChatMessageController {
