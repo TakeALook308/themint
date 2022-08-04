@@ -5,6 +5,9 @@ import { useForm } from 'react-hook-form';
 import { ActiveInput } from '../style/style';
 import ActiveInputBox from '../components/common/ActiveInputBox';
 import DefaultButton from '../components/common/DefaultButton';
+import { checkForDuplicates, userApis } from '../utils/api/userApi';
+import debounce from '../utils/functions/debounce';
+import { REGISTER_MESSAGE } from '../utils/constants/constant';
 
 function Register(props) {
   const {
@@ -13,41 +16,60 @@ function Register(props) {
     setError,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({ mode: 'onChange' });
 
   const onValid = (data) => {
-    if (data.password !== data.password1) {
-      setError(
-        'password1',
-        { message: 'Password are not the same' },
-        { shouldFocus: true }, // error일 경우 자동 focus
-      );
+    console.log(data);
+  };
+
+  const checkMemberId = async (value) => {
+    console.log(value);
+    try {
+      const response = await checkForDuplicates(userApis.ID_DUPLICATE_CHECK_API(watch().memberId));
+      if (response.status === 200) return true;
+      return false;
+    } catch {
+      console.log('false라고 해라...');
+      return false;
     }
   };
-  console.log(watch().id);
+
+  const processChange = debounce(async (value) => await checkMemberId(value));
+
   return (
     <Common.Container nonMember={true}>
       회원가입
-      <form>
+      <form onSubmit={handleSubmit(onValid)}>
         <ActiveInput active={true}>
           <input
-            name="id"
-            id="id"
+            name="memberId"
+            id="memberId"
             type="text"
-            {...register('id', {
-              required: '아이디를 입력해주세요.',
+            {...register('memberId', {
+              required: REGISTER_MESSAGE.REQUIRED_ID,
+              minLength: 6,
+              maxLength: 20,
+              pattern: {
+                value: /^[a-zA-Z0-9]*$/,
+                message: REGISTER_MESSAGE.ONLY_ENGLISH_AND_NUMBER,
+              },
+              validate: {
+                duplicate: async (value) =>
+                  processChange(value) ? REGISTER_MESSAGE.DUPLICATED_ID : true,
+              },
             })}
             placeholder=" "
             required
           />
-          <label htmlFor="id">아이디</label>
+          <label htmlFor="memberId">아이디</label>
         </ActiveInput>
+        <span>{errors?.memberId?.message}</span>
         <ActiveInput active={true}>
           <input
             name="password"
             id="password"
             type="password"
-            {...register('password', { required: '비밀번호를 입력해주세요.' })}
+            {...register('password', { required: REGISTER_MESSAGE.REQUIRED_ID })}
             placeholder=" "
             required
           />
