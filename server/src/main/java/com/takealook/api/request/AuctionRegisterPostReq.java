@@ -1,12 +1,19 @@
 package com.takealook.api.request;
 
-import com.takealook.db.entity.AuctionImage;
-import com.takealook.db.entity.Product;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ *  경매 생성 API ([POST] /api/auction) 요청에 필요한 리퀘스트 바디
+ */
+@Getter
+@Setter
+@ApiModel("AuctionRegisterPostRequest")
 public class AuctionRegisterPostReq {
     @ApiModelProperty(name = "경매글 제목", example = "여름옷 판매합니다.")
     String title;
@@ -17,8 +24,8 @@ public class AuctionRegisterPostReq {
     @ApiModelProperty(name = "경매 시작 시간", example = "")
     LocalDateTime startTime;
     @ApiModelProperty(name = "", example = "")
-    List<Product> productList;
+    List<ProductRegisterPostReq> productList;
     @ApiModelProperty(name = "", example = "")
-    List<AuctionImage> auctionImageList;
+    List<AuctionImageRegisterPostReq> auctionImageList;
 
 }
