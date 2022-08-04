@@ -5,7 +5,12 @@ import StreamingHeader from '../components/Streaming/StreamingHeader';
 import StreamChat from '../components/Streaming/StreamChat';
 import AuctionBidding from '../components/Streaming/AuctionBidding';
 import AuctionList from '../components/Streaming/AuctionList';
+import { useRecoilValue } from 'recoil';
+import { myInformationState } from '../atoms';
 function Streaming(props) {
+  const userInfo = useRecoilValue(myInformationState);
+  const auctionData = { memberId: 'ney9083' };
+
   return (
     <Stream>
       <Header>
@@ -14,7 +19,7 @@ function Streaming(props) {
       <Main>
         <Section>
           <AuctionList />
-          <StreamingComponent />
+          <StreamingComponent userInfo={userInfo} auctionData={auctionData} />
         </Section>
         <Aside>
           <AuctionBidding />

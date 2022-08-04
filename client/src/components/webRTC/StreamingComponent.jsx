@@ -31,6 +31,8 @@ class StreamingComponent extends Component {
 
   componentDidMount() {
     window.addEventListener('beforeunload', this.onbeforeunload);
+    this.joinSession();
+    console.log('내 정보 확인', this.props.userInfo);
   }
 
   componentWillUnmount() {
@@ -124,7 +126,7 @@ class StreamingComponent extends Component {
           mySession
             .connect(token, { clientData: this.state.myUserName })
             .then(async () => {
-              if (this.state.makers) {
+              if (this.props.userInfo.memberId === this.props.auctionData.memberId) {
                 var devices = await this.OV.getDevices();
                 var videoDevices = devices.filter((device) => device.kind === 'videoinput');
 
@@ -137,7 +139,7 @@ class StreamingComponent extends Component {
                   videoSource: videoDevices[0].deviceId, // The source of video. If undefined default webcam
                   publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
                   publishVideo: true, // Whether you want to start publishing with your video enabled or not
-                  resolution: '1280x720', // The resolution of your video
+                  resolution: '640x480', // The resolution of your video
                   frameRate: 60, // The frame rate of your video
                   insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
                   mirror: false, // Whether to mirror your local video or not
@@ -227,73 +229,12 @@ class StreamingComponent extends Component {
   render() {
     const mySessionId = this.state.mySessionId;
     const myUserName = this.state.myUserName;
+    console.log(this.props.userInfo);
 
     return (
       <div className="container">
-        {this.state.session === undefined ? (
-          <div id="join">
-            <div id="img-div">
-              <img src="resources/images/openvidu_grey_bg_transp_cropped.png" alt="OpenVidu logo" />
-            </div>
-            <div id="join-dialog" className="jumbotron vertical-center">
-              <h1> Join a video session </h1>
-              <form className="form-group" onSubmit={this.joinSession}>
-                <p>
-                  <label>Participant: </label>
-                  <input
-                    className="form-control"
-                    type="text"
-                    id="userName"
-                    value={myUserName}
-                    onChange={this.handleChangeUserName}
-                    required
-                  />
-                </p>
-                <p>
-                  <label> Session: </label>
-                  <input
-                    className="form-control"
-                    type="text"
-                    id="sessionId"
-                    value={mySessionId}
-                    onChange={this.handleChangeSessionId}
-                    required
-                  />
-                </p>
-                <p className="text-center">
-                  <input
-                    className="btn btn-lg btn-success"
-                    name="commit"
-                    type="submit"
-                    value="JOIN"
-                  />
-                </p>
-              </form>
-            </div>
-          </div>
-        ) : null}
-
         {this.state.session !== undefined ? (
           <div id="session">
-            <div id="session-header">
-              <h1 id="session-title">{mySessionId}</h1>
-              <input
-                className="btn btn-large btn-danger"
-                type="button"
-                id="buttonLeaveSession"
-                onClick={this.leaveSession}
-                value="Leave session"
-              />
-            </div>
-            {/* ------------------------------------------- */}
-            <p>{this.state.makers}</p>
-            <input
-              className="btn btn-large btn-success"
-              type="button"
-              id="buttonSwitchCamera"
-              onClick={this.switchCamera}
-              value="Switch Camera"
-            />
             <div id="video-container" className="col-md-6">
               {this.state.publisher !== undefined ? (
                 <div
@@ -302,15 +243,16 @@ class StreamingComponent extends Component {
                   <UserVideoComponent streamManager={this.state.publisher} />
                 </div>
               ) : null}
-              {this.state.subscribers.map((sub, i) => (
-                <div
-                  key={i}
-                  className="stream-container col-md-6 col-xs-6"
-                  onClick={() => this.handleMainVideoStream(sub)}>
-                  <span>{this.state.initPublisher}</span>
-                  <UserVideoComponent streamManager={sub} />
-                </div>
-              ))}
+              {this.props.userInfo.memberId !== this.props.auctionData.memberId &&
+                this.state.subscribers.map((sub, i) => (
+                  <div
+                    key={i}
+                    className="stream-container col-md-6 col-xs-6"
+                    onClick={() => this.handleMainVideoStream(sub)}>
+                    <span>{this.state.initPublisher}</span>
+                    <UserVideoComponent streamManager={sub} />
+                  </div>
+                ))}
             </div>
           </div>
         ) : null}
@@ -348,7 +290,7 @@ class StreamingComponent extends Component {
         })
         .then((response) => {
           console.log('CREATE SESION', response);
-          this.state.makers = true;
+          this.setState({ makers: true });
           resolve(response.data.id);
         })
         .catch((response) => {
