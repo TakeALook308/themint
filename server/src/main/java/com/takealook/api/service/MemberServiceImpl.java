@@ -29,7 +29,7 @@ public class MemberServiceImpl implements MemberService {
         Member member = Member.builder()
                 .memberId(memberRegisterPostReq.getMemberId())
                 .pwd(passwordEncoder.encode(memberRegisterPostReq.getPwd()))
-                .memberName(memberRegisterPostReq.getMemberId())
+                .memberName(memberRegisterPostReq.getMemberName())
                 .nickname(memberRegisterPostReq.getNickname())
                 .email(memberRegisterPostReq.getEmail())
                 .address(memberRegisterPostReq.getAddress())
@@ -94,8 +94,8 @@ public class MemberServiceImpl implements MemberService {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(email);
             message.setFrom("etminho12@naver.com");
-            message.setSubject("[더민트] 비밀번호 찾기 - 임시 비밀번호 안내드립니다.");
-            message.setText("임시 비밀번호 : " + randNum);
+            message.setSubject("[더민트] 비밀번호 찾기 - 인증번호 안내드립니다.");
+            message.setText("인증번호 : " + randNum);
             sender.send(message);
             return 1;
         } catch (Exception e) {
