@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import styled from 'styled-components';
 import GradientButton from '../components/common/GradientButton';
 import { MessageWrapper, WarningMessage } from '../style/common';
 import { ActiveInput } from '../style/style';
@@ -20,12 +19,7 @@ function Register1({ setUserInfo, setStep }) {
   } = useForm({
     defaultValues: {
       memberId: '',
-      memberName: '',
-      nickname: '',
       pwd: '',
-      email: '',
-      address: '',
-      phone: '',
     },
     mode: 'onChange',
   });
@@ -33,7 +27,6 @@ function Register1({ setUserInfo, setStep }) {
   const onValid = (data) => {
     if (duplicatedID) {
       setError('memberId', { message: REGISTER_MESSAGE.DUPLICATED_ID }, { shouldFocus: true });
-      setDuplicatedID(false);
       return;
     }
     setUserInfo((prev) => ({ ...prev, ...data }));
@@ -56,7 +49,7 @@ function Register1({ setUserInfo, setStep }) {
     } catch {
       // setError('memberId', { message: REGISTER_MESSAGE.DUPLICATED_ID }, { shouldFocus: true });
       // setDuplicatedID(false);
-      setDuplicatedID(false);
+      setDuplicatedID(true);
     }
   };
 

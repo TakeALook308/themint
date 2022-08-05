@@ -23,7 +23,7 @@ const shine = keyframes`
      }
 `;
 
-const Button = styled.button`
+export const Button = styled.button`
   width: 100%;
   height: 40px;
   background: ${(props) => props.theme.colors.gradientMintToPurple};

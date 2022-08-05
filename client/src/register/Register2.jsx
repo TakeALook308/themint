@@ -39,7 +39,6 @@ function Register2({ setUserInfo, setStep }) {
   const onValid = (data) => {
     if (duplicatedEmail) {
       setError('email', { message: REGISTER_MESSAGE.DUPLICATED_ID }, { shouldFocus: true });
-      setDuplicatedEmail(true);
       return;
     }
     setUserInfo((prev) => ({ ...prev, ...data }));
@@ -130,7 +129,6 @@ function Register2({ setUserInfo, setStep }) {
         <MessageWrapper>
           <WarningMessage>{errors?.email?.message}</WarningMessage>
         </MessageWrapper>
-        export{' '}
         <InputContainer>
           <ActiveInput active={true}>
             <input

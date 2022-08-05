@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import GradientButton from '../components/common/GradientButton';
@@ -9,11 +9,10 @@ import { REGEX, REGISTER_MESSAGE, STANDARD } from '../utils/constants/constant';
 import debounce from '../utils/functions/debounce';
 import PopupDom from './PopupDom';
 import PopupPostCode from './PopupPostCode';
-import Post from './Post';
 import { InputContainer } from './Register2';
 import StepSignal from './StepSignal';
 
-function Register3(props) {
+function Register3({ setUserInfo }) {
   const [duplicatedNickname, setDuplicatedNickname] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [address, setAddress] = useState();
@@ -44,11 +43,11 @@ function Register3(props) {
   });
 
   const onValid = (data) => {
-    console.log(data);
     if (duplicatedNickname) {
       setError('memberId', { message: REGISTER_MESSAGE.DUPLICATED_ID }, { shouldFocus: true });
-      setDuplicatedNickname(true);
+      return;
     }
+    setUserInfo((prev) => ({ ...prev, ...data }));
   };
 
   const checkNickname = async (e) => {

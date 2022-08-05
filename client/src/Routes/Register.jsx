@@ -5,6 +5,8 @@ import GradientButton from '../components/common/GradientButton';
 import Logo from '../components/common/Logo';
 import { Link } from 'react-router-dom';
 import { Register1, Register2, Register3 } from '../register/RegisterIndex';
+import { postData, userApis } from '../utils/api/userApi';
+import SocialLogginButton from '../components/common/SocialLogginButton';
 // import Register1 from '../register/Register1';
 
 function Register() {
@@ -15,6 +17,7 @@ function Register() {
     pwd: '',
     email: '',
     address: '',
+    addressDetail: '',
     phone: '',
   });
   const [step, setStep] = useState({
@@ -23,15 +26,17 @@ function Register() {
     step3: false,
   });
 
-  console.log(userInfo);
+  const register = async () => {
+    const response = await postData(userApis.REGISTER, userInfo);
+  };
 
   return (
     <Container nonMember={true}>
       <RegisterContainer>
         <Header>
           <Logo />
+          <h2>회원가입</h2>
         </Header>
-        <p>회원가입</p>
         {step.step1 && (
           <>
             <Register1 setUserInfo={setUserInfo} setStep={setStep} />
@@ -39,10 +44,12 @@ function Register() {
               <Link to="/login">
                 <h2>로그인</h2>
               </Link>
+              <p>or</p>
             </LinkContainer>
-            <div>or</div>
-            <GradientButton text={'카카오톡으로 회원가입'} />
-            <GradientButton text={'네이버로 회원가입'} />
+            <SocialLoginContainer>
+              <SocialLogginButton text={'네이버로 회원가입'} social={'네이버'} />
+              <SocialLogginButton text={'카카오톡으로 회원가입'} social={'카카오톡'} />
+            </SocialLoginContainer>
           </>
         )}
         {step.step2 && <Register2 setUserInfo={setUserInfo} setStep={setStep} />}
@@ -61,25 +68,42 @@ const Container = styled(Common.Container)`
   justify-content: center;
 `;
 
-const RegisterContainer = styled.div`
-  min-width: 400px;
+const RegisterContainer = styled.section`
+  min-width: 450px;
   height: fit-content;
-  padding: 4rem 3rem;
+  padding: 4rem 4rem;
   background-color: ${(props) => props.theme.colors.subBlack};
   border-radius: 10px;
 `;
 
 const Header = styled.header`
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  margin: 0 auto;
+  margin: 0 auto 2rem;
+  gap: 2rem;
+  font-size: ${(props) => props.theme.fontSizes.h4};
+  font-weight: 700;
 `;
 
 const LinkContainer = styled.div`
   width: 100%;
+  height: 5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.5rem;
   h2 {
     margin: 0 auto;
     width: fit-content;
     text-decoration: underline;
   }
+`;
+
+const SocialLoginContainer = styled.article`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 `;
