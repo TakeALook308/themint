@@ -4,7 +4,7 @@ import CateCard from './CateCard';
 import { getAuctionList } from '../../../utils/api/getAuctionApi';
 
 function CateCardList({ category, categoryName }) {
-  const [categoryNow, setCategoryNow] = useState('');
+  const [categoryNow, setCategoryNow] = useState('전체보기');
   const onClick = async (e) => {
     console.log(e.target.innerText);
     setCategoryNow(e.target.innerText);
@@ -12,7 +12,7 @@ function CateCardList({ category, categoryName }) {
     return res?.data;
   };
   return (
-    <Wrapper>
+    <Container>
       <ListHeader>
         <h3>
           카테고리>
@@ -37,19 +37,19 @@ function CateCardList({ category, categoryName }) {
         <CateCard categoryName={'반려동물용품'} categoryKey={'14'} />
         <CateCard categoryName={'헬스/건강식품'} categoryKey={'15'} />
       </CateCardContainer>
-    </Wrapper>
+    </Container>
   );
 }
 
 export default CateCardList;
 
-const Wrapper = styled.div`
+const Container = styled.main`
   margin: auto;
   margin-bottom: 10px;
   width: 100%;
 `;
 
-const CateCardContainer = styled.main`
+const CateCardContainer = styled.article`
   width: 100%;
   margin: auto;
   display: flex;
@@ -62,7 +62,7 @@ const ListHeader = styled.header`
   align-items: baseline;
   margin-bottom: 20px;
   > h3 {
-    font-size: 20px;
+    font-size: 30px;
     font-weight: bold;
   }
 `;
