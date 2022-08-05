@@ -16,13 +16,13 @@ export const ActiveInput = styled.div`
     height: 40px;
     border: none;
     border-radius: 5px;
-    padding: ${(props) => (props.active ? '15px 10px 10px' : '10px')};
+    padding: ${(props) => (props.active ? '20px 10px 10px' : '10px')};
     color: ${(props) => props.theme.colors.white};
     width: 100%;
 
     &:focus ~ label,
     &:not(:placeholder-shown) ~ label {
-      transform: translateY(-9px);
+      transform: translateY(-6px);
       font-size: 10px;
     }
 

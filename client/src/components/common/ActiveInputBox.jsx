@@ -9,7 +9,7 @@ function ActiveInputBox({
   placeholder,
   required,
   onChange,
-  disabled = true,
+  disabled = false,
 }) {
   return (
     <ActiveInput active={text ? true : false}>
@@ -21,7 +21,7 @@ function ActiveInputBox({
         placeholder={placeholder || ' '}
         required={required}
         onChange={onChange}
-        disabled={!disabled}
+        disabled={disabled}
       />
       {text ? <label htmlFor={name}>{text}</label> : null}
     </ActiveInput>

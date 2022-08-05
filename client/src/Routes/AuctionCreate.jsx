@@ -6,19 +6,26 @@ import ActiveInputBox from '../components/common/ActiveInputBox';
 import ProductTable from '../components/common/ProductTable';
 import Modal from '../components/common/Modal';
 function AuctionCreate(props) {
-  const [categorySeq, setCategorySeq] = useState(1);
-  const [auctionImages, setAuctionImages] = useState([]);
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+  const [inputAuction, setInputAuction] = useState({
+    categorySeq: 1,
+    auctionImages: [],
+    title: '',
+    content: '',
+    startTime: '',
+    products: [],
+  });
+
+  const { categorySeq, auctionImages, title, content, startTime, products } = inputAuction;
+
   const [reservation, setReservation] = useState(false);
-  const [startTime, setStartTime] = useState('');
-  const [products, setProducts] = useState([]);
   const [productName, setProductName] = useState('');
   const [startPrice, setStartPrice] = useState('');
 
-  const [isModal, setIsModal] = useState(false);
-  const ModalHandler = () => {
-    setIsModal((prev) => !prev);
+  const onChange = ({ target: { name, value } }) => {
+    setInputAuction({
+      ...inputAuction,
+      [name]: value,
+    });
   };
 
   const isChecked = (checked) => {
@@ -29,25 +36,33 @@ function AuctionCreate(props) {
     }
   };
 
-  const createProducts = () => {
+  const createProducts = (e) => {
     if (productName && startPrice) {
-      setProducts([...products, { productName, startPrice }]);
+      onChange({ target: { name: 'products', value: [...products, { productName, startPrice }] } });
       setProductName('');
       setStartPrice('');
     }
   };
 
   const deleteProducts = (index) => {
-    setProducts(products.filter((products, i) => index !== i));
+    onChange({
+      target: { name: 'products', value: products.filter((product, i) => index !== i) },
+    });
+  };
+
+  const [isModal, setIsModal] = useState(false);
+  const ModalHandler = () => {
+    setIsModal((prev) => !prev);
   };
 
   return (
     <Container>
       <Title>경매 생성</Title>
+      <p>{inputAuction.title}</p>
       <form action="">
         <Div>
           <Label>카테고리</Label>
-          <Select onChange={(e) => setCategorySeq(e.target.value)} value={categorySeq}>
+          <Select name="categorySeq" value={categorySeq} onChange={onChange}>
             {categories.map((item, i) => (
               <option key={i} value={item.seq}>
                 {item.name}
@@ -67,20 +82,21 @@ function AuctionCreate(props) {
           <Label>제목</Label>
           <ActiveInputBox
             placeholder="제목 입력..."
-            onChange={(e) => setTitle(e.target.value)}
+            name="title"
             value={title}
+            onChange={onChange}
           />
         </Div>
 
         <Div>
           <Label>내용</Label>
           <Textarea
-            name=""
-            id=""
+            name="content"
+            id="content"
             cols="30"
             rows="10"
             placeholder="내용을 입력하세요.."
-            onChange={(e) => setContent(e.target.value)}
+            onChange={onChange}
             value={content}></Textarea>
         </Div>
 
@@ -95,9 +111,10 @@ function AuctionCreate(props) {
             onChange={(e) => isChecked(e.target.checked)}></CheckBox>
           <label htmlFor="reservation"></label>
           <ActiveInputBox
+            name="startTime"
             type="datetime-local"
-            onChange={(e) => setStartTime(e.target.value)}
-            disabled={reservation}
+            onChange={onChange}
+            disabled={!reservation}
             value={startTime}
           />
         </Div>
@@ -113,9 +130,10 @@ function AuctionCreate(props) {
           <ProductTable products={products} />
         </Div>
         <SubmitBox>
-          <Submit type="submit">생성</Submit>
+          <button type="submit">생성</button>
         </SubmitBox>
       </form>
+
       <Modal open={isModal} close={ModalHandler} title="상품 관리">
         <Label>상품 ({products.length})</Label>
         <ProductTable products={products} mng={true} deleteProducts={deleteProducts}></ProductTable>
@@ -198,10 +216,10 @@ const SubmitBox = styled.div`
   padding: 15px 0;
   display: flex;
   justify-content: center;
-`;
 
-const Submit = styled.button`
-  display: inline-block;
+  button {
+    display: inline-block;
+  }
 `;
 
 const Div = styled.div`
@@ -223,9 +241,8 @@ const Textarea = styled.textarea`
   color: ${(props) => props.theme.colors.white};
   padding: 10px;
   resize: none;
-  /* font-family: Pretendard;
-  font-size: 15px;
-  font-weight: 200; */
+  font-family: Pretendard;
+  font-size: 14px;
 `;
 const Label = styled.p`
   font-size: 20px;
