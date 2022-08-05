@@ -2,18 +2,36 @@ import React, { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import GradientButton from '../components/common/GradientButton';
+import MintButton from '../components/common/MintButton';
 import { ActiveInput } from '../style/style';
 import { getData, userApis } from '../utils/api/userApi';
 import { REGEX, REGISTER_MESSAGE, STANDARD } from '../utils/constants/constant';
 import debounce from '../utils/functions/debounce';
+import PopupDom from './PopupDom';
+import PopupPostCode from './PopupPostCode';
+import Post from './Post';
+import { InputContainer } from './Register2';
 import StepSignal from './StepSignal';
 
 function Register3(props) {
-  const [duplicatedID, setDuplicatedID] = useState(true);
+  const [duplicatedNickname, setDuplicatedNickname] = useState(false);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [address, setAddress] = useState();
+
+  const handleInput = (e) => {
+    setAddress(e.target.value);
+  };
+
+  const togglePostCode = () => {
+    setIsPopupOpen(!isPopupOpen);
+  };
+
+  const closePostCode = () => {
+    setIsPopupOpen(false);
+  };
 
   const {
     register,
-    watch,
     setError,
     handleSubmit,
     formState: { errors },
@@ -26,119 +44,110 @@ function Register3(props) {
   });
 
   const onValid = (data) => {
-    if (!duplicatedID) {
+    console.log(data);
+    if (duplicatedNickname) {
       setError('memberId', { message: REGISTER_MESSAGE.DUPLICATED_ID }, { shouldFocus: true });
-      setDuplicatedID(false);
+      setDuplicatedNickname(true);
     }
   };
 
-  const password = useRef({});
-  password.current = watch('pwd', '');
-
-  const checkMemberId = async (e) => {
+  const checkNickname = async (e) => {
     const {
       target: { value },
     } = e;
-    if (!value || value.length < STANDARD.ID_MIN_LENGTH) return;
+    if (errors?.nickname?.type === 'pattern' || !value || value.length < STANDARD.NAME_MIN_LENGTH)
+      return;
     try {
-      const response = await getData(userApis.ID_DUPLICATE_CHECK_API(value || value));
+      const response = await getData(userApis.NICKNAME_DUPLICATE_CHECK_API(value));
       if (response.status === 200) {
-        setDuplicatedID(true);
-        return true;
+        setDuplicatedNickname(false);
       }
     } catch {
-      setError('memberId', { message: REGISTER_MESSAGE.DUPLICATED_ID }, { shouldFocus: true });
-      setDuplicatedID(false);
+      setError('nickname', { message: REGISTER_MESSAGE.DUPLICATED_ID }, { shouldFocus: true });
+      setDuplicatedNickname(true);
     }
   };
 
-  const onIdChange = async (value) => {
-    processChange(value);
+  const onChagneNickname = async (value) => {
+    debounceCheckNickname(value);
   };
-  const processChange = debounce(async (value) => await checkMemberId(value));
+  const debounceCheckNickname = debounce(async (value) => await checkNickname(value));
 
   return (
     <form onSubmit={handleSubmit(onValid)}>
-      지금이 3단계
       <div>
         <ActiveInput active={true}>
           <input
-            name="memberId"
-            id="memberId"
+            name="nickname"
+            id="nickname"
             type="text"
             autoComplete="off"
-            {...register('memberId', {
-              required: REGISTER_MESSAGE.REQUIRED_ID,
+            maxLength={STANDARD.NAME_MAX_LENGTH}
+            minLength={STANDARD.NAME_MIN_LENGTH}
+            {...register('nickname', {
+              required: REGISTER_MESSAGE.REQUIRED_NICKNAME,
               minLength: {
-                value: 6,
-                message: REGISTER_MESSAGE.ID_LENGTH,
+                value: STANDARD.NAME_MIN_LENGTH,
+                message: REGISTER_MESSAGE.NICKNAME_LENGTH,
               },
               maxLength: {
-                value: 20,
+                value: STANDARD.NAME_MAX_LENGTH,
                 message: REGISTER_MESSAGE.ID_LENGTH,
               },
               pattern: {
-                value: REGEX.ID,
-                message: REGISTER_MESSAGE.ONLY_ENGLISH_AND_NUMBER,
+                value: REGEX.NICKNAME,
+                message: REGISTER_MESSAGE.NICKNAME_STANDARD,
               },
-              onChange: (e) => onIdChange(e),
+              onChange: (e) => onChagneNickname(e),
             })}
             placeholder=" "
             required
           />
-          <label htmlFor="memberId">아이디</label>
+          <label htmlFor="nickname">닉네임</label>
         </ActiveInput>
         <MessageWrapper>
-          <WarningMessage>{errors?.memberId?.message}</WarningMessage>
+          <WarningMessage>{errors?.nickname?.message}</WarningMessage>
         </MessageWrapper>
-        <ActiveInput active={true}>
-          <input
-            name="password"
-            id="password"
-            type="password"
-            {...register('pwd', {
-              required: REGISTER_MESSAGE.REQUIRED_PASSWORD,
-              minLength: {
-                value: 8,
-                message: REGISTER_MESSAGE.PASSWORD_STANDARD,
-              },
-              maxLength: {
-                value: 20,
-                message: REGISTER_MESSAGE.PASSWORD_STANDARD,
-              },
-              pattern: {
-                value: REGEX.PASSWORD,
-                message: REGISTER_MESSAGE.PASSWORD_STANDARD,
-              },
-            })}
-            placeholder=" "
-            required
-          />
-          <label htmlFor="password">비밀번호</label>
-        </ActiveInput>
+        <InputContainer>
+          <ActiveInput active={true}>
+            <input
+              name="address"
+              id="address"
+              type="text"
+              value={address}
+              onChange={handleInput}
+              {...register('address', {
+                required: REGISTER_MESSAGE.REQUIRED_ADDRESS,
+              })}
+              placeholder=" "
+              required
+            />
+            <label htmlFor="address">주소</label>
+          </ActiveInput>
+          <MintButton text={'찾기'} type={'button'} onClick={togglePostCode} />
+        </InputContainer>
+        <div id="popupDom">
+          {isPopupOpen && (
+            <PopupDom>
+              <PopupPostCode onClose={closePostCode} setAddress={setAddress} />
+            </PopupDom>
+          )}
+        </div>
         <MessageWrapper>
           <WarningMessage>{errors?.pwd?.message}</WarningMessage>
         </MessageWrapper>
         <ActiveInput active={true}>
           <input
-            name="password-check"
-            id="password-check"
-            type="password"
+            name="addressDetail"
+            id="addressDetail"
+            type="text"
+            {...register('addressDetail')}
             placeholder=" "
-            {...register('passwordCheck', {
-              required: REGISTER_MESSAGE.REQUIRED_PASSWORD_CHECK,
-              validate: {
-                passwordMatch: (value) =>
-                  value !== password.current ? REGISTER_MESSAGE.PASSWORD_CHECK : true,
-              },
-            })}
-            required
           />
-          <label htmlFor="password">비밀번호 확인</label>
+          <label htmlFor="addressDetail">상세주소</label>
         </ActiveInput>
-        <MessageWrapper>
-          <WarningMessage>{errors?.passwordCheck?.message}</WarningMessage>
-        </MessageWrapper>
+        <MessageWrapper></MessageWrapper>
+
         <StepSignal step={'register3'} />
         <GradientButton text={'회원가입'} />
       </div>

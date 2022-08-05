@@ -130,7 +130,8 @@ function Register2({ setUserInfo, setStep }) {
         <MessageWrapper>
           <WarningMessage>{errors?.email?.message}</WarningMessage>
         </MessageWrapper>
-        <PhoneInputContainer>
+        export{' '}
+        <InputContainer>
           <ActiveInput active={true}>
             <input
               name="phone"
@@ -149,8 +150,8 @@ function Register2({ setUserInfo, setStep }) {
             />
             <label htmlFor="phone">전화번호</label>
           </ActiveInput>
-          <MintButton text={'인증'} type={'text'} onClick={validatePhoneNumber} />
-        </PhoneInputContainer>
+          <MintButton text={'인증'} type={'button'} onClick={validatePhoneNumber} />
+        </InputContainer>
         <MessageWrapper>
           <WarningMessage>{errors?.phone?.message}</WarningMessage>
         </MessageWrapper>
@@ -179,9 +180,9 @@ function Register2({ setUserInfo, setStep }) {
 
 export default Register2;
 
-const PhoneInputContainer = styled.div`
+export const InputContainer = styled.div`
   display: flex;
-  gap: 1rem;
+  gap: 0.5rem;
   width: 100%;
   div {
     flex: 0 1 100%;
