@@ -1,14 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import IsellingButton from '../components/ui/profile/IsSellingButton';
-import SalesHistoryCard from '../components/ui/profile/SalesHistoryCard';
-import SalesHistoryCard2 from '../components/ui/profile/SalesHistoryCard2';
+import IsSellingCardList from '../components/ui/profile/IsSellingCardList';
 
 function ProfileSalesHistory(props) {
   return (
     <Container>
       <IsellingButton />
-      <SalesHistoryCard2 />
+      <IsSellingCardList />
     </Container>
   );
 }

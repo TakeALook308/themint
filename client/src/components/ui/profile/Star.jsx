@@ -15,7 +15,7 @@ const StarRating = ({ rating, color = 'FFDA7B' }) => {
       {Array(Math.floor(5 - rating))
         .fill(2)
         .map((el, i) => (
-          // 아웃라인 노란색으로
+          // 아웃라인 노란색으로 바꾸기
           <BsStarFill key={i} size="15" color="black" />
         ))}
     </>

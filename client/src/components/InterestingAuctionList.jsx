@@ -1,8 +1,7 @@
 // TODO: 서버 api 완성 시 삭제 예정 컴포넌트
 import axios from 'axios';
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { useInfiniteQuery } from 'react-query';
-import { instance } from '../utils/api/api';
 import useObserver from '../utils/hooks/useObserver';
 import AuctionCard from './common/AuctionCard';
 import SkeletonAuctionCard from './common/SkeletonAuctionCard';
