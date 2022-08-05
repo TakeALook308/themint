@@ -16,6 +16,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Member findByMemberId(String memberId);
     Member findByNickname(String nickname);
     Member findByEmail(String email);
+    Member findByPhone(String phone);
     @Transactional
     void deleteMemberBySeq(Long memberSeq);
     Member findByMemberNameAndPhone(String memberName, String Phone);

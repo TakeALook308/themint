@@ -33,6 +33,7 @@ public class MemberServiceImpl implements MemberService {
                 .nickname(memberRegisterPostReq.getNickname())
                 .email(memberRegisterPostReq.getEmail())
                 .address(memberRegisterPostReq.getAddress())
+                .addressDetail(memberRegisterPostReq.getAddressDetail())
                 .phone(memberRegisterPostReq.getPhone())
                 .noticeKakao(memberRegisterPostReq.getNoticeKakao())
                 .noticeEmail(memberRegisterPostReq.getNoticeEmail())
@@ -52,6 +53,7 @@ public class MemberServiceImpl implements MemberService {
         member.setNickname(memberUpdatePostReq.getNickname());
         member.setEmail(memberUpdatePostReq.getEmail());
         member.setAddress(memberUpdatePostReq.getAddress());
+        member.setAddressDetail(memberUpdatePostReq.getAddressDetail());
         member.setPhone(memberUpdatePostReq.getPhone());
         member.setProfileUrl(memberUpdatePostReq.getProfileUrl());
         member.setBankCode(memberUpdatePostReq.getBankCode());
@@ -86,6 +88,11 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member getMemberByEmail(String email) {
         return memberRepository.findByEmail(email);
+    }
+
+    @Override
+    public Member getMemberByPhone(String phone) {
+        return memberRepository.findByPhone(phone);
     }
 
     @Override
