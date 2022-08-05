@@ -88,6 +88,14 @@ function Register2({ setUserInfo, setStep }) {
             autoComplete="off"
             {...register('memberName', {
               required: REGISTER_MESSAGE.REQUIRED_NAME,
+              minLength: {
+                value: STANDARD.NAME_MIN_LENGTH,
+                message: REGISTER_MESSAGE.NAME_LENGTH,
+              },
+              maxLength: {
+                value: STANDARD.NAME_MAX_LENGTH,
+                message: REGISTER_MESSAGE.NAME_LENGTH,
+              },
               pattern: {
                 value: REGEX.NAME,
                 message: REGISTER_MESSAGE.NAME_STANDARD,

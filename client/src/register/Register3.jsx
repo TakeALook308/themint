@@ -6,6 +6,7 @@ import { ActiveInput } from '../style/style';
 import { getData, userApis } from '../utils/api/userApi';
 import { REGEX, REGISTER_MESSAGE, STANDARD } from '../utils/constants/constant';
 import debounce from '../utils/functions/debounce';
+import StepSignal from './StepSignal';
 
 function Register3(props) {
   const [duplicatedID, setDuplicatedID] = useState(true);
@@ -18,13 +19,8 @@ function Register3(props) {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      memberId: '',
-      memberName: '',
       nickname: '',
-      pwd: '',
-      email: '',
       address: '',
-      phone: '',
     },
     mode: 'onChange',
   });
@@ -70,8 +66,6 @@ function Register3(props) {
             name="memberId"
             id="memberId"
             type="text"
-            maxLength={STANDARD.ID_MAX_LENGTH}
-            minLength={STANDARD.ID_MIN_LENGTH}
             autoComplete="off"
             {...register('memberId', {
               required: REGISTER_MESSAGE.REQUIRED_ID,
@@ -102,8 +96,6 @@ function Register3(props) {
             name="password"
             id="password"
             type="password"
-            maxLength={STANDARD.ID_MAX_LENGTH}
-            minLength={STANDARD.ID_MIN_LENGTH}
             {...register('pwd', {
               required: REGISTER_MESSAGE.REQUIRED_PASSWORD,
               minLength: {
@@ -147,7 +139,8 @@ function Register3(props) {
         <MessageWrapper>
           <WarningMessage>{errors?.passwordCheck?.message}</WarningMessage>
         </MessageWrapper>
-        <GradientButton text={'회원가입 계속하기'} />
+        <StepSignal step={'register3'} />
+        <GradientButton text={'회원가입'} />
       </div>
     </form>
   );

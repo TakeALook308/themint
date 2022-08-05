@@ -9,6 +9,7 @@ export const REGISTER_MESSAGE = {
   PASSWORD_CHECK: '입력한 비밀번호와 일치하지 않습니다.',
   REQUIRED_NAME: '이름을 입력해주세요.',
   NAME_STANDARD: '이름은 한글만 입력이 가능합니다.',
+  NAME_LENGTH: '이름은 2 ~ 10자 사이로 작성해주세요.',
   REQUIRED_EMAIL: '이메일 주소를 입력해주세요.',
   EMAIL_STANDARD: '이메일 주소만 입력이 가능합니다.',
   DUPLICATED_EMAIL: '사용중인 이메일 주소입니다.',
@@ -17,11 +18,15 @@ export const REGISTER_MESSAGE = {
   DUPLICATED_PHONE: '사용중인 전화번호 입니다.',
   REQUIRED_CERTIFICATION_NUMBER: '인증번호를 입력해주세요.',
   CERTICATION_NUMBER: '인증번호가 일치하지 않습니다.',
+  REQUIRED_NICKNAME: '닉네임을 입력해주세요.',
+  DUPLICATED_NIACKNAME: '사용준인 닉네임입니다.',
 };
 
 export const STANDARD = {
   ID_MIN_LENGTH: 6,
   ID_MAX_LENGTH: 20,
+  NAME_MIN_LENGTH: 2,
+  NAME_MAX_LENGTH: 10,
 };
 
 export const REGEX = {

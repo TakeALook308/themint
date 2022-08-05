@@ -46,6 +46,7 @@ function Register() {
           </>
         )}
         {step.step2 && <Register2 setUserInfo={setUserInfo} setStep={setStep} />}
+        {step.step3 && <Register3 setUserInfo={setUserInfo} setStep={setStep} />}
       </RegisterContainer>
     </Container>
   );
