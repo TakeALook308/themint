@@ -11,6 +11,7 @@ const colors = {
   pointGray: '#5C5C5C',
   disabledGray: '#414040',
   textGray: '#C0C0C0',
+  gradientMintToPurple: `linear-gradient(103.87deg, #2CDCB2 4.21%, #893CD6 100%)`,
 };
 
 const pixelToRem = (size) => `${size / 16}rem`;
