@@ -89,14 +89,10 @@ public class AuctionController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<AuctionListEntityRes>> getAuctionList(@RequestParam("word") String word, @RequestParam("key") String key, Pageable pageable){
+    public ResponseEntity<List<AuctionListEntityRes>> getAuctionList(@RequestParam("word") String word, Pageable pageable){
         // [key] 최신순: date, 인기순: interest, 낮은가격순: price, 판매자신뢰도순: score
-        BaseSearchRequest baseSearchRequest = BaseSearchRequest.builder()
-                .word(word)
-                .key(key)
-                .build();
         List<AuctionListEntityRes> auctionListEntityResList = new ArrayList<>();
-        List<Auction> auctionList = auctionService.getAuctionList(baseSearchRequest);
+        List<Auction> auctionList = auctionService.getAuctionList(word, pageable);
         for (Auction auction : auctionList){
             Long memberSeq = auction.getMemberSeq();
             Member member = memberService.getMemberByMemberSeq(memberSeq);

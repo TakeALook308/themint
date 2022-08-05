@@ -4,7 +4,6 @@ import com.takealook.api.request.AuctionImageRegisterPostReq;
 import com.takealook.api.request.AuctionRegisterPostReq;
 import com.takealook.api.request.AuctionUpdatePatchReq;
 import com.takealook.api.request.ProductRegisterPostReq;
-import com.takealook.common.model.request.BaseSearchRequest;
 import com.takealook.common.util.HashUtil;
 import com.takealook.db.entity.Auction;
 import com.takealook.db.entity.AuctionImage;
@@ -16,6 +15,7 @@ import com.takealook.db.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Pageable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,10 +81,10 @@ public class AuctionServiceImpl implements AuctionService {
     }
 
     @Override
-    public List<Auction> getAuctionList(BaseSearchRequest baseSearchRequest) {
+    public List<Auction> getAuctionList(String word, Pageable pageable) {
         List<Auction> auctionList = new ArrayList<>();
         // 검색어, 정렬키, 카테고리, 페이지번호
-
+        auctionList = auctionRepository.findAllByTitleContainsOrContentContains(word, pageable);
         return auctionList;
     }
 

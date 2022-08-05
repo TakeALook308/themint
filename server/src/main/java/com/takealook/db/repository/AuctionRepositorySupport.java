@@ -6,12 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.TypedQuery;
+import java.awt.print.Pageable;
+
 @Repository
 public class AuctionRepositorySupport {
     @Autowired
     JPAQueryFactory jpaQueryFactory;
 
-//    public Page<Auction> findAllByTitleAndContentAndCategorySeq(String word, String key, int category){
-//
+//    public Page<Auction> findAllByTitleAndContent(String word, Pageable pageable){
+//        TypedQuery<Auction> query =
 //    }
 }
