@@ -176,25 +176,16 @@ const Select = styled.select`
   width: 100%;
   height: 40px;
   color: ${(props) => props.theme.colors.white};
-  background-color: ${(props) => props.theme.colors.pointBlack};
-
   padding: 10px;
   margin: 0;
-
   border: none;
   border-radius: 5px;
   box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
   background: url('https://user-images.githubusercontent.com/57048162/183007422-e8474fa0-acc1-441e-b7e1-c0701b82b766.png')
-    no-repeat 95% 50%;
-  /* width: 100%;
-  padding: 15px;
-  border: none;
-  border-radius: 25px;
-  border-radius: 0px;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  color: ${(props) => props.theme.colors.white}; */
+    no-repeat;
+  background-position: 99%;
+  background-size: 15px 12px;
+  background-color: ${(props) => props.theme.colors.pointBlack};
 
   & option {
     display: block;
