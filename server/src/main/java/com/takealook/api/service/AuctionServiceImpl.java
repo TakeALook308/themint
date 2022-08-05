@@ -11,7 +11,6 @@ import com.takealook.db.entity.AuctionImage;
 import com.takealook.db.entity.Product;
 import com.takealook.db.repository.AuctionImageRepository;
 import com.takealook.db.repository.AuctionRepository;
-import com.takealook.db.repository.AuctionRepositorySupport;
 import com.takealook.db.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,9 +23,6 @@ public class AuctionServiceImpl implements AuctionService {
 
     @Autowired
     AuctionRepository auctionRepository;
-
-    @Autowired
-    AuctionRepositorySupport auctionRepositorySupport;
 
     @Autowired
     ProductRepository productRepository;
