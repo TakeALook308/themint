@@ -1,29 +1,246 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-
+import { Container, Title } from '../style/style';
+import { categories } from '../utils/constants/constant';
+import ActiveInputBox from '../components/common/ActiveInputBox';
+import ProductTable from '../components/common/ProductTable';
+import Modal from '../components/common/Modal';
 function AuctionCreate(props) {
+  const [categorySeq, setCategorySeq] = useState(1);
+  const [auctionImages, setAuctionImages] = useState([]);
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [reservation, setReservation] = useState(false);
+  const [startTime, setStartTime] = useState('');
+  const [products, setProducts] = useState([]);
+  const [productName, setProductName] = useState('');
+  const [startPrice, setStartPrice] = useState('');
+
+  const [isModal, setIsModal] = useState(false);
+  const ModalHandler = () => {
+    setIsModal((prev) => !prev);
+  };
+
+  const isChecked = (checked) => {
+    if (checked) {
+      setReservation(true);
+    } else {
+      setReservation(false);
+    }
+  };
+
+  const createProducts = () => {
+    if (productName && startPrice) {
+      setProducts([...products, { productName, startPrice }]);
+      setProductName('');
+      setStartPrice('');
+    }
+  };
+
+  const deleteProducts = (index) => {
+    setProducts(products.filter((products, i) => index !== i));
+  };
+
   return (
     <Container>
       <Title>경매 생성</Title>
       <form action="">
-        <div>
-          <p>카테고리</p>
-          <select name="" id="">
-            <option value="">--선택--</option>
-          </select>
-        </div>
+        <Div>
+          <Label>카테고리</Label>
+          <Select onChange={(e) => setCategorySeq(e.target.value)} value={categorySeq}>
+            {categories.map((item, i) => (
+              <option key={i} value={item.seq}>
+                {item.name}
+              </option>
+            ))}
+          </Select>
+        </Div>
+
+        <Div>
+          <Label>사진 업로드</Label>
+          <FileUpload>
+            <input type="file" />
+          </FileUpload>
+        </Div>
+
+        <Div>
+          <Label>제목</Label>
+          <ActiveInputBox
+            placeholder="제목 입력..."
+            onChange={(e) => setTitle(e.target.value)}
+            value={title}
+          />
+        </Div>
+
+        <Div>
+          <Label>내용</Label>
+          <Textarea
+            name=""
+            id=""
+            cols="30"
+            rows="10"
+            placeholder="내용을 입력하세요.."
+            onChange={(e) => setContent(e.target.value)}
+            value={content}></Textarea>
+        </Div>
+
+        <Div>
+          <Label style={{ display: 'inline-block', lineHeight: '24px', verticalAlign: 'middle' }}>
+            예약
+          </Label>
+          <CheckBox
+            type="checkbox"
+            id="reservation"
+            key="yes"
+            onChange={(e) => isChecked(e.target.checked)}></CheckBox>
+          <label htmlFor="reservation"></label>
+          <ActiveInputBox
+            type="datetime-local"
+            onChange={(e) => setStartTime(e.target.value)}
+            disabled={reservation}
+            value={startTime}
+          />
+        </Div>
+
+        <Div>
+          <Label>
+            상품 ({products.length})
+            <Plus type="button" onClick={ModalHandler}>
+              +
+            </Plus>
+          </Label>
+
+          <ProductTable products={products} />
+        </Div>
+        <SubmitBox>
+          <Submit type="submit">생성</Submit>
+        </SubmitBox>
       </form>
+      <Modal open={isModal} close={ModalHandler} title="상품 관리">
+        <Label>상품 ({products.length})</Label>
+        <ProductTable products={products} mng={true} deleteProducts={deleteProducts}></ProductTable>
+        <Label>이름</Label>
+        <ActiveInputBox
+          placeholder="이름 입력"
+          value={productName}
+          onChange={(e) => setProductName(e.target.value)}
+        />
+        <Label>시작가</Label>
+        <ActiveInputBox
+          type="number"
+          placeholder="시작가 입력"
+          value={startPrice}
+          onChange={(e) => setStartPrice(e.target.value)}
+        />
+        <Button onClick={createProducts}>추가</Button>
+      </Modal>
     </Container>
   );
 }
-
-const Container = styled.main`
-  padding-top: 80px;
+const Button = styled.button`
+  display: block;
+  margin: 40px auto 20px;
+`;
+const Plus = styled.button`
+  position: absolute;
+  right: 0;
+  width: 24px;
+  height: 24px;
 `;
 
-const Title = styled.h3`
-  font-size: ${(props) => props.theme.fontSizes.h3};
-  font-weight: 700;
+const CheckBox = styled.input`
+  display: none;
+  & + label {
+    line-height: 64px;
+    vertical-align: middle;
+    margin-left: 15px;
+    border-radius: 3px;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-color: #fff;
+  }
+  &:checked + label {
+    background-color: ${(props) => props.theme.colors.subMint};
+    background: url(https://w7.pngwing.com/pngs/516/365/png-transparent-computer-icons-check-mark-desktop-ppt-icon-miscellaneous-angle-hand-thumbnail.png);
+    background-size: 20px 20px;
+  }
+  &:checked ~ input[type='datetime-local'] {
+  }
+`;
+
+const Select = styled.select`
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 40px;
+  color: ${(props) => props.theme.colors.white};
+  background-color: ${(props) => props.theme.colors.pointBlack};
+
+  padding: 10px;
+  margin: 0;
+
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
+  background: url('https://user-images.githubusercontent.com/57048162/183007422-e8474fa0-acc1-441e-b7e1-c0701b82b766.png')
+    no-repeat 95% 50%;
+  /* width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 25px;
+  border-radius: 0px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  color: ${(props) => props.theme.colors.white}; */
+
+  & option {
+    display: block;
+    padding: 10px;
+  }
+`;
+
+const SubmitBox = styled.div`
+  width: 100%;
+  padding: 15px 0;
+  display: flex;
+  justify-content: center;
+`;
+
+const Submit = styled.button`
+  display: inline-block;
+`;
+
+const Div = styled.div`
+  padding: 15px 80px;
+  position: relative;
+`;
+
+const FileUpload = styled.div`
+  width: 100%;
+  height: 200px;
+  border-radius: 5px;
+  background-color: ${(props) => props.theme.colors.pointBlack};
+`;
+const Textarea = styled.textarea`
+  width: 100%;
+  background-color: ${(props) => props.theme.colors.pointBlack};
+  border: none;
+  border-radius: 5px;
+  color: ${(props) => props.theme.colors.white};
+  padding: 10px;
+  resize: none;
+  /* font-family: Pretendard;
+  font-size: 15px;
+  font-weight: 200; */
+`;
+const Label = styled.p`
+  font-size: 20px;
+  font-weight: 600;
+  padding: 20px 0;
+  position: relative;
 `;
 
 export default AuctionCreate;

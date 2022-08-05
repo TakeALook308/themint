@@ -1,5 +1,14 @@
 import styled from 'styled-components';
 
+export const Container = styled.main`
+  padding-top: 80px;
+`;
+
+export const Title = styled.h3`
+  font-size: 30px;
+  font-weight: 700;
+`;
+
 export const ActiveInput = styled.div`
   position: relative;
   & input {
