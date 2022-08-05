@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -81,7 +82,10 @@ public class AuctionServiceImpl implements AuctionService {
 
     @Override
     public List<Auction> getAuctionList(BaseSearchRequest baseSearchRequest) {
-        return null;
+        List<Auction> auctionList = new ArrayList<>();
+        // 검색어, 정렬키, 카테고리, 페이지번호
+
+        return auctionList;
     }
 
     @Override

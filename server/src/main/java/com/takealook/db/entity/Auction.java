@@ -28,4 +28,5 @@ public class Auction {
     Long categorySeq;
     String startTime;
     String link;
+    int status; // 0 : 시작 안된거 . 1 : 시작 된거
 }

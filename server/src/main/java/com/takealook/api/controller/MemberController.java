@@ -4,7 +4,6 @@ import com.takealook.api.request.*;
 import com.takealook.api.response.*;
 import com.takealook.api.service.MemberService;
 import com.takealook.common.auth.MemberDetails;
-import com.takealook.common.model.response.BaseResponseBody;
 import com.takealook.common.util.JwtTokenUtil;
 import com.takealook.db.entity.Member;
 import io.swagger.annotations.Api;

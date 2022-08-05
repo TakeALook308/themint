@@ -2,14 +2,15 @@ package com.takealook.api.controller;
 
 import com.takealook.api.request.AuctionRegisterPostReq;
 import com.takealook.api.request.AuctionUpdatePatchReq;
+import com.takealook.api.response.AuctionListEntityRes;
 import com.takealook.api.response.AuctionRes;
 import com.takealook.api.service.AuctionImageService;
 import com.takealook.api.service.AuctionService;
 import com.takealook.api.service.MemberService;
 import com.takealook.api.service.ProductService;
 import com.takealook.common.auth.MemberDetails;
+import com.takealook.common.model.request.BaseSearchRequest;
 import com.takealook.common.model.response.BaseResponseBody;
-import com.takealook.common.util.JwtAuthenticationUtil;
 import com.takealook.db.entity.Auction;
 import com.takealook.db.entity.AuctionImage;
 import com.takealook.db.entity.Member;
@@ -21,6 +22,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.awt.print.Pageable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Api(value = "경매 API", tags = {"Auction"})
@@ -39,9 +42,6 @@ public class AuctionController {
 
     @Autowired
     AuctionImageService auctionImageService;
-
-    @Autowired
-    JwtAuthenticationUtil jwtAuthenticationUtil;
 
     @PostMapping
     public ResponseEntity<BaseResponseBody> registerAuction(@RequestBody AuctionRegisterPostReq auctionRegisterPostReq, @ApiIgnore Authentication authentication) {
@@ -86,5 +86,23 @@ public class AuctionController {
         auctionImageService.deleteAuctionImageList(auctionSeq);
         auctionService.deleteAuction(memberSeq, auctionSeq);
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<AuctionListEntityRes>> getAuctionList(@RequestParam("word") String word, @RequestParam("key") String key, Pageable pageable){
+        // [key] 최신순: date, 인기순: interest, 낮은가격순: price, 판매자신뢰도순: score
+        BaseSearchRequest baseSearchRequest = BaseSearchRequest.builder()
+                .word(word)
+                .key(key)
+                .build();
+        List<AuctionListEntityRes> auctionListEntityResList = new ArrayList<>();
+        List<Auction> auctionList = auctionService.getAuctionList(baseSearchRequest);
+        for (Auction auction : auctionList){
+            Long memberSeq = auction.getMemberSeq();
+            Member member = memberService.getMemberByMemberSeq(memberSeq);
+            List<AuctionImage> auctionImageList = auctionImageService.getAuctionImageListByAuctionSeq(auction.getSeq());
+            auctionListEntityResList.add(AuctionListEntityRes.of(auction, member, auctionImageList));
+        }
+        return ResponseEntity.status(200).body(auctionListEntityResList);
     }
 }
