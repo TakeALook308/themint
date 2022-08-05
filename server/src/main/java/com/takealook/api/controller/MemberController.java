@@ -200,6 +200,7 @@ public class MemberController {
     }
 
 
+    // 문자 인증
     @PostMapping("/sms")
     public ResponseEntity<?> smsAuth(@RequestBody String phone) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
         int randNum = ThreadLocalRandom.current().nextInt(100000, 1000000);
