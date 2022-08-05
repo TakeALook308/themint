@@ -13,6 +13,7 @@ public class MemberUpdatePostReq {
     String nickname;
     String email;
     String address;
+    String addressDetail;
     String phone;
     String profileUrl;
     int bankCode;

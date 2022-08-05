@@ -40,7 +40,11 @@ public class MemberController {
     @PostMapping
     public ResponseEntity<?> registerMember(@RequestBody MemberRegisterPostReq memberRegisterPostReq) {
         Member member = memberService.createMember(memberRegisterPostReq);
-        return ResponseEntity.status(200).body("success");
+        // 회원가입 성공 시 자동 로그인
+        if (member != null) {
+            return ResponseEntity.status(200).body(MemberLoginPostRes.of(JwtTokenUtil.getToken(member.getMemberId()), member.getSeq(), member.getMemberId(), member.getNickname()));
+        }
+        return ResponseEntity.status(409).body("fail");
     }
 
     // 로그인
@@ -174,6 +178,16 @@ public class MemberController {
     public ResponseEntity<?> emailDuplicateCheck(@PathVariable("email") String email) {
         Member member = memberService.getMemberByEmail(email);
         // 검색 결과가 없으면 (중복된 이메일이 없다면) success
+        if (member == null) {
+            return ResponseEntity.status(200).body("success");
+        }
+        return ResponseEntity.status(409).body("fail");
+    }
+
+    // 휴대폰 번호 중복 검사
+    @GetMapping("/phone/{phone}")
+    public ResponseEntity<?> phoneDuplicateCheck(@PathVariable("phone") String phone) {
+        Member member = memberService.getMemberByPhone(phone);
         if (member == null) {
             return ResponseEntity.status(200).body("success");
         }
