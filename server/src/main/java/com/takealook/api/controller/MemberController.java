@@ -1,8 +1,10 @@
 package com.takealook.api.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.takealook.api.request.*;
 import com.takealook.api.response.*;
 import com.takealook.api.service.MemberService;
+import com.takealook.api.service.SmsService;
 import com.takealook.common.auth.MemberDetails;
 import com.takealook.common.util.JwtTokenUtil;
 import com.takealook.db.entity.Member;
@@ -14,6 +16,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.ThreadLocalRandom;
 
 
@@ -28,6 +34,8 @@ public class MemberController {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @Autowired
+    SmsService smsService;
     // 회원 가입
     @PostMapping
     public ResponseEntity<?> registerMember(@RequestBody MemberRegisterPostReq memberRegisterPostReq) {
@@ -78,7 +86,7 @@ public class MemberController {
         Long memberSeq = memberDetails.getMemberSeq();
         Member member = memberService.getMemberByMemberSeq(memberSeq);
         if (member != null) {
-            memberService.updateMember(member.getSeq(), memberUpdatePostReq);
+            memberService.updateMember(memberSeq, memberUpdatePostReq);
             return ResponseEntity.status(200).body("success");
         }
         return ResponseEntity.status(409).body("fail");
@@ -190,4 +198,16 @@ public class MemberController {
         memberService.updateMemberScore(memberScoreUpdatePatchReq);
         return ResponseEntity.status(200).body("success");
     }
+
+
+    @PostMapping("/sms")
+    public ResponseEntity<?> smsAuth(@RequestBody String phone) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
+        int randNum = ThreadLocalRandom.current().nextInt(100000, 1000000);
+
+        SendSmsRes sendSmsRes = smsService.sendSms(phone, String.valueOf(randNum));
+        if (sendSmsRes.getStatusName().equals("fail"))
+            return ResponseEntity.status(409).body("fail");
+        return ResponseEntity.status(200).body(randNum);
+    }
+
 }
