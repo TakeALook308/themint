@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import CateCard from './CateCard';
+import { getAuctionList } from '../../../utils/api/getAuctionApi';
 
-function CateCardList({ categoryName, categoryKey }) {
+function CateCardList({ category, categoryName }) {
   const [categoryNow, setCategoryNow] = useState('');
-  const onClick = (e) => {
+  const onClick = async (e) => {
     console.log(e.target.innerText);
     setCategoryNow(e.target.innerText);
+    const res = await getAuctionList(`/api/auction?word=&key=&category=${category}`);
+    return res?.data;
   };
   return (
     <Wrapper>
@@ -17,22 +20,22 @@ function CateCardList({ categoryName, categoryKey }) {
         </h3>
       </ListHeader>
       <CateCardContainer onClick={onClick} value={categoryName}>
-        <CateCard categoryName={'전체보기'} categoryKey={'1'} />
-        <CateCard categoryName={'의류'} categoryKey={'2'} />
-        <CateCard categoryName={'가전'} categoryKey={'3'} />
-        <CateCard categoryName={'전자'} categoryKey={'4'} />
-        <CateCard categoryName={'식품'} categoryKey={'5'} />
-        <CateCard categoryName={'1'} categoryKey={'6'} />
-        <CateCard categoryName={'2'} categoryKey={'7'} />
-        <CateCard categoryName={'3'} categoryKey={'8'} />
-        <CateCard categoryName={'4'} categoryKey={'9'} />
-        <CateCard categoryName={'5'} categoryKey={'10'} />
-        <CateCard categoryName={'6'} categoryKey={'11'} />
-        <CateCard categoryName={'7'} categoryKey={'12'} />
-        <CateCard categoryName={'8'} categoryKey={'13'} />
-        <CateCard categoryName={'9'} categoryKey={'14'} />
-        <CateCard categoryName={'10'} categoryKey={'15'} />
-        <CateCard categoryName={'11'} categoryKey={'16'} />
+        <CateCard categoryName={'전체보기'} categoryKey={'0'} />
+        <CateCard categoryName={'패션의류/잡화'} categoryKey={'1'} />
+        <CateCard categoryName={'뷰티'} categoryKey={'2'} />
+        <CateCard categoryName={'출산/유아동'} categoryKey={'3'} />
+        <CateCard categoryName={'식품'} categoryKey={'4'} />
+        <CateCard categoryName={'주방용품'} categoryKey={'5'} />
+        <CateCard categoryName={'생활용품'} categoryKey={'6'} />
+        <CateCard categoryName={'홈인테리어'} categoryKey={'7'} />
+        <CateCard categoryName={'가전디지털'} categoryKey={'8'} />
+        <CateCard categoryName={'스포츠/레저'} categoryKey={'9'} />
+        <CateCard categoryName={'자동차용품'} categoryKey={'10'} />
+        <CateCard categoryName={'도서/음반/DVD'} categoryKey={'11'} />
+        <CateCard categoryName={'완구/취미'} categoryKey={'12'} />
+        <CateCard categoryName={'문구/오피스'} categoryKey={'13'} />
+        <CateCard categoryName={'반려동물용품'} categoryKey={'14'} />
+        <CateCard categoryName={'헬스/건강식품'} categoryKey={'15'} />
       </CateCardContainer>
     </Wrapper>
   );

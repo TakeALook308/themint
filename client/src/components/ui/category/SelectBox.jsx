@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { getAuctionList } from '../../../utils/api/getAuctionApi';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
-const Dropdown = ({ url, sortBy }) => {
+const Dropdown = ({ key }) => {
   const dropdownItems = [
     { value: 1, name: '최신순' },
     { value: 2, name: '가격순' },
@@ -22,8 +22,8 @@ const Dropdown = ({ url, sortBy }) => {
     setSortName(e.target.innerText);
     console.log(e.target.innerText);
     setIsActive((prev) => !prev);
-    const sortBy = value;
-    const res = await getAuctionList(`${url}}?word=&key=${sortBy}&category=&pageno=`);
+    const key = value;
+    const res = await getAuctionList(`/api/auction?word=&key=${key}&category=`);
     return res?.data;
   };
 
@@ -82,7 +82,7 @@ const DropdownBody = styled.div`
   border-top-right-radius: 5px;
   border: none;
   border-bottom: 2px solid ${(props) => props.theme.colors.white};
-  z-index: 6;
+  z-index: 5;
 `;
 
 const DropdownSelect = styled.p`
