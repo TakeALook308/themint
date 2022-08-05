@@ -22,7 +22,7 @@ import java.util.List;
  */
 @Api(value = "관심 키워드 API", tags = {"Keyword"})
 @RestController
-@RequestMapping("/api/keyword")
+@RequestMapping("/keyword")
 public class MemberKeywordController {
 
     @Autowired

@@ -25,7 +25,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @Api(value = "멤버 API", tags = {"Member"})
 @RestController
-@RequestMapping("/api/member")
+@RequestMapping("/member")
 public class MemberController {
 
     @Autowired
