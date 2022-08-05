@@ -25,7 +25,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @Api(value = "멤버 API", tags = {"Member"})
 @RestController
-@RequestMapping("/api/member")
+@RequestMapping("/member")
 public class MemberController {
 
     @Autowired
@@ -200,6 +200,7 @@ public class MemberController {
     }
 
 
+    // 문자 인증
     @PostMapping("/sms")
     public ResponseEntity<?> smsAuth(@RequestBody String phone) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
         int randNum = ThreadLocalRandom.current().nextInt(100000, 1000000);

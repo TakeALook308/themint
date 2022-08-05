@@ -25,7 +25,7 @@ import java.util.List;
 
 @Api(value = "경매 API", tags = {"Auction"})
 @RestController
-@RequestMapping("/api/auction")
+@RequestMapping("/auction")
 public class AuctionController {
 
     @Autowired
