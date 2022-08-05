@@ -28,7 +28,8 @@ public class MemberKeywordServiceImpl implements MemberKeywordService{
 
     @Override
     public List<MemberKeyword> getMemberKeywordListByMemberSeq(Long memberSeq) {
-        List<MemberKeyword> list = memberKeywordRepositorySupport.findKeywordNameByMemberSeq(memberSeq).orElse(null);
+        List<MemberKeyword> list = memberKeywordRepository.findAllByMemberSeq(memberSeq).orElse(null);
+                //memberKeywordRepositorySupport.findKeywordNameByMemberSeq(memberSeq).orElse(null);
         return list;
     }
 
