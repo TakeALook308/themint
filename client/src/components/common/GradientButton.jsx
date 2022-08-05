@@ -1,8 +1,12 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 
-function GradientButton({ text, func }) {
-  return <Button type="submit">{text}</Button>;
+function GradientButton({ text, type, onClick }) {
+  return (
+    <Button type={type} onClick={onClick}>
+      {text}
+    </Button>
+  );
 }
 
 export default GradientButton;

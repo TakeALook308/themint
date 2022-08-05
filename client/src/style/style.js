@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 export const ActiveInput = styled.div`
   position: relative;
+  width: 100%;
   & input {
     background-color: ${(props) => props.theme.colors.pointBlack};
     height: 40px;

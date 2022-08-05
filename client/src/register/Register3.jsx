@@ -2,14 +2,13 @@ import React, { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import GradientButton from '../components/common/GradientButton';
-import { MessageWrapper, WarningMessage } from '../style/common';
 import { ActiveInput } from '../style/style';
 import { getData, userApis } from '../utils/api/userApi';
 import { REGEX, REGISTER_MESSAGE, STANDARD } from '../utils/constants/constant';
 import debounce from '../utils/functions/debounce';
 
-function Register1({ setUserInfo, setStep }) {
-  const [duplicatedID, setDuplicatedID] = useState(false);
+function Register3(props) {
+  const [duplicatedID, setDuplicatedID] = useState(true);
 
   const {
     register,
@@ -31,13 +30,10 @@ function Register1({ setUserInfo, setStep }) {
   });
 
   const onValid = (data) => {
-    if (duplicatedID) {
+    if (!duplicatedID) {
       setError('memberId', { message: REGISTER_MESSAGE.DUPLICATED_ID }, { shouldFocus: true });
       setDuplicatedID(false);
-      return;
     }
-    setUserInfo((prev) => ({ ...prev, ...data }));
-    setStep((prev) => ({ ...prev, step1: false, step2: true }));
   };
 
   const password = useRef({});
@@ -51,22 +47,23 @@ function Register1({ setUserInfo, setStep }) {
     try {
       const response = await getData(userApis.ID_DUPLICATE_CHECK_API(value || value));
       if (response.status === 200) {
-        setDuplicatedID(false);
+        setDuplicatedID(true);
+        return true;
       }
     } catch {
-      // setError('memberId', { message: REGISTER_MESSAGE.DUPLICATED_ID }, { shouldFocus: true });
-      // setDuplicatedID(false);
+      setError('memberId', { message: REGISTER_MESSAGE.DUPLICATED_ID }, { shouldFocus: true });
       setDuplicatedID(false);
     }
   };
 
-  const onChangeId = async (value) => {
-    debounceIdChange(value);
+  const onIdChange = async (value) => {
+    processChange(value);
   };
-  const debounceIdChange = debounce(async (value) => await checkMemberId(value));
+  const processChange = debounce(async (value) => await checkMemberId(value));
 
   return (
     <form onSubmit={handleSubmit(onValid)}>
+      지금이 3단계
       <div>
         <ActiveInput active={true}>
           <input
@@ -90,7 +87,7 @@ function Register1({ setUserInfo, setStep }) {
                 value: REGEX.ID,
                 message: REGISTER_MESSAGE.ONLY_ENGLISH_AND_NUMBER,
               },
-              onChange: (e) => onChangeId(e),
+              onChange: (e) => onIdChange(e),
             })}
             placeholder=" "
             required
@@ -150,10 +147,21 @@ function Register1({ setUserInfo, setStep }) {
         <MessageWrapper>
           <WarningMessage>{errors?.passwordCheck?.message}</WarningMessage>
         </MessageWrapper>
-        <GradientButton text={'회원가입 계속하기'} type={'submit'} />
+        <GradientButton text={'회원가입 계속하기'} />
       </div>
     </form>
   );
 }
 
-export default Register1;
+export default Register3;
+
+export const WarningMessage = styled.p`
+  font-size: ${(props) => props.theme.fontSizes.small};
+  color: ${(props) => props.theme.colors.pointRed};
+`;
+
+export const MessageWrapper = styled.div`
+  height: 2rem;
+  display: flex;
+  align-items: center;
+`;
