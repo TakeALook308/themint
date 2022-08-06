@@ -1,5 +1,3 @@
-import { instance } from './api';
-
 export const userApis = {
   ID_DUPLICATE_CHECK_API: (id) => `/api/member/id/${id}`,
   NICKNAME_DUPLICATE_CHECK_API: (nickname) => `/api/member/nickname/${nickname}`,

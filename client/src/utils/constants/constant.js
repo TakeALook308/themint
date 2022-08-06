@@ -25,6 +25,11 @@ export const REGISTER_MESSAGE = {
   REQUIRED_ADDRESS: '주소를 입력해주세요.',
 };
 
+export const LOGIN_MESSAGE = {
+  FAILED_LOGIN: '아이디 또는 비밀번호를 확인해주세요.',
+  SUCCESS_LOGIN: '님 오늘도 더민트에서 득템하세요😉',
+};
+
 export const STANDARD = {
   ID_MIN_LENGTH: 6,
   ID_MAX_LENGTH: 20,

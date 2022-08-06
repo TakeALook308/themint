@@ -2,10 +2,10 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { MessageWrapper, WarningMessage } from '../../style/common';
 import { ActiveInput } from '../../style/style';
-import { REGEX, REGISTER_MESSAGE, STANDARD } from '../../utils/constants/constant';
+import { LOGIN_MESSAGE, REGISTER_MESSAGE } from '../../utils/constants/constant';
 import GradientButton from '../common/GradientButton';
 
-function ThemintLogin(props) {
+function ThemintLogin({ login }) {
   const {
     register,
     setError,
@@ -18,9 +18,24 @@ function ThemintLogin(props) {
     },
   });
 
-  const onValid = (data) => {
-    console.log(data);
+  const onValid = async (data) => {
+    try {
+      const response = await login.login(data);
+      const {
+        data: { memberId, memberSeq, nickname, acessToken },
+      } = response;
+      login.setUserInfo({ memberId, memberSeq, nickname });
+      login.setToken({ accessToken: acessToken });
+      login.moveToMain(nickname);
+    } catch (err) {
+      if (err.response.status === 409) {
+        setError('memberId', { message: LOGIN_MESSAGE.FAILED_LOGIN });
+        setError('pwd', { message: LOGIN_MESSAGE.FAILED_LOGIN });
+        return;
+      }
+    }
   };
+
   return (
     <form onSubmit={handleSubmit(onValid)}>
       <div>
