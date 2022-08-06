@@ -3,7 +3,8 @@ import { useForm } from 'react-hook-form';
 import GradientButton from '../common/GradientButton';
 import { MessageWrapper, WarningMessage } from '../../style/common';
 import { ActiveInput } from '../../style/style';
-import { getData, userApis } from '../../utils/api/userApi';
+import { userApis } from '../../utils/api/userApi';
+import { getData } from '../../utils/api/api';
 import { REGEX, REGISTER_MESSAGE, STANDARD } from '../../utils/constants/constant';
 import debounce from '../../utils/functions/debounce';
 

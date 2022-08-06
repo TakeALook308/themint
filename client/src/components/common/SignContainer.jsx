@@ -3,13 +3,13 @@ import styled from 'styled-components';
 import Logo from './Logo';
 import * as Common from '../../style/common';
 
-function SignContainer({ children }) {
+function SignContainer({ children, pageName }) {
   return (
     <Container nonMember={true}>
       <RegisterContainer>
         <Header>
           <Logo />
-          <h2>회원가입</h2>
+          <h2>{pageName}</h2>
         </Header>
         {children}
       </RegisterContainer>

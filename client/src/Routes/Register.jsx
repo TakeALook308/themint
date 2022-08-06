@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { Register1, Register2, Register3 } from '../components/register/RegisterIndex';
-import { postData, userApis } from '../utils/api/userApi';
+import { userApis } from '../utils/api/userApi';
+import { postData } from '../utils/api/api';
 import SocialLogginButton from '../components/common/SocialLogginButton';
 import SignContainer from '../components/common/SignContainer';
+import { PAGES } from '../utils/constants/constant';
 
 function Register() {
   const [userInfo, setUserInfo] = useState({
@@ -28,7 +30,7 @@ function Register() {
   };
 
   return (
-    <SignContainer>
+    <SignContainer pageName={PAGES.REGISTER}>
       {step.step1 && (
         <>
           <Register1 setUserInfo={setUserInfo} setStep={setStep} />

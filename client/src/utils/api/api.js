@@ -68,3 +68,6 @@ instance.interceptors.response.use(
     return Promise.reject(err);
   },
 );
+
+export const getData = async (url) => await instance.get(url);
+export const postData = async (url, body) => await instance.post(url, body);

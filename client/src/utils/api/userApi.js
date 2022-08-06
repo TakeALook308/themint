@@ -5,7 +5,5 @@ export const userApis = {
   NICKNAME_DUPLICATE_CHECK_API: (nickname) => `/api/member/nickname/${nickname}`,
   EMAIL_DUPLICATE_CHECK_API: (email) => `/api/member/email/${email}`,
   REGISTER: '/api/member',
+  LOGIN: '/api/member/login',
 };
-
-export const getData = async (url) => await instance.get(url);
-export const postData = async (url, body) => await instance.post(url, body);
