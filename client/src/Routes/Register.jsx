@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { Register1, Register2, Register3 } from '../register/RegisterIndex';
 import { postData, userApis } from '../utils/api/userApi';
 import SocialLogginButton from '../components/common/SocialLogginButton';
+import SignContainer from '../components/common/SignContainer';
 // import Register1 from '../register/Register1';
 
 function Register() {
@@ -32,11 +33,7 @@ function Register() {
 
   return (
     <Container nonMember={true}>
-      <RegisterContainer>
-        <Header>
-          <Logo />
-          <h2>회원가입</h2>
-        </Header>
+      <SignContainer>
         {step.step1 && (
           <>
             <Register1 setUserInfo={setUserInfo} setStep={setStep} />
@@ -54,7 +51,7 @@ function Register() {
         )}
         {step.step2 && <Register2 setUserInfo={setUserInfo} setStep={setStep} />}
         {step.step3 && <Register3 setUserInfo={setUserInfo} setStep={setStep} />}
-      </RegisterContainer>
+      </SignContainer>
     </Container>
   );
 }
