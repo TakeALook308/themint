@@ -1,14 +1,10 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import * as Common from '../style/common';
-import GradientButton from '../components/common/GradientButton';
-import Logo from '../components/common/Logo';
 import { Link } from 'react-router-dom';
-import { Register1, Register2, Register3 } from '../register/RegisterIndex';
+import { Register1, Register2, Register3 } from '../components/register/RegisterIndex';
 import { postData, userApis } from '../utils/api/userApi';
 import SocialLogginButton from '../components/common/SocialLogginButton';
 import SignContainer from '../components/common/SignContainer';
-// import Register1 from '../register/Register1';
 
 function Register() {
   const [userInfo, setUserInfo] = useState({

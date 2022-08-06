@@ -1,11 +1,11 @@
 import React, { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import GradientButton from '../components/common/GradientButton';
-import { MessageWrapper, WarningMessage } from '../style/common';
-import { ActiveInput } from '../style/style';
-import { getData, userApis } from '../utils/api/userApi';
-import { REGEX, REGISTER_MESSAGE, STANDARD } from '../utils/constants/constant';
-import debounce from '../utils/functions/debounce';
+import GradientButton from '../common/GradientButton';
+import { MessageWrapper, WarningMessage } from '../../style/common';
+import { ActiveInput } from '../../style/style';
+import { getData, userApis } from '../../utils/api/userApi';
+import { REGEX, REGISTER_MESSAGE, STANDARD } from '../../utils/constants/constant';
+import debounce from '../../utils/functions/debounce';
 
 function Register1({ setUserInfo, setStep }) {
   const [duplicatedID, setDuplicatedID] = useState(false);

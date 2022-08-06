@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
-import GradientButton from '../components/common/GradientButton';
-import MintButton from '../components/common/MintButton';
-import { ActiveInput } from '../style/style';
-import { getData, userApis } from '../utils/api/userApi';
-import { REGEX, REGISTER_MESSAGE, STANDARD } from '../utils/constants/constant';
-import debounce from '../utils/functions/debounce';
+import GradientButton from '../common/GradientButton';
+import MintButton from '../common/MintButton';
+import { ActiveInput } from '../../style/style';
+import { getData, userApis } from '../../utils/api/userApi';
+import { REGEX, REGISTER_MESSAGE, STANDARD } from '../../utils/constants/constant';
+import debounce from '../../utils/functions/debounce';
 import PopupDom from './PopupDom';
 import PopupPostCode from './PopupPostCode';
 import { InputContainer } from './Register2';
