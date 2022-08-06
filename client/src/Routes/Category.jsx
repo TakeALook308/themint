@@ -13,7 +13,6 @@ function Category({ categoryName }) {
     </Container>
   );
 }
-
 export default Category;
 
 const Container = styled.main`

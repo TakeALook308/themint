@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import CateCard from './CateCard';
 import { getAuctionList } from '../../../utils/api/getAuctionApi';
+// 따로 컴포넌트 만들었다면 받아오기
+// import categoriest from '/'
 
 function CateCardList({ category, categoryName }) {
   const [categoryNow, setCategoryNow] = useState('전체보기');
@@ -11,31 +13,39 @@ function CateCardList({ category, categoryName }) {
     const res = await getAuctionList(`/api/auction?word=&key=&category=${category}`);
     return res?.data;
   };
+  // 따로 컴포넌트 만들었다면 삭제가능
+  const categories = [
+    { seq: 0, name: '전체보기' },
+    { seq: 1, name: '패션의류/잡화' },
+    { seq: 2, name: '뷰티' },
+    { seq: 3, name: '출산/유아동' },
+    { seq: 4, name: '식품' },
+    { seq: 5, name: '주방용품' },
+    { seq: 6, name: '생활용품' },
+    { seq: 7, name: '홈인테리어' },
+    { seq: 8, name: '가전디지털' },
+    { seq: 9, name: '스포츠/레저' },
+    { seq: 10, name: '자동차용품' },
+    { seq: 11, name: '도서/음반/DVD' },
+    { seq: 12, name: '완구/취미' },
+    { seq: 13, name: '문구/오피스' },
+    { seq: 14, name: '반려동물용품' },
+    { seq: 15, name: '헬스/건강식품' },
+  ];
+
+  const categoriesList = categories.map((categories) => (
+    <CateCard categoryName={categories.name} categoryKey={categories.seq} key={categories.seq} />
+  ));
   return (
     <Container>
       <ListHeader>
         <h3>
-          카테고리>
+          카테고리&gt;
           <span>{categoryNow}</span>
         </h3>
       </ListHeader>
       <CateCardContainer onClick={onClick} value={categoryName}>
-        <CateCard categoryName={'전체보기'} categoryKey={'0'} />
-        <CateCard categoryName={'패션의류/잡화'} categoryKey={'1'} />
-        <CateCard categoryName={'뷰티'} categoryKey={'2'} />
-        <CateCard categoryName={'출산/유아동'} categoryKey={'3'} />
-        <CateCard categoryName={'식품'} categoryKey={'4'} />
-        <CateCard categoryName={'주방용품'} categoryKey={'5'} />
-        <CateCard categoryName={'생활용품'} categoryKey={'6'} />
-        <CateCard categoryName={'홈인테리어'} categoryKey={'7'} />
-        <CateCard categoryName={'가전디지털'} categoryKey={'8'} />
-        <CateCard categoryName={'스포츠/레저'} categoryKey={'9'} />
-        <CateCard categoryName={'자동차용품'} categoryKey={'10'} />
-        <CateCard categoryName={'도서/음반/DVD'} categoryKey={'11'} />
-        <CateCard categoryName={'완구/취미'} categoryKey={'12'} />
-        <CateCard categoryName={'문구/오피스'} categoryKey={'13'} />
-        <CateCard categoryName={'반려동물용품'} categoryKey={'14'} />
-        <CateCard categoryName={'헬스/건강식품'} categoryKey={'15'} />
+        {categoriesList}
       </CateCardContainer>
     </Container>
   );
