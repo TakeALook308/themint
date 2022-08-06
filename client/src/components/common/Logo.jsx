@@ -6,7 +6,7 @@ function Logo() {
   return (
     <h1>
       <Link to="/main">
-        <img src={logo} alt="더민트 로고" width="168" />
+        <img src={logo} alt="더민트 로고" width="168" height="76" />
       </Link>
     </h1>
   );

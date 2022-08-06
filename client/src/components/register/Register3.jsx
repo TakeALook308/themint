@@ -12,6 +12,7 @@ import PopupDom from './PopupDom';
 import PopupPostCode from './PopupPostCode';
 import { InputContainer } from './Register2';
 import StepSignal from './StepSignal';
+import { MessageWrapper, WarningMessage } from '../../style/common';
 
 function Register3({ setUserInfo }) {
   const [duplicatedNickname, setDuplicatedNickname] = useState(false);
@@ -156,14 +157,3 @@ function Register3({ setUserInfo }) {
 }
 
 export default Register3;
-
-export const WarningMessage = styled.p`
-  font-size: ${(props) => props.theme.fontSizes.small};
-  color: ${(props) => props.theme.colors.pointRed};
-`;
-
-export const MessageWrapper = styled.div`
-  height: 2rem;
-  display: flex;
-  align-items: center;
-`;

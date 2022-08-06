@@ -69,7 +69,7 @@ const LinkContainer = styled.div`
   }
 `;
 
-const SocialLoginContainer = styled.article`
+export const SocialLoginContainer = styled.article`
   display: flex;
   flex-direction: column;
   gap: 1rem;

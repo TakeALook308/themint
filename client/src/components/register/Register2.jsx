@@ -3,13 +3,12 @@ import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import GradientButton from '../common/GradientButton';
 import MintButton from '../common/MintButton';
-import { MessageWrapper } from '../../style/common';
+import { MessageWrapper, WarningMessage } from '../../style/common';
 import { ActiveInput } from '../../style/style';
 import { userApis } from '../../utils/api/userApi';
 import { getData } from '../../utils/api/api';
 import { REGEX, REGISTER_MESSAGE, STANDARD } from '../../utils/constants/constant';
 import debounce from '../../utils/functions/debounce';
-import { WarningMessage } from './Register3';
 import StepSignal from './StepSignal';
 
 function Register2({ setUserInfo, setStep }) {
