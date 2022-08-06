@@ -6,7 +6,7 @@ function Links() {
   return (
     <Container>
       <Link to="/register">회원가입</Link>
-      <Link to="/">비밀번호 찾기</Link>
+      <Link to="/help/password">비밀번호 찾기</Link>
     </Container>
   );
 }
@@ -20,7 +20,18 @@ const Container = styled.article`
   align-items: center;
   gap: 2rem;
   a {
-    text-decoration: underline;
-    line-height: 2.5;
+    position: relative;
+    color: ${(props) => props.theme.colors.white};
+    &:after {
+      content: '';
+
+      width: 100%;
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+
+      border-width: 0 0 1px;
+      border-style: solid;
+    }
   }
 `;

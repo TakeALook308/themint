@@ -15,6 +15,7 @@ import PurchaseHistoryDetail from './Routes/PurchaseHistoryDetail';
 import Talks from './Routes/Talks';
 import NavigationBar from './components/ui/common/NavigationBar';
 import Footer from './components/ui/common/Footer';
+import FindPassword from './Routes/FindPassword';
 
 function Router() {
   return (
@@ -23,6 +24,7 @@ function Router() {
       <Routes>
         {/* <Route path="/" element={<Main />} /> */}
         <Route path="/login" element={<Login />} />
+        <Route path="/help/password" element={<FindPassword />} />
         <Route path="/register" element={<Register />} />
         <Route path="/main" element={<Main />} />
         <Route path="/categories/:categoryName" element={<Category />} />
@@ -34,7 +36,7 @@ function Router() {
         <Route path="/streamings/:roomNumber" element={<Streaming />} />
         <Route path="/talks" element={<Talks />} />
         <Route path="/auctions/:auctionsId" element={<AuctionDetail />} />
-        <Route path="/puchase-history/purchseId" element={<PurchaseHistoryDetail />} />
+        <Route path="/puchase-history/:purchaseId" element={<PurchaseHistoryDetail />} />
       </Routes>
       <Footer />
     </BrowserRouter>
