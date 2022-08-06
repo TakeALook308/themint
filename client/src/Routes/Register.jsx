@@ -56,13 +56,6 @@ function Register() {
 
 export default Register;
 
-const Container = styled(Common.Container)`
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
 const LinkContainer = styled.div`
   width: 100%;
   height: 5rem;
