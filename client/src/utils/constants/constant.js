@@ -27,7 +27,13 @@ export const REGISTER_MESSAGE = {
 
 export const LOGIN_MESSAGE = {
   FAILED_LOGIN: '아이디 또는 비밀번호를 확인해주세요.',
-  SUCCESS_LOGIN: '님 오늘도 더민트에서 득템하세요😉',
+  SUCCESS_LOGIN: [
+    '님 오늘도 득템하세요😉',
+    '님 지갑은 두둑하게 챙겨오셨죠?💵',
+    '님 오늘도 텅빈 지갑으로 돌아가세요😘',
+    '님 원하시는 물품 개비싸게 꼭 가져가세요😎',
+    '님 오늘도 좋은 쇼핑 되세요🛍',
+  ],
 };
 
 export const STANDARD = {

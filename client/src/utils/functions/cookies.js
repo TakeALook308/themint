@@ -2,7 +2,14 @@ import { Cookies } from 'react-cookie';
 
 const cookies = new Cookies();
 
-export const setCookie = (name, value, option) => {
+const tokenOption = {
+  path: '/',
+  secure: true,
+  sameSite: 'none',
+  httpOnly: true,
+};
+
+export const setCookie = (name, value, option = tokenOption) => {
   cookies.set(name, value, { ...option });
 };
 

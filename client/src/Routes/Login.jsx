@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useRecoilState } from 'recoil';
 import { myInformationState } from '../atoms';
 import SignContainer from '../components/common/SignContainer';
@@ -11,20 +11,14 @@ import { setCookie } from '../utils/functions/cookies';
 import { postData } from '../utils/api/api';
 import { userApis } from '../utils/api/userApi';
 import { useNavigate } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 
-function Login(props) {
+function Login() {
   const [userInfo, setUserInfo] = useRecoilState(myInformationState);
-
   const navigate = useNavigate();
 
   const setToken = ({ accessToken }) => {
-    setCookie('accessToken', accessToken, {
-      path: '/',
-      secure: true,
-      sameSite: 'none',
-      httpOnly: true,
-    });
+    setCookie('accessToken', accessToken);
   };
 
   const login = async (userInfo) => {
@@ -32,7 +26,7 @@ function Login(props) {
   };
 
   const moveToMain = (nickname) => {
-    toast.success(`${nickname}${LOGIN_MESSAGE.SUCCESS_LOGIN}`, {
+    toast.success(`${nickname}${LOGIN_MESSAGE.SUCCESS_LOGIN[makeRandomNumber()]}`, {
       position: 'top-center',
       autoClose: 3000,
       hideProgressBar: false,
@@ -58,3 +52,8 @@ function Login(props) {
 }
 
 export default Login;
+
+const makeRandomNumber = () => {
+  const len = LOGIN_MESSAGE.SUCCESS_LOGIN.length;
+  return Math.floor(Math.random() * len);
+};
