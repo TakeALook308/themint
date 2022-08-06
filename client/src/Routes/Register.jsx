@@ -32,27 +32,25 @@ function Register() {
   };
 
   return (
-    <Container nonMember={true}>
-      <SignContainer>
-        {step.step1 && (
-          <>
-            <Register1 setUserInfo={setUserInfo} setStep={setStep} />
-            <LinkContainer>
-              <Link to="/login">
-                <h2>로그인</h2>
-              </Link>
-              <p>or</p>
-            </LinkContainer>
-            <SocialLoginContainer>
-              <SocialLogginButton text={'네이버로 회원가입'} social={'네이버'} />
-              <SocialLogginButton text={'카카오톡으로 회원가입'} social={'카카오톡'} />
-            </SocialLoginContainer>
-          </>
-        )}
-        {step.step2 && <Register2 setUserInfo={setUserInfo} setStep={setStep} />}
-        {step.step3 && <Register3 setUserInfo={setUserInfo} setStep={setStep} />}
-      </SignContainer>
-    </Container>
+    <SignContainer>
+      {step.step1 && (
+        <>
+          <Register1 setUserInfo={setUserInfo} setStep={setStep} />
+          <LinkContainer>
+            <Link to="/login">
+              <h2>로그인</h2>
+            </Link>
+            <p>or</p>
+          </LinkContainer>
+          <SocialLoginContainer>
+            <SocialLogginButton text={'네이버로 회원가입'} social={'네이버'} />
+            <SocialLogginButton text={'카카오톡으로 회원가입'} social={'카카오톡'} />
+          </SocialLoginContainer>
+        </>
+      )}
+      {step.step2 && <Register2 setUserInfo={setUserInfo} setStep={setStep} />}
+      {step.step3 && <Register3 setUserInfo={setUserInfo} setStep={setStep} />}
+    </SignContainer>
   );
 }
 
@@ -63,25 +61,6 @@ const Container = styled(Common.Container)`
   display: flex;
   align-items: center;
   justify-content: center;
-`;
-
-const RegisterContainer = styled.section`
-  min-width: 450px;
-  height: fit-content;
-  padding: 4rem 4rem;
-  background-color: ${(props) => props.theme.colors.subBlack};
-  border-radius: 10px;
-`;
-
-const Header = styled.header`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 2rem;
-  gap: 2rem;
-  font-size: ${(props) => props.theme.fontSizes.h4};
-  font-weight: 700;
 `;
 
 const LinkContainer = styled.div`

@@ -1,20 +1,30 @@
 import React from 'react';
 import styled from 'styled-components';
 import Logo from './Logo';
+import * as Common from '../../style/common';
 
 function SignContainer({ children }) {
   return (
-    <RegisterContainer>
-      <Header>
-        <Logo />
-        <h2>회원가입</h2>
-      </Header>
-      {children}
-    </RegisterContainer>
+    <Container nonMember={true}>
+      <RegisterContainer>
+        <Header>
+          <Logo />
+          <h2>회원가입</h2>
+        </Header>
+        {children}
+      </RegisterContainer>
+    </Container>
   );
 }
 
 export default SignContainer;
+
+const Container = styled(Common.Container)`
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 const RegisterContainer = styled.section`
   min-width: 450px;
