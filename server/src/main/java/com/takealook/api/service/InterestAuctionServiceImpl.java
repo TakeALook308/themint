@@ -57,6 +57,24 @@ public class InterestAuctionServiceImpl implements InterestAuctionService{
 
     @Override
     public int deleteAuction(Long memberSeq, Long auctionSeq) {
-        return 0;
+        // 경매 인기도 감소
+        Auction auction = auctionRepository.findBySeq(auctionSeq).orElse(null);
+        if(auction != null){
+            Auction auctionUpdate = Auction.builder()
+                    .seq(auction.getSeq())
+                    .hash(auction.getHash())
+                    .memberSeq(auction.getMemberSeq())
+                    .title(auction.getTitle())
+                    .content(auction.getContent())
+                    .categorySeq(auction.getCategorySeq())
+                    .startTime(auction.getStartTime())
+                    .link(auction.getLink())
+                    .status(auction.getStatus())
+                    .interest(auction.getInterest() - 1)
+                    .build();
+            auctionRepository.save(auctionUpdate);
+        }
+        int result = interestAuctionRepository.deleteByMemberSeqAndAuctionSeq(memberSeq, auctionSeq);
+        return result;
     }
 }
