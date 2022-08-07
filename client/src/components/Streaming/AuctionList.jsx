@@ -6,10 +6,11 @@ function AuctionList({ products }) {
     <Article>
       <h3>경매리스트</h3>
       <List>
-        {products.map((item) => (
-          <li>
+        {products.map((item, i) => (
+          <li key={i}>
             <p>{item.productName}</p>
             <span>{item.startPrice}</span>
+            {item.status === 1 ? <span>끝</span> : null}
           </li>
         ))}
       </List>
