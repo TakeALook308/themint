@@ -82,6 +82,11 @@ public class AuctionServiceImpl implements AuctionService {
     }
 
     // 실시간 경매 조회
+    @Override
+    public List<Auction> getLiveAuctionList(Pageable pageable) {
+        List<Auction> auctionList = auctionRepository.findAllByStatus(1, pageable);
+        return auctionList;
+    }
 
     // 인기순, 최신순 정렬 검색 - startTime 현재시간보다 큰 것만
     @Override
