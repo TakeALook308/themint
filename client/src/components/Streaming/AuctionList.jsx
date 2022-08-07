@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-function AuctionList() {
+function AuctionList({ products }) {
   return (
     <Article>
       <h3>경매리스트</h3>
       <List>
-        <li>카드</li>
-        <li>카드</li>
-        <li>카드</li>
-        <li>카드</li>
-        <li>카드</li>
+        {products.map((item) => (
+          <li>
+            <p>{item.productName}</p>
+            <span>{item.startPrice}</span>
+          </li>
+        ))}
       </List>
     </Article>
   );
@@ -26,6 +27,12 @@ const Article = styled.article`
 
 const List = styled.ul`
   display: flex;
+  li {
+    width: 200px;
+    height: 50px;
+    background-color: green;
+    border: 1px solid yellow;
+  }
 `;
 
 export default AuctionList;

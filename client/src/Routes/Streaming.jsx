@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import StreamingComponent from '../components/StreamingComponent';
 import StreamingHeader from '../components/Streaming/StreamingHeader';
@@ -6,6 +6,20 @@ import StreamChat from '../components/Streaming/StreamChat';
 import AuctionBidding from '../components/Streaming/AuctionBidding';
 import AuctionList from '../components/Streaming/AuctionList';
 function Streaming(props) {
+  const [nowProduct, setNowProduct] = useState(0);
+  const [products, setProducts] = useState([
+    {
+      productName: '닌텐도 스위치',
+      startPrice: 180000,
+      status: 0,
+    },
+    {
+      productName: '아이패드',
+      startPrice: 520000,
+      status: 0,
+    },
+  ]);
+
   return (
     <Stream>
       <Header>
@@ -13,11 +27,11 @@ function Streaming(props) {
       </Header>
       <Main>
         <Section>
-          <AuctionList />
+          <AuctionList products={products} />
           <StreamingComponent />
         </Section>
         <Aside>
-          <AuctionBidding />
+          <AuctionBidding product={products[nowProduct]} />
           <StreamChat />
         </Aside>
       </Main>
