@@ -10,7 +10,9 @@ function CateCardList({ category, categoryName }) {
   const onClick = async (e) => {
     console.log(e.target.innerText);
     setCategoryNow(e.target.innerText);
-    const res = await getAuctionList(`/api/auction?word=&key=&category=${category}`);
+    const res = await getAuctionList(
+      `/api/auction/category?categorySeq=${categories.seq}&page=&size=&sort=`,
+    );
     return res?.data;
   };
   // 따로 컴포넌트 만들었다면 삭제가능
