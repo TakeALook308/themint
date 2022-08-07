@@ -16,27 +16,35 @@ import Talks from './Routes/Talks';
 import NavigationBar from './components/ui/common/NavigationBar';
 import Footer from './components/ui/common/Footer';
 import FindPassword from './Routes/FindPassword';
+import { useRecoilValue } from 'recoil';
+import { loggedinState } from './atoms';
+import ProtectedRoute from './components/common/ProtectedRoute';
 
 function Router() {
+  const loggedin = useRecoilValue(loggedinState);
+  console.log('loggedin', loggedin);
   return (
     <BrowserRouter>
       <NavigationBar />
       <Routes>
-        {/* <Route path="/" element={<Main />} /> */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/help/password" element={<FindPassword />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/main" element={<Main />} />
-        <Route path="/categories/:categoryName" element={<Category />} />
-        <Route path="/profile/:userId" element={<Profile />} />
-        <Route path="/accounts/edit" element={<AccountsEdit />} />
-        <Route path="/accounts/password" element={<AccountsPassword />} />
-        <Route path="/accounts/phone-number" element={<AccountsPhoneNumber />} />
-        <Route path="/accounts/withdrawl" element={<AccountsWithdrawl />} />
-        <Route path="/streamings/:roomNumber" element={<Streaming />} />
-        <Route path="/talks" element={<Talks />} />
-        <Route path="/auctions/:auctionsId" element={<AuctionDetail />} />
-        <Route path="/puchase-history/:purchaseId" element={<PurchaseHistoryDetail />} />
+        {/* <Route path="" element={<Main />} /> */}
+        <Route path="login" element={<Login />} />
+        <Route path="help/password" element={<FindPassword />} />
+        <Route path="register" element={<Register />} />
+        <Route path="main" element={<Main />} />
+        <Route path="categories/:categoryName" element={<Category />} />
+        <Route element={<ProtectedRoute loggedin={loggedin} />}>
+          <Route path="profile/:userId" element={<Profile />} />
+          <Route path="accounts/edit" element={<AccountsEdit />} />
+          <Route path="accounts/password" element={<AccountsPassword />} />
+          <Route path="accounts/phone-number" element={<AccountsPhoneNumber />} />
+          <Route path="accounts/withdrawl" element={<AccountsWithdrawl />} />
+          <Route path="talks" element={<Talks />} />
+          <Route path="puchase-history/:purchaseId" element={<PurchaseHistoryDetail />} />
+        </Route>
+        <Route path="streamings/:roomNumber" element={<Streaming />} />
+        <Route path="auctions/:auctionsId" element={<AuctionDetail />} />
+        <Route path="*" element={<p>There's nothing here: 404!</p>} />
       </Routes>
       <Footer />
     </BrowserRouter>

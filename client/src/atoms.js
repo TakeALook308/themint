@@ -7,9 +7,7 @@ const session = new Session();
 
 export const loggedinState = atom({
   key: `loggedin/${v1()}`,
-  default: {
-    logged: getCookie('accessToken') ? true : false,
-  },
+  default: getCookie('accessToken') ? true : false,
 });
 
 export const myInformationState = atom({
