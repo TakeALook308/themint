@@ -3,6 +3,7 @@ package com.takealook.api.service;
 import com.takealook.api.request.ChatRoomRegisterPostReq;
 import com.takealook.chat.RedisPublisher;
 import com.takealook.chat.RedisSubscriber;
+import com.takealook.common.util.HashUtil;
 import com.takealook.db.entity.ChatMessage;
 import com.takealook.db.entity.ChatRoom;
 import com.takealook.db.repository.ChatMessageRepository;
@@ -16,6 +17,7 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +53,8 @@ public class ChatRoomServiceImpl implements ChatRoomService{
      */
     public ChatRoom createChatRoom(ChatRoomRegisterPostReq chatRoomRegisterPostReq) {
         if (chatRoomRegisterPostReq.getType() == 1) { // 1:1 채팅방이라면 roomId 직접 생성
-            String roomId = UUID.randomUUID().toString();
+//            String roomId = UUID.randomUUID().toString();
+            String roomId = HashUtil.MD5(LocalDateTime.now() + UUID.randomUUID().toString());
             chatRoomRegisterPostReq.setRoomId(roomId);
         }
         ChatRoom chatRoom = ChatRoom.create(chatRoomRegisterPostReq);
