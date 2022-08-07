@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-function StreamCard() {
+function StreamCard({ imageUrl2 }) {
   const auctions = {
     seq: 1,
     memberSeq: 1,
@@ -25,7 +25,10 @@ function StreamCard() {
     <Wrapper>
       <ImgContainer>
         <StyledImg
-          src={auctions.auctionImage.imageUrl}
+          src={
+            // auctions.auctionImage.imageUrl
+            imageUrl2
+          }
           alt="닌텐도 스위치"
           width="400"
           height="300"

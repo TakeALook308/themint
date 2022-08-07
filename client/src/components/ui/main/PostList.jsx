@@ -48,13 +48,21 @@ function PostList() {
           modules={[Navigation]}
           className="mySwiper">
           <SwiperSlide>
-            <AuctionCard />
+            <AuctionCard imageUrl2={'https://img.hankyung.com/photo/202203/01.29355184.1.jpg'} />
           </SwiperSlide>
           <SwiperSlide>
-            <AuctionCard />
+            <AuctionCard
+              imageUrl2={
+                'https://images.samsung.com/kdp/cms_contents/149353/742ac997-8faa-47b3-9621-ecaf144992bf.jpg?$ORIGIN_JPG$'
+              }
+            />
           </SwiperSlide>
           <SwiperSlide>
-            <AuctionCard />
+            <AuctionCard
+              imageUrl2={
+                'https://img.kr.news.samsung.com/kr/wp-content/uploads/2017/01/%EC%82%BC%EC%84%B1-%EB%85%B8%ED%8A%B8%EB%B6%81-%EC%98%A4%EB%94%94%EC%84%B8%EC%9D%B4_%EB%B8%94%EB%9E%99_01-e1484127080285.jpg'
+              }
+            />
           </SwiperSlide>
           <SwiperSlide>
             <AuctionCard />

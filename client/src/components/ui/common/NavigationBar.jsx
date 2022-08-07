@@ -1,6 +1,7 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useNavigate, useState } from 'react-router-dom';
 import styled from 'styled-components';
+import axios from 'axios';
 // import { useState } from 'react';
 
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
@@ -8,33 +9,13 @@ import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import SearchIcon from '@mui/icons-material/Search';
 import ChatIcon from '@mui/icons-material/Chat';
 
-function NavigationBar({ categoryName }) {
-  // 검색기능의구현
-  // const [search, setSearch] = useState('');
-  // const onSearch = (e) => {
-  //   e.preventDefault();
-  //   if (search === null || search === '') {
-  //     // 검색어가 없을 경우 전체 리스트 반환
-  //     axios.get(common.baseURL + 'user').then((res) => {
-  //       setLists(res.data.auctionList);
-  //       setCurrentPosts(res.data.auctionList.slice(indexOfFirstPost, indexOfLastPost));
-  //     });
-  //   } else {
-  //     // 검색 구현
-  //     const filterData = lists.filter((row) => row.auctionId.includes(search));
-  //     setLists(filterData);
-  //     setCurrentPosts(filterData.slice(indexOfFirstPost, indexOfLastPost));
-  //     setCurrentPage(1);
-  //   }
-  //   setSearch(``);
-  // };
-
-  // const onChangeSearch = (e) => {
-  //   e.preventDefault();
-  //   setSearch(e.target.value);
-  // };
-  const navigate = useNavigate();
-
+function NavigationBar({ url, search, categoryName }) {
+  if (
+    window.location.pathname.startsWith('/streamings') ||
+    window.location.pathname.startsWith('/register') ||
+    window.location.pathname.startsWith('/login')
+  )
+    return null;
   return (
     <Container>
       <Wrapper>
@@ -42,18 +23,15 @@ function NavigationBar({ categoryName }) {
           <NavLogo>더민트</NavLogo>
         </Link>
         <NavList>
-          <NavSearch
-          // onSubmit={(e) => onSearch(e)}
-          >
+          {/* <NavSearch onSubmit={(e) => onSearch(e)}>
             <SearchIcon type="submit" aria-label="search" onClick={() => navigate(`/`)} />
             <SearchBox
               type="text"
-              // value={search}
+              value={search}
               placeholder="검색하기"
               inputProps={{ 'aria-label': '검색하기' }}
-              // onChange={onChangeSearch}
-            ></SearchBox>
-          </NavSearch>
+              onChange={onChangeSearch}></SearchBox>
+          </NavSearch> */}
           <NavItemText>
             <Link to={`/categories/${categoryName}`}>
               <p>카테고리</p>
