@@ -112,14 +112,24 @@ public class AuctionServiceImpl implements AuctionService {
     @Override
     public List<Auction> getAuctionListByCategorySeqOrderByScore(Long categorySeq, Pageable pageable) {
         String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        List<Auction> auctionList = auctionRepository.findAllByCategorySeqAndStartTimeAfterOrderByMemberScore(categorySeq, currentTime, pageable);
+        List<Auction> auctionList = null;
+        if(categorySeq == 0){ // 전체 조회
+            auctionList = auctionRepository.findAllByStartTimeAfterOrderByMemberScore(currentTime, pageable);
+        } else {
+            auctionList = auctionRepository.findAllByCategorySeqAndStartTimeAfterOrderByMemberScore(categorySeq, currentTime, pageable);
+        }
         return auctionList;
     }
 
     @Override
     public List<Auction> getAuctionListByCategorySeq(Long categorySeq, Pageable pageable) {
         String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        List<Auction> auctionList = auctionRepository.findAllByCategorySeqAndStartTimeAfter(categorySeq, currentTime, pageable);
+        List<Auction> auctionList = null;
+        if(categorySeq == 0) { // 전체 조회
+            auctionList = auctionRepository.findAllByStartTimeAfter(currentTime, pageable);
+        } else {
+            auctionList = auctionRepository.findAllByCategorySeqAndStartTimeAfter(categorySeq, currentTime, pageable);
+        }
         return auctionList;
     }
 
