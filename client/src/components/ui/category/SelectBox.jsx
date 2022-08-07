@@ -5,10 +5,10 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 const Dropdown = ({ key }) => {
   const dropdownItems = [
-    { value: 'startTime', name: '경매 임박순' },
-    { value: 'seq', name: '최신 등록순' },
+    { value: 'startTime', name: '경매임박순' },
+    { value: 'seq', name: '최신등록순' },
     { value: 'interest', name: '인기순' },
-    { value: 'score', name: '판매자 신뢰도' },
+    { value: 'score', name: '판매자신뢰도순' },
   ];
   const [sortName, setSortName] = useState('최신순');
   const [isActive, setIsActive] = useState(false);
@@ -64,7 +64,8 @@ const Wrapper = styled.div`
 `;
 
 export const DropdownContainer = styled.main`
-  width: 11%;
+  width: 12%;
+
   &:hover {
     cursor: pointer;
   }
