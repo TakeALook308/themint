@@ -2,6 +2,7 @@ package com.takealook.db.repository;
 
 import com.takealook.db.entity.Member;
 import com.takealook.db.entity.Product;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +13,7 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository  extends JpaRepository<Product, Long> {
     Optional<List<Product>> findByAuctionSeq(Long auctionSeq);
+    List<Product> findAllByProductNameContains(String word, Pageable pageable);
     @Transactional
     void deleteAllByAuctionSeq(Long auctionSeq);
 }

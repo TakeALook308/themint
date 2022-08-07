@@ -10,6 +10,7 @@ import java.util.List;
 public interface AuctionService {
     Auction createAuction(Long memberSeq, AuctionRegisterPostReq auctionRegisterPostReq);
     Auction getAuctionByHash(String hash);
+    Auction getAuctionBySeq(Long auctionSeq);
     List<Auction> getLiveAuctionList(Pageable pageable);
     List<Auction> getAuctionList(String word, Pageable pageable);
     List<Auction> getAuctionListOrderByScore(String word, Pageable pageable);

@@ -82,6 +82,12 @@ public class AuctionServiceImpl implements AuctionService {
         return auction;
     }
 
+    @Override
+    public Auction getAuctionBySeq(Long auctionSeq) {
+        Auction auction = auctionRepository.findBySeq(auctionSeq).get();
+        return auction;
+    }
+
     // 실시간 경매 조회
     @Override
     public List<Auction> getLiveAuctionList(Pageable pageable) {
