@@ -90,6 +90,19 @@ public class AuctionController {
     }
 
     // 실시간 진행되고 있는 경매 목록 조회
+    @GetMapping("/live")
+    public ResponseEntity<List<AuctionListEntityRes>> getLiveAuctionList(@RequestParam("page") int page, @RequestParam("size") int size){
+        List<AuctionListEntityRes> auctionListEntityResList = new ArrayList<>();
+        Pageable pageable = PageRequest.of(page, size);
+        List<Auction> auctionList = auctionService.getLiveAuctionList(pageable);
+        for (Auction auction : auctionList){
+            Long memberSeq = auction.getMemberSeq();
+            Member member = memberService.getMemberByMemberSeq(memberSeq);
+            List<AuctionImage> auctionImageList = auctionImageService.getAuctionImageListByAuctionSeq(auction.getSeq());
+            auctionListEntityResList.add(AuctionListEntityRes.of(auction, member, auctionImageList));
+        }
+        return ResponseEntity.status(200).body(auctionListEntityResList);
+    }
 
     // 경매 목록 검색
     @GetMapping("/search")
