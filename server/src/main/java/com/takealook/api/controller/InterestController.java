@@ -1,5 +1,6 @@
 package com.takealook.api.controller;
 
+import com.takealook.api.response.InterestAuctionRes;
 import com.takealook.api.response.InterestCategoryRes;
 import com.takealook.api.response.InterestKeywordRes;
 import com.takealook.api.service.InterestAuctionService;
@@ -114,4 +115,41 @@ public class InterestController {
     /*
         관심 경매 생성, 조회, 삭제
      */
+    @PostMapping("/auction/{auctionSeq}")
+    @ApiOperation(value = "관심 경매 등록", notes = "<strong>관심 경매 정보</strong>를 등록한다.")
+    @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "인증 실패"),
+            @ApiResponse(code = 404, message = "사용자 없음"), @ApiResponse(code = 500, message = "서버 오류") })
+    public ResponseEntity<? extends BaseResponseBody> registerAuction(@PathVariable Long auctionSeq, @ApiIgnore Authentication authentication){
+        MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
+        Long memberSeq = memberDetails.getMemberSeq();
+        int result = interestAuctionService.createInterestAuction(memberSeq, auctionSeq);
+        if(result == 1){
+            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+        } else{ // auctionSeq에 해당하는 경매 없음
+            return ResponseEntity.status(409).body(BaseResponseBody.of(409, "Fail"));
+        }
+
+    }
+
+//    @GetMapping("/auction")
+//    @ApiOperation(value = "멤버의 관심 경매 조회", notes = "로그인한 회원의 관심 경매 목록을 응답한다.")
+//    @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "인증 실패"),
+//            @ApiResponse(code = 404, message = "사용자 없음"), @ApiResponse(code = 500, message = "서버 오류") })
+//    public ResponseEntity<InterestAuctionRes> getInterestAuctionList(@ApiIgnore Authentication authentication) {
+//        MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
+//        Long memberSeq = memberDetails.getMemberSeq();
+//        List<InterestAuction> interestAuctionList = interestAuctionService.getInterestAuctionListByMemberSeq(memberSeq);
+//        return ResponseEntity.status(200).body(InterestAuctionRes.of(interestAuctionList));
+//    }
+//
+//    @DeleteMapping("/auction/{auctionSeq}")
+//    @ApiOperation(value = "관심 경매 삭제", notes = "관심 경매를 삭제한다.")
+//    @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "인증 실패"),
+//            @ApiResponse(code = 404, message = "사용자 없음"), @ApiResponse(code = 500, message = "서버 오류") })
+//    public ResponseEntity<? extends BaseResponseBody> deleteAuction(@PathVariable Long auctionSeq, @ApiIgnore Authentication authentication){
+//        MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
+//        Long memberSeq = memberDetails.getMemberSeq();
+//        int result = interestAuctionService.deleteAuction(memberSeq, auctionSeq);
+//        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+//    }
 }

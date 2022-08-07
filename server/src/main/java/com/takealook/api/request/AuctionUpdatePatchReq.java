@@ -17,6 +17,7 @@ import java.util.List;
 @ApiModel("AuctionUpdatePatchRequest")
 public class AuctionUpdatePatchReq {
     Long seq;
+    String hash;
     @ApiModelProperty(name = "경매글 제목", example = "여름옷 판매합니다.")
     String title;
     @ApiModelProperty(name = "경매글 내용", example = "유행 지나서 안 입는 옷들 싸게 내놓습니다.")
@@ -25,6 +26,9 @@ public class AuctionUpdatePatchReq {
     Long categorySeq;
     @ApiModelProperty(name = "경매 시작 시간", example = "2022:08:10 15:00:00")
     String startTime;
+    String link;
+    int interest;
+    int status;
     @ApiModelProperty(name = "", example = "")
     List<Product> productList;
     @ApiModelProperty(name = "", example = "")

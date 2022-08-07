@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface InterestAuctionRepository extends JpaRepository<InterestAuction, Long> {
+    InterestAuction findByMemberSeqAndAuctionSeq(Long memberSeq, Long auctionSeq);
 }

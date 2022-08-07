@@ -1,7 +1,62 @@
 package com.takealook.api.service;
 
+import com.takealook.db.entity.Auction;
+import com.takealook.db.entity.InterestAuction;
+import com.takealook.db.repository.AuctionRepository;
+import com.takealook.db.repository.InterestAuctionRepository;
+import io.swagger.models.auth.In;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class InterestAuctionServiceImpl implements InterestAuctionService{
+    @Autowired
+    InterestAuctionRepository interestAuctionRepository;
+
+    @Autowired
+    AuctionRepository auctionRepository;
+
+    @Override
+    public int createInterestAuction(Long memberSeq, Long auctionSeq) {
+        InterestAuction check = interestAuctionRepository.findByMemberSeqAndAuctionSeq(memberSeq, auctionSeq);
+        if(check != null){
+            return 0; // 이미 추가된 관심 경매
+        }
+        InterestAuction interestAuction = InterestAuction.builder()
+                .memberSeq(memberSeq)
+                .auctionSeq(auctionSeq)
+                .build();
+        interestAuctionRepository.save(interestAuction);
+        // 경매 인기도 증가
+        Auction auction = auctionRepository.findBySeq(auctionSeq).orElse(null);
+        if(auction != null){
+            Auction auctionUpdate = Auction.builder()
+                    .seq(auction.getSeq())
+                    .hash(auction.getHash())
+                    .memberSeq(auction.getMemberSeq())
+                    .title(auction.getTitle())
+                    .content(auction.getContent())
+                    .categorySeq(auction.getCategorySeq())
+                    .startTime(auction.getStartTime())
+                    .link(auction.getLink())
+                    .status(auction.getStatus())
+                    .interest(auction.getInterest() + 1)
+                    .build();
+            auctionRepository.save(auctionUpdate);
+            return 1;
+        }
+        return 0;
+    }
+
+    @Override
+    public List<InterestAuction> getInterestAuctionListByMemberSeq(Long memberSeq) {
+        return null;
+    }
+
+    @Override
+    public int deleteAuction(Long memberSeq, Long auctionSeq) {
+        return 0;
+    }
 }
