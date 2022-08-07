@@ -46,18 +46,16 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<List<ProductListEntityRes>> getProductList(@RequestParam(value = "word", required = false) String word, @RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort){
-        // [key] 경매임박순: startTime, 최신등록순: seq, 낮은가격순: startPrice, 인기순: interest, 판매자신뢰도순: score
+        // [key] 경매임박순: startTime, 최신등록순: auctionSeq, 낮은가격순: startPrice, 인기순: interest, 판매자신뢰도순: score
         List<ProductListEntityRes> productListEntityResList = new ArrayList<>();
         List<Product> productList = null;
+        Pageable pageable = PageRequest.of(page, size);
         if("score".equals(sort)){ //판매자 신뢰도순
-            Pageable pageable = PageRequest.of(page, size);
             productList = productService.getProductListOrderByScore(word, pageable);
         } else if("startTime".equals(sort) || "startPrice".equals(sort)){ // 경매임박순, 낮은가격순
-            Pageable sortPageable = PageRequest.of(page, size, Sort.by(sort).ascending());
-            productList = productService.getProductList(word, sortPageable);
+            productList = productService.getProductList(word, pageable, sort);
         } else { // 최신등록순, 인기순
-            Pageable sortPageable = PageRequest.of(page, size, Sort.by(sort).descending());
-            productList = productService.getProductList(word, sortPageable);
+            productList = productService.getProductList(word, pageable, sort);
         }
         for (Product product : productList){
             Long auctionSeq = product.getAuctionSeq();
