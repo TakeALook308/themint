@@ -1,20 +1,17 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import CateCard from './CateCard';
-import { getAuctionList } from '../../../utils/api/getAuctionApi';
+
 // 따로 컴포넌트 만들었다면 받아오기
 // import categoriest from '/'
 
-function CateCardList({ category, categoryName }) {
+function CateCardList({ getcategorySeq, categoryName }) {
   const [categoryNow, setCategoryNow] = useState('전체보기');
-  const onClick = async (e) => {
-    console.log(e.target.innerText);
+  const onClick = (e) => {
     setCategoryNow(e.target.innerText);
-    const res = await getAuctionList(
-      `/api/auction/category?categorySeq=${categories.seq}&page=&size=&sort=`,
-    );
-    return res?.data;
+    getcategorySeq(e.target.seq);
   };
+
   // 따로 컴포넌트 만들었다면 삭제가능
   const categories = [
     { seq: 0, name: '전체보기' },

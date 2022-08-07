@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { getAuctionList } from '../../../utils/api/getAuctionApi';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
-const Dropdown = ({ key }) => {
+const Dropdown = ({ getSortKey }) => {
   const dropdownItems = [
     { value: 'startTime', name: '경매임박순' },
     { value: 'seq', name: '최신등록순' },
@@ -17,14 +17,12 @@ const Dropdown = ({ key }) => {
     setIsActive((prev) => !prev);
   }, []);
 
-  const onSelectItem = async (e) => {
+  const onSelectItem = (e) => {
     setValue(e.target.value);
     setSortName(e.target.innerText);
     console.log(e.target.innerText);
     setIsActive((prev) => !prev);
-    const key = value;
-    const res = await getAuctionList(`/api/auction?word=&key=${key}&category=`);
-    return res?.data;
+    getSortKey(e.target.value);
   };
 
   return (
