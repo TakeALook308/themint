@@ -5,10 +5,10 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 const Dropdown = ({ key }) => {
   const dropdownItems = [
-    { value: 1, name: '최신순' },
-    { value: 2, name: '가격순' },
-    { value: 3, name: '인기순' },
-    { value: 4, name: '판매자 신뢰도' },
+    { value: 'startTime', name: '경매 임박순' },
+    { value: 'seq', name: '최신 등록순' },
+    { value: 'interest', name: '인기순' },
+    { value: 'score', name: '판매자 신뢰도' },
   ];
   const [sortName, setSortName] = useState('최신순');
   const [isActive, setIsActive] = useState(false);
