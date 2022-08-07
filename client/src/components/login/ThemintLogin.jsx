@@ -1,8 +1,10 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { session } from '../../App';
 import { MessageWrapper, WarningMessage } from '../../style/common';
 import { ActiveInput } from '../../style/style';
 import { LOGIN_MESSAGE, REGISTER_MESSAGE } from '../../utils/constants/constant';
+import Session from '../../utils/functions/storage';
 import GradientButton from '../common/GradientButton';
 
 function ThemintLogin({ login }) {
@@ -22,11 +24,13 @@ function ThemintLogin({ login }) {
     try {
       const response = await login.login(data);
       const {
-        data: { memberId, memberSeq, nickname, acessToken },
+        data: { memberId, memberSeq, nickname, accessToken },
       } = response;
       login.setUserInfo({ memberId, memberSeq, nickname });
-      login.setToken({ accessToken: acessToken });
+      login.setToken({ accessToken });
       login.moveToMain(nickname);
+      login.setLogged(true);
+      session.set('profile', { memberId, memberSeq, nickname });
     } catch (err) {
       if (err.response.status === 409) {
         setError('memberId', { message: LOGIN_MESSAGE.FAILED_LOGIN });

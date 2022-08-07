@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRecoilState } from 'recoil';
-import { myInformationState } from '../atoms';
+import { loggedinState, myInformationState } from '../atoms';
 import SignContainer from '../components/common/SignContainer';
 import SocialLogginButton from '../components/common/SocialLogginButton';
 import Links from '../components/login/Links';
@@ -12,11 +12,10 @@ import { postData } from '../utils/api/api';
 import { userApis } from '../utils/api/userApi';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-
 function Login() {
   const [userInfo, setUserInfo] = useRecoilState(myInformationState);
+  const [logged, setLogged] = useRecoilState(loggedinState);
   const navigate = useNavigate();
-
   const setToken = ({ accessToken }) => {
     setCookie('accessToken', accessToken);
   };
@@ -41,7 +40,7 @@ function Login() {
 
   return (
     <SignContainer pageName={PAGES.LOGIN}>
-      <ThemintLogin login={{ setToken, login, setUserInfo, moveToMain }} />
+      <ThemintLogin login={{ setToken, login, setUserInfo, moveToMain, setLogged }} />
       <Links />
       <SocialLoginContainer>
         <SocialLogginButton text={'네이버 로그인'} social={'네이버'} />

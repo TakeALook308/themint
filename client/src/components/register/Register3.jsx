@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import styled from 'styled-components';
 import GradientButton from '../common/GradientButton';
 import MintButton from '../common/MintButton';
 import { ActiveInput } from '../../style/style';
@@ -15,7 +14,7 @@ import StepSignal from './StepSignal';
 import { MessageWrapper, SuccessValidationMessage, WarningMessage } from '../../style/common';
 
 function Register3({ setUserInfo }) {
-  const [duplicatedNickname, setDuplicatedNickname] = useState(true);
+  const [duplicatedNickname, setDuplicatedNickname] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [address, setAddress] = useState();
 
@@ -59,11 +58,11 @@ function Register3({ setUserInfo }) {
     try {
       const response = await getData(userApis.NICKNAME_DUPLICATE_CHECK_API(value));
       if (response.status === 200) {
-        setDuplicatedNickname(true);
+        setDuplicatedNickname(false);
       }
     } catch {
       setError('nickname', { message: REGISTER_MESSAGE.DUPLICATED_ID }, { shouldFocus: true });
-      setDuplicatedNickname(false);
+      setDuplicatedNickname(true);
     }
   };
 
