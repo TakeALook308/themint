@@ -1,6 +1,6 @@
 package com.takealook.db.repository;
 
-import com.takealook.db.entity.MemberKeyword;
+import com.takealook.db.entity.InterestKeyword;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface MemberKeywordRepository extends JpaRepository<MemberKeyword, Long> {
-    Optional<List<MemberKeyword>> findAllByMemberSeq(Long memberSeq);
+public interface InterestKeywordRepository extends JpaRepository<InterestKeyword, Long> {
+    Optional<List<InterestKeyword>> findAllByMemberSeq(Long memberSeq);
     @Transactional
     void deleteByMemberSeqAndKeywordName(Long memberSeq, String keywordName);
 }

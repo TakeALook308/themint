@@ -1,6 +1,9 @@
 package com.takealook.db.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,10 +15,10 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MemberKeyword {
+public class InterestCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long seq;
     Long memberSeq;
-    String keywordName;
+    Long categorySeq;
 }

@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @ApiModel("MemberKeywordRegisterPostRequest")
-public class MemberKeywordRegisterPostReq {
+public class InterestKeywordRegisterPostReq {
     @ApiModelProperty(name="멤버 seq", example = "1234")
     int memberSeq;
     @ApiModelProperty(name="관심 키워드 이름", example = "삼성 모니터")
