@@ -18,7 +18,7 @@ import Footer from './components/ui/common/Footer';
 import FindPassword from './Routes/FindPassword';
 import { useRecoilValue } from 'recoil';
 import { loggedinState } from './atoms';
-import ProtectedRoute from './components/common/ProtectedRoute';
+import ProtectedRoute from './components/routes/ProtectedRoute';
 
 function Router() {
   const loggedin = useRecoilValue(loggedinState);
@@ -28,9 +28,11 @@ function Router() {
       <NavigationBar />
       <Routes>
         {/* <Route path="" element={<Main />} /> */}
-        <Route path="login" element={<Login />} />
-        <Route path="help/password" element={<FindPassword />} />
-        <Route path="register" element={<Register />} />
+        <Route element={<ProtectedRoute loggedin={!loggedin} />}>
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
+          <Route path="help/password" element={<FindPassword />} />
+        </Route>
         <Route path="main" element={<Main />} />
         <Route path="categories/:categoryName" element={<Category />} />
         <Route element={<ProtectedRoute loggedin={loggedin} />}>

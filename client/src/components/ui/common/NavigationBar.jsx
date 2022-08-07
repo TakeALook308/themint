@@ -8,8 +8,11 @@ import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import SearchIcon from '@mui/icons-material/Search';
 import ChatIcon from '@mui/icons-material/Chat';
+import { useRecoilValue } from 'recoil';
+import { loggedinState } from '../../../atoms';
 
 function NavigationBar({ url, search, categoryName }) {
+  const loggedin = useRecoilValue(loggedinState);
   if (
     window.location.pathname.startsWith('/streamings') ||
     window.location.pathname.startsWith('/register') ||
