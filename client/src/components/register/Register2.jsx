@@ -46,7 +46,6 @@ function Register2({ setUserInfo, setStep }) {
     if (!value || errors[key]) return;
     try {
       const response = await getData(url);
-      console.log(response);
       if (response.status === 200) {
         setState(false);
       }
