@@ -28,8 +28,8 @@ function AuctionBidding({ product }) {
         <div>{seconds < 10 ? `0${seconds}` : seconds}초</div>
       </AuctionInfo>
       <PriceList>
-        {priceList.map((item) => (
-          <p>
+        {priceList.map((item, i) => (
+          <p key={i}>
             {item.nickName}님 <b>{item.price}원</b> 입찰
           </p>
         ))}
