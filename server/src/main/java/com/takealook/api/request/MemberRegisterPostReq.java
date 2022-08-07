@@ -26,8 +26,11 @@ public class MemberRegisterPostReq {
     @ApiModelProperty(name = "멤버 email", example = "mino@ssafy.com")
     String email;
 
-    @ApiModelProperty(name = "멤버 address", example = "해양1로 30, 101동 101호")
+    @ApiModelProperty(name = "멤버 address", example = "해양1로 30")
     String address;
+
+    @ApiModelProperty(name = "멤버 address 상세주소", example = "101동 101호")
+    String addressDetail;
 
     @ApiModelProperty(name = "멤버 phone", example = "01012345678")
     String phone;

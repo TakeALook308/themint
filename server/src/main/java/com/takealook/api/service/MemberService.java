@@ -39,4 +39,7 @@ public interface MemberService {
 
     // 신뢰도 수정
     void updateMemberScore(MemberScoreUpdatePatchReq memberScoreUpdatePatchReq);
+
+    // 휴대폰 중복체크
+    Member getMemberByPhone(String phone);
 }
