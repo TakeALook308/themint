@@ -1,16 +1,12 @@
 package com.takealook.api.controller;
 
-import com.takealook.api.response.InterestAuctionRes;
+import com.takealook.api.response.AuctionListEntityRes;
 import com.takealook.api.response.InterestCategoryRes;
 import com.takealook.api.response.InterestKeywordRes;
-import com.takealook.api.service.InterestAuctionService;
-import com.takealook.api.service.InterestCategoryService;
-import com.takealook.api.service.InterestKeywordService;
+import com.takealook.api.service.*;
 import com.takealook.common.auth.MemberDetails;
 import com.takealook.common.model.response.BaseResponseBody;
-import com.takealook.db.entity.InterestAuction;
-import com.takealook.db.entity.InterestCategory;
-import com.takealook.db.entity.InterestKeyword;
+import com.takealook.db.entity.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -21,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,6 +36,12 @@ public class InterestController {
 
     @Autowired
     InterestAuctionService interestAuctionService;
+
+    @Autowired
+    MemberService memberService;
+
+    @Autowired
+    AuctionImageService auctionImageService;
 
     /*
         관심 키워드 생성, 조회, 삭제
@@ -61,7 +64,7 @@ public class InterestController {
     public ResponseEntity<InterestKeywordRes> getInterestKeywordList(@ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
-        List<InterestKeyword> interestKeywordList = interestKeywordService.getInterestKeywordListByMemberSeq(memberSeq);
+        List<String> interestKeywordList = interestKeywordService.getInterestKeywordListByMemberSeq(memberSeq);
         return ResponseEntity.status(200).body(InterestKeywordRes.of(interestKeywordList));
     }
 
@@ -97,7 +100,7 @@ public class InterestController {
     public ResponseEntity<InterestCategoryRes> getInterestCategoryList(@ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
-        List<InterestCategory> interestCategoryList = interestCategoryService.getInterestCategoryListByMemberSeq(memberSeq);
+        List<Long> interestCategoryList = interestCategoryService.getInterestCategoryListByMemberSeq(memberSeq);
         return ResponseEntity.status(200).body(InterestCategoryRes.of(interestCategoryList));
     }
 
@@ -131,17 +134,24 @@ public class InterestController {
 
     }
 
-//    @GetMapping("/auction")
-//    @ApiOperation(value = "멤버의 관심 경매 조회", notes = "로그인한 회원의 관심 경매 목록을 응답한다.")
-//    @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "인증 실패"),
-//            @ApiResponse(code = 404, message = "사용자 없음"), @ApiResponse(code = 500, message = "서버 오류") })
-//    public ResponseEntity<InterestAuctionRes> getInterestAuctionList(@ApiIgnore Authentication authentication) {
-//        MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
-//        Long memberSeq = memberDetails.getMemberSeq();
-//        List<InterestAuction> interestAuctionList = interestAuctionService.getInterestAuctionListByMemberSeq(memberSeq);
-//        return ResponseEntity.status(200).body(InterestAuctionRes.of(interestAuctionList));
-//    }
-//
+    @GetMapping("/auction")
+    @ApiOperation(value = "멤버의 관심 경매 조회", notes = "로그인한 회원의 관심 경매 목록을 응답한다.")
+    @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "인증 실패"),
+            @ApiResponse(code = 404, message = "사용자 없음"), @ApiResponse(code = 500, message = "서버 오류") })
+    public ResponseEntity<List<AuctionListEntityRes>> getInterestAuctionList(@ApiIgnore Authentication authentication) {
+        MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
+        Long memberSeq = memberDetails.getMemberSeq();
+        List<AuctionListEntityRes> auctionListRes = new ArrayList<>();
+        List<Auction> auctionList = interestAuctionService.getInterestAuctionListByMemberSeq(memberSeq);
+        for(Auction auction : auctionList){
+            Long auctionMemberSeq = auction.getMemberSeq();
+            Member member = memberService.getMemberByMemberSeq(auctionMemberSeq);
+            List<AuctionImage> auctionImageList = auctionImageService.getAuctionImageListByAuctionSeq(auction.getSeq());
+            auctionListRes.add(AuctionListEntityRes.of(auction, member, auctionImageList));
+        }
+        return ResponseEntity.status(200).body(auctionListRes);
+    }
+
     @DeleteMapping("/auction/{auctionSeq}")
     @ApiOperation(value = "관심 경매 삭제", notes = "관심 경매를 삭제한다.")
     @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "인증 실패"),

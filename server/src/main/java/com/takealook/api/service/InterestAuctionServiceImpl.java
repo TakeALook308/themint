@@ -4,10 +4,10 @@ import com.takealook.db.entity.Auction;
 import com.takealook.db.entity.InterestAuction;
 import com.takealook.db.repository.AuctionRepository;
 import com.takealook.db.repository.InterestAuctionRepository;
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -51,8 +51,13 @@ public class InterestAuctionServiceImpl implements InterestAuctionService{
     }
 
     @Override
-    public List<InterestAuction> getInterestAuctionListByMemberSeq(Long memberSeq) {
-        return null;
+    public List<Auction> getInterestAuctionListByMemberSeq(Long memberSeq) {
+        List<InterestAuction> interestAuctionList = interestAuctionRepository.findAllByMemberSeq(memberSeq);
+        List<Auction> auctionList = new ArrayList<>();
+        for (InterestAuction interestAuction : interestAuctionList){
+            auctionList.add(auctionRepository.findBySeq(interestAuction.getAuctionSeq()).get());
+        }
+        return auctionList;
     }
 
     @Override

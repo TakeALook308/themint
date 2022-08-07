@@ -1,8 +1,6 @@
 package com.takealook.api.response;
 
-import com.takealook.db.entity.InterestKeyword;
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,9 +13,9 @@ import java.util.List;
 @Setter
 @ApiModel("InterestKeywordResponse")
 public class InterestKeywordRes {
-    List<InterestKeyword> interestKeywordList;
+    List<String> interestKeywordList;
 
-    public static InterestKeywordRes of(List<InterestKeyword> interestKeywordList){
+    public static InterestKeywordRes of(List<String> interestKeywordList){
         InterestKeywordRes res = new InterestKeywordRes();
         res.setInterestKeywordList(interestKeywordList);
         return res;

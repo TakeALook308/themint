@@ -5,6 +5,7 @@ import com.takealook.db.repository.InterestKeywordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -26,8 +27,12 @@ public class InterestKeywordServiceImpl implements InterestKeywordService {
     }
 
     @Override
-    public List<InterestKeyword> getInterestKeywordListByMemberSeq(Long memberSeq) {
-        List<InterestKeyword> list = interestKeywordRepository.findAllByMemberSeq(memberSeq).orElse(null);
+    public List<String> getInterestKeywordListByMemberSeq(Long memberSeq) {
+        List<String> list = new ArrayList<>();
+        List<InterestKeyword> interestKeywordList = interestKeywordRepository.findAllByMemberSeq(memberSeq).orElse(null);
+        for (InterestKeyword interestKeyword : interestKeywordList){
+            list.add(interestKeyword.getKeywordName());
+        }
         return list;
     }
 

@@ -20,7 +20,7 @@ public class AuctionListEntityRes {
     String startTime;
     int interest;
     int status;
-    List<AuctionImage> auctionImageList;
+    AuctionImage auctionImage;
     String profileUrl;
 
     public static AuctionListEntityRes of(Auction auction, Member member, List<AuctionImage> auctionImageList){
@@ -32,7 +32,7 @@ public class AuctionListEntityRes {
                 .startTime(auction.getStartTime())
                 .interest(auction.getInterest())
                 .status(auction.getStatus())
-                .auctionImageList(auctionImageList)
+                .auctionImage(auctionImageList.get(0))
                 .profileUrl(member.getProfileUrl())
                 .build();
         return res;
