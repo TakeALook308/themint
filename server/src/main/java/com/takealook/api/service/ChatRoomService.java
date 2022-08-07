@@ -1,5 +1,6 @@
 package com.takealook.api.service;
 
+import com.takealook.api.request.ChatRoomRegisterPostReq;
 import com.takealook.db.entity.ChatRoom;
 import org.springframework.data.redis.listener.ChannelTopic;
 
@@ -7,7 +8,7 @@ import java.util.List;
 
 public interface ChatRoomService {
 
-    ChatRoom createChatRoom(int type);
+    ChatRoom createChatRoom(ChatRoomRegisterPostReq chatRoomRegisterPostReq);
 
     void enterChatRoom(String roomId);
 

@@ -1,5 +1,6 @@
 package com.takealook.api.service;
 
+import com.takealook.api.request.ChatRoomRegisterPostReq;
 import com.takealook.chat.RedisPublisher;
 import com.takealook.chat.RedisSubscriber;
 import com.takealook.db.entity.ChatMessage;
@@ -18,6 +19,7 @@ import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -47,8 +49,12 @@ public class ChatRoomServiceImpl implements ChatRoomService{
     /**
      * 채팅방 생성 : 서버간 채팅방 공유를 위해 redis hash에 저장한다.
      */
-    public ChatRoom createChatRoom(int type) {
-        ChatRoom chatRoom = ChatRoom.create(type);
+    public ChatRoom createChatRoom(ChatRoomRegisterPostReq chatRoomRegisterPostReq) {
+        if (chatRoomRegisterPostReq.getType() == 1) { // 1:1 채팅방이라면 roomId 직접 생성
+            String roomId = UUID.randomUUID().toString();
+            chatRoomRegisterPostReq.setRoomId(roomId);
+        }
+        ChatRoom chatRoom = ChatRoom.create(chatRoomRegisterPostReq);
         opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom);
         chatRoomRepository.save(chatRoom);
         return chatRoom;

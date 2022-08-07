@@ -20,6 +20,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 
@@ -98,12 +99,12 @@ public class MemberController {
 
     // 비밀번호 변경
     @PatchMapping("/password")
-    public ResponseEntity<?> changePassword(@RequestBody String pwd, @ApiIgnore Authentication authentication) {
+    public ResponseEntity<?> changePassword(@RequestBody Map<String, String> pwdMap, @ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
         Member member = memberService.getMemberByMemberSeq(memberSeq);
         if (member != null) {
-            memberService.updateMemberPassword(member.getSeq(), pwd);
+            memberService.updateMemberPassword(member.getSeq(), pwdMap.get("pwd"));
             return ResponseEntity.status(200).body("success");
         }
         return ResponseEntity.status(409).body("fail");
@@ -121,9 +122,9 @@ public class MemberController {
 
     // 2. 인증번호 확인
     @PostMapping("/password")
-    public ResponseEntity<?> sendEmail(@RequestBody String email) {
+    public ResponseEntity<?> sendEmail(@RequestBody Map<String, String> emailMap) {
         int randNum = ThreadLocalRandom.current().nextInt(100000, 1000000);
-        int result = memberService.sendEmail(randNum, email);
+        int result = memberService.sendEmail(randNum, emailMap.get("email"));
         // 메일 전송 실패 시
         if (result == 0) return ResponseEntity.status(409).body("fail");
         return ResponseEntity.status(200).body(MemberRandomNumberRes.of(randNum));
@@ -131,8 +132,8 @@ public class MemberController {
 
     // 3. 비밀번호 재설정
     @PatchMapping("password/change")
-    public ResponseEntity<?> setNewPassword(@RequestBody String email, String pwd) {
-        memberService.setNewPassword(email, pwd);
+    public ResponseEntity<?> setNewPassword(@RequestBody Map<String, String> emailMap, String pwd) {
+        memberService.setNewPassword(emailMap.get("email"), pwd);
         return ResponseEntity.status(200).body("success");
     }
     /////////////////// 비밀번호 재설정 (비밀번호 찾기) end ////////////////////////
@@ -216,10 +217,10 @@ public class MemberController {
 
     // 문자 인증
     @PostMapping("/sms")
-    public ResponseEntity<?> smsAuth(@RequestBody String phone) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
+    public ResponseEntity<?> smsAuth(@RequestBody Map<String, String> phoneMap) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
         int randNum = ThreadLocalRandom.current().nextInt(100000, 1000000);
 
-        SendSmsRes sendSmsRes = smsService.sendSms(phone, String.valueOf(randNum));
+        SendSmsRes sendSmsRes = smsService.sendSms(phoneMap.get("phone"), String.valueOf(randNum));
         if (sendSmsRes.getStatusName().equals("fail"))
             return ResponseEntity.status(409).body("fail");
         return ResponseEntity.status(200).body(randNum);

@@ -1,8 +1,8 @@
 package com.takealook.db.entity;
 
 
-import lombok.Getter;
-import lombok.Setter;
+import com.takealook.api.request.ChatRoomRegisterPostReq;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -10,7 +10,9 @@ import java.io.Serializable;
 import java.util.UUID;
 
 @Getter
-@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class ChatRoom implements Serializable {
 
@@ -20,10 +22,11 @@ public class ChatRoom implements Serializable {
     private String roomId;
     private int type;
 
-    public static ChatRoom create(int type) {
-        ChatRoom chatRoom = new ChatRoom();
-        chatRoom.roomId = UUID.randomUUID().toString();
-        chatRoom.type = type;
+    public static ChatRoom create(ChatRoomRegisterPostReq chatRoomRegisterPostReq) {
+        ChatRoom chatRoom = ChatRoom.builder()
+                .roomId(chatRoomRegisterPostReq.getRoomId())
+                .type(chatRoomRegisterPostReq.getType())
+                .build();
         return chatRoom;
     }
 }
