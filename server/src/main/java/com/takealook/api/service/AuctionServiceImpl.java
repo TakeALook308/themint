@@ -4,7 +4,6 @@ import com.takealook.api.request.AuctionImageRegisterPostReq;
 import com.takealook.api.request.AuctionRegisterPostReq;
 import com.takealook.api.request.AuctionUpdatePatchReq;
 import com.takealook.api.request.ProductRegisterPostReq;
-import com.takealook.common.model.request.BaseSearchRequest;
 import com.takealook.common.util.HashUtil;
 import com.takealook.db.entity.Auction;
 import com.takealook.db.entity.AuctionImage;
@@ -13,9 +12,13 @@ import com.takealook.db.repository.AuctionImageRepository;
 import com.takealook.db.repository.AuctionRepository;
 import com.takealook.db.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -29,6 +32,9 @@ public class AuctionServiceImpl implements AuctionService {
 
     @Autowired
     AuctionImageRepository auctionImageRepository;
+
+    @PersistenceContext
+    EntityManager entityManager;
 
     @Override
     public Auction createAuction(Long memberSeq, AuctionRegisterPostReq auctionRegisterPostReq) {
@@ -75,9 +81,56 @@ public class AuctionServiceImpl implements AuctionService {
         return auction;
     }
 
+    // 실시간 경매 조회
+
+    // 인기순, 최신순 정렬 검색 - startTime 현재시간보다 큰 것만
     @Override
-    public List<Auction> getAuctionList(BaseSearchRequest baseSearchRequest) {
-        return null;
+    public List<Auction> getAuctionList(String word, Pageable pageable) {
+        List<Auction> auctionList = null;
+        String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        if(word == null){
+            auctionList = auctionRepository.findAllByStartTimeAfter(currentTime, pageable);
+        } else {
+            auctionList = auctionRepository.findAllByTitleContainsOrContentContainsAndStartTimeAfter(word, word, currentTime, pageable);
+        }
+        return auctionList;
+    }
+
+    // 판매자 신뢰도순 정렬 검색 - startTime 현재시간보다 큰 것만
+    @Override
+    public List<Auction> getAuctionListOrderByScore(String word, Pageable pageable) {
+        List<Auction> auctionList = null;
+        String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        if(word == null){
+            auctionList = auctionRepository.findAllByStartTimeAfterOrderByMemberScore(currentTime, pageable);
+        } else {
+            auctionList = auctionRepository.findAllByTitleOrContentContainsAndStartTimeAfterOrderByMemberScore(word, currentTime, pageable);
+        }
+        return auctionList;
+    }
+
+    @Override
+    public List<Auction> getAuctionListByCategorySeqOrderByScore(Long categorySeq, Pageable pageable) {
+        String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        List<Auction> auctionList = null;
+        if(categorySeq == 0){ // 전체 조회
+            auctionList = auctionRepository.findAllByStartTimeAfterOrderByMemberScore(currentTime, pageable);
+        } else {
+            auctionList = auctionRepository.findAllByCategorySeqAndStartTimeAfterOrderByMemberScore(categorySeq, currentTime, pageable);
+        }
+        return auctionList;
+    }
+
+    @Override
+    public List<Auction> getAuctionListByCategorySeq(Long categorySeq, Pageable pageable) {
+        String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        List<Auction> auctionList = null;
+        if(categorySeq == 0) { // 전체 조회
+            auctionList = auctionRepository.findAllByStartTimeAfter(currentTime, pageable);
+        } else {
+            auctionList = auctionRepository.findAllByCategorySeqAndStartTimeAfter(categorySeq, currentTime, pageable);
+        }
+        return auctionList;
     }
 
     @Override
@@ -96,9 +149,9 @@ public class AuctionServiceImpl implements AuctionService {
     @Override
     public void deleteAuction(Long memberSeq, Long auctionSeq) {
         Auction auction = auctionRepository.findBySeq(auctionSeq).orElse(null);
-        if(auction != null && auction.getMemberSeq() == memberSeq){
+        if (auction != null && auction.getMemberSeq() == memberSeq) {
             auctionRepository.delete(auction);
-        } else{
+        } else {
             // 예외처리
         }
     }
