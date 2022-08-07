@@ -38,7 +38,6 @@ function Register() {
             <Link to="/login">
               <h2>로그인</h2>
             </Link>
-            <p>or</p>
           </LinkContainer>
           <SocialLoginContainer>
             <SocialLogginButton text={'네이버로 회원가입'} social={'네이버'} />

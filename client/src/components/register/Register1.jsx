@@ -1,7 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import GradientButton from '../common/GradientButton';
-import { MessageWrapper, WarningMessage } from '../../style/common';
+import { MessageWrapper, SuccessValidationMessage, WarningMessage } from '../../style/common';
 import { ActiveInput } from '../../style/style';
 import { userApis } from '../../utils/api/userApi';
 import { getData } from '../../utils/api/api';
@@ -37,27 +37,24 @@ function Register1({ setUserInfo, setStep }) {
   const password = useRef({});
   password.current = watch('pwd', '');
 
-  const checkMemberId = async (e) => {
-    const {
-      target: { value },
-    } = e;
-    if (!value || value.length < STANDARD.ID_MIN_LENGTH) return;
+  const checkMemberId = async (value) => {
+    if (!value || value.length < STANDARD.ID_MIN_LENGTH || errors.memberId) return;
     try {
       const response = await getData(userApis.ID_DUPLICATE_CHECK_API(value || value));
       if (response.status === 200) {
         setDuplicatedID(false);
       }
     } catch {
-      // setError('memberId', { message: REGISTER_MESSAGE.DUPLICATED_ID }, { shouldFocus: true });
-      // setDuplicatedID(false);
+      setError('memberId', { message: REGISTER_MESSAGE.DUPLICATED_ID }, { shouldFocus: true });
+      setDuplicatedID(false);
       setDuplicatedID(true);
     }
   };
 
-  const onChangeId = async (value) => {
-    debounceIdChange(value);
-  };
-  const debounceIdChange = debounce(async (value) => await checkMemberId(value));
+  const debouncedValidateID = useMemo(
+    () => debounce(async (value) => await checkMemberId(value), 700),
+    [],
+  );
 
   return (
     <form onSubmit={handleSubmit(onValid)}>
@@ -84,7 +81,7 @@ function Register1({ setUserInfo, setStep }) {
                 value: REGEX.ID,
                 message: REGISTER_MESSAGE.ONLY_ENGLISH_AND_NUMBER,
               },
-              onChange: (e) => onChangeId(e),
+              validate: debouncedValidateID,
             })}
             placeholder=" "
             required
@@ -93,6 +90,9 @@ function Register1({ setUserInfo, setStep }) {
         </ActiveInput>
         <MessageWrapper>
           <WarningMessage>{errors?.memberId?.message}</WarningMessage>
+          {watch().memberId && !errors?.memberId && (
+            <SuccessValidationMessage>{REGISTER_MESSAGE.VALIDATED_ID}</SuccessValidationMessage>
+          )}
         </MessageWrapper>
         <ActiveInput active={true}>
           <input

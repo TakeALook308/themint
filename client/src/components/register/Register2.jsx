@@ -1,17 +1,19 @@
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import GradientButton from '../common/GradientButton';
 import MintButton from '../common/MintButton';
-import { MessageWrapper, WarningMessage } from '../../style/common';
+import { MessageWrapper, SuccessValidationMessage, WarningMessage } from '../../style/common';
 import { ActiveInput } from '../../style/style';
 import { userApis } from '../../utils/api/userApi';
 import { getData } from '../../utils/api/api';
 import { REGEX, REGISTER_MESSAGE, STANDARD } from '../../utils/constants/constant';
 import debounce from '../../utils/functions/debounce';
 import StepSignal from './StepSignal';
+import AwesomeDebouncePromise from 'awesome-debounce-promise';
 
 function Register2({ setUserInfo, setStep }) {
+  const [email, setEmail] = useState('');
   const [duplicatedEmail, setDuplicatedEmail] = useState(false);
   const [duplicatedPhone, setDuplicatedPhone] = useState(false);
 
@@ -45,36 +47,54 @@ function Register2({ setUserInfo, setStep }) {
     setStep((prev) => ({ ...prev, step2: false, step3: true }));
   };
 
-  const password = useRef({});
-  password.current = watch('pwd', '');
-
-  const checkMemberId = async (e) => {
-    const {
-      target: { value },
-    } = e;
-    if (!value) return;
+  const checkMemberInfo = async (value, url, setState, key, errorMessage) => {
+    if (!value || errors[key]) return;
+    console.log(value);
+    console.log('fuck');
     try {
-      const response = await getData(userApis.ID_DUPLICATE_CHECK_API(value));
+      const response = await getData(url);
       if (response.status === 200) {
-        setDuplicatedEmail(false);
-        return true;
+        setState(false);
       }
     } catch {
-      setError('email', { message: REGISTER_MESSAGE.DUPLICATED_EMAIL }, { shouldFocus: true });
-      setDuplicatedEmail(true);
+      setError(key, { message: errorMessage }, { shouldFocus: true });
+      setState(true);
     }
   };
 
-  const onChangeEmail = async (value) => {
-    debounceEmailChange(value);
-  };
-  const debounceEmailChange = debounce(async (value) => await checkMemberId(value));
+  const debounceEmailChange = async (value) =>
+    await checkMemberInfo(
+      value,
+      userApis.EMAIL_DUPLICATE_CHECK_API(value),
+      setDuplicatedEmail,
+      'email',
+      REGISTER_MESSAGE.DUPLICATED_EMAIL,
+    );
 
   const validatePhoneNumber = (event) => {
     event.preventDefault();
     console.log('validate');
     trigger('phone');
   };
+
+  const debouncePhoneChange = async (value) =>
+    await checkMemberInfo(
+      value,
+      userApis.PHONE_DUPLICATE_CEHCK_API(value),
+      setDuplicatedPhone,
+      'phone',
+      REGISTER_MESSAGE.DUPLICATED_PHONE,
+    );
+
+  const debouncedValidateEmail = useMemo(
+    () => debounce((value) => debounceEmailChange(value), 700),
+    [],
+  );
+
+  const debouncedValidatePhoneNumber = useMemo(
+    () => debounce((value) => debouncePhoneChange(value), 700),
+    [],
+  );
 
   return (
     <form onSubmit={handleSubmit(onValid)}>
@@ -119,7 +139,7 @@ function Register2({ setUserInfo, setStep }) {
                 value: REGEX.EMAIL,
                 message: REGISTER_MESSAGE.EMAIL_STANDARD,
               },
-              onChange: (e) => onChangeEmail(e),
+              validate: debouncedValidateEmail,
             })}
             placeholder=" "
             required
@@ -128,6 +148,9 @@ function Register2({ setUserInfo, setStep }) {
         </ActiveInput>
         <MessageWrapper>
           <WarningMessage>{errors?.email?.message}</WarningMessage>
+          {watch().email && !errors?.email && (
+            <SuccessValidationMessage>{REGISTER_MESSAGE.VALIDATED_EMAIL}</SuccessValidationMessage>
+          )}
         </MessageWrapper>
         <InputContainer>
           <ActiveInput active={true}>
@@ -141,6 +164,7 @@ function Register2({ setUserInfo, setStep }) {
                   value: REGEX.PHONE,
                   message: REGISTER_MESSAGE.PHONE_STANDARD,
                 },
+                validate: debouncedValidatePhoneNumber,
               })}
               placeholder=" "
               autoComplete="off"
@@ -152,6 +176,9 @@ function Register2({ setUserInfo, setStep }) {
         </InputContainer>
         <MessageWrapper>
           <WarningMessage>{errors?.phone?.message}</WarningMessage>
+          {watch().phone && !errors?.phone && (
+            <SuccessValidationMessage>{REGISTER_MESSAGE.VALIDATED_PHONE}</SuccessValidationMessage>
+          )}
         </MessageWrapper>
         <ActiveInput active={true}>
           <input
