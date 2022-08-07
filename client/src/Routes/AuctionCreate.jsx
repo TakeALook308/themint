@@ -1,11 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { Container, Title } from '../style/style';
 import { categories } from '../utils/constants/constant';
 import ActiveInputBox from '../components/common/ActiveInputBox';
 import ProductTable from '../components/common/ProductTable';
 import Modal from '../components/common/Modal';
+import { useDropzone } from 'react-dropzone';
+
 function AuctionCreate(props) {
+  const [im, setIm] = useState([]);
+  const onDrop = useCallback((acceptedFiles) => {
+    let temp = [...im];
+    acceptedFiles.map((item) => temp.push(item));
+    setIm(temp);
+  }, []);
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
   const [inputAuction, setInputAuction] = useState({
     categorySeq: 1,
     auctionImages: [],
@@ -74,7 +84,15 @@ function AuctionCreate(props) {
         <Div>
           <Label>사진 업로드</Label>
           <FileUpload>
-            <input type="file" />
+            <div {...getRootProps()}>
+              {console.log(im)}
+              <input {...getInputProps()} />
+              {isDragActive ? (
+                <p>Drop the files here ...</p>
+              ) : (
+                <p>Drag 'n' drop some files here, or click to select files</p>
+              )}
+            </div>
           </FileUpload>
         </Div>
 
