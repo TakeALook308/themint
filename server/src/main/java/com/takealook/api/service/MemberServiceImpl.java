@@ -4,10 +4,13 @@ import com.takealook.api.request.*;
 import com.takealook.db.entity.Member;
 import com.takealook.db.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * 멤버 관련 비즈니스 로직 처리를 위한 서비스 구현
@@ -39,6 +42,16 @@ public class MemberServiceImpl implements MemberService {
                 .noticeEmail(memberRegisterPostReq.getNoticeEmail())
                 .build();
         return memberRepository.save(member);
+    }
+
+    @Override
+    public List<Member> getMemberListByWord(String word, Pageable pageable) {
+        List<Member> memberList = null;
+        if (word == null) {
+            word = "";
+        }
+        memberList = memberRepository.findAllByNicknameContains(word, pageable);
+        return memberList;
     }
 
     @Override

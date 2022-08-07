@@ -10,6 +10,9 @@ import com.takealook.common.util.JwtTokenUtil;
 import com.takealook.db.entity.Member;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +24,8 @@ import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 
@@ -63,10 +68,21 @@ public class MemberController {
         return ResponseEntity.status(409).body("fail");
     }
 
+    // 회원 목록 검색
+    @GetMapping
+    public ResponseEntity<List<MemberListEntityRes>> getMemberList(@RequestParam(value = "word", required = false) String word, @RequestParam("page") int page, @RequestParam("size") int size) {
+        List<MemberListEntityRes> memberListEntityResList = new ArrayList<>();
+        Pageable pageable = PageRequest.of(page, size, Sort.by("score").descending());
+        List<Member> memberList = memberService.getMemberListByWord(word, pageable);
+        for (Member member : memberList){
+            memberListEntityResList.add(MemberListEntityRes.of(member));
+        }
+        return ResponseEntity.status(200).body(memberListEntityResList);
+    }
 
     // 내 정보 조회
-    @GetMapping("my")
-    public ResponseEntity<?> getMember(@ApiIgnore Authentication authentication) {
+    @GetMapping("/my")
+    public ResponseEntity<?> getMyInfo(@ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
         Member member = memberService.getMemberByMemberSeq(memberSeq);
@@ -76,10 +92,9 @@ public class MemberController {
         return ResponseEntity.status(409).body("fail");
     }
 
-
     // 회원 정보 조회
-    @GetMapping("{seq}")
-    public ResponseEntity<MemberViewRes> getMyInfo(@PathVariable("seq") Long seq) {
+    @GetMapping("/{seq}")
+    public ResponseEntity<MemberViewRes> getMemberInfo(@PathVariable("seq") Long seq) {
         Member member = memberService.getMemberByMemberSeq(seq);
         return ResponseEntity.status(200).body(MemberViewRes.of(member));
     }
@@ -109,7 +124,6 @@ public class MemberController {
         }
         return ResponseEntity.status(409).body("fail");
     }
-
 
     /////////////////// 비밀번호 재설정 (비밀번호 찾기) start ////////////////////////
     // 1. 이메일 체크
