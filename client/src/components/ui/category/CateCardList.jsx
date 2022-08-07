@@ -71,8 +71,15 @@ const ListHeader = styled.header`
   justify-content: space-between;
   align-items: baseline;
   margin-bottom: 20px;
+
   > h3 {
     font-size: 30px;
     font-weight: bold;
+    height: 30px;
+    > span {
+      display: inline-block;
+      font-size: 30px;
+      height: 30px;
+    }
   }
 `;
