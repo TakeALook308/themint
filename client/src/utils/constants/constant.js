@@ -20,7 +20,7 @@ export const REGISTER_MESSAGE = {
   DUPLICATED_PHONE: '사용 중인 전화번호입니다.',
   VALIDATED_PHONE: '사용 가능한 전화번호입니다.',
   REQUIRED_CERTIFICATION_NUMBER: '인증번호를 입력해주세요.',
-  CERTICATION_NUMBER: '인증번호가 일치하지 않습니다.',
+  FAILED_CERTICATION_NUMBER: '인증번호가 일치하지 않습니다.',
   VALIDATED_CERTICATION_NUMBER: '전화번호 인증에 성공하였습니다.',
   REQUIRED_NICKNAME: '닉네임을 입력해주세요.',
   DUPLICATED_NIACKNAME: '사용 중인 닉네임입니다.',

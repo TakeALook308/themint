@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import GradientButton from '../common/GradientButton';
@@ -12,10 +12,10 @@ import PopupDom from './PopupDom';
 import PopupPostCode from './PopupPostCode';
 import { InputContainer } from './Register2';
 import StepSignal from './StepSignal';
-import { MessageWrapper, WarningMessage } from '../../style/common';
+import { MessageWrapper, SuccessValidationMessage, WarningMessage } from '../../style/common';
 
 function Register3({ setUserInfo }) {
-  const [duplicatedNickname, setDuplicatedNickname] = useState(false);
+  const [duplicatedNickname, setDuplicatedNickname] = useState(true);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [address, setAddress] = useState();
 
@@ -34,6 +34,7 @@ function Register3({ setUserInfo }) {
   const {
     register,
     setError,
+    watch,
     handleSubmit,
     formState: { errors },
   } = useForm({
@@ -52,27 +53,24 @@ function Register3({ setUserInfo }) {
     setUserInfo((prev) => ({ ...prev, ...data }));
   };
 
-  const checkNickname = async (e) => {
-    const {
-      target: { value },
-    } = e;
+  const checkNickname = async (value) => {
     if (errors?.nickname?.type === 'pattern' || !value || value.length < STANDARD.NAME_MIN_LENGTH)
       return;
     try {
       const response = await getData(userApis.NICKNAME_DUPLICATE_CHECK_API(value));
       if (response.status === 200) {
-        setDuplicatedNickname(false);
+        setDuplicatedNickname(true);
       }
     } catch {
       setError('nickname', { message: REGISTER_MESSAGE.DUPLICATED_ID }, { shouldFocus: true });
-      setDuplicatedNickname(true);
+      setDuplicatedNickname(false);
     }
   };
 
-  const onChagneNickname = async (value) => {
-    debounceCheckNickname(value);
-  };
-  const debounceCheckNickname = debounce(async (value) => await checkNickname(value));
+  const debounceCheckNickname = useMemo(
+    () => debounce(async (value) => await checkNickname(value), 1000),
+    [],
+  );
 
   return (
     <form onSubmit={handleSubmit(onValid)}>
@@ -99,7 +97,7 @@ function Register3({ setUserInfo }) {
                 value: REGEX.NICKNAME,
                 message: REGISTER_MESSAGE.NICKNAME_STANDARD,
               },
-              onChange: (e) => onChagneNickname(e),
+              validate: debounceCheckNickname,
             })}
             placeholder=" "
             required
@@ -108,6 +106,11 @@ function Register3({ setUserInfo }) {
         </ActiveInput>
         <MessageWrapper>
           <WarningMessage>{errors?.nickname?.message}</WarningMessage>
+          {watch().nickname && !errors?.nickname && (
+            <SuccessValidationMessage>
+              {REGISTER_MESSAGE.VALIDATED_NICKNAME}
+            </SuccessValidationMessage>
+          )}
         </MessageWrapper>
         <InputContainer>
           <ActiveInput active={true}>
@@ -115,7 +118,7 @@ function Register3({ setUserInfo }) {
               name="address"
               id="address"
               type="text"
-              value={address}
+              value={address || ''}
               onChange={handleInput}
               {...register('address', {
                 required: REGISTER_MESSAGE.REQUIRED_ADDRESS,

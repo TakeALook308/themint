@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import GradientButton from '../common/GradientButton';
@@ -6,14 +6,13 @@ import MintButton from '../common/MintButton';
 import { MessageWrapper, SuccessValidationMessage, WarningMessage } from '../../style/common';
 import { ActiveInput } from '../../style/style';
 import { userApis } from '../../utils/api/userApi';
-import { getData } from '../../utils/api/api';
+import { getData, postData } from '../../utils/api/api';
 import { REGEX, REGISTER_MESSAGE, STANDARD } from '../../utils/constants/constant';
 import debounce from '../../utils/functions/debounce';
 import StepSignal from './StepSignal';
-import AwesomeDebouncePromise from 'awesome-debounce-promise';
 
 function Register2({ setUserInfo, setStep }) {
-  const [email, setEmail] = useState('');
+  const [certificatedNumber, setCertificatedNumber] = useState();
   const [duplicatedEmail, setDuplicatedEmail] = useState(false);
   const [duplicatedPhone, setDuplicatedPhone] = useState(false);
 
@@ -33,24 +32,18 @@ function Register2({ setUserInfo, setStep }) {
     mode: 'onChange',
   });
 
-  //TODO: 임시 메서드 삭제 필요
-  const click = () => {
-    setStep((prev) => ({ ...prev, step2: false, step3: true }));
-  };
-
   const onValid = (data) => {
     if (duplicatedEmail) {
       setError('email', { message: REGISTER_MESSAGE.DUPLICATED_ID }, { shouldFocus: true });
       return;
     }
+    trigger('certificationNumber');
     setUserInfo((prev) => ({ ...prev, ...data }));
     setStep((prev) => ({ ...prev, step2: false, step3: true }));
   };
 
   const checkMemberInfo = async (value, url, setState, key, errorMessage) => {
     if (!value || errors[key]) return;
-    console.log(value);
-    console.log('fuck');
     try {
       const response = await getData(url);
       if (response.status === 200) {
@@ -71,10 +64,13 @@ function Register2({ setUserInfo, setStep }) {
       REGISTER_MESSAGE.DUPLICATED_EMAIL,
     );
 
-  const validatePhoneNumber = (event) => {
+  const certificatePhoneNumber = async (event) => {
     event.preventDefault();
-    console.log('validate');
-    trigger('phone');
+    if (errors.phone) return;
+    const response = await postData(userApis.PHONE_CERTIFICATE_API, {
+      phone: watch().phone,
+    });
+    setCertificatedNumber(String(response.data));
   };
 
   const debouncePhoneChange = async (value) =>
@@ -172,7 +168,7 @@ function Register2({ setUserInfo, setStep }) {
             />
             <label htmlFor="phone">전화번호</label>
           </ActiveInput>
-          <MintButton text={'인증'} type={'button'} onClick={validatePhoneNumber} />
+          <MintButton text={'인증'} type={'button'} onClick={certificatePhoneNumber} />
         </InputContainer>
         <MessageWrapper>
           <WarningMessage>{errors?.phone?.message}</WarningMessage>
@@ -184,20 +180,30 @@ function Register2({ setUserInfo, setStep }) {
           <input
             name="certificationNumber"
             id="certificationNumber"
-            type="number"
+            type="text"
             {...register('certificationNumber', {
               required: REGISTER_MESSAGE.REQUIRED_CERTIFICATION_NUMBER,
+              validate: {
+                certi: (value) =>
+                  value !== certificatedNumber ? REGISTER_MESSAGE.FAILED_CERTICATION_NUMBER : true,
+              },
             })}
             placeholder=" "
+            autoComplete="off"
             required
           />
           <label htmlFor="certificationNumber">인증번호</label>
         </ActiveInput>
         <MessageWrapper>
           <WarningMessage>{errors?.certificationNumber?.message}</WarningMessage>
+          {watch().certificationNumber && !errors?.certificationNumber && (
+            <SuccessValidationMessage>
+              {REGISTER_MESSAGE.VALIDATED_CERTICATION_NUMBER}
+            </SuccessValidationMessage>
+          )}
         </MessageWrapper>
         <StepSignal step={'register2'} />
-        <GradientButton text={'다음'} type={'submit'} onClick={click} />
+        <GradientButton text={'다음'} type={'submit'} />
       </div>
     </form>
   );
