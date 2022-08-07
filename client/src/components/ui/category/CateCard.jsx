@@ -2,9 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 
-function CateCard({ categoryName, categoryKey }) {
+function CateCard({ categoryKey, categoryName }) {
   return (
-    <NavStyle to={`/categories/${categoryKey}`}>
+    <NavStyle to={`/categories/${categoryKey}`} id={categoryKey}>
       <p>{categoryName}</p>
     </NavStyle>
   );

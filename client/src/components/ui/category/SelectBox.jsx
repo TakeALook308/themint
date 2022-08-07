@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
-import { getAuctionList } from '../../../utils/api/getAuctionApi';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 const Dropdown = ({ getSortKey }) => {
@@ -10,19 +9,20 @@ const Dropdown = ({ getSortKey }) => {
     { value: 'interest', name: '인기순' },
     { value: 'score', name: '판매자신뢰도순' },
   ];
-  const [sortName, setSortName] = useState('최신순');
+  const [sortName, setSortName] = useState('경매임박순');
   const [isActive, setIsActive] = useState(false);
-  const [value, setValue] = useState(1);
+  const [value, setValue] = useState('startTime');
   const onActiveToggle = useCallback(() => {
     setIsActive((prev) => !prev);
   }, []);
 
   const onSelectItem = (e) => {
-    setValue(e.target.value);
-    setSortName(e.target.innerText);
+    console.log(e.target.id);
     console.log(e.target.innerText);
+    setValue(e.target);
+    setSortName(e.target.innerText);
     setIsActive((prev) => !prev);
-    getSortKey(e.target.value);
+    getSortKey(e.target.id);
   };
 
   return (
@@ -37,14 +37,14 @@ const Dropdown = ({ getSortKey }) => {
           </DropdownSelect>
         </DropdownBody>
         <DropdownMenu isActive={isActive}>
-          {dropdownItems.map((item) => (
+          {dropdownItems.map((dropdownItems) => (
             <DropdownItemContainer
-              id="item"
-              key={item.value}
-              value={item.value}
-              name={item.name}
+              id={dropdownItems.value}
+              key={dropdownItems.value}
+              value={dropdownItems.value}
+              name={dropdownItems.name}
               onClick={onSelectItem}>
-              {item.name}
+              {dropdownItems.name}
             </DropdownItemContainer>
           ))}
         </DropdownMenu>
