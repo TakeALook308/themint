@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import StreamingComponent from '../components/StreamingComponent';
+import StreamingComponent from '../components/webRTC/StreamingComponent';
 import StreamingHeader from '../components/Streaming/StreamingHeader';
 import StreamChat from '../components/Streaming/StreamChat';
 import AuctionBidding from '../components/Streaming/AuctionBidding';
 import AuctionList from '../components/Streaming/AuctionList';
+import { useRecoilValue } from 'recoil';
+import { myInformationState } from '../atoms';
 function Streaming(props) {
   const [nowProduct, setNowProduct] = useState(0);
   const [products, setProducts] = useState([
@@ -20,6 +22,9 @@ function Streaming(props) {
     },
   ]);
 
+  const userInfo = useRecoilValue(myInformationState);
+  const auctionData = { memberId: 'ney9083' };
+
   return (
     <Stream>
       <Header>
@@ -28,7 +33,8 @@ function Streaming(props) {
       <Main>
         <Section>
           <AuctionList products={products} />
-          <StreamingComponent />
+
+          <StreamingComponent userInfo={userInfo} auctionData={auctionData} />
         </Section>
         <Aside>
           <AuctionBidding product={products[nowProduct]} />
