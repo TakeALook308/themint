@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface InterestCategoryService {
     InterestCategory createInterestCategory(Long memberSeq, Long categorySeq);
-    List<InterestCategory> getInterestCategoryListByMemberSeq(Long memberSeq);
+    List<Long> getInterestCategoryListByMemberSeq(Long memberSeq);
     int deleteCategory(Long memberSeq, Long categorySeq);
 }

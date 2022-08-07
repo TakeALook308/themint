@@ -48,6 +48,7 @@ public class AuctionServiceImpl implements AuctionService {
                 .content(auctionRegisterPostReq.getContent())
                 .categorySeq(auctionRegisterPostReq.getCategorySeq())
                 .startTime(auctionRegisterPostReq.getStartTime())
+//                .link()
                 .build();
         auctionRepository.save(auction);
 
@@ -142,11 +143,15 @@ public class AuctionServiceImpl implements AuctionService {
     public void updateAuction(Long memberSeq, AuctionUpdatePatchReq auctionUpdatePatchReq) {
         Auction auction = Auction.builder()
                 .seq(auctionUpdatePatchReq.getSeq())
+                .hash(auctionUpdatePatchReq.getHash())
                 .memberSeq(memberSeq)
                 .title(auctionUpdatePatchReq.getTitle())
                 .content(auctionUpdatePatchReq.getContent())
                 .categorySeq(auctionUpdatePatchReq.getCategorySeq())
                 .startTime(auctionUpdatePatchReq.getStartTime())
+                .link(auctionUpdatePatchReq.getLink())
+                .status(auctionUpdatePatchReq.getStatus())
+                .interest(auctionUpdatePatchReq.getInterest())
                 .build();
         auctionRepository.save(auction);
     }

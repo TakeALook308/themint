@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface InterestKeywordService {
     InterestKeyword createInterestKeyword(Long memberSeq, String keywordName);
-    List<InterestKeyword> getInterestKeywordListByMemberSeq(Long memberSeq);
+    List<String> getInterestKeywordListByMemberSeq(Long memberSeq);
     void deleteKeyword(Long memberSeq, String keywordName);
 }

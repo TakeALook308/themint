@@ -11,5 +11,5 @@ import java.util.List;
 public interface InterestCategoryRepository extends JpaRepository<InterestCategory, Long> {
     List<InterestCategory> findAllByMemberSeq(Long memberSeq);
     @Transactional
-    void deleteByMemberSeqAndCategorySeq(Long memberSeq, Long categorySeq);
+    int deleteByMemberSeqAndCategorySeq(Long memberSeq, Long categorySeq);
 }

@@ -16,9 +16,9 @@ import java.util.List;
 @Setter
 @ApiModel("InterestCategoryResponse")
 public class InterestCategoryRes {
-    List<InterestCategory> interestCategoryList;
+    List<Long> interestCategoryList;
 
-    public static InterestCategoryRes of(List<InterestCategory> interestCategoryList){
+    public static InterestCategoryRes of(List<Long> interestCategoryList){
         InterestCategoryRes res = new InterestCategoryRes();
         res.setInterestCategoryList(interestCategoryList);
         return res;
