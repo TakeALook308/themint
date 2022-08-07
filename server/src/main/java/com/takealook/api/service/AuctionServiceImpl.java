@@ -12,11 +12,13 @@ import com.takealook.db.repository.AuctionImageRepository;
 import com.takealook.db.repository.AuctionRepository;
 import com.takealook.db.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Pageable;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -30,6 +32,9 @@ public class AuctionServiceImpl implements AuctionService {
 
     @Autowired
     AuctionImageRepository auctionImageRepository;
+
+    @PersistenceContext
+    EntityManager entityManager;
 
     @Override
     public Auction createAuction(Long memberSeq, AuctionRegisterPostReq auctionRegisterPostReq) {
@@ -76,11 +81,45 @@ public class AuctionServiceImpl implements AuctionService {
         return auction;
     }
 
+    // 실시간 경매 조회
+
+    // 인기순, 최신순 정렬 검색 - startTime 현재시간보다 큰 것만
     @Override
     public List<Auction> getAuctionList(String word, Pageable pageable) {
-        List<Auction> auctionList = new ArrayList<>();
-        // 검색어, 정렬키, 카테고리, 페이지번호
-        auctionList = auctionRepository.findAllByTitleContainsOrContentContains(word, pageable);
+        List<Auction> auctionList = null;
+        String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        if(word == null){
+            auctionList = auctionRepository.findAllByStartTimeAfter(currentTime, pageable);
+        } else {
+            auctionList = auctionRepository.findAllByTitleContainsOrContentContainsAndStartTimeAfter(word, word, currentTime, pageable);
+        }
+        return auctionList;
+    }
+
+    // 판매자 신뢰도순 정렬 검색 - startTime 현재시간보다 큰 것만
+    @Override
+    public List<Auction> getAuctionListOrderByScore(String word, Pageable pageable) {
+        List<Auction> auctionList = null;
+        String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        if(word == null){
+            auctionList = auctionRepository.findAllByStartTimeAfterOrderByMemberScore(currentTime, pageable);
+        } else {
+            auctionList = auctionRepository.findAllByTitleOrContentContainsAndStartTimeAfterOrderByMemberScore(word, currentTime, pageable);
+        }
+        return auctionList;
+    }
+
+    @Override
+    public List<Auction> getAuctionListByCategorySeqOrderByScore(Long categorySeq, Pageable pageable) {
+        String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        List<Auction> auctionList = auctionRepository.findAllByCategorySeqAndStartTimeAfterOrderByMemberScore(categorySeq, currentTime, pageable);
+        return auctionList;
+    }
+
+    @Override
+    public List<Auction> getAuctionListByCategorySeq(Long categorySeq, Pageable pageable) {
+        String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        List<Auction> auctionList = auctionRepository.findAllByCategorySeqAndStartTimeAfter(categorySeq, currentTime, pageable);
         return auctionList;
     }
 
@@ -100,9 +139,9 @@ public class AuctionServiceImpl implements AuctionService {
     @Override
     public void deleteAuction(Long memberSeq, Long auctionSeq) {
         Auction auction = auctionRepository.findBySeq(auctionSeq).orElse(null);
-        if(auction != null && auction.getMemberSeq() == memberSeq){
+        if (auction != null && auction.getMemberSeq() == memberSeq) {
             auctionRepository.delete(auction);
-        } else{
+        } else {
             // 예외처리
         }
     }

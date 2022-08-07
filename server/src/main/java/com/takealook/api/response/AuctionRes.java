@@ -5,7 +5,6 @@ import com.takealook.db.entity.AuctionImage;
 import com.takealook.db.entity.Member;
 import com.takealook.db.entity.Product;
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,11 +20,14 @@ import java.util.List;
 @ApiModel("AuctionResponse")
 public class AuctionRes {
     Long seq;
+    String hash;
     Long memberSeq;
     String title;
     String content;
     Long categorySeq;
     String startTime;
+    int interest;
+    int status;
     List<Product> productList;
     List<AuctionImage> auctionImageList;
     String profileUrl;
@@ -33,11 +35,14 @@ public class AuctionRes {
     public static AuctionRes of(Auction auction, List<Product> productList, List<AuctionImage> auctionImageList, Member member){
         AuctionRes res = AuctionRes.builder()
                 .seq(auction.getSeq())
+                .hash(auction.getHash())
                 .memberSeq(auction.getMemberSeq())
                 .title(auction.getTitle())
                 .content(auction.getContent())
                 .categorySeq(auction.getCategorySeq())
                 .startTime(auction.getStartTime())
+                .interest(auction.getInterest())
+                .status(auction.getStatus())
                 .productList(productList)
                 .auctionImageList(auctionImageList)
                 .profileUrl(member.getProfileUrl())
