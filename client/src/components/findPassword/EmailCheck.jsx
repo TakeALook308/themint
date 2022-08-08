@@ -11,8 +11,7 @@ import GradientButton from '../common/GradientButton';
 import MintButton from '../common/MintButton';
 import ValidationMessage from '../common/ValidationMessage';
 
-function EmailCheck({ setIsPassed }) {
-  const [email, setEmail] = useState('');
+function EmailCheck({ email, setEmail, setIsPassed }) {
   const [isEmailed, setIsEmailed] = useState(false);
   const [authNum, setAuthNum] = useState();
   const {

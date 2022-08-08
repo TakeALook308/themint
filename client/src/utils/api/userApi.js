@@ -7,4 +7,5 @@ export const userApis = {
   REGISTER: '/api/member',
   LOGIN: '/api/member/login',
   AUTH_EMAIL: '/api/member/password',
+  PASSWORD_CHANGE: '/api/member/password/change',
 };

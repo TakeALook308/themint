@@ -2,22 +2,29 @@ import React, { useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { MessageWrapper } from '../../style/common';
 import { ActiveInput } from '../../style/style';
+import { postData } from '../../utils/api/api';
+import { userApis } from '../../utils/api/userApi';
 import { REGEX, REGISTER_MESSAGE, STANDARD } from '../../utils/constants/constant';
 import GradientButton from '../common/GradientButton';
 import ValidationMessage from '../common/ValidationMessage';
 
-function NewPassword(props) {
+function NewPassword({ email }) {
   const {
     handleSubmit,
     register,
     watch,
-    stateForm: { errors },
-  } = useForm({});
+    formState: { errors },
+  } = useForm({ mode: 'onChange' });
 
   const password = useRef({});
-  password.current = watch('password', '');
+  password.current = watch('pwd', '');
 
-  const onValid = () => {};
+  const onValid = async (data) => {
+    const body = { email, pwd: password.current };
+    console.log(body);
+    // const response = await postData(userApis.PASSWORD_CHANGE);
+  };
+
   return (
     <form onSubmit={handleSubmit(onValid)}>
       <div>
@@ -46,7 +53,7 @@ function NewPassword(props) {
             placeholder=" "
             required
           />
-          <label htmlFor="password">비밀번호</label>
+          <label htmlFor="password">새로운 비밀번호</label>
         </ActiveInput>
         <MessageWrapper>
           <ValidationMessage text={errors?.pwd?.message} state={'fail'} />
