@@ -2,14 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 
-function CateCard({ categoryName }) {
-  const categories = {
-    seq: 1,
-    name: '전체보기',
-  };
+function CateCard({ categoryKey, categoryName }) {
   return (
-    <NavStyle to={`/categories/${categories.seq}}`}>
-      <p>{categories.name}</p>
+    <NavStyle to={`/categories/${categoryKey}`} id={categoryKey} title={categoryName}>
+      {categoryName}
     </NavStyle>
   );
 }
@@ -17,13 +13,15 @@ function CateCard({ categoryName }) {
 export default CateCard;
 
 const NavStyle = styled(NavLink)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: ${(props) => props.theme.colors.white};
   width: 252px;
-  height: 70px;
-  font-size: 20px;
+  height: 36px;
+  font-size: 16px;
   font-weight: 400;
-  margin: 2px;
-  text-align: center;
+  border: 2px solid ${(props) => props.theme.colors.mainBlack};
   background-color: ${(props) => props.theme.colors.pointBlack};
 
   outline: invert;
@@ -32,15 +30,12 @@ const NavStyle = styled(NavLink)`
     text-decoration: none;
   }
   &:hover {
-    color: ${(props) => props.theme.colors.mainMint};
+    color: ${(props) => props.theme.colors.subMint};
   }
   &.active {
     color: ${(props) => props.theme.colors.white};
     background-color: ${(props) => props.theme.colors.subMint};
     position: relative;
     font-weight: bold;
-  }
-  > p {
-    margin-top: 20px;
   }
 `;
