@@ -18,8 +18,10 @@
     "react-cookie": "^4.1.1",
     "react-daum-postcode": "^3.1.1",
     "react-dom": "^18.2.0",
+    "react-dropzone": "^14.2.2",
     "react-helmet": "^6.1.0",
     "react-hook-form": "^7.34.0",
+    "react-icons": "^4.4.0",
     "react-intersection-observer": "^9.4.0",
     "react-query": "^3.39.2",
     "react-router-dom": "^6.3.0",
@@ -63,5 +65,5 @@
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.7.1"
   },
-  "proxy": "https://i7a308.p.ssafy.io"
+  "proxy" :"https://i7a308.p.ssafy.io"
 }

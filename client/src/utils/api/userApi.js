@@ -6,4 +6,6 @@ export const userApis = {
   PHONE_CERTIFICATE_API: `/api/member/sms`,
   REGISTER: '/api/member',
   LOGIN: '/api/member/login',
+  AUTH_EMAIL: '/api/member/password',
+  PASSWORD_CHANGE: '/api/member/password/change',
 };

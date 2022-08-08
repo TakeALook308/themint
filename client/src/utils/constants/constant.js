@@ -1,3 +1,65 @@
+export const categories = [
+  {
+    seq: 1,
+    name: '패션의류/잡화',
+  },
+  {
+    seq: 2,
+    name: '뷰티',
+  },
+  {
+    seq: 3,
+    name: '출산/유아동',
+  },
+  {
+    seq: 4,
+    name: '식품',
+  },
+  {
+    seq: 5,
+    name: '주방용품',
+  },
+  {
+    seq: 6,
+    name: '생활용품',
+  },
+  {
+    seq: 7,
+    name: '홈인테리어',
+  },
+  {
+    seq: 8,
+    name: '가전/디지철',
+  },
+  {
+    seq: 9,
+    name: '스포츠/레저',
+  },
+  {
+    seq: 10,
+    name: '자동차용품',
+  },
+  {
+    seq: 11,
+    name: '도서/음반/DVD',
+  },
+  {
+    seq: 12,
+    name: '완구/취미',
+  },
+  {
+    seq: 13,
+    name: '문구/오피스',
+  },
+  {
+    seq: 14,
+    name: '반려동물용품',
+  },
+  {
+    seq: 15,
+    name: '헬스/건강식품',
+  },
+];
 export const REGISTER_MESSAGE = {
   REQUIRED_ID: '아이디를 입력해주세요.',
   DUPLICATED_ID: '이미 존재하는 아이디입니다.',
@@ -13,6 +75,10 @@ export const REGISTER_MESSAGE = {
   NAME_LENGTH: '이름은 2 ~ 10자 사이로 작성해주세요.',
   REQUIRED_EMAIL: '이메일 주소를 입력해주세요.',
   EMAIL_STANDARD: '올바른 이메일 주소(ex, themin@themint.com)를 입력해주세요.',
+  REGISTER_EMAIL: '회원가입에 사용한 이메일을 입력해주세요.',
+  REQUIRED_EMAIL_AUTH: '이메일 인증을 완료해주세요',
+  FAILED_EMAIL_AUTH: '인증번호가 일치하지 않습니다.',
+  VALIDATED_EMAIL_AUTH: '인증에 성공하였습니다.',
   DUPLICATED_EMAIL: '사용 중인 이메일 주소입니다.',
   VALIDATED_EMAIL: '사용 가능한 이메일입니다.',
   REQUIRED_PHONE: '전화번호를 입력해주세요.',
@@ -60,4 +126,5 @@ export const REGEX = {
 export const PAGES = {
   REGISTER: '회원가입',
   LOGIN: '로그인',
+  FIND_PASSWORD: ' 비밀번호 찾기',
 };

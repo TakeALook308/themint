@@ -11,7 +11,8 @@ import PopupDom from './PopupDom';
 import PopupPostCode from './PopupPostCode';
 import { InputContainer } from './Register2';
 import StepSignal from './StepSignal';
-import { MessageWrapper, SuccessValidationMessage, WarningMessage } from '../../style/common';
+import { MessageWrapper } from '../../style/common';
+import ValidationMessage from '../common/ValidationMessage';
 
 function Register3({ setUserInfo }) {
   const [duplicatedNickname, setDuplicatedNickname] = useState(false);
@@ -104,11 +105,9 @@ function Register3({ setUserInfo }) {
           <label htmlFor="nickname">닉네임</label>
         </ActiveInput>
         <MessageWrapper>
-          <WarningMessage>{errors?.nickname?.message}</WarningMessage>
+          <ValidationMessage text={errors?.nickname?.message} state={'fail'} />
           {watch().nickname && !errors?.nickname && (
-            <SuccessValidationMessage>
-              {REGISTER_MESSAGE.VALIDATED_NICKNAME}
-            </SuccessValidationMessage>
+            <ValidationMessage text={REGISTER_MESSAGE.VALIDATED_NICKNAME} state={'pass'} />
           )}
         </MessageWrapper>
         <InputContainer>
@@ -137,7 +136,7 @@ function Register3({ setUserInfo }) {
           )}
         </div>
         <MessageWrapper>
-          <WarningMessage>{errors?.pwd?.message}</WarningMessage>
+          <ValidationMessage text={errors?.pwd?.message} state={'fail'} />
         </MessageWrapper>
         <ActiveInput active={true}>
           <input
