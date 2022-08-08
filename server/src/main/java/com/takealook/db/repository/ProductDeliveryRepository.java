@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProductDeliveryRepository extends JpaRepository<ProductDelivery, Long> {
     ProductDelivery findByProductSeq(Long productSeq);
+    ProductDelivery findBySeq(Long productDeliverySeq);
 }

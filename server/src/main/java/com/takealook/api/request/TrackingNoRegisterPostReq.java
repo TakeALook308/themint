@@ -9,9 +9,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@Builder
-public class TrackingnoRegisterPostReq {
+public class TrackingNoRegisterPostReq {
     Long productSeq;
     String parcelCompanyCode;
-    String trackingno;
+    String trackingNo;
 }

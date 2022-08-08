@@ -6,6 +6,7 @@ import com.takealook.api.service.AuctionImageService;
 import com.takealook.api.service.AuctionService;
 import com.takealook.api.service.MemberService;
 import com.takealook.api.service.ProductService;
+import com.takealook.common.model.response.BaseResponseBody;
 import com.takealook.db.entity.Auction;
 import com.takealook.db.entity.AuctionImage;
 import com.takealook.db.entity.Member;
@@ -16,10 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,5 +64,11 @@ public class ProductController {
             productListEntityResList.add(ProductListEntityRes.of(product, auction, member, auctionImageList.get(0)));
         }
         return ResponseEntity.status(200).body(productListEntityResList);
+    }
+
+    @PatchMapping("/remit/{productSeq}")
+    public ResponseEntity<? extends BaseResponseBody> remitCheck(@PathVariable("productSeq") Long productSeq){
+        productService.updateStatus(productSeq, 2);
+        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
     }
 }
