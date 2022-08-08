@@ -21,7 +21,7 @@ const NavStyle = styled(NavLink)`
   height: 36px;
   font-size: 16px;
   font-weight: 400;
-  margin: 2px;
+  border: 2px solid ${(props) => props.theme.colors.mainBlack};
   background-color: ${(props) => props.theme.colors.pointBlack};
 
   outline: invert;

@@ -44,7 +44,7 @@ function CateCardList({ getCategorySeq, categoryName, key }) {
           <span>{categoryNow}</span>
         </h3>
       </ListHeader>
-      <CateCardContainer onClick={onClick} value={categoryName} key={key}>
+      <CateCardContainer value={categoryName} key={key} onClick={onClick}>
         {categoriesList}
       </CateCardContainer>
     </Container>
