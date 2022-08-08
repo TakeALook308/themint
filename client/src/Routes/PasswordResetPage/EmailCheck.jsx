@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { set, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import styled, { css, keyframes } from 'styled-components';
 import { MessageWrapper } from '../../style/common';
@@ -7,9 +7,10 @@ import { ActiveInput } from '../../style/style';
 import { postData } from '../../utils/api/api';
 import { userApis } from '../../utils/api/userApi';
 import { REGEX, REGISTER_MESSAGE } from '../../utils/constants/constant';
-import GradientButton from '../common/GradientButton';
-import MintButton from '../common/MintButton';
-import ValidationMessage from '../common/ValidationMessage';
+import GradientButton from '../../components/ButtonList/GradientButton';
+import MintButton from '../../components/ButtonList/MintButton';
+import ValidationMessage from '../../components/common/ValidationMessage';
+import { successToast } from '../../lib/toast';
 
 function EmailCheck({ email, setEmail, setIsPassed }) {
   const [isEmailed, setIsEmailed] = useState(false);
@@ -35,16 +36,7 @@ function EmailCheck({ email, setEmail, setIsPassed }) {
     trigger('authNumber');
     if (errors?.authNumber) return;
     setIsPassed(true);
-    toast.success(`이메일 인증에 성공하셨습니다.`, {
-      position: 'top-center',
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: 'colored',
-    });
+    successToast(REGISTER_MESSAGE.VALIDATED_EMAIL_AUTH);
   };
 
   const sendAuthNumber = () => {

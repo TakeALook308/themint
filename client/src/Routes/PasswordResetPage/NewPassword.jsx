@@ -1,12 +1,14 @@
 import React, { useRef } from 'react';
 import { useForm } from 'react-hook-form';
+import { successToast } from '../../lib/toast';
 import { MessageWrapper } from '../../style/common';
 import { ActiveInput } from '../../style/style';
 import { postData } from '../../utils/api/api';
 import { userApis } from '../../utils/api/userApi';
 import { REGEX, REGISTER_MESSAGE, STANDARD } from '../../utils/constants/constant';
-import GradientButton from '../common/GradientButton';
-import ValidationMessage from '../common/ValidationMessage';
+import GradientButton from '../../components/ButtonList/GradientButton';
+import ValidationMessage from '../../components/common/ValidationMessage';
+import { useNavigate } from 'react-router-dom';
 
 function NewPassword({ email }) {
   const {
@@ -15,14 +17,18 @@ function NewPassword({ email }) {
     watch,
     formState: { errors },
   } = useForm({ mode: 'onChange' });
+  const navigate = useNavigate();
 
   const password = useRef({});
   password.current = watch('pwd', '');
 
-  const onValid = async (data) => {
+  const onValid = async () => {
     const body = { email, pwd: password.current };
-    console.log(body);
-    // const response = await postData(userApis.PASSWORD_CHANGE);
+    const response = await postData(userApis.PASSWORD_CHANGE, body);
+    if (response.status === 200) {
+      successToast('비밀번호 재설정 성공');
+      navigate('/login');
+    }
   };
 
   return (

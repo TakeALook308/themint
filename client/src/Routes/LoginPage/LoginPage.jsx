@@ -1,19 +1,19 @@
 import React from 'react';
 import { useSetRecoilState } from 'recoil';
-import { loggedinState, myInformationState } from '../atoms';
-import SignContainer from '../components/common/SignContainer';
-import SocialLogginButton from '../components/common/SocialLogginButton';
-import Links from '../components/login/Links';
-import ThemintLogin from '../components/login/ThemintLogin';
-import { LOGIN_MESSAGE, PAGES } from '../utils/constants/constant';
-import { SocialLoginContainer } from './Register';
-import { setCookie } from '../utils/functions/cookies';
-import { postData } from '../utils/api/api';
-import { userApis } from '../utils/api/userApi';
+import { loggedinState, myInformationState } from '../../atoms';
+import SignContainer from '../../components/common/SignContainer';
+import SocialLogginButton from '../../components/common/SocialLogginButton';
+import Links from './Links';
+import ThemintLogin from './ThemintLogin';
+import { LOGIN_MESSAGE, PAGES } from '../../utils/constants/constant';
+import { SocialLoginContainer } from '../RegisterPage/RegisterPage';
+import { setCookie } from '../../utils/functions/cookies';
+import { postData } from '../../utils/api/api';
+import { userApis } from '../../utils/api/userApi';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Helmet } from 'react-helmet';
-function Login() {
+function LoginPage() {
   const setUserInfo = useSetRecoilState(myInformationState);
   const setLogged = useSetRecoilState(loggedinState);
   const navigate = useNavigate();
@@ -56,7 +56,7 @@ function Login() {
   );
 }
 
-export default Login;
+export default LoginPage;
 
 const makeRandomNumber = () => {
   const len = LOGIN_MESSAGE.SUCCESS_LOGIN.length;

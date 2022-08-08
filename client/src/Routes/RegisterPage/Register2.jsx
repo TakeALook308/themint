@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
-import GradientButton from '../common/GradientButton';
-import MintButton from '../common/MintButton';
+import GradientButton from '../../components/ButtonList/GradientButton';
+import MintButton from '../../components/ButtonList/MintButton';
 import { MessageWrapper } from '../../style/common';
 import { ActiveInput } from '../../style/style';
 import { userApis } from '../../utils/api/userApi';
@@ -10,7 +10,7 @@ import { getData, postData } from '../../utils/api/api';
 import { REGEX, REGISTER_MESSAGE, STANDARD } from '../../utils/constants/constant';
 import debounce from '../../utils/functions/debounce';
 import StepSignal from './StepSignal';
-import ValidationMessage from '../common/ValidationMessage';
+import ValidationMessage from '../../components/common/ValidationMessage';
 
 function Register2({ setUserInfo, setStep }) {
   const [certificatedNumber, setCertificatedNumber] = useState();

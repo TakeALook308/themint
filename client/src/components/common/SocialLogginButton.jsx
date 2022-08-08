@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button } from './GradientButton';
+import { Button } from '../ButtonList/GradientButton';
 
 function SocialLogginButton({ text, social }) {
   return <SocialButton social={social}>{text}</SocialButton>;

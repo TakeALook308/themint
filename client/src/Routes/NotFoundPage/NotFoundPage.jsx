@@ -1,34 +1,31 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { Container } from '../style/common';
-import logo from '../assets/images/themint.png';
+import back from '../../assets/images/bg.jpg';
 
-function NotFound() {
+function NotFoundPage() {
   return (
-    <Container>
-      <NotFoundContainer id="notfound">
-        <div class="notfound">
-          <div class="notfound-404">
-            <h1>Oops!</h1>
-          </div>
-          <h2>404 - Page not found</h2>
-          <p>
-            The page you are looking for might have been removed had its name changed or is
-            temporarily unavailable.
-          </p>
-          <Link to="#">Go To Homepage</Link>
+    <NotFoundContainer>
+      <div>
+        <div>
+          <h1>Oops!</h1>
         </div>
-      </NotFoundContainer>
-    </Container>
+        <h2>404 - Page not found</h2>
+        <p>
+          페이지가 존재하지 않거나, 사용할 수 없는 페이지입니다.
+          <br /> 입력하신 주소가 정확한지 다시한번 확인해주세요.
+        </p>
+        <Link to="main">메인 페이지로 이동하기</Link>
+      </div>
+    </NotFoundContainer>
   );
 }
 
-export default NotFound;
+export default NotFoundPage;
 
 const NotFoundContainer = styled.div`
   position: relative;
-  height: 100vh;
+  height: calc(100vh - 261px);
   > div {
     position: absolute;
     left: 50%;
@@ -43,17 +40,16 @@ const NotFoundContainer = styled.div`
       height: 280px;
       position: relative;
       z-index: -1;
+      font-family: 'Montserrat', sans-serif;
+      color: ${(props) => props.theme.colors.white};
       > h1 {
-        font-family: 'Montserrat', sans-serif;
         font-size: 230px;
         margin: 0px;
         font-weight: 900;
         position: absolute;
         left: 50%;
-        -webkit-transform: translateX(-50%);
-        -ms-transform: translateX(-50%);
         transform: translateX(-50%);
-        background: url('../assets/images/bg.jpg') no-repeat;
+        background: url(${back}) no-repeat;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-size: cover;
@@ -61,16 +57,12 @@ const NotFoundContainer = styled.div`
       }
     }
     > h2 {
-      font-family: 'Montserrat', sans-serif;
-      color: #000;
       font-size: 24px;
       font-weight: 700;
       text-transform: uppercase;
       margin-top: 0;
     }
     > p {
-      font-family: 'Montserrat', sans-serif;
-      color: #000;
       font-size: 14px;
       font-weight: 400;
       margin-bottom: 20px;
@@ -81,14 +73,12 @@ const NotFoundContainer = styled.div`
       font-size: 14px;
       text-decoration: none;
       text-transform: uppercase;
-      background: #0046d5;
+      background: ${(props) => props.theme.colors.gradientMintToPurple};
       display: inline-block;
       padding: 15px 30px;
       border-radius: 40px;
       color: #fff;
       font-weight: 700;
-      -webkit-box-shadow: 0px 4px 15px -5px #0046d5;
-      box-shadow: 0px 4px 15px -5px #0046d5;
     }
   }
 `;

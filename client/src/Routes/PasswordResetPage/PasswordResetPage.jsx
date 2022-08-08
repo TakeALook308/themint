@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
-import SignContainer from '../components/common/SignContainer';
-import EmailCheck from '../components/findPassword/EmailCheck';
-import NewPassword from '../components/findPassword/NewPassword';
-import { PAGES } from '../utils/constants/constant';
+import SignContainer from '../../components/common/SignContainer';
+import EmailCheck from './EmailCheck';
+import NewPassword from './NewPassword';
+import { PAGES } from '../../utils/constants/constant';
 
-function FindPassword(props) {
+function PasswordResetPage(props) {
   const [isPassed, setIsPassed] = useState(false);
   const [email, setEmail] = useState('');
   return (
@@ -24,4 +24,4 @@ function FindPassword(props) {
   );
 }
 
-export default FindPassword;
+export default PasswordResetPage;

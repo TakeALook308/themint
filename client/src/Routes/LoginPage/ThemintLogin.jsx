@@ -4,8 +4,8 @@ import { session } from '../../App';
 import { MessageWrapper } from '../../style/common';
 import { ActiveInput } from '../../style/style';
 import { LOGIN_MESSAGE, REGISTER_MESSAGE } from '../../utils/constants/constant';
-import GradientButton from '../common/GradientButton';
-import ValidationMessage from '../common/ValidationMessage';
+import GradientButton from '../../components/ButtonList/GradientButton';
+import ValidationMessage from '../../components/common/ValidationMessage';
 
 function ThemintLogin({ login }) {
   const {

@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import GradientButton from '../common/GradientButton';
-import MintButton from '../common/MintButton';
+import GradientButton from '../../components/ButtonList/GradientButton';
+import MintButton from '../../components/ButtonList/MintButton';
 import { ActiveInput } from '../../style/style';
 import { userApis } from '../../utils/api/userApi';
 import { getData } from '../../utils/api/api';
@@ -12,7 +12,7 @@ import PopupPostCode from './PopupPostCode';
 import { InputContainer } from './Register2';
 import StepSignal from './StepSignal';
 import { MessageWrapper } from '../../style/common';
-import ValidationMessage from '../common/ValidationMessage';
+import ValidationMessage from '../../components/common/ValidationMessage';
 
 function Register3({ setUserInfo }) {
   const [duplicatedNickname, setDuplicatedNickname] = useState(false);

@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
-import { Register1, Register2, Register3 } from '../components/register/RegisterIndex';
-import { userApis } from '../utils/api/userApi';
-import { postData } from '../utils/api/api';
-import SocialLogginButton from '../components/common/SocialLogginButton';
-import SignContainer from '../components/common/SignContainer';
-import { LOGIN_MESSAGE, PAGES } from '../utils/constants/constant';
-import { setCookie } from '../utils/functions/cookies';
+import { Register1, Register2, Register3 } from '.';
+import { userApis } from '../../utils/api/userApi';
+import { postData } from '../../utils/api/api';
+import SocialLogginButton from '../../components/common/SocialLogginButton';
+import SignContainer from '../../components/common/SignContainer';
+import { LOGIN_MESSAGE, PAGES } from '../../utils/constants/constant';
+import { setCookie } from '../../utils/functions/cookies';
 import { toast } from 'react-toastify';
-import { makeLoginMessageRandomNumber } from '../utils/functions/util';
+import { makeLoginMessageRandomNumber } from '../../utils/functions/util';
 import { useRecoilState } from 'recoil';
-import { loggedinState, myInformationState } from '../atoms';
-import { session } from '../App';
+import { loggedinState, myInformationState } from '../../atoms';
+import { session } from '../../App';
 import { Helmet } from 'react-helmet';
 
-function Register() {
+function RegisterPage() {
   const [userInfo, setUserInfo] = useState({
     memberId: '',
     memberName: '',
@@ -106,7 +106,7 @@ function Register() {
   );
 }
 
-export default Register;
+export default RegisterPage;
 
 const LinkContainer = styled.div`
   width: 100%;

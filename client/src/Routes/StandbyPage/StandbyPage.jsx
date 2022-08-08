@@ -3,8 +3,8 @@ import { OpenVidu } from 'openvidu-browser';
 import React, { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
-import { myInformationState } from '../atoms';
-import UserVideoComponent from '../components/webRTC/UserVideoComponent';
+import { myInformationState } from '../../atoms';
+import UserVideoComponent from '../../components/webRTC/UserVideoComponent';
 import { BsFillCameraVideoFill, BsFillCameraVideoOffFill, BsFillMicFill } from 'react-icons/bs';
 import { IoExit } from 'react-icons/io5';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -12,7 +12,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 const OPENVIDU_SERVER_URL = 'https://i7a308.p.ssafy.io:8443';
 const OPENVIDU_SERVER_SECRET = 'themint';
 
-function Standby() {
+function StandbyPage() {
   const memberId = 'ney9083';
   const navigate = useNavigate();
   const { auctionId } = useParams();
@@ -213,7 +213,7 @@ function Standby() {
   );
 }
 
-export default Standby;
+export default StandbyPage;
 
 const Container = styled.main`
   max-width: 1024px;
