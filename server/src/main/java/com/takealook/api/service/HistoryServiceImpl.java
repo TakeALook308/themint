@@ -16,7 +16,12 @@ public class HistoryServiceImpl implements HistoryService{
 
     @Override
     public List<History> getHistoryListByMemberSeq(Long memberSeq, Pageable pageable, int salesPurchase) {
-        List<History> historyList = historyRepository.findAllByMemberSeqOrderByStartTime(memberSeq, pageable);
+        List<History> historyList = null;
+        if(salesPurchase == 0) { // 판매 내역
+            historyList = historyRepository.findSalesByMemberSeqOrderByStartTime(memberSeq, pageable);
+        } else { // 구매 내역
+            historyList = historyRepository.findPurchaseByMemberSeqOrderBySeq(memberSeq, pageable);
+        }
         return historyList;
     }
 
