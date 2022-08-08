@@ -1,12 +1,13 @@
 package com.takealook.api.controller;
 
+import com.takealook.api.request.PurchaseRegisterPostReq;
 import com.takealook.api.response.HistoryListEntityRes;
 import com.takealook.api.response.SalesDetailRes;
 import com.takealook.api.service.*;
 import com.takealook.common.auth.MemberDetails;
+import com.takealook.common.model.response.BaseResponseBody;
 import com.takealook.db.entity.*;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -86,4 +87,12 @@ public class HistoryController {
         return ResponseEntity.status(200).body(historyListEntityResList);
     }
 
+    @PostMapping("/purchase")
+    public ResponseEntity<BaseResponseBody> registerPurchase(@RequestBody PurchaseRegisterPostReq purchaseRegisterPostReq) {
+        int result = historyService.registerPurchaseHistory(purchaseRegisterPostReq);
+        if (result == 1) {
+            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
+        }
+        return ResponseEntity.status(409).body(BaseResponseBody.of(409, "fail"));
+    }
 }
