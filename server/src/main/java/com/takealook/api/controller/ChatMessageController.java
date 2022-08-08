@@ -23,15 +23,15 @@ public class ChatMessageController {
     @Autowired
     ChatMessageService chatMessageService;
     /**
-     * websocket "/pub/chat/message"로 들어오는 메시징을 처리한다.
+     * websocket "/pub/api/chat/message"로 들어오는 메시징을 처리한다.
      */
     // JWT 버전
     @MessageMapping("/chat/message")
     public void message(ChatMessage message, @ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
-        String nickname = memberDetails.getMemberNickname();
-        message.setNickname(nickname);
-        if (ChatMessage.MessageType.ENTER.equals(message.getType())) {
+        message.setNickname(memberDetails.getMemberNickname());
+        message.setMemberSeq(memberDetails.getMemberSeq());
+        if (message.getType() == 0) { // 입장 메시지
             chatRoomService.enterChatRoom(message.getRoomId());
             message.setMessage(message.getNickname() + "님이 입장하셨습니다.");
         }
