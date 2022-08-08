@@ -17,6 +17,8 @@ import NavigationBar from './components/ui/common/NavigationBar';
 import Footer from './components/ui/common/Footer';
 import FindPassword from './Routes/FindPassword';
 import AuctionCreate from './Routes/AuctionCreate';
+import Standby from './Routes/Standby';
+
 function Router() {
   return (
     <BrowserRouter>
@@ -33,7 +35,8 @@ function Router() {
         <Route path="/accounts/password" element={<AccountsPassword />} />
         <Route path="/accounts/phone-number" element={<AccountsPhoneNumber />} />
         <Route path="/accounts/withdrawl" element={<AccountsWithdrawl />} />
-        <Route path="/streamings/:roomNumber" element={<Streaming />} />
+        <Route path="/streamings/:auctionId" element={<Streaming />} />
+        <Route path="/standby/:auctionId" element={<Standby />} />
         <Route path="/talks" element={<Talks />} />
         <Route path="/auctions/:auctionsId" element={<AuctionDetail />} />
         <Route path="/auctions/new" element={<AuctionCreate />} />

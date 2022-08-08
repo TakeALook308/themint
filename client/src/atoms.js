@@ -3,6 +3,14 @@ import { getCookie } from './utils/functions/cookies';
 import { v1 } from 'uuid';
 import Session from './utils/functions/storage';
 
+// export const myInformationState = atom({
+//   key: 'myInformation',
+//   default: {
+//     memberId: 'ney9083',
+//     nickName: '므녀링',
+//   }
+// });
+
 const session = new Session();
 
 export const loggedinState = atom({
