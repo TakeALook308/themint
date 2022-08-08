@@ -129,7 +129,7 @@ public class AuctionController {
 
     // 경매 카테고리별 목록 조회
     @GetMapping("/category")
-    public ResponseEntity<List<AuctionListEntityRes>> getAuctionListByCategory(@RequestParam("categorySeq") Long categorySeq, @RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort){
+    public ResponseEntity<List<AuctionListEntityRes>> getAuctionListByCategory(@RequestParam("category-seq") Long categorySeq, @RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort){
         // [key] 경매임박순: startTime, 최신등록순: seq, 인기순: interest, 판매자신뢰도순: score
         List<AuctionListEntityRes> auctionListEntityResList = new ArrayList<>();
         List<Auction> auctionList = null;

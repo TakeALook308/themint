@@ -15,13 +15,16 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Product {
+public class ProductDelivery {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long seq;
-    Long auctionSeq;
-    String productName;
-    int startPrice;
-    int finalPrice;
-    int status;
+    Long productSeq;
+    String name;
+    String phone;
+    String address;
+    String addressDetail;
+    String remitName;
+    String parcelCompanyCode;
+    String trackingNo;
 }

@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 @Builder
 public class AuctionListEntityRes {
-    Long seq;
+    Long auctionSeq;
     String hash;
     Long memberSeq;
     String title;
@@ -25,7 +25,7 @@ public class AuctionListEntityRes {
 
     public static AuctionListEntityRes of(Auction auction, Member member, List<AuctionImage> auctionImageList){
         AuctionListEntityRes res = AuctionListEntityRes.builder()
-                .seq(auction.getSeq())
+                .auctionSeq(auction.getSeq())
                 .hash(auction.getHash())
                 .memberSeq(auction.getMemberSeq())
                 .title(auction.getTitle())

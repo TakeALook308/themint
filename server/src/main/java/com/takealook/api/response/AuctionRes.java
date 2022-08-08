@@ -19,7 +19,7 @@ import java.util.List;
 @Builder
 @ApiModel("AuctionResponse")
 public class AuctionRes {
-    Long seq;
+    Long auctionSeq;
     String hash;
     Long memberSeq;
     String title;
@@ -34,7 +34,7 @@ public class AuctionRes {
 
     public static AuctionRes of(Auction auction, List<Product> productList, List<AuctionImage> auctionImageList, Member member){
         AuctionRes res = AuctionRes.builder()
-                .seq(auction.getSeq())
+                .auctionSeq(auction.getSeq())
                 .hash(auction.getHash())
                 .memberSeq(auction.getMemberSeq())
                 .title(auction.getTitle())

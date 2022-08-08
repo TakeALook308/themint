@@ -60,6 +60,7 @@ public class AuctionServiceImpl implements AuctionService {
                     .auctionSeq(auction.getSeq())
                     .productName(productRegisterPostReq.getProductName())
                     .startPrice(productRegisterPostReq.getStartPrice())
+                    .finalPrice(productRegisterPostReq.getStartPrice())
                     .status(0)
                     .build();
             productRepository.save(product);
