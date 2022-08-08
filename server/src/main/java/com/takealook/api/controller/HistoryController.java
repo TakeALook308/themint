@@ -1,20 +1,15 @@
 package com.takealook.api.controller;
 
-import com.takealook.api.response.AuctionRes;
 import com.takealook.api.response.HistoryListEntityRes;
-import com.takealook.api.response.ProductListEntityRes;
 import com.takealook.api.response.SalesDetailRes;
 import com.takealook.api.service.*;
-import com.takealook.common.auth.MemberDetails;
 import com.takealook.db.entity.*;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.ArrayList;
 import java.util.List;
