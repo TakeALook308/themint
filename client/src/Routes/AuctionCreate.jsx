@@ -9,11 +9,12 @@ import { useDropzone } from 'react-dropzone';
 
 function AuctionCreate(props) {
   const [im, setIm] = useState([]);
-  const onDrop = useCallback((acceptedFiles) => {
+  const onDrop = (acceptedFiles) => {
     let temp = [...im];
     acceptedFiles.map((item) => temp.push(item));
     setIm(temp);
-  }, []);
+  };
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   const [inputAuction, setInputAuction] = useState({
