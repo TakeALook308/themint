@@ -43,7 +43,7 @@ public class ProductServiceImpl implements ProductService {
         } else if (sort.equals("auctionSeq")) { // 최신등록순
             Pageable sortPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(sort).descending());
             productList = productRepository.findAllByProductNameContainsAndStartTimeAfterOrderByAuctionSeq(word, currentTime, sortPageable);
-        } else{ // 인기순
+        } else { // 인기순
             productList = productRepository.findAllByProductNameContainsAndStartTimeAfterOrderByInterest(word, currentTime, pageable);
         }
         return productList;
@@ -63,6 +63,32 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> getProductListByAuctionSeq(Long auctionSeq) {
         List<Product> productList = productRepository.findByAuctionSeq(auctionSeq).orElse(null);
         return productList;
+    }
+
+    @Override
+    public void updateStatus(Long productSeq, int status) {
+        Product product = productRepository.findBySeq(productSeq);
+        productRepository.save(Product.builder()
+                .seq(productSeq)
+                .auctionSeq(product.getAuctionSeq())
+                .productName(product.getProductName())
+                .startPrice(product.getStartPrice())
+                .finalPrice(product.getFinalPrice())
+                .status(status)
+                .build());
+    }
+
+    @Override
+    public void updateFinalPrice(Long productSeq, int finalPrice) {
+        Product product = productRepository.findBySeq(productSeq);
+        productRepository.save(Product.builder()
+                .seq(productSeq)
+                .auctionSeq(product.getAuctionSeq())
+                .productName(product.getProductName())
+                .startPrice(product.getStartPrice())
+                .finalPrice(finalPrice)
+                .status(product.getStatus())
+                .build());
     }
 
     @Override

@@ -13,4 +13,5 @@ import lombok.Setter;
 public class PurchaseRegisterPostReq {
     Long memberSeq;
     Long productSeq;
+    int finalPrice;
 }

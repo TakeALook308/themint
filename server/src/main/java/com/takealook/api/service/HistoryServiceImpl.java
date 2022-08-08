@@ -39,6 +39,12 @@ public class HistoryServiceImpl implements HistoryService {
     }
 
     @Override
+    public History getSalesByProductSeq(Long productSeq) {
+        History history = historyRepository.findByProductSeqAndSalesPurchase(productSeq, 0);
+        return history;
+    }
+
+    @Override
     public int registerPurchaseHistory(PurchaseRegisterPostReq purchaseRegisterPostReq) {
         History history = historyRepository.findByProductSeqAndSalesPurchase(purchaseRegisterPostReq.getProductSeq(), 1);
         if (history != null) {

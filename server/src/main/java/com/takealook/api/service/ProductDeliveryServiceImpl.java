@@ -1,6 +1,7 @@
 package com.takealook.api.service;
 
 import com.takealook.api.request.TrackingnoRegisterPostReq;
+import com.takealook.db.entity.Member;
 import com.takealook.db.entity.ProductDelivery;
 import com.takealook.db.repository.ProductDeliveryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,19 @@ public class ProductDeliveryServiceImpl implements ProductDeliveryService{
     public ProductDelivery getProductDeliveryByProductSeq(Long productSeq) {
         ProductDelivery productDelivery = productDeliveryRepository.findByProductSeq(productSeq);
         return productDelivery;
+    }
+
+    @Override
+    public void setMemberInfo(Member member, Long productSeq) {
+        ProductDelivery productDelivery = ProductDelivery.builder()
+                .productSeq(productSeq)
+                .name(member.getMemberName())
+                .phone(member.getPhone())
+                .address(member.getAddress())
+                .addressDetail(member.getAddressDetail())
+                .remitName(member.getMemberName())
+                .build();
+        productDeliveryRepository.save(productDelivery);
     }
 
     @Override

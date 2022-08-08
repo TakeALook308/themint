@@ -1,9 +1,7 @@
 package com.takealook.api.controller;
 
-import com.takealook.api.request.AuctionUpdatePatchReq;
 import com.takealook.api.request.TrackingnoRegisterPostReq;
 import com.takealook.api.service.ProductDeliveryService;
-import com.takealook.common.auth.MemberDetails;
 import com.takealook.common.model.response.BaseResponseBody;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,4 +30,5 @@ public class DeliveryController {
             return ResponseEntity.status(409).body(BaseResponseBody.of(409, "fail"));
         }
     }
+
 }
