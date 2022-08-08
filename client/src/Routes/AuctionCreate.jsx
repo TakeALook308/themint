@@ -6,8 +6,12 @@ import ActiveInputBox from '../components/common/ActiveInputBox';
 import ProductTable from '../components/common/ProductTable';
 import Modal from '../components/common/Modal';
 import { useDropzone } from 'react-dropzone';
+import { auctionApis } from '../utils/api/auctionApi';
+import { postData } from '../utils/api/api';
+import { useNavigate } from 'react-router-dom';
 
 function AuctionCreate(props) {
+  const navigate = useNavigate();
   const [im, setIm] = useState([]);
   const onDrop = (acceptedFiles) => {
     let temp = [...im];
@@ -70,7 +74,19 @@ function AuctionCreate(props) {
     <Container>
       <Title>경매 생성</Title>
       <p>{inputAuction.title}</p>
-      <form action="">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          postData(auctionApis.AUCTION_CREATE_API, inputAuction)
+            .then(() => {
+              alert('성공');
+              navigate(`/main`);
+            })
+            .catch(() => {
+              alert('실패');
+              navigate(`/main`);
+            });
+        }}>
         <Div>
           <Label>카테고리</Label>
           <Select name="categorySeq" value={categorySeq} onChange={onChange}>
