@@ -8,11 +8,16 @@ import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import SearchIcon from '@mui/icons-material/Search';
 import ChatIcon from '@mui/icons-material/Chat';
 
+<<<<<<< HEAD
 function NavigationBar({ url, categoryName }) {
+=======
+function NavigationBar({ url, keyword, categoryName }) {
+>>>>>>> cbc100e779fde92dfab9d64ae371bcb33efa4186
   const [search, setSearch] = useState('');
   const onChangeSearch = (e) => {
     e.preventDefault();
     setSearch(e.target.value);
+<<<<<<< HEAD
 
     console.log(keyword);
   };
@@ -28,6 +33,25 @@ function NavigationBar({ url, categoryName }) {
     navigate(`/search/products/${keyword}`);
   };
 
+=======
+  };
+  const navigate = useNavigate();
+  const onClick = () => {
+    navigate(`${url}&keyword=${keyword}`);
+  };
+
+  const onSubmit = () => {
+    navigate(`${url}&keyword=${keyword}`);
+  };
+
+  if (
+    window.location.pathname.startsWith('/streamings') ||
+    window.location.pathname.startsWith('/register') ||
+    window.location.pathname.startsWith('/login')
+  )
+    return null;
+
+>>>>>>> cbc100e779fde92dfab9d64ae371bcb33efa4186
   return (
     <Container>
       <Wrapper>
@@ -46,7 +70,7 @@ function NavigationBar({ url, categoryName }) {
             />
           </NavSearch>
           <NavItemText>
-            <Link to={`/categories/${categoryName}`}>
+            <Link to={`/categories/0`}>
               <p>카테고리</p>
             </Link>
             <Link to="/">
@@ -78,7 +102,7 @@ const Container = styled.header`
   margin: 0 auto;
   right: 0;
   left: 0;
-  z-index: 100;
+  z-index: 10;
 `;
 
 const Wrapper = styled.nav`

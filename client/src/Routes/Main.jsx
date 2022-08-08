@@ -8,13 +8,12 @@ import InfiniteAuctionList from '../components/common/InfiniteAuctionList';
 import { auctionListApis } from '../utils/api/getAuctionApi';
 import AuctionCard from '../components/common/AuctionCard';
 import SkeletonAuctionCard from '../components/common/SkeletonAuctionCard';
+import { Container } from '../style/common';
 
 function Main(props) {
   return (
     <Container>
-      <BannerContainer>
-        <Banner />
-      </BannerContainer>
+      <Banner />
       <StreamList />
       <PostList />
       <InfiniteAuctionList
@@ -23,21 +22,9 @@ function Main(props) {
         CardComponent={AuctionCard}
         SkeltonCardComponent={SkeletonAuctionCard}
       />
+      <InterestingAuctionList />
     </Container>
   );
 }
 
 export default Main;
-
-const Container = styled.div`
-  max-width: 1024px;
-  margin-left: auto;
-  margin-right: auto;
-  position: relative;
-  padding-top: 1px;
-`;
-
-const BannerContainer = styled.div`
-  margin-bottom: 1.25rem;
-  margin-top: 70px;
-`;

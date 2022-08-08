@@ -2,51 +2,65 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import CateCard from './CateCard';
 
-function CateCardList({ categoryName, categoryKey }) {
-  const [categoryNow, setCategoryNow] = useState('');
+// 따로 컴포넌트 만들었다면 받아오기
+// import categoriest from '/'
+
+function CateCardList({ getCategorySeq, categoryName, key }) {
+  const [categoryNow, setCategoryNow] = useState('전체보기');
   const onClick = (e) => {
-    console.log(e.target.innerText);
     setCategoryNow(e.target.innerText);
+    console.log(e.target.id);
+    getCategorySeq(e.target.id);
   };
+
+  // 따로 컴포넌트 만들었다면 삭제가능
+  const categories = [
+    { seq: 0, name: '전체보기' },
+    { seq: 1, name: '패션의류/잡화' },
+    { seq: 2, name: '뷰티' },
+    { seq: 3, name: '출산/유아동' },
+    { seq: 4, name: '식품' },
+    { seq: 5, name: '주방용품' },
+    { seq: 6, name: '생활용품' },
+    { seq: 7, name: '홈인테리어' },
+    { seq: 8, name: '가전/디지털' },
+    { seq: 9, name: '스포츠/레저' },
+    { seq: 10, name: '자동차용품' },
+    { seq: 11, name: '도서/음반/DVD' },
+    { seq: 12, name: '완구/취미' },
+    { seq: 13, name: '문구/오피스' },
+    { seq: 14, name: '반려동물용품' },
+    { seq: 15, name: '헬스/건강식품' },
+  ];
+
+  const categoriesList = categories.map((categories) => (
+    <CateCard categoryName={categories.name} categoryKey={categories.seq} key={categories.seq} />
+  ));
+
   return (
-    <Wrapper>
+    <Container>
       <ListHeader>
         <h3>
-          카테고리>
+          카테고리&gt;
           <span>{categoryNow}</span>
         </h3>
       </ListHeader>
-      <CateCardContainer onClick={onClick} value={categoryName}>
-        <CateCard categoryName={'전체보기'} categoryKey={'1'} />
-        <CateCard categoryName={'의류'} categoryKey={'2'} />
-        <CateCard categoryName={'가전'} categoryKey={'3'} />
-        <CateCard categoryName={'전자'} categoryKey={'4'} />
-        <CateCard categoryName={'식품'} categoryKey={'5'} />
-        <CateCard categoryName={'1'} categoryKey={'6'} />
-        <CateCard categoryName={'2'} categoryKey={'7'} />
-        <CateCard categoryName={'3'} categoryKey={'8'} />
-        <CateCard categoryName={'4'} categoryKey={'9'} />
-        <CateCard categoryName={'5'} categoryKey={'10'} />
-        <CateCard categoryName={'6'} categoryKey={'11'} />
-        <CateCard categoryName={'7'} categoryKey={'12'} />
-        <CateCard categoryName={'8'} categoryKey={'13'} />
-        <CateCard categoryName={'9'} categoryKey={'14'} />
-        <CateCard categoryName={'10'} categoryKey={'15'} />
-        <CateCard categoryName={'11'} categoryKey={'16'} />
+      <CateCardContainer value={categoryName} key={key} onClick={onClick}>
+        {categoriesList}
       </CateCardContainer>
-    </Wrapper>
+    </Container>
   );
 }
 
 export default CateCardList;
 
-const Wrapper = styled.div`
+const Container = styled.main`
   margin: auto;
   margin-bottom: 10px;
   width: 100%;
 `;
 
-const CateCardContainer = styled.main`
+const CateCardContainer = styled.article`
   width: 100%;
   margin: auto;
   display: flex;
@@ -58,8 +72,15 @@ const ListHeader = styled.header`
   justify-content: space-between;
   align-items: baseline;
   margin-bottom: 20px;
+
   > h3 {
-    font-size: 20px;
+    font-size: 30px;
     font-weight: bold;
+    height: 30px;
+    > span {
+      display: inline-block;
+      font-size: 30px;
+      height: 30px;
+    }
   }
 `;

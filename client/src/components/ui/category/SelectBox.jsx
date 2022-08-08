@@ -1,30 +1,31 @@
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
-import { getAuctionList } from '../../../utils/api/getAuctionApi';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
-const Dropdown = ({ url, sortBy }) => {
+const Dropdown = ({ getSortKey }) => {
   const dropdownItems = [
-    { value: 1, name: '최신순' },
-    { value: 2, name: '가격순' },
-    { value: 3, name: '인기순' },
-    { value: 4, name: '판매자 신뢰도' },
+    { value: 'startTime', name: '경매임박순' },
+    { value: 'seq', name: '최신등록순' },
+    { value: 'interest', name: '인기순' },
+    { value: 'score', name: '판매자신뢰도순' },
   ];
-  const [sortName, setSortName] = useState('최신순');
+
+  const [sortName, setSortName] = useState('경매임박순');
+
   const [isActive, setIsActive] = useState(false);
-  const [value, setValue] = useState(1);
+  const [value, setValue] = useState('startTime');
   const onActiveToggle = useCallback(() => {
     setIsActive((prev) => !prev);
   }, []);
 
-  const onSelectItem = async (e) => {
-    setValue(e.target.value);
-    setSortName(e.target.innerText);
+  const onSelectItem = (e) => {
+    console.log(e.target.id);
     console.log(e.target.innerText);
+    setValue(e.target);
+    setSortName(e.target.innerText);
+
     setIsActive((prev) => !prev);
-    const sortBy = value;
-    const res = await getAuctionList(`${url}}?word=&key=${sortBy}&category=&pageno=`);
-    return res?.data;
+    getSortKey(e.target.id);
   };
 
   return (
@@ -39,14 +40,14 @@ const Dropdown = ({ url, sortBy }) => {
           </DropdownSelect>
         </DropdownBody>
         <DropdownMenu isActive={isActive}>
-          {dropdownItems.map((item) => (
+          {dropdownItems.map((dropdownItems) => (
             <DropdownItemContainer
-              id="item"
-              key={item.value}
-              value={item.value}
-              name={item.name}
+              id={dropdownItems.value}
+              key={dropdownItems.value}
+              value={dropdownItems.value}
+              name={dropdownItems.name}
               onClick={onSelectItem}>
-              {item.name}
+              {dropdownItems.name}
             </DropdownItemContainer>
           ))}
         </DropdownMenu>
@@ -63,8 +64,8 @@ const Wrapper = styled.div`
   margin-bottom: 20px;
 `;
 
-const DropdownContainer = styled.main`
-  width: 11%;
+export const DropdownContainer = styled.main`
+  width: 12%;
   &:hover {
     cursor: pointer;
   }
@@ -82,7 +83,7 @@ const DropdownBody = styled.div`
   border-top-right-radius: 5px;
   border: none;
   border-bottom: 2px solid ${(props) => props.theme.colors.white};
-  z-index: 6;
+  z-index: 5;
 `;
 
 const DropdownSelect = styled.p`

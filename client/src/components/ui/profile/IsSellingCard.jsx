@@ -3,32 +3,18 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import Modal from '../../common/Modal';
 
-function IsSellingCard({ ModalHandler, setModalKey }) {
+function IsSellingCard({ ModalHandler, setModalKey, auctionitem }) {
   // TODO: 데이터 교체하기
 
   const [statusName, setStatusName] = useState(0);
   useEffect(() => {
-    setStatusName(auctionitems.status);
-    setModalKey(auctionitems.seq);
+    console.log(auctionitem.status);
+    setStatusName(auctionitem.status);
+    setModalKey(auctionitem.seq);
   });
 
-  const auctionstr = ['', '입금대기중', '입금완료', '배송완료'];
+  const auctionstr = ['판매중', '입금대기', '입금완료', '판매완료', '유찰', '거래취소'];
 
-  const auctionitems = {
-    seq: 1,
-    memberSeq: 1,
-    productName: '닌텐도 스위치',
-    startTime: 'Thu Jul 28 2022',
-    startPrice: 1000,
-    finalPrice: 2000,
-    status: 3,
-    auctionImage: {
-      seq: 1,
-      imageUrl: 'https://images.gnwcdn.com/2022/articles/2022-07-01-15-35/hero_top_sp.jpg',
-    },
-    profileUrl:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiiGVRNg8egZNHf7d7-jeEA3JKgNTkStDZPQ&usqp=CAU',
-  };
   return (
     <CardContainer>
       <div>
@@ -36,7 +22,7 @@ function IsSellingCard({ ModalHandler, setModalKey }) {
           <div>
             <picture>
               <img
-                src={auctionitems.auctionImage.imageUrl}
+                src={auctionitem.auctionImage.imageUrl}
                 alt="닌텐도 스위치"
                 width="400"
                 height="300"
@@ -44,11 +30,13 @@ function IsSellingCard({ ModalHandler, setModalKey }) {
             </picture>
             <AuctionInfoContainer>
               <div>
-                <h4>{auctionitems.productName}</h4>
-                <p>{auctionitems.finalPrice}원</p>
-                <AcutionTime>{auctionitems.startTime}</AcutionTime>
-                <AuctionStatus auctionstrkey={auctionitems.status}>
-                  {auctionstr[auctionitems.status]}
+                <h4>{auctionitem.productName}</h4>
+                {4 > statusName > 0 && <p>{auctionitem.finalPrice}</p>}
+                {statusName >= 4 && <p>{auctionitem.startPrice}</p>}
+                {statusName === 0 && <p>{auctionitem.startPrice}</p>}
+                <AcutionTime>{auctionitem.startTime}</AcutionTime>
+                <AuctionStatus auctionstrkey={auctionitem.status}>
+                  {auctionstr[auctionitem.status]}
                 </AuctionStatus>
               </div>
             </AuctionInfoContainer>
@@ -57,13 +45,13 @@ function IsSellingCard({ ModalHandler, setModalKey }) {
         <Link to="/">
           <div>
             <picture>
-              <img src={auctionitems.profileUrl} alt="유저 피로필" width="50" height="50" />
+              <img src={auctionitem.profileUrl} alt="유저 프로필" width="50" height="50" />
             </picture>
           </div>
         </Link>
       </div>
       <Plus type="button" onClick={ModalHandler}>
-        +
+        상세보기
       </Plus>
     </CardContainer>
   );
@@ -185,14 +173,26 @@ const AuctionStatus = styled.div`
   right: 5%;
   top: -180%;
   border-radius: 10px;
+  color: ${(props) => props.theme.colors.white};
   background-color: ${(props) =>
-    props.auctionstrkey === 1 ? 'orange' : props.auctionstrkey === 2 ? 'red' : 'black'};
+    props.auctionstrkey === 0
+      ? 'green'
+      : props.auctionstrkey === 1
+      ? 'orange'
+      : props.auctionstrkey === 2
+      ? 'orange'
+      : props.auctionstrkey === 3
+      ? 'red'
+      : 'black'};
 `;
 
-const Plus = styled.button`
+const Plus = styled.span`
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 24px;
-  height: 24px;
+  border-radius: 5px;
+  padding: 5px;
+  bottom: 5%;
+  right: 35%;
+  background-color: ${(props) => props.theme.colors.mainBlack};
+  color: ${(props) => props.theme.colors.subMint};
+  border: 1px solid ${(props) => props.theme.colors.subMint};
 `;
