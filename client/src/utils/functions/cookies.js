@@ -2,11 +2,11 @@ import { Cookies } from 'react-cookie';
 
 const cookies = new Cookies();
 
-const tokenOption = {
+export const tokenOption = {
   path: '/',
   secure: true,
   sameSite: 'none',
-  httpOnly: true,
+  // httpOnly: true,
 };
 
 export const setCookie = (name, value, option = tokenOption) => {

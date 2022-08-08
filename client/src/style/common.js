@@ -14,6 +14,11 @@ export const WarningMessage = styled.p`
   color: ${(props) => props.theme.colors.pointRed};
 `;
 
+export const SuccessValidationMessage = styled.p`
+  font-size: ${(props) => props.theme.fontSizes.small};
+  color: ${(props) => props.theme.colors.pointBlue};
+`;
+
 export const MessageWrapper = styled.div`
   height: 2rem;
   display: flex;

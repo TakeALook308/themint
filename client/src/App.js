@@ -4,7 +4,9 @@ import styled from 'styled-components';
 import Router from './Router';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
+import Session from './utils/functions/storage';
 
+export const session = new Session();
 function App(props) {
   const [queryClient] = useState(() => new QueryClient());
 
