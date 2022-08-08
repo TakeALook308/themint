@@ -16,6 +16,7 @@ import Talks from './Routes/Talks';
 import NavigationBar from './components/ui/common/NavigationBar';
 import Footer from './components/ui/common/Footer';
 import FindPassword from './Routes/FindPassword';
+import Standby from './Routes/Standby';
 
 function Router() {
   return (
@@ -34,7 +35,7 @@ function Router() {
         <Route path="/accounts/phone-number" element={<AccountsPhoneNumber />} />
         <Route path="/accounts/withdrawl" element={<AccountsWithdrawl />} />
         <Route path="/streamings/:auctionId" element={<Streaming />} />
-        {/* <Route path="/standby/:auctionId" element={<Standby />} /> */}
+        <Route path="/standby/:auctionId" element={<Standby />} />
         <Route path="/talks" element={<Talks />} />
         <Route path="/auctions/:auctionsId" element={<AuctionDetail />} />
         <Route path="/puchase-history/:purchaseId" element={<PurchaseHistoryDetail />} />
