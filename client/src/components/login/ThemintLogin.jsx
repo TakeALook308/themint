@@ -34,7 +34,6 @@ function ThemintLogin({ login }) {
     } catch (err) {
       if (err.response.status === 409) {
         setError('memberId', { message: LOGIN_MESSAGE.FAILED_LOGIN });
-        setError('pwd', { message: LOGIN_MESSAGE.FAILED_LOGIN });
         return;
       }
     }
