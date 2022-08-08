@@ -36,8 +36,6 @@ function Router() {
           <Route path="register" element={<Register />} />
           <Route path="help/password" element={<FindPassword />} />
         </Route>
-        <Route path="main" element={<Main />} />
-        <Route path="categories/:categoryName" element={<Category />} />
         <Route element={<ProtectedRoute loggedin={loggedin} />}>
           <Route path="profile/:userId" element={<Profile />} />
           <Route path="accounts/edit" element={<AccountsEdit />} />
@@ -46,9 +44,12 @@ function Router() {
           <Route path="accounts/withdrawl" element={<AccountsWithdrawl />} />
           <Route path="talks" element={<Talks />} />
           <Route path="puchase-history/:purchaseId" element={<PurchaseHistoryDetail />} />
+          <Route path="standby/:roomNumber" element={<Standby />} />
+          <Route path="/auctions/new" element={<AuctionCreate />} />
+          <Route path="streamings/:roomNumber" element={<Streaming />} />
         </Route>
-        <Route path="streamings/:roomNumber" element={<Streaming />} />
-        <Route path="/auctions/new" element={<AuctionCreate />} />
+        <Route path="main" element={<Main />} />
+        <Route path="categories/:categoryName" element={<Category />} />
         <Route path="auctions/:auctionsId" element={<AuctionDetail />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
