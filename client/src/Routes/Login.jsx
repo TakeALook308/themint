@@ -12,6 +12,7 @@ import { postData } from '../utils/api/api';
 import { userApis } from '../utils/api/userApi';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { Helmet } from 'react-helmet';
 function Login() {
   const setUserInfo = useSetRecoilState(myInformationState);
   const setLogged = useSetRecoilState(loggedinState);
@@ -39,14 +40,19 @@ function Login() {
   };
 
   return (
-    <SignContainer pageName={PAGES.LOGIN}>
-      <ThemintLogin login={{ setToken, login, setUserInfo, moveToMain, setLogged }} />
-      <Links />
-      <SocialLoginContainer>
-        <SocialLogginButton text={'네이버 로그인'} social={'네이버'} />
-        <SocialLogginButton text={'카카오톡 로그인'} social={'카카오톡'} />
-      </SocialLoginContainer>
-    </SignContainer>
+    <>
+      <Helmet>
+        <title>로그인 | 더민트</title>
+      </Helmet>
+      <SignContainer pageName={PAGES.LOGIN}>
+        <ThemintLogin login={{ setToken, login, setUserInfo, moveToMain, setLogged }} />
+        <Links />
+        <SocialLoginContainer>
+          <SocialLogginButton text={'네이버 로그인'} social={'네이버'} />
+          <SocialLogginButton text={'카카오톡 로그인'} social={'카카오톡'} />
+        </SocialLoginContainer>
+      </SignContainer>
+    </>
   );
 }
 

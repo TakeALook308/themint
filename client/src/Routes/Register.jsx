@@ -116,10 +116,20 @@ const LinkContainer = styled.div`
   justify-content: center;
   flex-direction: column;
   gap: 0.5rem;
-  h2 {
-    margin: 0 auto;
-    width: fit-content;
-    text-decoration: underline;
+  a {
+    position: relative;
+    color: ${(props) => props.theme.colors.white};
+    &:after {
+      content: '';
+
+      width: 100%;
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+
+      border-width: 0 0 1px;
+      border-style: solid;
+    }
   }
 `;
 
