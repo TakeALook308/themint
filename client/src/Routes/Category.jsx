@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+<<<<<<< HEAD
 import CateCardList from '../components/ui/category/CateCardList';
 import CateList from '../components/ui/category/CateList';
 import Dropdown from '../components/ui/category/SelectBox';
 import { Container } from '../style/common';
 import { getAuctionList } from '../utils/api/getAuctionApi';
+=======
+>>>>>>> 86e9793d1be03b370d3d301e516a7b3dbeaa3163
 
 function Category({ categoryName }) {
   const [categorySeq, setCategorySeq] = useState('0');
@@ -28,12 +31,16 @@ function Category({ categoryName }) {
   }, [sortKey, categorySeq]);
   return (
     <Container>
+<<<<<<< HEAD
       <CateListContainer>
         <CateCardList categoryName={categoryName} getCategorySeq={getCategorySeq} />
       </CateListContainer>
 
       <Dropdown getSortKey={getSortKey} />
       {auctions && <CateList auctions={auctions} />}
+=======
+      <CateListContainer></CateListContainer>
+>>>>>>> 86e9793d1be03b370d3d301e516a7b3dbeaa3163
     </Container>
   );
 }

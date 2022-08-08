@@ -51,7 +51,9 @@ const ButtonNav = styled.nav`
 `;
 
 const StyledBtn = styled.div`
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 10px 0px 10px 0px;
   font-size: 16px;
   width: 13%;

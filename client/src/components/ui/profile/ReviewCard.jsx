@@ -3,17 +3,7 @@ import styled from 'styled-components';
 import StarRating from './Star';
 import { Link } from 'react-router-dom';
 
-function ReviewCard(props) {
-  const review = {
-    writerNickName: '미노',
-    writerProfileUrl:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiiGVRNg8egZNHf7d7-jeEA3JKgNTkStDZPQ&usqp=CAU',
-
-    content:
-      '친절하고 상품도 괜찮았어요 다음 번에도 경매 열어주세요. 계속해서 작성해 보겠습니다 이렇게 계속 작성하는 경우 글이 범위를 초과하면 알아서 ... 으로 바뀌면서 글의 내용이 요약되어야 하는데요 과연 이게 잘 이루어 질까요? 어디한번 알아맞춰 봅시다 딩동댕동 삐뽀삐뽀삐~계속해서 작성해 보겠습니다 이렇게 계속 작성하는 경우 글이 범위를 초과하면 알아서 ... 으로 바뀌면서 글의 내용이 요약되어야 하는데요 과연 이게 잘 이루어 질까요? 어디한번 알아맞춰 봅시다 딩동댕동 삐뽀삐뽀삐~계속해서 작성해 보겠습니다 이렇게 계속 작성하는 경우 글이 범위를 초과하면 알아서 ... 으로 바뀌면서 글의 내용이 요약되어야 하는데요 과연 이게 잘 이루어 질까요? 어디한번 알아맞춰 봅시다 딩동댕동 삐뽀삐뽀삐~',
-    score: 3.1,
-    date: '2022.07.01',
-  };
+function ReviewCard({ review }) {
   return (
     <Wrapper>
       <ProfileImgContainer>
@@ -21,7 +11,7 @@ function ReviewCard(props) {
           <div>
             <Link to="/profile/:id">
               <picture>
-                <img src={review.writerProfileUrl} alt="유저 프로필" width="168" height="168" />
+                {/* <img src={review.writerProfileUrl} alt="유저 프로필" width="168" height="168" /> */}
               </picture>
             </Link>
           </div>
@@ -29,13 +19,10 @@ function ReviewCard(props) {
       </ProfileImgContainer>
       <ReviewArticle>
         <ReviewHeader>
-          <Link to="/profile/:id">{review.writerNickName}</Link>
-          <StarContainer>
-            <StarRating rating={review.score} />
-          </StarContainer>
-          <p>{review.date}</p>
+          {/* <Link to="/profile/:id">{review.writerNickName}</Link> */}
+          <StarContainer>{/* <StarRating rating={review.score} /> */}</StarContainer>
+          {/* <p>{review.date}</p> */}
         </ReviewHeader>
-        <ReviewText>{review.content}</ReviewText>
       </ReviewArticle>
     </Wrapper>
   );

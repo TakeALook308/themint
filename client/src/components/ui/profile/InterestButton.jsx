@@ -11,21 +11,21 @@ function InterestButton(props) {
     console.log(active);
 
     // API 작성후 주소 수정
-    const res = await axios.get(`/purchasing`);
+    const res = await axios.get(`/keyword`);
     return res?.data;
   };
   const onCategory = async () => {
     setActive('2');
     console.log(active);
     // API 작성후 주소 수정
-    const res = await axios.get(`/purchased`);
+    const res = await axios.get(`/category`);
     return res?.data;
   };
   const onAuction = async () => {
     setActive('3');
     console.log(active);
     // API 작성후 주소 수정
-    const res = await axios.get(`/purchased`);
+    const res = await axios.get(`/auction`);
     return res?.data;
   };
   return (
@@ -64,9 +64,17 @@ const ButtonNav = styled.nav`
 `;
 
 const StyledBtn = styled.div`
+<<<<<<< HEAD
   text-align: center;
   padding-top: 10px;
   font-size: 16px;
+=======
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0px 10px 0px;
+  font-size: 18px;
+>>>>>>> 86e9793d1be03b370d3d301e516a7b3dbeaa3163
   width: 13%;
   height: 40px;
   margin-right: 20px;
