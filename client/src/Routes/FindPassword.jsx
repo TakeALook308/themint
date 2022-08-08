@@ -2,6 +2,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import SignContainer from '../components/common/SignContainer';
 import EmailCheck from '../components/findPassword/EmailCheck';
+import NewPassword from '../components/findPassword/NewPassword';
 
 function FindPassword(props) {
   return (
@@ -11,7 +12,7 @@ function FindPassword(props) {
       </Helmet>
       <SignContainer>
         <EmailCheck />
-        <Find
+        <NewPassword />
       </SignContainer>
     </>
   );
