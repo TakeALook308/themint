@@ -50,8 +50,7 @@ public class ProductServiceImpl implements ProductService {
         if (word == null) {
             word = "";
         }
-        List<Product> productList = null;
-//                = productRepository.findAllByProductNameContainsAndStartTimeAfterOrderByScore(word, currentTime, pageable);
+        List<Product> productList = productRepository.findAllByProductNameContainsAndStartTimeAfterOrderByScore(word, currentTime, pageable);
         return productList;
     }
 

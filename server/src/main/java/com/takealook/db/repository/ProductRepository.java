@@ -22,7 +22,8 @@ public interface ProductRepository  extends JpaRepository<Product, Long> {
     List<Product> findAllByProductNameContainsAndStartTimeAfterOrderByAuctionSeq(String word, String currentTime, Pageable pageable);
     @Query("SELECT p FROM Product p JOIN Auction a ON p.auctionSeq = a.seq WHERE p.productName LIKE CONCAT('%', :word, '%') AND a.startTime > :currentTime ORDER BY a.interest DESC")
     List<Product> findAllByProductNameContainsAndStartTimeAfterOrderByInterest(String word, String currentTime, Pageable pageable);
-//    List<Product> findAllByProductNameContainsAndStartTimeAfterOrderByScore(String word, String currentTime, Pageable pageable);
+    @Query(value = "SELECT * FROM product p LEFT JOIN (SELECT a.seq, a.start_time, m.score FROM auction a JOIN member m ON a.member_seq = m.seq) j ON p.auction_seq = j.seq WHERE p.product_name LIKE CONCAT('%', :word, '%') AND j.start_time > :currentTime ORDER BY j.score DESC", nativeQuery = true)
+    List<Product> findAllByProductNameContainsAndStartTimeAfterOrderByScore(String word, String currentTime, Pageable pageable);
     @Transactional
     void deleteAllByAuctionSeq(Long auctionSeq);
 }
