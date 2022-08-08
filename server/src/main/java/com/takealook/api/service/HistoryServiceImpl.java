@@ -19,4 +19,18 @@ public class HistoryServiceImpl implements HistoryService{
         List<History> historyList = historyRepository.findAllByMemberSeqOrderByStartTime(memberSeq, pageable);
         return historyList;
     }
+
+    @Override
+    public History getHistoryBySeq(Long historySeq) {
+        History history = historyRepository.findBySeq(historySeq);
+        return history;
+    }
+
+    @Override
+    public History getPurchaseByProductSeq(Long productSeq) {
+        History history = historyRepository.findByProductSeqAndSalesPurchase(productSeq, 1);
+        return history;
+    }
+
+
 }

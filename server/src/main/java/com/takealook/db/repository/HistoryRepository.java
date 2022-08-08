@@ -12,4 +12,6 @@ import java.util.List;
 public interface HistoryRepository extends JpaRepository<History, Long> {
     @Query(value = "SELECT * FROM history h LEFT JOIN (SELECT a.start_time, p.auction_seq, p.seq FROM auction a JOIN product p ON a.seq = p.auction_seq) j ON h.product_seq = j.seq WHERE h.member_seq = :memberSeq ORDER BY j.start_time", nativeQuery = true)
     List<History> findAllByMemberSeqOrderByStartTime(Long memberSeq, Pageable pageable);
+    History findBySeq(Long historySeq);
+    History findByProductSeqAndSalesPurchase(Long productSeq, int salesPurchase);
 }

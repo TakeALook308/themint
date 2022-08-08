@@ -1,7 +1,9 @@
 package com.takealook.api.controller;
 
+import com.takealook.api.response.AuctionRes;
 import com.takealook.api.response.HistoryListEntityRes;
 import com.takealook.api.response.ProductListEntityRes;
+import com.takealook.api.response.SalesDetailRes;
 import com.takealook.api.service.*;
 import com.takealook.common.auth.MemberDetails;
 import com.takealook.db.entity.*;
@@ -11,10 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.ArrayList;
@@ -40,13 +39,13 @@ public class HistoryController {
     @Autowired
     MemberService memberService;
 
-    @GetMapping("/sales")
-    public ResponseEntity<List<HistoryListEntityRes>> getProductList(@RequestParam("page") int page, @RequestParam("size") int size, @ApiIgnore Authentication authentication) {
+    @Autowired
+    ProductDeliveryService productDeliveryService;
+
+    @GetMapping("/sales/{memberSeq}")
+    public ResponseEntity<List<HistoryListEntityRes>> getProductList(@PathVariable("memberSeq") Long memberSeq, @RequestParam("page") int page, @RequestParam("size") int size) {
         List<HistoryListEntityRes> historyListEntityResList = new ArrayList<>();
         List<History> historyList = null;
-
-        MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
-        Long memberSeq = memberDetails.getMemberSeq();
         Pageable pageable = PageRequest.of(page, size);
         historyList = historyService.getHistoryListByMemberSeq(memberSeq, pageable, 0); // 0: sales, 1: purchase
         for (History history : historyList) {
@@ -58,4 +57,15 @@ public class HistoryController {
         }
         return ResponseEntity.status(200).body(historyListEntityResList);
     }
+
+    @GetMapping("/sales/detail/{historySeq}")
+    public ResponseEntity<SalesDetailRes> getSalesDetail(@PathVariable("historySeq") Long historySeq){
+        History history = historyService.getHistoryBySeq(historySeq);
+        Product product = productService.getProductBySeq(history.getProductSeq());
+        Long memberseq = historyService.getPurchaseByProductSeq(product.getSeq()).getMemberSeq();
+        Member member = memberService.getMemberByMemberSeq(memberseq);
+        ProductDelivery productDelivery = productDeliveryService.getProductDeliveryByProductSeq(product.getSeq());
+        return ResponseEntity.status(200).body(SalesDetailRes.of(history, product, member, productDelivery));
+    }
+
 }
