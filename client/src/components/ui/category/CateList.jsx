@@ -1,5 +1,5 @@
 import React from 'react';
-import AuctionCard from '../../common/AuctionCard';
+import CateAuctionCard from './CategoryListItem';
 import styled from 'styled-components';
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -30,7 +30,7 @@ function CateList({ auctions }) {
           className="mySwiper">
           <SwiperSlide>
             {auctions.map((data, index) => (
-              <AuctionCard auction={data} key={index} />
+              <CateAuctionCard auction={data} key={index} />
             ))}
           </SwiperSlide>
         </Swiper>

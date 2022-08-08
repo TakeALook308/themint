@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-function AuctionCard({ auction }) {
+function CateAuctionCard({ auction }) {
   const [auctionTime, setAuctionTime] = useState({ moreThenOneDay: false, time: '' });
-  console.log();
 
   const CalculateTime = () => {
     const auctionStartTime = new Date(auction.startTime);
@@ -45,7 +44,7 @@ function AuctionCard({ auction }) {
             <picture>
               <img
                 src={auction.auctionImageList.imageUrl}
-                alt="닌텐도 스위치"
+                alt="카드 이미지"
                 width="400"
                 height="300"
               />
@@ -70,7 +69,7 @@ function AuctionCard({ auction }) {
   );
 }
 
-export default AuctionCard;
+export default CateAuctionCard;
 
 const CardContainer = styled.article`
   position: relative;

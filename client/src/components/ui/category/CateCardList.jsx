@@ -23,7 +23,7 @@ function CateCardList({ getCategorySeq, categoryName, key }) {
     { seq: 5, name: '주방용품' },
     { seq: 6, name: '생활용품' },
     { seq: 7, name: '홈인테리어' },
-    { seq: 8, name: '가전디지털' },
+    { seq: 8, name: '가전/디지털' },
     { seq: 9, name: '스포츠/레저' },
     { seq: 10, name: '자동차용품' },
     { seq: 11, name: '도서/음반/DVD' },
