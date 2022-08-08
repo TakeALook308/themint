@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 export const categories = [
   {
     seq: 1,
@@ -61,7 +60,6 @@ export const categories = [
     name: '헬스/건강식품',
   },
 ];
-=======
 export const REGISTER_MESSAGE = {
   REQUIRED_ID: '아이디를 입력해주세요.',
   DUPLICATED_ID: '이미 존재하는 아이디입니다.',
@@ -125,4 +123,3 @@ export const PAGES = {
   REGISTER: '회원가입',
   LOGIN: '로그인',
 };
->>>>>>> 42a5b6cbd6eac0286ed1a01140815111d9c96dd0

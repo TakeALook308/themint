@@ -16,7 +16,7 @@ import Talks from './Routes/Talks';
 import NavigationBar from './components/ui/common/NavigationBar';
 import Footer from './components/ui/common/Footer';
 import FindPassword from './Routes/FindPassword';
-
+import AuctionCreate from './Routes/AuctionCreate';
 function Router() {
   return (
     <BrowserRouter>
