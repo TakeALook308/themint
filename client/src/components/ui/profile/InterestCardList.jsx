@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import InterestCard from './InterestCard';
+import InterestCard from './InterestKeyWordCard';
 
 function InterestCardList({ keyword }) {
   return (
@@ -16,6 +16,6 @@ export default InterestCardList;
 
 const Container = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   grid-gap: 3rem;
 `;

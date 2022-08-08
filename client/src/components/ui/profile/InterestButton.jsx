@@ -11,21 +11,21 @@ function InterestButton(props) {
     console.log(active);
 
     // API 작성후 주소 수정
-    const res = await axios.get(`/purchasing`);
+    const res = await axios.get(`/keyword`);
     return res?.data;
   };
   const onCategory = async () => {
     setActive('2');
     console.log(active);
     // API 작성후 주소 수정
-    const res = await axios.get(`/purchased`);
+    const res = await axios.get(`/category`);
     return res?.data;
   };
   const onAuction = async () => {
     setActive('3');
     console.log(active);
     // API 작성후 주소 수정
-    const res = await axios.get(`/purchased`);
+    const res = await axios.get(`/auction`);
     return res?.data;
   };
   return (
