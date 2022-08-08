@@ -9,35 +9,6 @@ import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import SearchIcon from '@mui/icons-material/Search';
 import ChatIcon from '@mui/icons-material/Chat';
 
-<<<<<<< HEAD:client/src/components/ui/NavigationBar.jsx
-function NavigationBar({ categoryName }) {
-  // 검색기능의구현
-  // const [search, setSearch] = useState('');
-  // const onSearch = (e) => {
-  //   e.preventDefault();
-  //   if (search === null || search === '') {
-  //     // 검색어가 없을 경우 전체 리스트 반환
-  //     axios.get(common.baseURL + 'user').then((res) => {
-  //       setLists(res.data.auctionList);
-  //       setCurrentPosts(res.data.auctionList.slice(indexOfFirstPost, indexOfLastPost));
-  //     });
-  //   } else {
-  //     // 검색 구현
-  //     const filterData = lists.filter((row) => row.auctionId.includes(search));
-  //     setLists(filterData);
-  //     setCurrentPosts(filterData.slice(indexOfFirstPost, indexOfLastPost));
-  //     setCurrentPage(1);
-  //   }
-  //   setSearch(``);
-  // };
-
-  // const onChangeSearch = (e) => {
-  //   e.preventDefault();
-  //   setSearch(e.target.value);
-  // };
-  const navigate = useNavigate();
-  if (window.location.pathname.startsWith('/streamings')) return null;
-=======
 function NavigationBar({ url, search, categoryName }) {
   if (
     window.location.pathname.startsWith('/streamings') ||
@@ -45,7 +16,6 @@ function NavigationBar({ url, search, categoryName }) {
     window.location.pathname.startsWith('/login')
   )
     return null;
->>>>>>> 42a5b6cbd6eac0286ed1a01140815111d9c96dd0:client/src/components/ui/common/NavigationBar.jsx
   return (
     <Container>
       <Wrapper>

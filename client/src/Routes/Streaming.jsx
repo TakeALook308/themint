@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import StreamingComponent from '../components/webRTC/StreamingComponent';
@@ -91,12 +90,4 @@ const Aside = styled.aside`
   gap: 10px;
 `;
 
-=======
-import React from 'react';
-
-function Streaming(props) {
-  return <div>경매 스트리밍</div>;
-}
-
->>>>>>> 42a5b6cbd6eac0286ed1a01140815111d9c96dd0
 export default Streaming;
