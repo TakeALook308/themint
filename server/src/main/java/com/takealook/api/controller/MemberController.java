@@ -143,29 +143,37 @@ public class MemberController {
     }
 
     /////////////////// 비밀번호 재설정 (비밀번호 찾기) start ////////////////////////
-    // 1. 이메일 체크
-    @GetMapping("/password/{email}")
-    public ResponseEntity<?> checkEmail(@PathVariable("email") String email) {
-        Member member = memberService.getMemberByEmail(email);
+    // 1. 아이디, 이메일 체크 + 인증번호 전송
+    @PostMapping("/password/check")
+    public ResponseEntity<?> checkEmail(@RequestBody MemberSetNewPwdCheckPostReq memberSetNewPwdCheckPostReq) {
+        // 아이디-이메일 체크
+        Member member = memberService.getMemberByMemberIdAndEmail(memberSetNewPwdCheckPostReq);
         if (member == null) return ResponseEntity.status(409).body("fail");
-        return ResponseEntity.status(200).body("success");
-    }
-
-    // 2. 인증번호 확인
-    @PostMapping("/password")
-    public ResponseEntity<?> sendEmail(@RequestBody Map<String, String> emailMap) {
+        // 메일로 인증번호 전송
         int randNum = ThreadLocalRandom.current().nextInt(100000, 1000000);
-        int result = memberService.sendEmail(randNum, emailMap.get("email"));
+        int result = memberService.sendEmail(randNum, member.getEmail());
         // 메일 전송 실패 시
         if (result == 0) return ResponseEntity.status(409).body("fail");
         return ResponseEntity.status(200).body(MemberRandomNumberRes.of(randNum));
     }
 
+//    // 2. 인증번호 확인
+//    @PostMapping("/password")
+//    public ResponseEntity<?> sendEmail(@RequestBody Map<String, String> emailMap) {
+//        int randNum = ThreadLocalRandom.current().nextInt(100000, 1000000);
+//        int result = memberService.sendEmail(randNum, emailMap.get("email"));
+//        // 메일 전송 실패 시
+//        if (result == 0) return ResponseEntity.status(409).body("fail");
+//        return ResponseEntity.status(200).body(MemberRandomNumberRes.of(randNum));
+//    }
+
     // 3. 비밀번호 재설정
     @PatchMapping("password/change")
-    public ResponseEntity<?> setNewPassword(@RequestBody Map<String, String> emailMap, String pwd) {
-        memberService.setNewPassword(emailMap.get("email"), pwd);
-        return ResponseEntity.status(200).body("success");
+    public ResponseEntity<?> setNewPassword(@RequestBody MemberSetNewPwdPatchReq memberSetNewPwdPatchReq) {
+        int result = memberService.setNewPassword(memberSetNewPwdPatchReq);
+        if (result == 1)
+            return ResponseEntity.status(200).body("success");
+        return ResponseEntity.status(409).body("fail");
     }
     /////////////////// 비밀번호 재설정 (비밀번호 찾기) end ////////////////////////
 

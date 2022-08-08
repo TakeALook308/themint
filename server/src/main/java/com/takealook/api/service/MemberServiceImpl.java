@@ -103,6 +103,11 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public Member getMemberByMemberIdAndEmail(MemberSetNewPwdCheckPostReq memberSetNewPwdCheckPostReq) {
+        return memberRepository.findByMemberIdAndEmail(memberSetNewPwdCheckPostReq.getMemberId(), memberSetNewPwdCheckPostReq.getEmail());
+    }
+
+    @Override
     public Member getMemberByPhone(String phone) {
         return memberRepository.findByPhone(phone);
     }
@@ -124,12 +129,14 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void setNewPassword(String email, String pwd) {
-        Member member = memberRepository.findByEmail(email);
+    public int setNewPassword(MemberSetNewPwdPatchReq memberSetNewPwdPatchReq) {
+        Member member = memberRepository.findByEmail(memberSetNewPwdPatchReq.getMemberId());
         if (member != null) {
             Long seq = member.getSeq();
-            memberRepository.updateMemberPassword(seq, passwordEncoder.encode(pwd));
+            memberRepository.updateMemberPassword(seq, passwordEncoder.encode(memberSetNewPwdPatchReq.getPwd()));
+            return 1;
         }
+        return 0;
     }
 
     @Override
