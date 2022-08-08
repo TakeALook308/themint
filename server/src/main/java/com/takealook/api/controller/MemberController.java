@@ -240,6 +240,7 @@ public class MemberController {
         return ResponseEntity.status(200).body(randNum);
     }
 
+    // 로그인 멤버 기본 정보 받기
     @GetMapping("/info")
     public ResponseEntity<?> getLoginMemberInfo(@ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
