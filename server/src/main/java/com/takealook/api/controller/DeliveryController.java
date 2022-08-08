@@ -1,9 +1,9 @@
 package com.takealook.api.controller;
 
-import com.takealook.api.request.AuctionUpdatePatchReq;
-import com.takealook.api.request.TrackingnoRegisterPostReq;
+import com.takealook.api.request.ProductDeliveryUpdatePatchReq;
+import com.takealook.api.request.TrackingNoRegisterPostReq;
 import com.takealook.api.service.ProductDeliveryService;
-import com.takealook.common.auth.MemberDetails;
+import com.takealook.api.service.ProductService;
 import com.takealook.common.model.response.BaseResponseBody;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +23,23 @@ public class DeliveryController {
     @Autowired
     ProductDeliveryService productDeliveryService;
 
+    @Autowired
+    ProductService productService;
+
     @PatchMapping("/trackingno")
-    public ResponseEntity<? extends BaseResponseBody> updateTrackingno(@RequestBody TrackingnoRegisterPostReq trackingnoRegisterPostReq, @ApiIgnore Authentication authentication){
+    public ResponseEntity<? extends BaseResponseBody> updateTrackingno(@RequestBody TrackingNoRegisterPostReq trackingnoRegisterPostReq, @ApiIgnore Authentication authentication){
         int result = productDeliveryService.updateTrackingno(trackingnoRegisterPostReq);
+        productService.updateStatus(trackingnoRegisterPostReq.getProductSeq(), 3);
+        if(result == 1) {
+            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
+        } else{
+            return ResponseEntity.status(409).body(BaseResponseBody.of(409, "fail"));
+        }
+    }
+
+    @PatchMapping
+    public ResponseEntity<? extends BaseResponseBody> updateProductDelivery(@RequestBody ProductDeliveryUpdatePatchReq productDeliveryUpdatePatchReq){
+        int result = productDeliveryService.updateProductDelivery(productDeliveryUpdatePatchReq);
         if(result == 1) {
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
         } else{

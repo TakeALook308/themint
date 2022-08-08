@@ -11,5 +11,6 @@ public interface HistoryService {
     List<History> getHistoryListByMemberSeq(Long memberSeq, Pageable pageable, int salesPurchase);
     History getHistoryBySeq(Long historySeq);
     History getPurchaseByProductSeq(Long productSeq);
+    History getSalesByProductSeq(Long productSeq);
     int registerPurchaseHistory(PurchaseRegisterPostReq purchaseRegisterPostReq);
 }

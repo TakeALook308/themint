@@ -10,6 +10,8 @@ public interface ProductService {
     List<Product> getProductList(String word, Pageable pageable, String sort);
     List<Product> getProductListOrderByScore(String word, Pageable pageable);
     List<Product> getProductListByAuctionSeq(Long auctionSeq);
+    void updateStatus(Long productSeq, int status);
+    void updateFinalPrice(Long productSeq, int finalPrice);
     void updateProductList(Long auctionSeq, List<Product> productList);
     void deleteProductList(Long auctionSeq);
 }
