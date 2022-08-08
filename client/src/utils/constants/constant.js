@@ -70,6 +70,7 @@ export const REGISTER_MESSAGE = {
   PASSWORD_STANDARD: '비밀번호는 영문자, 숫자, 특수문자 포함 8글자 이상 입력해주세요.',
   REQUIRED_PASSWORD_CHECK: '비밀번호를 확인해주세요.',
   PASSWORD_CHECK: '입력한 비밀번호와 일치하지 않습니다.',
+  PASSWORD_RESET: '비밀번호 재설정 성공',
   REQUIRED_NAME: '이름을 입력해주세요.',
   NAME_STANDARD: '이름은 한글만 입력이 가능합니다.',
   NAME_LENGTH: '이름은 2 ~ 10자 사이로 작성해주세요.',

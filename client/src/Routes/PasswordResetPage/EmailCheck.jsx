@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import styled, { css, keyframes } from 'styled-components';
 import { MessageWrapper } from '../../style/common';
 import { ActiveInput } from '../../style/style';
-import { postData } from '../../utils/api/api';
+import { getData, postData } from '../../utils/api/api';
 import { userApis } from '../../utils/api/userApi';
 import { REGEX, REGISTER_MESSAGE } from '../../utils/constants/constant';
 import GradientButton from '../../components/ButtonList/GradientButton';
 import MintButton from '../../components/ButtonList/MintButton';
 import ValidationMessage from '../../components/common/ValidationMessage';
-import { successToast } from '../../lib/toast';
+import { errorToast, successToast } from '../../lib/toast';
 
 function EmailCheck({ email, setEmail, setIsPassed }) {
   const [isEmailed, setIsEmailed] = useState(false);
@@ -23,12 +23,23 @@ function EmailCheck({ email, setEmail, setIsPassed }) {
     formState: { errors },
   } = useForm({});
 
+  const id = useRef({});
+  id.current = watch('memberId', '');
+  const auth = useRef({});
+  auth.current = watch('email', '');
+
   useEffect(() => {
-    if (!email) return;
+    if (!email || !id) return;
     (async () => {
-      const response = await postData(userApis.AUTH_EMAIL, { email });
-      setIsEmailed(true);
-      setAuthNum(String(response.data?.randNum));
+      try {
+        const response = await postData(userApis.AUTH_EMAIL, { memberId: id.current, email });
+        if (response.status === 200) {
+          setIsEmailed(true);
+          setAuthNum(String(response.data?.randNum));
+        }
+      } catch (err) {
+        errorToast('아이디 또는 이메일을 확인해주세요.');
+      }
     })();
   }, [email]);
 
@@ -40,15 +51,35 @@ function EmailCheck({ email, setEmail, setIsPassed }) {
   };
 
   const sendAuthNumber = () => {
+    trigger('memberId');
     trigger('email');
+    if (errors?.memberId) return;
     if (errors?.email) return;
-    if (watch().email === email) return;
-    setEmail(watch().email);
+    if (auth.current === email) return;
+    setEmail(auth.current);
   };
 
   return (
     <form onSubmit={handleSubmit(onValid)}>
       <div>
+        <InputContainer>
+          <ActiveInput active={true}>
+            <input
+              name="memberId"
+              id="memberId"
+              type="text"
+              {...register('memberId', {
+                required: REGISTER_MESSAGE.REQUIRED_ID,
+              })}
+              placeholder=" "
+              required
+            />
+            <label htmlFor="memberId">아이디</label>
+          </ActiveInput>
+        </InputContainer>
+        <MessageWrapper>
+          <ValidationMessage text={errors?.memberId?.message} state={'fail'} />
+        </MessageWrapper>
         <InputContainer>
           <ActiveInput active={true}>
             <input

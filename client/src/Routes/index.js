@@ -1,5 +1,5 @@
 export { default as PasswordResetPage } from './PasswordResetPage/PasswordResetPage';
-export { default as NotFoundPage } from './NotFoundPage/NotFoundPage';
-export { default as LoginPage } from './LoginPage/LoginPage';
-export { default as RegisterPage } from './RegisterPage/RegisterPage';
-export { default as StandByPage } from './StandbyPage/StandbyPage';
+export { default as NotFoundPage } from './NotFound/NotFoundPage';
+export { default as LoginPage } from './Login/LoginPage';
+export { default as RegisterPage } from './Register/RegisterPage';
+export { default as StandByPage } from './Standby/StandbyPage';

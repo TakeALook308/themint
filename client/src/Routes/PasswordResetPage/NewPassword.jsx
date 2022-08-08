@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { useForm } from 'react-hook-form';
-import { successToast } from '../../lib/toast';
+import { errorToast, successToast } from '../../lib/toast';
 import { MessageWrapper } from '../../style/common';
 import { ActiveInput } from '../../style/style';
 import { postData } from '../../utils/api/api';
@@ -24,10 +24,16 @@ function NewPassword({ email }) {
 
   const onValid = async () => {
     const body = { email, pwd: password.current };
-    const response = await postData(userApis.PASSWORD_CHANGE, body);
-    if (response.status === 200) {
-      successToast('비밀번호 재설정 성공');
-      navigate('/login');
+    try {
+      const response = await postData(userApis.PASSWORD_CHANGE, body);
+      if (response.status === 200) {
+        successToast('비밀번호 재설정 성공');
+        navigate('/login');
+      }
+    } catch (err) {
+      if (err.response.status === 409) {
+        errorToast('비밀번호 재설정에 실패하였습니다.');
+      }
     }
   };
 
