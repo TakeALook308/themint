@@ -5,12 +5,12 @@ import CateCard from './CateCard';
 // 따로 컴포넌트 만들었다면 받아오기
 // import categoriest from '/'
 
-function CateCardList({ getcategorySeq, categoryName, key }) {
+function CateCardList({ getCategorySeq, categoryName, key }) {
   const [categoryNow, setCategoryNow] = useState('전체보기');
   const onClick = (e) => {
     setCategoryNow(e.target.innerText);
     console.log(e.target.id);
-    getcategorySeq(e.target.id);
+    getCategorySeq(e.target.id);
   };
 
   // 따로 컴포넌트 만들었다면 삭제가능

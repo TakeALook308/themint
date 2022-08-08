@@ -4,8 +4,8 @@ import { NavLink } from 'react-router-dom';
 
 function CateCard({ categoryKey, categoryName }) {
   return (
-    <NavStyle to={`/categories/${categoryKey}`} id={categoryKey}>
-      <p>{categoryName}</p>
+    <NavStyle to={`/categories/${categoryKey}`} id={categoryKey} title={categoryName}>
+      {categoryName}
     </NavStyle>
   );
 }

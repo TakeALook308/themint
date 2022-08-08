@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import CateCardList from '../components/ui/category/CateCardList';
+import CateList from '../components/ui/category/CateList';
 import Dropdown from '../components/ui/category/SelectBox';
 import { getAuctionList } from '../utils/api/getAuctionApi';
 
 function Category({ categoryName }) {
   const [categorySeq, setCategorySeq] = useState('0');
   const [sortKey, setSortKey] = useState('startTime');
-
-  const getcategorySeq = (number) => {
-    setCategorySeq(number);
+  const [auctions, setAuctions] = useState(null);
+  const getCategorySeq = (value) => {
+    setCategorySeq(value);
   };
 
   const getSortKey = (value) => {
@@ -19,14 +20,18 @@ function Category({ categoryName }) {
     const res = getAuctionList(
       `/api/auction/category?categorySeq=${categorySeq}&page=${0}&size=${9}&sort=${sortKey}`,
     );
-    return res?.data;
+    res.then((auctions) => {
+      setAuctions(auctions.data);
+      console.log(auctions.data);
+    });
   }, [sortKey, categorySeq]);
   return (
     <Container>
       <CateListContainer>
-        <CateCardList categoryName={categoryName} getcategorySeq={getcategorySeq} />
+        <CateCardList categoryName={categoryName} getCategorySeq={getCategorySeq} />
       </CateListContainer>
       <Dropdown getSortKey={getSortKey} />
+      {auctions && <CateList auctions={auctions} />}
     </Container>
   );
 }
