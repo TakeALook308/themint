@@ -19,6 +19,8 @@ import FindPassword from './Routes/FindPassword';
 import { useRecoilValue } from 'recoil';
 import { loggedinState } from './atoms';
 import ProtectedRoute from './components/routes/ProtectedRoute';
+import AuctionCreate from './Routes/AuctionCreate';
+import Standby from './Routes/Standby';
 
 function Router() {
   const loggedin = useRecoilValue(loggedinState);
@@ -45,6 +47,7 @@ function Router() {
           <Route path="puchase-history/:purchaseId" element={<PurchaseHistoryDetail />} />
         </Route>
         <Route path="streamings/:roomNumber" element={<Streaming />} />
+        <Route path="/auctions/new" element={<AuctionCreate />} />
         <Route path="auctions/:auctionsId" element={<AuctionDetail />} />
         <Route path="*" element={<p>There's nothing here: 404!</p>} />
       </Routes>

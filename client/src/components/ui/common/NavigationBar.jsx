@@ -68,7 +68,7 @@ const Container = styled.header`
   margin: 0 auto;
   right: 0;
   left: 0;
-  z-index: 100;
+  z-index: 10;
 `;
 
 const Wrapper = styled.nav`
