@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { ImCross } from 'react-icons/im';
 
 function InterestKeyWordCard({ keyword }) {
   const onClick = () => {
@@ -8,7 +9,11 @@ function InterestKeyWordCard({ keyword }) {
   return (
     <Container>
       {keyword}
-      <span onClick={onClick}>X</span>
+      <span onClick={onClick}>
+        <span onClick={onClick}>
+          <ImCross color="FFFFFF" />
+        </span>
+      </span>
     </Container>
   );
 }

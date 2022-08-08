@@ -58,11 +58,11 @@ const HeaderContainer = styled.div`
 const NavStyle = styled(NavLink)`
   color: ${(props) => props.theme.colors.white};
   width: 25%;
-  height: 67px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
+  font-size: 24px;
   text-align: center;
   background-color: ${(props) => props.theme.colors.mainBlack};
   border-bottom: 2px solid ${(props) => props.theme.colors.subMint};

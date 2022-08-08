@@ -1,14 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
-import InterestCard from './InterestKeyWordCard';
+import InterestKeyWordCard from './InterestKeyWordCard';
 
 function InterestCardList({ keyword }) {
   return (
     <Container>
-      <InterestCard keyword={'닌텐도'}> {keyword}</InterestCard>
-      <InterestCard keyword={'우리'}> {keyword}</InterestCard>
-      <InterestCard keyword={'더민트'}> {keyword}</InterestCard>
-      <InterestCard keyword={'최고'}> {keyword}</InterestCard>
+      <InterestKeyWordCard keyword={'닌텐도'}> {keyword}</InterestKeyWordCard>
+      <InterestKeyWordCard keyword={'우리'}> {keyword}</InterestKeyWordCard>
+      <InterestKeyWordCard keyword={'더민트'}> {keyword}</InterestKeyWordCard>
+      <InterestKeyWordCard keyword={'최고'}> {keyword}</InterestKeyWordCard>
     </Container>
   );
 }

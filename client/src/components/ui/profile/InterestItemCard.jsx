@@ -5,12 +5,7 @@ function InterestItemCard({ keyword }) {
   const onClick = () => {
     // 삭제요청 API
   };
-  return (
-    <Container>
-      {keyword}
-      <span onClick={onClick}>X</span>
-    </Container>
-  );
+  return <Container>{keyword}</Container>;
 }
 export default InterestItemCard;
 

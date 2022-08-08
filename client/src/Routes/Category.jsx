@@ -1,13 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import CateCardList from '../components/ui/category/CateCardList';
 
 function Category({ categoryName }) {
   return (
     <Container>
-      <CateListContainer>
-        <CateCardList categoryName={categoryName} />
-      </CateListContainer>
+      <CateListContainer></CateListContainer>
     </Container>
   );
 }

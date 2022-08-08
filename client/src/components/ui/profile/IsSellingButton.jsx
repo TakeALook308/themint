@@ -52,11 +52,13 @@ const ButtonNav = styled.nav`
 `;
 
 const StyledBtn = styled.div`
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 10px 0px 10px 0px;
   font-size: 18px;
   width: 13%;
-  height: 48px;
+  height: 40px;
   margin-right: 20px;
   color: ${(props) => props.theme.colors.white};
   background-color: ${(props) => props.theme.colors.mainBlack};

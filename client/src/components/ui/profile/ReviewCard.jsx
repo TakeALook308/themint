@@ -11,7 +11,7 @@ function ReviewCard({ review }) {
           <div>
             <Link to="/profile/:id">
               <picture>
-                <img src={review.writerProfileUrl} alt="유저 프로필" width="168" height="168" />
+                {/* <img src={review.writerProfileUrl} alt="유저 프로필" width="168" height="168" /> */}
               </picture>
             </Link>
           </div>
@@ -19,13 +19,11 @@ function ReviewCard({ review }) {
       </ProfileImgContainer>
       <ReviewArticle>
         <ReviewHeader>
-          <Link to="/profile/:id">{review.writerNickName}</Link>
-          <StarContainer>
-            <StarRating rating={review.score} />
-          </StarContainer>
-          <p>{review.date}</p>
+          {/* <Link to="/profile/:id">{review.writerNickName}</Link> */}
+          <StarContainer>{/* <StarRating rating={review.score} /> */}</StarContainer>
+          {/* <p>{review.date}</p> */}
         </ReviewHeader>
-        {review.content}
+        {/* {review.content} */}
       </ReviewArticle>
     </Wrapper>
   );
