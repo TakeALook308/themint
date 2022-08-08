@@ -4,6 +4,7 @@ import com.takealook.api.request.AuctionRegisterPostReq;
 import com.takealook.api.request.AuctionUpdatePatchReq;
 import com.takealook.api.response.AuctionListEntityRes;
 import com.takealook.api.response.AuctionRes;
+import com.takealook.api.response.AuctionStandByRes;
 import com.takealook.api.service.AuctionImageService;
 import com.takealook.api.service.AuctionService;
 import com.takealook.api.service.MemberService;
@@ -150,6 +151,13 @@ public class AuctionController {
             auctionListEntityResList.add(AuctionListEntityRes.of(auction, member, auctionImageList));
         }
         return ResponseEntity.status(200).body(auctionListEntityResList);
+    }
+
+    @GetMapping("/standby/{hash}")
+    public ResponseEntity<AuctionStandByRes> getAuctionStandBy(@PathVariable("hash") String hash){
+        Auction auction = auctionService.getAuctionByHash(hash);
+        Member member = memberService.getMemberByMemberSeq(auction.getMemberSeq());
+        return ResponseEntity.status(200).body(AuctionStandByRes.of(auction, member));
     }
 
 }
