@@ -240,4 +240,14 @@ public class MemberController {
         return ResponseEntity.status(200).body(randNum);
     }
 
+    @GetMapping("/info")
+    public ResponseEntity<?> getLoginMemberInfo(@ApiIgnore Authentication authentication) {
+        MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
+        Long memberSeq = memberDetails.getMemberSeq();
+        Member member = memberService.getMemberByMemberSeq(memberSeq);
+        if (member != null) {
+            return ResponseEntity.status(200).body(MemberLoginMemberInfoRes.of(member.getSeq(), member.getMemberId(), member.getNickname()));
+        }
+        return ResponseEntity.status(409).body("fail");
+    }
 }
