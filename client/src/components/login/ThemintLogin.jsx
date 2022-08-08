@@ -1,11 +1,11 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { session } from '../../App';
-import { MessageWrapper, WarningMessage } from '../../style/common';
+import { MessageWrapper } from '../../style/common';
 import { ActiveInput } from '../../style/style';
 import { LOGIN_MESSAGE, REGISTER_MESSAGE } from '../../utils/constants/constant';
-import Session from '../../utils/functions/storage';
 import GradientButton from '../common/GradientButton';
+import ValidationMessage from '../common/ValidationMessage';
 
 function ThemintLogin({ login }) {
   const {
@@ -57,7 +57,7 @@ function ThemintLogin({ login }) {
           <label htmlFor="memberId">아이디</label>
         </ActiveInput>
         <MessageWrapper>
-          <WarningMessage>{errors?.memberId?.message}</WarningMessage>
+          <ValidationMessage text={errors?.memberId?.message} state={'fail'} />
         </MessageWrapper>
         <ActiveInput active={true}>
           <input
@@ -73,7 +73,7 @@ function ThemintLogin({ login }) {
           <label htmlFor="password">비밀번호</label>
         </ActiveInput>
         <MessageWrapper>
-          <WarningMessage>{errors?.pwd?.message}</WarningMessage>
+          <ValidationMessage text={errors?.pwd?.message} state={'fail'} />
         </MessageWrapper>
         <GradientButton text={'로그인'} type={'submit'} />
       </div>

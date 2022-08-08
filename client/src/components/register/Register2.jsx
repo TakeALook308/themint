@@ -3,13 +3,14 @@ import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import GradientButton from '../common/GradientButton';
 import MintButton from '../common/MintButton';
-import { MessageWrapper, SuccessValidationMessage, WarningMessage } from '../../style/common';
+import { MessageWrapper } from '../../style/common';
 import { ActiveInput } from '../../style/style';
 import { userApis } from '../../utils/api/userApi';
 import { getData, postData } from '../../utils/api/api';
 import { REGEX, REGISTER_MESSAGE, STANDARD } from '../../utils/constants/constant';
 import debounce from '../../utils/functions/debounce';
 import StepSignal from './StepSignal';
+import ValidationMessage from '../common/ValidationMessage';
 
 function Register2({ setUserInfo, setStep }) {
   const [certificatedNumber, setCertificatedNumber] = useState();
@@ -122,7 +123,7 @@ function Register2({ setUserInfo, setStep }) {
           <label htmlFor="memberName">이름</label>
         </ActiveInput>
         <MessageWrapper>
-          <WarningMessage>{errors?.memberName?.message}</WarningMessage>
+          <ValidationMessage text={errors?.memberName?.message} state={'fail'} />
         </MessageWrapper>
         <ActiveInput active={true}>
           <input
@@ -143,9 +144,9 @@ function Register2({ setUserInfo, setStep }) {
           <label htmlFor="email">email</label>
         </ActiveInput>
         <MessageWrapper>
-          <WarningMessage>{errors?.email?.message}</WarningMessage>
+          <ValidationMessage text={errors?.email?.message} state={'fail'} />
           {watch().email && !errors?.email && (
-            <SuccessValidationMessage>{REGISTER_MESSAGE.VALIDATED_EMAIL}</SuccessValidationMessage>
+            <ValidationMessage text={REGISTER_MESSAGE.VALIDATED_EMAIL} state={'pass'} />
           )}
         </MessageWrapper>
         <InputContainer>
@@ -171,9 +172,9 @@ function Register2({ setUserInfo, setStep }) {
           <MintButton text={'인증'} type={'button'} onClick={certificatePhoneNumber} />
         </InputContainer>
         <MessageWrapper>
-          <WarningMessage>{errors?.phone?.message}</WarningMessage>
+          <ValidationMessage text={errors?.phone?.message} state={'fail'} />
           {watch().phone && !errors?.phone && (
-            <SuccessValidationMessage>{REGISTER_MESSAGE.VALIDATED_PHONE}</SuccessValidationMessage>
+            <ValidationMessage text={REGISTER_MESSAGE.VALIDATED_PHONE} state={'pass'} />
           )}
         </MessageWrapper>
         <ActiveInput active={true}>
@@ -195,11 +196,12 @@ function Register2({ setUserInfo, setStep }) {
           <label htmlFor="certificationNumber">인증번호</label>
         </ActiveInput>
         <MessageWrapper>
-          <WarningMessage>{errors?.certificationNumber?.message}</WarningMessage>
+          <ValidationMessage text={errors?.certificationNumber?.message} state={'fail'} />
           {watch().certificationNumber && !errors?.certificationNumber && (
-            <SuccessValidationMessage>
-              {REGISTER_MESSAGE.VALIDATED_CERTICATION_NUMBER}
-            </SuccessValidationMessage>
+            <ValidationMessage
+              text={REGISTER_MESSAGE.VALIDATED_CERTICATION_NUMBER}
+              state={'pass'}
+            />
           )}
         </MessageWrapper>
         <StepSignal step={'register2'} />

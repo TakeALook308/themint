@@ -1,12 +1,13 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import GradientButton from '../common/GradientButton';
-import { MessageWrapper, SuccessValidationMessage, WarningMessage } from '../../style/common';
+import { MessageWrapper } from '../../style/common';
 import { ActiveInput } from '../../style/style';
 import { userApis } from '../../utils/api/userApi';
 import { getData } from '../../utils/api/api';
 import { REGEX, REGISTER_MESSAGE, STANDARD } from '../../utils/constants/constant';
 import debounce from '../../utils/functions/debounce';
+import ValidationMessage from '../common/ValidationMessage';
 
 function Register1({ setUserInfo, setStep }) {
   const [duplicatedID, setDuplicatedID] = useState(false);
@@ -89,9 +90,9 @@ function Register1({ setUserInfo, setStep }) {
           <label htmlFor="memberId">아이디</label>
         </ActiveInput>
         <MessageWrapper>
-          <WarningMessage>{errors?.memberId?.message}</WarningMessage>
+          <ValidationMessage text={errors?.memberId?.message} state={'fail'} />
           {watch().memberId && !errors?.memberId && (
-            <SuccessValidationMessage>{REGISTER_MESSAGE.VALIDATED_ID}</SuccessValidationMessage>
+            <ValidationMessage text={REGISTER_MESSAGE.VALIDATED_ID} state={'pass'} />
           )}
         </MessageWrapper>
         <ActiveInput active={true}>
@@ -122,7 +123,7 @@ function Register1({ setUserInfo, setStep }) {
           <label htmlFor="password">비밀번호</label>
         </ActiveInput>
         <MessageWrapper>
-          <WarningMessage>{errors?.pwd?.message}</WarningMessage>
+          <ValidationMessage text={errors?.pwd?.message} state={'fail'} />
         </MessageWrapper>
         <ActiveInput active={true}>
           <input
@@ -142,7 +143,7 @@ function Register1({ setUserInfo, setStep }) {
           <label htmlFor="password">비밀번호 확인</label>
         </ActiveInput>
         <MessageWrapper>
-          <WarningMessage>{errors?.passwordCheck?.message}</WarningMessage>
+          <ValidationMessage text={errors?.passwordCheck?.message} state={'fail'} />
         </MessageWrapper>
         <GradientButton text={'회원가입 계속하기'} type={'submit'} />
       </div>

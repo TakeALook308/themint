@@ -75,6 +75,10 @@ export const REGISTER_MESSAGE = {
   NAME_LENGTH: '이름은 2 ~ 10자 사이로 작성해주세요.',
   REQUIRED_EMAIL: '이메일 주소를 입력해주세요.',
   EMAIL_STANDARD: '올바른 이메일 주소(ex, themin@themint.com)를 입력해주세요.',
+  REGISTER_EMAIL: '회원가입에 사용한 이메일을 입력해주세요.',
+  REQUIRED_EMAIL_AUTH: '이메일 인증을 완료해주세요',
+  FAILED_EMAIL_AUTH: '인증번호가 일치하지 않습니다.',
+  VALIDATED_EMAIL_AUTH: '인증에 성공하였습니다.',
   DUPLICATED_EMAIL: '사용 중인 이메일 주소입니다.',
   VALIDATED_EMAIL: '사용 가능한 이메일입니다.',
   REQUIRED_PHONE: '전화번호를 입력해주세요.',
@@ -122,4 +126,5 @@ export const REGEX = {
 export const PAGES = {
   REGISTER: '회원가입',
   LOGIN: '로그인',
+  FIND_PASSWORD: ' 비밀번호 찾기',
 };
