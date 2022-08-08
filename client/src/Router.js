@@ -19,6 +19,7 @@ import FindPassword from './Routes/FindPassword';
 import { useRecoilValue } from 'recoil';
 import { loggedinState } from './atoms';
 import ProtectedRoute from './components/routes/ProtectedRoute';
+import NotFound from './Routes/NotFound';
 
 function Router() {
   const loggedin = useRecoilValue(loggedinState);
@@ -46,7 +47,7 @@ function Router() {
         </Route>
         <Route path="streamings/:roomNumber" element={<Streaming />} />
         <Route path="auctions/:auctionsId" element={<AuctionDetail />} />
-        <Route path="*" element={<p>There's nothing here: 404!</p>} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
     </BrowserRouter>
