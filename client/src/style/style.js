@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 export const ActiveInput = styled.div`
   position: relative;
+  width: 100%;
   & input {
     background-color: ${(props) => props.theme.colors.pointBlack};
     height: 40px;
@@ -10,6 +11,7 @@ export const ActiveInput = styled.div`
     padding: ${(props) => (props.active ? '15px 10px 10px' : '10px')};
     color: ${(props) => props.theme.colors.white};
     width: 100%;
+    outline: none;
 
     &:focus ~ label,
     &:not(:placeholder-shown) ~ label {

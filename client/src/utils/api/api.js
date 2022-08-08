@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { getCookie, setCookie } from '../functions/cookies';
 
-const getLocalAccessToken = () => {
-  const accessToken = window.localStorage.getItem('accessToken');
+const getAccessToken = () => {
+  const accessToken = getCookie('accessToken');
   return accessToken;
 };
 
@@ -27,7 +28,7 @@ export const instance = axios.create({
 
 instance.interceptors.request.use(
   (config) => {
-    const token = getLocalAccessToken();
+    const token = getAccessToken();
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }
@@ -51,7 +52,7 @@ instance.interceptors.response.use(
         try {
           const newAccessToken = await getNewAccessToken();
           const { accessToken } = newAccessToken.data;
-          window.localStorage.setItem('accessToken', accessToken);
+          setCookie('accessToken', accessToken);
           instance.defaults.headers.Authorization = `Bearer ${accessToken}`;
           return instance(originalConfig);
         } catch (_error) {
@@ -68,3 +69,6 @@ instance.interceptors.response.use(
     return Promise.reject(err);
   },
 );
+
+export const getData = async (url) => await instance.get(url);
+export const postData = async (url, body) => await instance.post(url, body);
