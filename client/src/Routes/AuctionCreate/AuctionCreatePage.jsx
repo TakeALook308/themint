@@ -1,10 +1,10 @@
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
-import { Container, Title } from '../style/style';
-import { categories } from '../utils/constants/constant';
-import ActiveInputBox from '../components/common/ActiveInputBox';
-import ProductTable from '../components/common/ProductTable';
-import Modal from '../components/common/Modal';
+import { Container, Title } from '../../style/style';
+import { categories } from '../../utils/constants/constant';
+import ActiveInputBox from '../../components/common/ActiveInputBox';
+import ProductTable from './ProductTable';
+import Modal from '../../components/common/Modal';
 import { useDropzone } from 'react-dropzone';
 
 function AuctionCreate(props) {

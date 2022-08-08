@@ -36,7 +36,7 @@ function NavigationBar({ url, search, categoryName }) {
             <Link to={`/categories/${categoryName}`}>
               <p>카테고리</p>
             </Link>
-            <Link to="/">
+            <Link to="/auctions/new">
               <p>경매생성</p>
             </Link>
           </NavItemText>

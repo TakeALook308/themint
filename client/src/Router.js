@@ -9,14 +9,14 @@ import AccountsEdit from './Routes/AccountsEdit';
 import AccountsPhoneNumber from './Routes/AccountsPhoneNumber';
 import AccountsPassword from './Routes/AccountsPassword';
 import AccountsWithdrawl from './Routes/AccountsWithdrawl';
-import Streaming from './Routes/Streaming';
+import Streaming from './Routes/Streaming/StreamingPage';
 import AuctionDetail from './Routes/AuctionDetail';
 import PurchaseHistoryDetail from './Routes/PurchaseHistoryDetail';
 import Talks from './Routes/Talks';
 import NavigationBar from './components/ui/common/NavigationBar';
 import Footer from './components/ui/common/Footer';
 import FindPassword from './Routes/FindPassword';
-import AuctionCreate from './Routes/AuctionCreate';
+import AuctionCreate from './Routes/AuctionCreate/AuctionCreatePage';
 import Standby from './Routes/Standby';
 
 function Router() {
