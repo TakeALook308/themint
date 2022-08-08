@@ -68,7 +68,6 @@ public class MemberServiceImpl implements MemberService {
         member.setAddress(memberUpdatePostReq.getAddress());
         member.setAddressDetail(memberUpdatePostReq.getAddressDetail());
         member.setPhone(memberUpdatePostReq.getPhone());
-        member.setProfileUrl(memberUpdatePostReq.getProfileUrl());
         member.setBankCode(memberUpdatePostReq.getBankCode());
         member.setAccountNo(memberUpdatePostReq.getAccountNo());
         member.setNoticeKakao(memberUpdatePostReq.getNoticeKakao());
