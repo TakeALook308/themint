@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.takealook.api.request.*;
 import com.takealook.api.response.*;
 import com.takealook.api.service.MemberService;
+import com.takealook.api.service.S3FileService;
 import com.takealook.api.service.SmsService;
 import com.takealook.common.auth.MemberDetails;
 import com.takealook.common.util.JwtTokenUtil;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.io.UnsupportedEncodingException;
@@ -42,6 +44,9 @@ public class MemberController {
 
     @Autowired
     SmsService smsService;
+
+    @Autowired
+    S3FileService s3FileService;
     // 회원 가입
     @PostMapping
     public ResponseEntity<?> registerMember(@RequestBody MemberRegisterPostReq memberRegisterPostReq) {
@@ -108,6 +113,18 @@ public class MemberController {
         if (member != null) {
             memberService.updateMember(memberSeq, memberUpdatePostReq);
             return ResponseEntity.status(200).body("success");
+        }
+        return ResponseEntity.status(409).body("fail");
+    }
+
+    // 프로필 사진 변경
+    @PatchMapping("img")
+    public ResponseEntity<?> updateProfileImage(MultipartFile multipartFile, @ApiIgnore Authentication authentication) throws Exception {
+        MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
+        Long memberSeq = memberDetails.getMemberSeq();
+        Member member = memberService.getMemberByMemberSeq(memberSeq);
+        if (member != null) {
+            return ResponseEntity.status(200).body(s3FileService.uploadProfileImage(multipartFile, memberSeq));
         }
         return ResponseEntity.status(409).body("fail");
     }

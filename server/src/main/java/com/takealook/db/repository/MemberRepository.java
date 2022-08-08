@@ -33,4 +33,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Modifying(clearAutomatically = true) // 영속성 컨텍스트 초기화
     @Query("UPDATE Member SET pwd = :pwd WHERE seq = :seq")
     int updateMemberPassword(Long seq, String pwd);
+
+    @Transactional // update, delete 필수
+    @Modifying(clearAutomatically = true) // 영속성 컨텍스트 초기화
+    @Query("UPDATE Member SET profileUrl = :profileUrl WHERE seq = :seq")
+    int updateMemberProfileImage(Long seq, String profileUrl);
+
 }
