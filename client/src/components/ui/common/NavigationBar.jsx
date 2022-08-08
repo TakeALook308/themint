@@ -23,6 +23,13 @@ function NavigationBar({ url, keyword, categoryName }) {
     navigate(`${url}&keyword=${keyword}`);
   };
 
+  if (
+    window.location.pathname.startsWith('/streamings') ||
+    window.location.pathname.startsWith('/register') ||
+    window.location.pathname.startsWith('/login')
+  )
+    return null;
+
   return (
     <Container>
       <Wrapper>
@@ -73,7 +80,7 @@ const Container = styled.header`
   margin: 0 auto;
   right: 0;
   left: 0;
-  z-index: 100;
+  z-index: 10;
 `;
 
 const Wrapper = styled.nav`

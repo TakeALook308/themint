@@ -6,6 +6,12 @@ import ChatIcon from '@mui/icons-material/Chat';
 import { Link } from 'react-router-dom';
 
 function Footer(props) {
+  if (
+    window.location.pathname.startsWith('/streamings') ||
+    window.location.pathname.startsWith('/register') ||
+    window.location.pathname.startsWith('/login')
+  )
+    return null;
   return (
     <Wrapper>
       <FooterHeader>더민트</FooterHeader>

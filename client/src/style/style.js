@@ -1,19 +1,30 @@
 import styled from 'styled-components';
 
+export const Container = styled.main`
+  padding-top: 80px;
+`;
+
+export const Title = styled.h3`
+  font-size: 30px;
+  font-weight: 700;
+`;
+
 export const ActiveInput = styled.div`
   position: relative;
+  width: 100%;
   & input {
     background-color: ${(props) => props.theme.colors.pointBlack};
     height: 40px;
     border: none;
     border-radius: 5px;
-    padding: ${(props) => (props.active ? '15px 10px 10px' : '10px')};
+    padding: ${(props) => (props.active ? '20px 10px 10px' : '10px')};
     color: ${(props) => props.theme.colors.white};
     width: 100%;
+    outline: none;
 
     &:focus ~ label,
     &:not(:placeholder-shown) ~ label {
-      transform: translateY(-9px);
+      transform: translateY(-6px);
       font-size: 10px;
     }
 
