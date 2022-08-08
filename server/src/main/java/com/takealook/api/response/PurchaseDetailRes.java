@@ -15,6 +15,7 @@ public class PurchaseDetailRes {
     // 계좌, 입금자명, 배송정보,
     Long historySeq;
     Long productSeq;
+    Long productDeliverySeq;
     int bankCode;
     String accountNo;
     int status;
@@ -29,6 +30,7 @@ public class PurchaseDetailRes {
         PurchaseDetailRes res = PurchaseDetailRes.builder()
                 .historySeq(history.getSeq())
                 .productSeq(history.getProductSeq())
+                .productDeliverySeq(productDelivery.getSeq())
                 .bankCode(member.getBankCode())
                 .accountNo(member.getAccountNo())
                 .status(product.getStatus())

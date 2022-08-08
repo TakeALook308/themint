@@ -9,7 +9,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@Builder
 public class PurchaseRegisterPostReq {
     Long memberSeq;
     Long productSeq;
