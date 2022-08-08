@@ -1,6 +1,5 @@
 package com.takealook.api.service;
 
-import com.takealook.db.entity.Auction;
 import com.takealook.db.entity.Product;
 import com.takealook.db.repository.AuctionRepository;
 import com.takealook.db.repository.ProductRepository;
@@ -22,6 +21,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     AuctionRepository auctionRepository;
+
+    @Override
+    public Product getProductBySeq(Long productSeq) {
+        Product product = productRepository.findBySeq(productSeq);
+        return product;
+    }
 
     @Override
     public List<Product> getProductList(String word, Pageable pageable, String sort) { // 최신등록순, 경매임박순, 인기순, 낮은가격순
@@ -71,6 +76,7 @@ public class ProductServiceImpl implements ProductService {
                         .auctionSeq(product.getAuctionSeq())
                         .productName(product.getProductName())
                         .startPrice(product.getStartPrice())
+                        .finalPrice(product.getFinalPrice())
                         .status(0)
                         .build();
                 productRepository.save(newProduct);

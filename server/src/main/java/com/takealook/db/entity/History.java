@@ -15,13 +15,11 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Product {
+public class History {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long seq;
-    Long auctionSeq;
-    String productName;
-    int startPrice;
-    int finalPrice;
-    int status;
+    Long memberSeq;
+    Long productSeq;
+    int salesPurchase;
 }

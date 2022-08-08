@@ -14,14 +14,14 @@ import lombok.Setter;
 @Builder
 @ApiModel("MemberListEntityResponse")
 public class MemberListEntityRes {
-    Long seq;
+    Long memberSeq;
     String nickname;
     String profileUrl;
     int score;
 
     public static MemberListEntityRes of(Member member) {
         MemberListEntityRes res = MemberListEntityRes.builder()
-                .seq(member.getSeq())
+                .memberSeq(member.getSeq())
                 .nickname(member.getNickname())
                 .profileUrl(member.getProfileUrl())
                 .score(member.getScore())

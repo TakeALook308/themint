@@ -13,6 +13,7 @@ import java.util.Optional;
 
 @Repository
 public interface ProductRepository  extends JpaRepository<Product, Long> {
+    Product findBySeq(Long productSeq);
     Optional<List<Product>> findByAuctionSeq(Long auctionSeq);
     @Query("SELECT p FROM Product p JOIN Auction a ON p.auctionSeq = a.seq WHERE p.productName LIKE CONCAT('%', :word, '%') AND a.startTime > :currentTime")
     List<Product> findAllByProductNameContainsAndStartTimeAfter(String word, String currentTime, Pageable pageable);
