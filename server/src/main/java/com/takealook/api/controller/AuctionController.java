@@ -74,8 +74,6 @@ public class AuctionController {
         productService.updateProductList(auctionUpdatePatchReq.getSeq(), auctionUpdatePatchReq.getProductList());
         auctionImageService.updateAuctionImageList(auctionUpdatePatchReq.getSeq(), auctionUpdatePatchReq.getAuctionImageList());
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
-
-        // 물품이나 사진이 삭제되는 경우도 고려
     }
 
     @DeleteMapping("/{auctionHash}")
