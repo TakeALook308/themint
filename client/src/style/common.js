@@ -6,7 +6,7 @@ export const Container = styled.main`
   margin-left: auto;
   margin-right: auto;
   position: relative;
-  padding-top: ${(props) => !props.nonMember && '70px'};
+  padding-top: ${(props) => !props.nonMember && '80px'};
 `;
 
 export const WarningMessage = styled.p`

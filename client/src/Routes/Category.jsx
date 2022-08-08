@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import CateCardList from '../components/ui/category/CateCardList';
 import CateList from '../components/ui/category/CateList';
 import Dropdown from '../components/ui/category/SelectBox';
+import { Container } from '../style/common';
 import { getAuctionList } from '../utils/api/getAuctionApi';
 
 function Category({ categoryName }) {
@@ -36,14 +37,6 @@ function Category({ categoryName }) {
   );
 }
 export default Category;
-
-const Container = styled.main`
-  max-width: 1024px;
-  margin-left: auto;
-  margin-right: auto;
-  position: relative;
-  padding-top: 80px;
-`;
 
 const CateListContainer = styled.header`
   margin-bottom: 1.25rem;
