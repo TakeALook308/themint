@@ -37,10 +37,21 @@ function AuctionCreate(props) {
   const [startPrice, setStartPrice] = useState('');
 
   const onChange = ({ target: { name, value } }) => {
-    setInputAuction({
-      ...inputAuction,
-      [name]: value,
-    });
+    if (name === 'startTime') {
+      // const time = value.substring(0, 10) + ' ' + value.substring(11) + ':00';
+      // const d = new Date(value);
+      // console.log(d.toISOString());
+      //
+      setInputAuction({
+        ...inputAuction,
+        [name]: value.toISOString(),
+      });
+    } else {
+      setInputAuction({
+        ...inputAuction,
+        [name]: value,
+      });
+    }
   };
 
   const isChecked = (checked) => {
@@ -79,12 +90,14 @@ function AuctionCreate(props) {
           e.preventDefault();
           postData(auctionApis.AUCTION_CREATE_API, inputAuction)
             .then(() => {
+              console.log(inputAuction);
               alert('성공');
-              navigate(`/main`);
+              // navigate(`/main`);
             })
             .catch(() => {
+              console.log(inputAuction);
               alert('실패');
-              navigate(`/main`);
+              // navigate(`/main`);
             });
         }}>
         <Div>
@@ -147,7 +160,7 @@ function AuctionCreate(props) {
           <label htmlFor="reservation"></label>
           <ActiveInputBox
             name="startTime"
-            type="datetime-local"
+            type="time"
             onChange={onChange}
             disabled={!reservation}
             value={startTime}

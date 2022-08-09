@@ -1,15 +1,15 @@
 import React, { useState, useSelector, useEffect } from 'react';
 import SockJS from 'sockjs-client';
-import Stomp from '@stomp/stompjs';
+// import Stomp from '@stomp/stompjs';
 import styled from 'styled-components';
 
 function StreamChat() {
   let sock = new SockJS('/ws-stomp');
-  let ws = Stomp.over(sock);
+  // let ws = Stomp.over(sock);
   let nickname = '민트';
   useEffect(() => {
     console.log('Connected : ' + nickname);
-    ws.send('/pub/chat/message', {}, JSON.stringify(nickname));
+    // ws.send('/pub/chat/message', {}, JSON.stringify(nickname));
   });
 
   // 방 제목 가져오기
