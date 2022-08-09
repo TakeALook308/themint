@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 public class ReviewServiceImpl implements ReviewService{
@@ -25,5 +26,11 @@ public class ReviewServiceImpl implements ReviewService{
                 .date(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .build());
         return 1;
+    }
+
+    @Override
+    public List<Review> getReviewList(Long memberSeq) {
+        List<Review> reviewList = reviewRepository.findAllByReceiverSeq(memberSeq);
+        return reviewList;
     }
 }
