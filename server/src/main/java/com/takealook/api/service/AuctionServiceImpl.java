@@ -91,8 +91,9 @@ public class AuctionServiceImpl implements AuctionService {
 
     // 실시간 경매 조회
     @Override
-    public List<Auction> getLiveAuctionList(Pageable pageable) {
-        List<Auction> auctionList = auctionRepository.findAllByStatus(1, pageable);
+    public List<Auction> getLiveAuctionList() {
+        String currentTime = LocalDateTime.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        List<Auction> auctionList = auctionRepository.findAllByStatusAndStartTimeBefore(1, currentTime);
         return auctionList;
     }
 
