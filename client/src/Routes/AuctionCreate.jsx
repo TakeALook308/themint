@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Container, Title } from '../style/style';
 import { categories } from '../utils/constants/constant';
@@ -12,25 +12,26 @@ import { useNavigate } from 'react-router-dom';
 
 function AuctionCreate(props) {
   const navigate = useNavigate();
-  const [im, setIm] = useState([]);
   const onDrop = (acceptedFiles) => {
-    let temp = [...im];
+    let temp = [...auctionImageList];
     acceptedFiles.map((item) => temp.push(item));
-    setIm(temp);
+    onChange({
+      target: { name: 'auctionImageList', value: temp },
+    });
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   const [inputAuction, setInputAuction] = useState({
     categorySeq: 1,
-    auctionImages: [],
+    auctionImageList: [],
     title: '',
     content: '',
     startTime: '',
-    products: [],
+    productList: [],
   });
 
-  const { categorySeq, auctionImages, title, content, products } = inputAuction;
+  const { categorySeq, auctionImageList, title, content, productList } = inputAuction;
   const startTime =
     inputAuction.startTime.substring(0, 10) + 'T' + inputAuction.startTime.substring(11, 16);
   const [reservation, setReservation] = useState(false);
@@ -62,7 +63,9 @@ function AuctionCreate(props) {
 
   const createProducts = (e) => {
     if (productName && startPrice) {
-      onChange({ target: { name: 'products', value: [...products, { productName, startPrice }] } });
+      onChange({
+        target: { name: 'productList', value: [...productList, { productName, startPrice }] },
+      });
       setProductName('');
       setStartPrice('');
     }
@@ -70,7 +73,7 @@ function AuctionCreate(props) {
 
   const deleteProducts = (index) => {
     onChange({
-      target: { name: 'products', value: products.filter((product, i) => index !== i) },
+      target: { name: 'productList', value: productList.filter((product, i) => index !== i) },
     });
   };
 
@@ -82,7 +85,6 @@ function AuctionCreate(props) {
   return (
     <Container>
       <Title>경매 생성</Title>
-      <p>{inputAuction.title}</p>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -110,15 +112,21 @@ function AuctionCreate(props) {
         </Div>
 
         <Div>
+          {console.log(auctionImageList)}
           <Label>사진 업로드</Label>
           <FileUpload>
             <div {...getRootProps()}>
-              {console.log(im)}
               <input {...getInputProps()} />
               {isDragActive ? (
                 <p>Drop the files here ...</p>
+              ) : auctionImageList.length === 0 ? (
+                <div>파일을 추가해주세요</div>
               ) : (
-                <p>Drag 'n' drop some files here, or click to select files</p>
+                <div>
+                  {auctionImageList.map((item, i) => (
+                    <p key={i}>{item.path}</p>
+                  ))}
+                </div>
               )}
             </div>
           </FileUpload>
@@ -167,13 +175,13 @@ function AuctionCreate(props) {
 
         <Div>
           <Label>
-            상품 ({products.length})
+            상품 ({productList.length})
             <Plus type="button" onClick={ModalHandler}>
               +
             </Plus>
           </Label>
 
-          <ProductTable products={products} />
+          <ProductTable productList={productList} />
         </Div>
         <SubmitBox>
           <button type="submit">생성</button>
@@ -181,8 +189,11 @@ function AuctionCreate(props) {
       </form>
 
       <Modal open={isModal} close={ModalHandler} title="상품 관리">
-        <Label>상품 ({products.length})</Label>
-        <ProductTable products={products} mng={true} deleteProducts={deleteProducts}></ProductTable>
+        <Label>상품 ({productList.length})</Label>
+        <ProductTable
+          productList={productList}
+          mng={true}
+          deleteProducts={deleteProducts}></ProductTable>
         <Label>이름</Label>
         <ActiveInputBox
           placeholder="이름 입력"
