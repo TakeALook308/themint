@@ -13,8 +13,8 @@ import { useNavigate } from 'react-router-dom';
 function AuctionCreate(props) {
   const navigate = useNavigate();
   const onDrop = (acceptedFiles) => {
-    let temp = [...auctionImageList];
-    acceptedFiles.map((item) => temp.push(item));
+    let temp = new FormData();
+    acceptedFiles.map((item) => temp.append('assents', item, item.name));
     onChange({
       target: { name: 'auctionImageList', value: temp },
     });
@@ -24,7 +24,7 @@ function AuctionCreate(props) {
 
   const [inputAuction, setInputAuction] = useState({
     categorySeq: 1,
-    auctionImageList: [],
+    auctionImageList: new FormData(),
     title: '',
     content: '',
     startTime: '',
@@ -81,10 +81,32 @@ function AuctionCreate(props) {
   const ModalHandler = () => {
     setIsModal((prev) => !prev);
   };
+  const [filett, setFilett] = useState('');
 
   return (
     <Container>
       <Title>경매 생성</Title>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          postData(auctionApis.AUCTION_CREATE_API, filett)
+            .then(() => {
+              console.log(inputAuction);
+              alert('성공');
+              // navigate(`/main`);
+            })
+            .catch(() => {
+              console.log(inputAuction);
+              alert('실패');
+              // navigate(`/main`);
+            });
+        }}>
+        <input type="file" multiple="true" onChange={(e) => setFilett(e.target.value)} />
+        <input
+          type="submit
+        "
+        />
+      </form>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -116,16 +138,16 @@ function AuctionCreate(props) {
           <Label>사진 업로드</Label>
           <FileUpload>
             <div {...getRootProps()}>
-              <input {...getInputProps()} />
+              <input {...getInputProps()} multiple="true" />
               {isDragActive ? (
                 <p>Drop the files here ...</p>
               ) : auctionImageList.length === 0 ? (
                 <div>파일을 추가해주세요</div>
               ) : (
                 <div>
-                  {auctionImageList.map((item, i) => (
+                  {/* {auctionImageList.map((item, i) => (
                     <p key={i}>{item.path}</p>
-                  ))}
+                  ))} */}
                 </div>
               )}
             </div>
