@@ -8,10 +8,11 @@ import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import SearchIcon from '@mui/icons-material/Search';
 import ChatIcon from '@mui/icons-material/Chat';
 import { useRecoilValue } from 'recoil';
-import { loggedinState } from '../../../atoms';
+import { loggedinState, myInformationState } from '../../../atoms';
 
 function NavigationBar({ url, keyword, categoryName }) {
   const loggedin = useRecoilValue(loggedinState);
+  const myInformation = useRecoilValue(myInformationState);
   const [search, setSearch] = useState('');
   const onChangeSearch = (e) => {
     e.preventDefault();
@@ -55,20 +56,35 @@ function NavigationBar({ url, keyword, categoryName }) {
             <Link to={`/categories/0`}>
               <p>카테고리</p>
             </Link>
-            <Link to="/">
+            <Link to="/auctions/new">
               <p>경매생성</p>
             </Link>
           </NavItemText>
           <NavItemIcon>
-            <Link to="/">
-              <ChatIcon />
-            </Link>
-            <Link to="/">
-              <NotificationsNoneIcon />
-            </Link>
-            <Link to="/profile/:userId">
-              <PersonOutlineIcon />
-            </Link>
+            {loggedin && (
+              <>
+                <Link to="/">
+                  <ChatIcon />
+                </Link>
+                <Link to="/">
+                  <NotificationsNoneIcon />
+                </Link>
+                <Link to={`profile/${myInformation.memberId}`}>
+                  <PersonOutlineIcon />
+                </Link>
+              </>
+            )}
+            {!loggedin && (
+              <>
+                <Link to="login">
+                  <p>로그인</p>
+                </Link>
+                |
+                <Link to="register">
+                  <p>회원가입</p>
+                </Link>
+              </>
+            )}
           </NavItemIcon>
         </NavList>
       </Wrapper>

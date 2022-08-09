@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import PurchaseHistoryDetail from './Routes/PurchaseHistoryDetail/PurchaseHistoryDetailPage';
 import NavigationBar from './components/ui/common/NavigationBar';
 import Footer from './components/ui/common/Footer';
 import ProtectedRoute from './components/Routes/ProtectedRoute';
@@ -15,6 +14,7 @@ import {
   Main,
   NotFound,
   PasswordReset,
+  PurchaseHistoryDetail,
   Profile,
   Register,
   StandBy,
@@ -26,7 +26,6 @@ import { loggedinState } from './atoms';
 
 function Router() {
   const loggedin = useRecoilValue(loggedinState);
-  console.log('loggedin', loggedin);
   return (
     <BrowserRouter>
       <NavigationBar />
