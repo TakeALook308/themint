@@ -2,54 +2,55 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-function StreamCard({ imageUrl2 }) {
-  const auctions = {
-    seq: 1,
-    memberSeq: 1,
-    title: '닌텐도 스위치 이것만 있으면 그냥 인생은 끝장난거 입니다.',
-    content:
-      '닌텐도 스위치 새로 나온 기종 지금 당장 구매하신다면 포켄몬 껴 드립니다.이게 글이 자꾸 늘어지다가 범위를 초과하면 알아서 없어져야 하는데과연 어디까지 글씨가 나오다가 사라질까요 알아맞춰 보세요 딩동댕동 삐뽀삐뽀삐!',
-    startTime: 'Thu Jul 28 2022 09:00:00 GMT+0900 ',
-    auctionImage: {
-      seq: 1,
-      imageUrl: 'https://images.gnwcdn.com/2022/articles/2022-07-01-15-35/hero_top_sp.jpg',
-    },
-  };
-  const profiles = {
-    nickName: '닉네임',
-    profileUrl:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiiGVRNg8egZNHf7d7-jeEA3JKgNTkStDZPQ&usqp=CAU',
-  };
+function StreamCard({
+  hash,
+  memberSeq,
+  title,
+  startTime,
+  content,
+  auctionImage,
+  profileUrl,
+  nickname,
+}) {
+  // const auctions = {
+  //   seq: 1,
+  //   memberSeq: 1,
+  //   title: '닌텐도 스위치 이것만 있으면 그냥 인생은 끝장난거 입니다.',
+  //   content:
+  //     '닌텐도 스위치 새로 나온 기종 지금 당장 구매하신다면 포켄몬 껴 드립니다.이게 글이 자꾸 늘어지다가 범위를 초과하면 알아서 없어져야 하는데과연 어디까지 글씨가 나오다가 사라질까요 알아맞춰 보세요 딩동댕동 삐뽀삐뽀삐!',
+  //   startTime: 'Thu Jul 28 2022 09:00:00 GMT+0900 ',
+  //   auctionImage: {
+  //     seq: 1,
+  //     imageUrl: 'https://images.gnwcdn.com/2022/articles/2022-07-01-15-35/hero_top_sp.jpg',
+  //   },
+  // };
+  // const profiles = {
+  //   nickName: '닉네임',
+  //   profileUrl:
+  //     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiiGVRNg8egZNHf7d7-jeEA3JKgNTkStDZPQ&usqp=CAU',
+  // };
 
   return (
     <Wrapper>
       <ImgContainer>
-        <StyledImg
-          src={
-            // auctions.auctionImage.imageUrl
-            imageUrl2
-          }
-          alt="닌텐도 스위치"
-          width="400"
-          height="300"
-        />
+        <StyledImg src={auctionImage?.imageUrl} alt={`${title} 썸네일`} width="400" height="300" />
       </ImgContainer>
       <AuctionInfoContainer>
         <AuctionText>
-          <h4>{auctions.title}</h4>
+          <h4>{title}</h4>
           <ProfileCard>
             <StreamProfile>
-              <Link to="/">
+              <Link to={`/profile/${memberSeq}`}>
                 <picture>
-                  <img src={profiles.profileUrl} alt="유저 프로필" width="50" height="50" />
+                  <img src={profileUrl} alt={`${nickname} 프로필 이미지`} width="50" height="50" />
                 </picture>
               </Link>
             </StreamProfile>
-            <p>{profiles.nickName}</p>
+            <p>{nickname}</p>
           </ProfileCard>
-          <p>{auctions.content}</p>
+          <p>{content}</p>
         </AuctionText>
-        <Link to="/categories/:categoryName">
+        <Link to={`/streamings/${hash}`}>
           <StreamGo>
             <p>경매참여</p>
           </StreamGo>

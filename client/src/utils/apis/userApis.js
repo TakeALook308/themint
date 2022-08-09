@@ -8,4 +8,13 @@ export const userApis = {
   LOGIN: '/api/member/login',
   AUTH_EMAIL: '/api/member/password/check',
   PASSWORD_CHANGE: '/api/member/password/change',
+  FIND_ID: '/api/member/id',
+  SCORE_CHANGE: '/api/member/score',
+  DELETE_USER: '/api/member',
+  MY_INFORMATION: '/api/member/myinfo',
+  USER_INFORMATION: (memberSeq) => `/api/member/${memberSeq}`,
+  MY_BASIC_INFORMATION: '/api/member/info',
+  USER_LIST: (word, size) => {
+    return (page) => `/api/member?word=${word}&page=${page}&size=${size}`;
+  },
 };

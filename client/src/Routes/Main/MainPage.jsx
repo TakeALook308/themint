@@ -4,27 +4,30 @@ import StreamList from './StreamListSwipe';
 import PostList from './PostList';
 import InterestingAuctionList from '../../components/InterestingAuctionList';
 import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
-import { auctionListApis } from '../../utils/api/getAuctionApi';
+import { auctionListApis } from '../../utils/apis/auctionApis';
 import AuctionCard from '../../components/CardList/AuctionCard';
 import SkeletonAuctionCard from '../../components/CardList/SkeletonAuctionCard';
 import { Container } from '../../style/common';
 import useLogout from '../../utils/hooks/useLogout';
+import { Helmet } from 'react-helmet';
+import { useQuery } from 'react-query';
+import InterestingList from './InterestingList';
 
 function MainPage(props) {
   const logout = useLogout();
   return (
-    <Container>
-      <button onClick={logout}>로그아웃</button>
-      <Banner />
-      <StreamList />
-      <PostList />
-      {/* <InfiniteAuctionList
-        url={auctionListApis.SEARCH_AUCTION_LIST_API()}
-        queryKey={'interestingAuctionList'}
-        CardComponent={AuctionCard}
-        SkeltonCardComponent={SkeletonAuctionCard}
-      /> */}
-    </Container>
+    <>
+      <Helmet>
+        <title>더민트</title>
+      </Helmet>
+      <Container>
+        <button onClick={logout}>로그아웃</button>
+        <Banner />
+        <StreamList />
+        <PostList />
+        <InterestingList />
+      </Container>
+    </>
   );
 }
 

@@ -1,26 +1,28 @@
 import React, { useRef, useState } from 'react';
 import { useInfiniteQuery } from 'react-query';
 import styled from 'styled-components';
-import { getAuctionList } from '../../utils/api/getAuctionApi';
+import { getAuctionList } from '../../utils/apis/auctionApis';
 import useObserver from '../../utils/hooks/useObserver';
 
-function InfiniteAuctionList({ url, queryKey, CardComponent, SkeltonCardComponent }) {
-  const [isError, setIsError] = useState(false);
+function InfiniteAuctionList({ getUrl, queryKey, CardComponent, SkeltonCardComponent, text }) {
+  const [hasError, setHasError] = useState(false);
   const bottom = useRef(null);
   let pageNo = 1;
   const getTargetAuctionList = async ({ pageNo = 1 }) => {
     try {
-      const res = await getAuctionList(`${url}&pageno=${pageNo}`);
+      const res = await getAuctionList(getUrl(pageNo));
+      if (data.length < 1) {
+        setHasError(true);
+        return;
+      }
       return res?.data;
     } catch (_) {
-      setIsError(true);
+      setHasError(true);
     }
   };
 
-  const { data, error, fetchNextPage, isFetchingNextPage, status } = useInfiniteQuery(
-    queryKey,
-    getTargetAuctionList,
-    {
+  const { isLoading, data, isError, error, fetchNextPage, isFetchingNextPage, status } =
+    useInfiniteQuery(queryKey, getTargetAuctionList, {
       getNextPageParam: (lastPage) => {
         if (lastPage?.hasOwnProperty('hasMore')) {
           const { hasMore } = lastPage;
@@ -29,8 +31,7 @@ function InfiniteAuctionList({ url, queryKey, CardComponent, SkeltonCardComponen
         }
         return false;
       },
-    },
-  );
+    });
 
   const onIntersect = ([entry]) => entry.isIntersecting && fetchNextPage();
 
@@ -39,11 +40,13 @@ function InfiniteAuctionList({ url, queryKey, CardComponent, SkeltonCardComponen
     onIntersect,
     hasMore:
       data?.pageParams?.length > 1 ? Boolean(data?.pageParams[data?.pageParams?.length - 1]) : true,
-    isError,
+    hasError,
   });
+
   return (
     <div>
-      {status === 'loading' && (
+      {hasError && <p>{text}</p>}
+      {isLoading && (
         <GridContainer>
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <SkeltonCardComponent key={i} />
@@ -52,10 +55,11 @@ function InfiniteAuctionList({ url, queryKey, CardComponent, SkeltonCardComponen
       )}
       {status === 'error' && <p>{error.message}</p>}
       {status === 'success' &&
+        data.length > 0 &&
         data.pages.map((group, index) => (
           <GridContainer key={index}>
-            {group?.results.map((_) => (
-              <CardComponent />
+            {group?.resultList?.map((auction) => (
+              <CardComponent auction={auction} />
             ))}
           </GridContainer>
         ))}

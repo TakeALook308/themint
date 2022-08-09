@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import banner1 from '../../assets/images/banner1.png';
+import banner2 from '../../assets/images/banner2.png';
+import banner3 from '../../assets/images/banner3.png';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay, Navigation } from 'swiper';
 import 'swiper/css';
@@ -22,10 +24,10 @@ function Banner() {
           }}
           className="mySwiper">
           <SwiperSlide>
-            <ImgContainer src={banner1} alt="이벤트 배너" />
+            <ImgContainer src={banner3} alt="이벤트 배너" />
           </SwiperSlide>
           <SwiperSlide>
-            <ImgContainer src={banner1} alt="이벤트 배너" />
+            <ImgContainer src={banner2} alt="이벤트 배너" />
           </SwiperSlide>
           <SwiperSlide>
             <ImgContainer src={banner1} alt="이벤트 배너" />
