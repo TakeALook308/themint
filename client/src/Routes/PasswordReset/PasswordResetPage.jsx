@@ -7,7 +7,7 @@ import { PAGES } from '../../utils/constants/constant';
 
 function PasswordResetPage(props) {
   const [isPassed, setIsPassed] = useState(false);
-  const [email, setEmail] = useState('');
+  const [memberId, setMemberId] = useState('');
   return (
     <>
       <Helmet>
@@ -15,9 +15,9 @@ function PasswordResetPage(props) {
       </Helmet>
       <SignContainer pageName={PAGES.FIND_PASSWORD}>
         {!isPassed ? (
-          <EmailCheck setIsPassed={setIsPassed} email={email} setEmail={setEmail} />
+          <EmailCheck setIsPassed={setIsPassed} memberId={memberId} setMemberId={setMemberId} />
         ) : (
-          <NewPassword email={email} />
+          <NewPassword memberId={memberId} />
         )}
       </SignContainer>
     </>

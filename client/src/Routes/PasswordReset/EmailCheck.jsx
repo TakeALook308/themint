@@ -12,7 +12,8 @@ import MintButton from '../../components/ButtonList/MintButton';
 import ValidationMessage from '../../components/common/ValidationMessage';
 import { errorToast, successToast } from '../../lib/toast';
 
-function EmailCheck({ email, setEmail, setIsPassed }) {
+function EmailCheck({ memberId, setMemberId, setIsPassed }) {
+  const [email, setEmail] = useState('');
   const [isEmailed, setIsEmailed] = useState(false);
   const [authNum, setAuthNum] = useState();
   const {
@@ -29,10 +30,10 @@ function EmailCheck({ email, setEmail, setIsPassed }) {
   auth.current = watch('email', '');
 
   useEffect(() => {
-    if (!email || !id) return;
+    if (!memberId || !auth) return;
     (async () => {
       try {
-        const response = await postData(userApis.AUTH_EMAIL, { memberId: id.current, email });
+        const response = await postData(userApis.AUTH_EMAIL, { memberId, email: auth.current });
         if (response.status === 200) {
           setIsEmailed(true);
           setAuthNum(String(response.data?.randNum));
@@ -41,9 +42,9 @@ function EmailCheck({ email, setEmail, setIsPassed }) {
         errorToast('아이디 또는 이메일을 확인해주세요.');
       }
     })();
-  }, [email]);
+  }, [memberId]);
 
-  const onValid = (data) => {
+  const onValid = () => {
     trigger('authNumber');
     if (errors?.authNumber) return;
     setIsPassed(true);
@@ -57,6 +58,7 @@ function EmailCheck({ email, setEmail, setIsPassed }) {
     if (errors?.email) return;
     if (auth.current === email) return;
     setEmail(auth.current);
+    setMemberId(id.current);
   };
 
   return (

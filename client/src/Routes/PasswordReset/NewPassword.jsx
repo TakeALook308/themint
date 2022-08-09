@@ -3,14 +3,14 @@ import { useForm } from 'react-hook-form';
 import { errorToast, successToast } from '../../lib/toast';
 import { MessageWrapper } from '../../style/common';
 import { ActiveInput } from '../../style/style';
-import { postData } from '../../utils/api/api';
+import { patchData } from '../../utils/api/api';
 import { userApis } from '../../utils/api/userApi';
 import { REGEX, REGISTER_MESSAGE, STANDARD } from '../../utils/constants/constant';
 import GradientButton from '../../components/ButtonList/GradientButton';
 import ValidationMessage from '../../components/common/ValidationMessage';
 import { useNavigate } from 'react-router-dom';
 
-function NewPassword({ email }) {
+function NewPassword({ memberId }) {
   const {
     handleSubmit,
     register,
@@ -23,9 +23,9 @@ function NewPassword({ email }) {
   password.current = watch('pwd', '');
 
   const onValid = async () => {
-    const body = { email, pwd: password.current };
+    const body = { memberId, pwd: password.current };
     try {
-      const response = await postData(userApis.PASSWORD_CHANGE, body);
+      const response = await patchData(userApis.PASSWORD_CHANGE, body);
       if (response.status === 200) {
         successToast('비밀번호 재설정 성공');
         navigate('/login');

@@ -1,26 +1,25 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import React from 'react';
-import Main from './Routes/Main';
-import Category from './Routes/Category';
-import Profile from './Routes/Profile';
-import AccountsEdit from './Routes/AccountsEdit';
-import AccountsPhoneNumber from './Routes/AccountsPhoneNumber';
-import AccountsPassword from './Routes/AccountsPassword';
-import AccountsWithdrawl from './Routes/AccountsWithdrawl';
-import Streaming from './Routes/Streaming';
-import AuctionDetail from './Routes/AuctionDetail';
-import PurchaseHistoryDetail from './Routes/PurchaseHistoryDetail';
-import Talks from './Routes/Talks';
+import PurchaseHistoryDetail from './Routes/PurchaseHistoryDetail/PurchaseHistoryDetailPage';
 import NavigationBar from './components/ui/common/NavigationBar';
 import Footer from './components/ui/common/Footer';
 import ProtectedRoute from './components/Routes/ProtectedRoute';
-import AuctionCreate from './Routes/AuctionCreate';
 import {
-  NotFoundPage,
-  PasswordResetPage,
-  LoginPage,
-  RegisterPage,
-  StandByPage,
+  AccountsEdit,
+  AccountsPassword,
+  AccountsPhoneNumber,
+  AccountsWithdrawl,
+  AuctionCreate,
+  AuctionDetail,
+  Category,
+  Login,
+  Main,
+  NotFound,
+  PasswordReset,
+  Profile,
+  Register,
+  StandBy,
+  Streaming,
+  Talks,
 } from './Routes/index';
 import { useRecoilValue } from 'recoil';
 import { loggedinState } from './atoms';
@@ -32,11 +31,11 @@ function Router() {
     <BrowserRouter>
       <NavigationBar />
       <Routes>
-        {/* <Route path="" element={<Main />} /> */}
+        <Route path="" element={<Main />} />
         <Route element={<ProtectedRoute loggedin={!loggedin} />}>
-          <Route path="login" element={<LoginPage />} />
-          <Route path="register" element={<RegisterPage />} />
-          <Route path="help/password" element={<PasswordResetPage />} />
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
+          <Route path="help/password" element={<PasswordReset />} />
         </Route>
         <Route element={<ProtectedRoute loggedin={loggedin} />}>
           <Route path="profile/:userId" element={<Profile />} />
@@ -46,14 +45,14 @@ function Router() {
           <Route path="accounts/withdrawl" element={<AccountsWithdrawl />} />
           <Route path="talks" element={<Talks />} />
           <Route path="puchase-history/:purchaseId" element={<PurchaseHistoryDetail />} />
-          <Route path="standby/:roomNumber" element={<StandByPage />} />
+          <Route path="standby/:roomNumber" element={<StandBy />} />
           <Route path="/auctions/new" element={<AuctionCreate />} />
           <Route path="streamings/:roomNumber" element={<Streaming />} />
         </Route>
         <Route path="main" element={<Main />} />
         <Route path="categories/:categoryName" element={<Category />} />
         <Route path="auctions/:auctionsId" element={<AuctionDetail />} />
-        <Route path="*" element={<NotFoundPage />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
     </BrowserRouter>

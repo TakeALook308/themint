@@ -2,7 +2,7 @@ import React from 'react';
 import { useSetRecoilState } from 'recoil';
 import { loggedinState, myInformationState } from '../../atoms';
 import SignContainer from '../../components/common/SignContainer';
-import SocialLogginButton from '../../components/common/SocialLogginButton';
+import SocialLogginButton from '../../components/ButtonList/SocialLogginButton';
 import Links from './Links';
 import ThemintLogin from './ThemintLogin';
 import { LOGIN_MESSAGE, PAGES } from '../../utils/constants/constant';

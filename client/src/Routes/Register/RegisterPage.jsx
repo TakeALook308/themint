@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Register1, Register2, Register3 } from '.';
 import { userApis } from '../../utils/api/userApi';
 import { postData } from '../../utils/api/api';
-import SocialLogginButton from '../../components/common/SocialLogginButton';
+import SocialLogginButton from '../../components/ButtonList/SocialLogginButton';
 import SignContainer from '../../components/common/SignContainer';
 import { LOGIN_MESSAGE, PAGES } from '../../utils/constants/constant';
 import { setCookie } from '../../utils/functions/cookies';

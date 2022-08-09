@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import StreamingComponent from '../components/webRTC/StreamingComponent';
-import StreamingHeader from '../components/Streaming/StreamingHeader';
-import StreamChat from '../components/Streaming/StreamChat';
-import AuctionBidding from '../components/Streaming/AuctionBidding';
-import AuctionList from '../components/Streaming/AuctionList';
+import StreamingComponent from '../../components/webRTC/StreamingComponent';
+import StreamingHeader from '../../components/Streaming/StreamingHeader';
+import StreamChat from '../../components/Streaming/StreamChat';
+import AuctionBidding from '../../components/Streaming/AuctionBidding';
+import AuctionList from '../../components/Streaming/AuctionList';
 import { useRecoilValue } from 'recoil';
-import { myInformationState } from '../atoms';
-function Streaming(props) {
+import { myInformationState } from '../../atoms';
+function StreamingPage(props) {
   const [nowProduct, setNowProduct] = useState(0);
   const [products, setProducts] = useState([
     {
@@ -90,4 +90,4 @@ const Aside = styled.aside`
   gap: 10px;
 `;
 
-export default Streaming;
+export default StreamingPage;
