@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import NavigationBar from './components/ui/common/NavigationBar';
 import Footer from './components/ui/common/Footer';
-import ProtectedRoute from './components/Routes/ProtectedRoute';
+import ProtectedRoute from './components/routes/ProtectedRoute';
 import {
   AccountsEdit,
   AccountsPassword,
