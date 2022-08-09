@@ -86,22 +86,22 @@ public class MemberController {
     }
 
     // 내 정보 조회
-    @GetMapping("/my")
-    public ResponseEntity<?> getMyInfo(@ApiIgnore Authentication authentication) {
-        MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
-        Long memberSeq = memberDetails.getMemberSeq();
-        Member member = memberService.getMemberByMemberSeq(memberSeq);
-        if (member != null) {
-            return ResponseEntity.status(200).body(MemberInfoRes.of(member));
-        }
-        return ResponseEntity.status(409).body("fail");
-    }
+//    @GetMapping("/my")
+//    public ResponseEntity<?> getMyInfo(@ApiIgnore Authentication authentication) {
+//        MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
+//        Long memberSeq = memberDetails.getMemberSeq();
+//        Member member = memberService.getMemberByMemberSeq(memberSeq);
+//        if (member != null) {
+//            return ResponseEntity.status(200).body(MemberInfoRes.of(member));
+//        }
+//        return ResponseEntity.status(409).body("fail");
+//    }
 
     // 회원 정보 조회
     @GetMapping("/{seq}")
-    public ResponseEntity<MemberViewRes> getMemberInfo(@PathVariable("seq") Long seq) {
+    public ResponseEntity<MemberInfoRes> getMemberInfo(@PathVariable("seq") Long seq) {
         Member member = memberService.getMemberByMemberSeq(seq);
-        return ResponseEntity.status(200).body(MemberViewRes.of(member));
+        return ResponseEntity.status(200).body(MemberInfoRes.of(member));
     }
 
     // 회원 정보 수정
