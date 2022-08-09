@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { instance } from '../../../utils/api/api';
 import styled from 'styled-components';
-import IsSellingCard from './IsSellingCard';
 import Modal from '../../common/Modal';
-import { getAuctionList } from '../../../utils/api/getAuctionApi';
+import IsPurchasingCard from './IsPurchasingCard';
 
-function IsSellingCardList() {
+function IsPurchasingCardList() {
   const [historySales, setHistorySales] = useState(null);
   const [historySeq, setHistorySeq] = useState(0);
   const [historyDetail, setHistoryDetail] = useState(null);
@@ -42,6 +41,7 @@ function IsSellingCardList() {
       console.log(auctionDetail.data);
     });
   };
+
   // API 확인후 삭제
   const auctionitem = {
     historyseq: 1,
@@ -50,7 +50,7 @@ function IsSellingCardList() {
     startTime: 'Thu Jul 28 2022',
     startPrice: 1000,
     finalPrice: 2000,
-    status: 5, // 0: 판매중, 1:입금대기, 2:입금완료, 3: 판매완료, 4: 유찰, 5: 거래취소
+    status: 1, // 0: 판매중, 1:입금대기, 2:입금완료, 3: 판매완료, 4: 유찰, 5: 거래취소
     auctionImage: {
       seq: 1,
       imageUrl: 'https://images.gnwcdn.com/2022/articles/2022-07-01-15-35/hero_top_sp.jpg',
@@ -74,32 +74,38 @@ function IsSellingCardList() {
   return (
     <Container>
       <div>
-        <IsSellingCard
+        <IsPurchasingCard
           historySales={historySales}
           auctionitem={auctionitem}
           ModalHandler={ModalHandler}
-          key={historySeq}></IsSellingCard>
+          key={historySeq}
+        />
       </div>
       <Modal open={isModal} close={ModalHandler} title="상품 관리">
         <ModalProfile>
           <img src={auctionDetail.profileUrl} alt="프로필이미지" />
           <p>{auctionDetail.nickname}</p>
         </ModalProfile>
+        {auctionitem.status > 4 && (
+          <ModalMain>
+            <p>입금 완료 후, 배송지를 입력해주세요!!!</p>
+            <p>판매자 계좌: </p>
+            <p>입금자명:</p>
+            <p>배송정보 입력: </p>
+            <p>내 정보 불러오기</p>
+          </ModalMain>
+        )}
         <ModalMain>
-          <p>입금자명 : {auctionDetail.remitName}</p>
-          <p>입금자 전화번호: {auctionDetail.phone}</p>
-          <p>
-            구매자 배송지: {auctionDetail.address}
-            <span>{auctionDetail.addressDetail}</span>
-          </p>
-          <input placeholder="송장번호 입력"></input>
+          <p>배송정보</p>
+          <p>배송조회</p>
+          <p>리뷰작성</p>
         </ModalMain>
       </Modal>
     </Container>
   );
 }
 
-export default IsSellingCardList;
+export default IsPurchasingCardList;
 
 const Container = styled.div`
   display: grid;

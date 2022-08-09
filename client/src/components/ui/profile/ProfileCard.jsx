@@ -1,15 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { instance } from '../../../utils/api/api';
 
 function ProfileCard() {
-  const member = {
-    seq: 1,
-    nickname: '미노',
-    profileUrl:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiiGVRNg8egZNHf7d7-jeEA3JKgNTkStDZPQ&usqp=CAU',
-    score: 100,
-  };
+  const [member, setMember] = useState(null);
+  useEffect(() => {
+    const getProfile = async (url) => {
+      const response = await instance.get(url);
+      return response;
+    };
+    const res = getProfile(`/api/member/${1}`);
+    res.then((member) => {
+      setMember(member.data);
+      console.log(member.data);
+    });
+  });
+  // const member = {
+  //   seq: 1,
+  //   nickname: '미노',
+  //   profileUrl:
+  //     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiiGVRNg8egZNHf7d7-jeEA3JKgNTkStDZPQ&usqp=CAU',
+  //   score: 100,
+  // };
   return (
     <Wrapper>
       <ProfileImgContainer>
