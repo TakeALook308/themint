@@ -69,7 +69,7 @@ function NavigationBar({ url, keyword, categoryName }) {
                 <Link to="/">
                   <NotificationsNoneIcon />
                 </Link>
-                <Link to={`profile/${myInformation.memberId}`}>
+                <Link to={`profile/${myInformation.memberSeq}`}>
                   <PersonOutlineIcon />
                 </Link>
               </>

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import IsPurchasingCardList from '../../components/ui/profile/IsPurchaingCardList';
-import IsPurchasingButton from '../../components/ui/profile/IsPurchasingButton';
+import IsPurchasingButton from '../../components/ui/profile/Purchase/IsPurchasingButton';
+import IsPurchasingCardList from '../../components/ui/profile/Purchase/IsPurchaingCardList';
 
 function ProfilePurchaseHistoryPage(props) {
   return (

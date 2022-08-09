@@ -1,15 +1,36 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Route, Routes, useParams } from 'react-router-dom';
 import ProfileCard from '../../components/ui/profile/ProfileCard';
+import { instance } from '../../utils/api/api';
+import ProfileReviewsPage from '../ProfileReviews/ProfileReviewsPage';
+import ProfileSalesHistoryPage from '../ProfileSalesHistory/ProfileSalesHistoryPage';
+import ProfilePurchaseHistoryPage from '../ProfilePurchaseHistory/ProfilePurchaseHistoryPage';
+import ProfileInterestsPage from '../ProfileInterests/ProfileInterestsPage';
 
 function ProfilePage(props) {
+  const params = useParams();
+  console.log(params.userId);
+
+  useEffect(() => {
+    const getProfile = async (url) => {
+      const response = await instance.get(url);
+      return response;
+    };
+
+    const res = getProfile(`/api/member/${params.userId}`);
+    res.then((member) => {
+      setMember(member.data);
+      console.log(member.data);
+    });
+  }, []);
+  const [member, setMember] = useState([]);
   return (
     <Container>
       <Header>
         <h2>프로필</h2>
         <ProfileCardContainer>
-          <ProfileCard />
+          <ProfileCard member={member} />
         </ProfileCardContainer>
         <HeaderContainer>
           <NavStyle
@@ -26,7 +47,15 @@ function ProfilePage(props) {
         </HeaderContainer>
       </Header>
       <StyledMain>
-        <Outlet />
+        <Routes>
+          <Route path="" element={<ProfileReviewsPage params={params.userId} />} />
+          <Route path="saleshistory" element={<ProfileSalesHistoryPage params={params.userId} />} />
+          <Route
+            path="purchasehistory"
+            element={<ProfilePurchaseHistoryPage params={params.userId} />}
+          />
+          <Route path="interest" element={<ProfileInterestsPage params={params.userId} />} />
+        </Routes>
       </StyledMain>
     </Container>
   );

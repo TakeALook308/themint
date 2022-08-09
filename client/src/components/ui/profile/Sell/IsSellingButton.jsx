@@ -3,24 +3,17 @@ import styled from 'styled-components';
 import { useState } from 'react';
 import axios from 'axios';
 
-function IsellingButton(props) {
+function IsellingButton({ getActive }) {
   const [active, setActive] = useState('1');
 
-  const onSelling = async () => {
+  const onSelling = () => {
     setActive('1');
-    console.log(active);
-
-    // API 작성후 주소 수정
-    const res = await axios.get(`/selling`);
-
-    return res?.data;
+    getActive('1');
   };
+
   const onSold = async () => {
     setActive('2');
-
-    // API 작성후 주소 수정
-    const res = await axios.get(`/sold`);
-    return res?.data;
+    getActive('2');
   };
   return (
     <ButtonNav>

@@ -1,47 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { instance } from '../../../utils/api/api';
+import { instance } from '../../../../utils/api/api';
 import styled from 'styled-components';
 import IsSellingCard from './IsSellingCard';
-import Modal from '../../common/Modal';
-import { getAuctionList } from '../../../utils/api/getAuctionApi';
+import Modal from '../../../common/Modal';
 
-function IsSellingCardList() {
-  const [historySales, setHistorySales] = useState(null);
+function IsSellingCardList({ sellingItem }) {
+  // Modal 연결
   const [historySeq, setHistorySeq] = useState(0);
-  const [historyDetail, setHistoryDetail] = useState(null);
   const [isModal, setIsModal] = useState(false);
-  const [memberSeq, setMemberSeq] = useState(1);
-
-  // memberSeq를 어디서 가져와야 하지?
-  const getMemberSeq = (value) => {
-    setMemberSeq(value);
-  };
-
-  useEffect(() => {
-    const getSalesAuction = async (url) => {
-      const response = await instance.get(url);
-      return response;
-    };
-    const res = getSalesAuction(`/api/history/sales/${memberSeq}?page${1}=&size=${9}`);
-    res.then((auctionitem) => {
-      setHistorySales(auctionitem.data);
-      console.log(auctionitem.data);
-    });
-  }, [memberSeq]);
-
   const ModalHandler = () => {
     setIsModal((prev) => !prev);
-    setHistorySeq(auctionitem.data.historyseq);
+    console.log(sellingItem);
+    setHistorySeq(sellingItem.data.historyseq);
     const getSalesDetail = async (url) => {
       const response = await instance.get(url);
       return response;
     };
     const res = getSalesDetail(`/api/history/sales/${historySeq}`);
-    res.then((auctionDetail) => {
-      setHistoryDetail(auctionDetail.data);
-      console.log(auctionDetail.data);
+    res.then((itemDetail) => {
+      console.log(itemDetail.data);
     });
   };
+
   // API 확인후 삭제
   const auctionitem = {
     historyseq: 1,
@@ -74,11 +54,7 @@ function IsSellingCardList() {
   return (
     <Container>
       <div>
-        <IsSellingCard
-          historySales={historySales}
-          auctionitem={auctionitem}
-          ModalHandler={ModalHandler}
-          key={historySeq}></IsSellingCard>
+        <IsSellingCard sellingItem={sellingItem} ModalHandler={ModalHandler}></IsSellingCard>
       </div>
       <Modal open={isModal} close={ModalHandler} title="상품 관리">
         <ModalProfile>

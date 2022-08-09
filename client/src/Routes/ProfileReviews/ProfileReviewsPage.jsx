@@ -1,27 +1,28 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import { instance } from '../../utils/api/api';
+import React, { useEffect, useState, useParams } from 'react';
 import styled from 'styled-components';
-import ReviewCard from '../../components/ui/profile/ReviewCard';
+import ReviewCard from '../../components/ui/profile/Review/ReviewCard';
 
-function ProfileReviewsPage(props) {
-  // 중첩 라우팅에서 memberSeq를 어떻게 전달할 것인가?
-  // 현재 Profile 페이지에서 가지고 있는 memberSeq를 받아서 api 요청을 해야한다.
-  // const [memberSeq, setMemberSeq] = useState(0);
-  // const [reviews, setReviews] = useState(null);
-  // const getReviews = async () => {
-  //   const reviews = await axios.get(`/api/review/${memberSeq}`);
-  //   setReviews(reviews.data);
-  // };
-  // useEffect(() => {
-  //   getReviews();
-  // }, []);
+function ProfileReviewsPage({ params }) {
+  console.log(params);
+  const [reviews, setReviews] = useState([]);
+  useEffect(() => {
+    const getReview = async (url) => {
+      const response = await instance.get(url);
+      return response;
+    };
+    const res = getReview(`/api/review/${params}`);
+    res.then((reviews) => {
+      setReviews(reviews.data);
+      console.log(reviews.data);
+    });
+  }, []);
 
   return (
     <Container>
-      {/* {reviews.map((data, index) => (
+      {reviews.map((data, index) => (
         <ReviewCard review={data} key={index} />
-      ))} */}
-      <ReviewCard />
+      ))}
     </Container>
   );
 }

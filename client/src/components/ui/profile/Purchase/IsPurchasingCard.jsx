@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import Modal from '../../common/Modal';
 
-function IsSellingCard({ ModalHandler, auctionitem, historySales }) {
+function IsPurchasingCard({ ModalHandler, auctionitem }) {
   // TODO: 데이터 교체하기
 
   const [statusName, setStatusName] = useState(0);
@@ -12,7 +11,7 @@ function IsSellingCard({ ModalHandler, auctionitem, historySales }) {
     setStatusName(auctionitem.status);
   });
 
-  const auctionstr = ['판매중', '입금대기', '입금완료', '판매완료', '유찰', '거래취소'];
+  const auctionstr = ['판매중', '입금대기', '발송대기', '구매완료', '', '거래취소'];
 
   return (
     <CardContainer>
@@ -30,9 +29,7 @@ function IsSellingCard({ ModalHandler, auctionitem, historySales }) {
             <AuctionInfoContainer>
               <div>
                 <h4>{auctionitem.productName}</h4>
-                {4 > statusName > 0 && <p>{auctionitem.finalPrice}</p>}
-                {statusName >= 4 && <p>{auctionitem.startPrice}</p>}
-                {statusName === 0 && <p>{auctionitem.startPrice}</p>}
+                <p>{auctionitem.finalPrice}</p>
                 <AcutionTime>{auctionitem.startTime}</AcutionTime>
                 <AuctionStatus auctionstrkey={auctionitem.status}>
                   {auctionstr[auctionitem.status]}
@@ -49,14 +46,21 @@ function IsSellingCard({ ModalHandler, auctionitem, historySales }) {
           </div>
         </Link>
       </div>
-      <Plus type="button" onClick={ModalHandler}>
-        판매 상세
-      </Plus>
+      {statusName > 3 && (
+        <Plus type="button" onClick={ModalHandler}>
+          구매 정보 입력
+        </Plus>
+      )}
+      {4 > statusName && (
+        <Plus type="button" onClick={ModalHandler}>
+          배송 확인 리뷰
+        </Plus>
+      )}
     </CardContainer>
   );
 }
 
-export default IsSellingCard;
+export default IsPurchasingCard;
 
 const CardContainer = styled.article`
   position: relative;
@@ -190,7 +194,7 @@ const Plus = styled.span`
   border-radius: 5px;
   padding: 5px;
   bottom: 5%;
-  right: 35%;
+  right: 30%;
   background-color: ${(props) => props.theme.colors.mainBlack};
   color: ${(props) => props.theme.colors.subMint};
   border: 1px solid ${(props) => props.theme.colors.subMint};

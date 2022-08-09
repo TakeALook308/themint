@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { instance } from '../../../utils/api/api';
+import { instance } from '../../../../utils/api/api';
 import styled from 'styled-components';
-import Modal from '../../common/Modal';
+import Modal from '../../../common/Modal';
 import IsPurchasingCard from './IsPurchasingCard';
 
 function IsPurchasingCardList() {

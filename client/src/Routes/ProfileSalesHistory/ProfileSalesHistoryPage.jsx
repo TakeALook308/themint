@@ -1,14 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { instance } from '../../utils/api/api';
 import styled from 'styled-components';
-import IsellingButton from '../../components/ui/profile/IsSellingButton';
-import IsSellingCardList from '../../components/ui/profile/IsSellingCardList';
+import IsellingButton from '../../components/ui/profile/Sell/IsSellingButton';
+import IsSellingCardList from '../../components/ui/profile/Sell/IsSellingCardList';
 
-function ProfileSalesHistoryPage(props) {
-  // /api/history/sales/{memberSeq}?page=&size=
+function ProfileSalesHistoryPage({ params }) {
+  console.log(params);
+  const [sellingItem, setSellingItem] = useState([]);
+  useEffect(() => {
+    const getSales = async (url) => {
+      const response = await instance.get(url);
+      return response;
+    };
+    const res = getSales(`/api/history/sales/${params}?page=${1}&size=${9}`);
+    res.then((items) => {
+      setSellingItem(items.data);
+      console.log(sellingItem);
+    });
+  }, []);
+  // 판매중/ 판매완료 구분 버튼 기능
+  const [active, setActive] = useState(1);
+  const getActive = (value) => {
+    setActive(value);
+    console.log(active);
+  };
+  
   return (
     <Container>
-      <IsellingButton />
-      <IsSellingCardList />
+      <IsellingButton sellingItem={sellingItem} getActive={getActive} />
+      <IsSellingCardList sellingItem={sellingItem} />
     </Container>
   );
 }
