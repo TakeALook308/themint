@@ -16,6 +16,7 @@ function Streaming(props) {
   let nickname = '민서';
   let roomId = 'test';
   const [chat, setChat] = useState([]);
+  const [price, setPrice] = useState([]);
 
   //처음 접속했을 때
   useEffect(() => {
@@ -24,7 +25,8 @@ function Streaming(props) {
       //연결 후 데이터 가져오기
       client.subscribe('/sub/chat/room/' + roomId, function (message) {
         const messagedto = JSON.parse(message.body);
-        setChat([...chat, messagedto]);
+        if (Object.keys(messagedto).includes('price')) setPrice((prev) => [...prev, messagedto]);
+        else setChat((prev) => [...prev, messagedto]);
       });
 
       //방 접속 알림 모두에게 쏴주기
@@ -47,6 +49,20 @@ function Streaming(props) {
         roomId: roomId,
         nickname: nickname,
         message: msg,
+        memberSeq: 1,
+      }),
+    );
+  };
+
+  const sendPrice = (msg) => {
+    client.send(
+      '/pub/product/message',
+      {},
+      JSON.stringify({
+        roomId: roomId,
+        nickname: nickname,
+        productSeq: 1,
+        price: msg,
         memberSeq: 1,
       }),
     );
@@ -81,7 +97,7 @@ function Streaming(props) {
           <StreamingComponent userInfo={userInfo} auctionData={auctionData} />
         </Section>
         <Aside>
-          <AuctionBidding product={products[nowProduct]} />
+          <AuctionBidding product={products[nowProduct]} sendPrice={sendPrice} price={price} />
           <StreamChat sendMessage={sendMessage} chat={chat} />
         </Aside>
       </Main>
