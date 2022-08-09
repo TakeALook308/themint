@@ -1,8 +1,7 @@
 import React from 'react';
-import Banner from '../../components/ui/main/Banner';
-import StreamList from '../../components/ui/main/StreamListSwipe';
-import PostList from '../../components/ui/main/PostList';
-import styled from 'styled-components';
+import Banner from './Banner';
+import StreamList from './StreamListSwipe';
+import PostList from './PostList';
 import InterestingAuctionList from '../../components/InterestingAuctionList';
 import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
 import { auctionListApis } from '../../utils/api/getAuctionApi';
@@ -25,7 +24,6 @@ function MainPage(props) {
         CardComponent={AuctionCard}
         SkeltonCardComponent={SkeletonAuctionCard}
       />
-      <InterestingAuctionList />
     </Container>
   );
 }
