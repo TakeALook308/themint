@@ -16,7 +16,9 @@ public class AuctionListEntityRes {
     Long auctionSeq;
     String hash;
     Long memberSeq;
+    String nickname;
     String title;
+    String content;
     String startTime;
     int interest;
     int status;
@@ -28,7 +30,9 @@ public class AuctionListEntityRes {
                 .auctionSeq(auction.getSeq())
                 .hash(auction.getHash())
                 .memberSeq(auction.getMemberSeq())
+                .nickname(member.getNickname())
                 .title(auction.getTitle())
+                .content(auction.getContent())
                 .startTime(auction.getStartTime())
                 .interest(auction.getInterest())
                 .status(auction.getStatus())
