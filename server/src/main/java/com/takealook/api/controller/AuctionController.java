@@ -5,10 +5,7 @@ import com.takealook.api.request.AuctionUpdatePatchReq;
 import com.takealook.api.response.AuctionListEntityRes;
 import com.takealook.api.response.AuctionRes;
 import com.takealook.api.response.AuctionStandByRes;
-import com.takealook.api.service.AuctionImageService;
-import com.takealook.api.service.AuctionService;
-import com.takealook.api.service.MemberService;
-import com.takealook.api.service.ProductService;
+import com.takealook.api.service.*;
 import com.takealook.common.auth.MemberDetails;
 import com.takealook.common.model.response.BaseResponseBody;
 import com.takealook.db.entity.Auction;
@@ -45,11 +42,17 @@ public class AuctionController {
     @Autowired
     AuctionImageService auctionImageService;
 
+    @Autowired
+    HistoryService historyService;
+
     @PostMapping
     public ResponseEntity<BaseResponseBody> registerAuction(@RequestBody AuctionRegisterPostReq auctionRegisterPostReq, @ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
         Auction auction = auctionService.createAuction(memberSeq, auctionRegisterPostReq);
+        List<Product> productList = productService.getProductListByAuctionSeq(auction.getSeq());
+        List<AuctionImage> auctionImageList = auctionImageService.getAuctionImageListByAuctionSeq(auction.getSeq());
+        historyService.registerSalesHistory(memberSeq, productList, auctionImageList);
         if (auction == null) {
             return ResponseEntity.status(409).body(BaseResponseBody.of(409, "fail"));
         }
