@@ -25,10 +25,12 @@ public interface MemberService {
     // 이메일 체크
     Member getMemberByEmail(String email);
 
+    // 아이디-이메일 체크
+    Member getMemberByMemberIdAndEmail(MemberSetNewPwdCheckPostReq memberSetNewPwdCheckPostReq);
     // 이메일 송신
     int sendEmail(int randNum, String email);
 
-    void setNewPassword(String email, String pwd);
+    int setNewPassword(MemberSetNewPwdPatchReq memberSetNewPwdPatchReq);
 
     // 회원 삭제
     void deleteMember(Long memberSeq);
