@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import StreamingComponent from '../../components/webRTC/StreamingComponent';
 import StreamingHeader from './StreamingHeader';
@@ -7,7 +7,51 @@ import AuctionBidding from './AuctionBidding';
 import AuctionList from './AuctionList';
 import { useRecoilValue } from 'recoil';
 import { myInformationState } from '../../atoms';
+import SockJS from 'sockjs-client';
+import Stomp from 'stompjs';
+
 function Streaming(props) {
+  var sock = new SockJS('http://localhost:8081/api/ws-stomp');
+  let client = Stomp.over(sock);
+  let nickname = '민서';
+  let roomId = 'test';
+  const [chat, setChat] = useState([]);
+
+  //처음 접속했을 때
+  useEffect(() => {
+    client.connect({}, () => {
+      console.log('Connected : ' + roomId);
+      //연결 후 데이터 가져오기
+      client.subscribe('/sub/chat/room/' + roomId, function (message) {
+        const messagedto = JSON.parse(message.body);
+        setChat([...chat, messagedto]);
+      });
+
+      //방 접속 알림 모두에게 쏴주기
+      client.send(
+        '/pub/chat/message',
+        {},
+        JSON.stringify({ type: 0, roomId: roomId, nickname: nickname, memberSeq: 1 }),
+      );
+    });
+    //종료
+    return () => client.disconnect();
+  }, []);
+
+  const sendMessage = (msg) => {
+    client.send(
+      `/pub/chat/message`,
+      {},
+      JSON.stringify({
+        type: 1,
+        roomId: roomId,
+        nickname: nickname,
+        message: msg,
+        memberSeq: 1,
+      }),
+    );
+  };
+
   const [nowProduct, setNowProduct] = useState(0);
   const [products, setProducts] = useState([
     {
@@ -21,7 +65,7 @@ function Streaming(props) {
       status: 0,
     },
   ]);
-
+  console.log(chat);
   const userInfo = useRecoilValue(myInformationState);
   const auctionData = { memberId: 'ney9083' };
 
@@ -38,7 +82,7 @@ function Streaming(props) {
         </Section>
         <Aside>
           <AuctionBidding product={products[nowProduct]} />
-          <StreamChat />
+          <StreamChat sendMessage={sendMessage} chat={chat} />
         </Aside>
       </Main>
     </Stream>
