@@ -30,21 +30,19 @@ function AuctionCreate(props) {
     products: [],
   });
 
-  const { categorySeq, auctionImages, title, content, startTime, products } = inputAuction;
-
+  const { categorySeq, auctionImages, title, content, products } = inputAuction;
+  const startTime =
+    inputAuction.startTime.substring(0, 10) + 'T' + inputAuction.startTime.substring(11, 16);
   const [reservation, setReservation] = useState(false);
   const [productName, setProductName] = useState('');
   const [startPrice, setStartPrice] = useState('');
 
   const onChange = ({ target: { name, value } }) => {
     if (name === 'startTime') {
-      // const time = value.substring(0, 10) + ' ' + value.substring(11) + ':00';
-      // const d = new Date(value);
-      // console.log(d.toISOString());
-      //
+      const time = value.substring(0, 10) + ' ' + value.substring(11) + ':00';
       setInputAuction({
         ...inputAuction,
-        [name]: value.toISOString(),
+        [name]: time,
       });
     } else {
       setInputAuction({
@@ -160,7 +158,7 @@ function AuctionCreate(props) {
           <label htmlFor="reservation"></label>
           <ActiveInputBox
             name="startTime"
-            type="time"
+            type="datetime-local"
             onChange={onChange}
             disabled={!reservation}
             value={startTime}
