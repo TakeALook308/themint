@@ -1,7 +1,9 @@
 package com.takealook.api.service;
 
 import com.takealook.api.request.PurchaseRegisterPostReq;
+import com.takealook.db.entity.AuctionImage;
 import com.takealook.db.entity.History;
+import com.takealook.db.entity.Product;
 import com.takealook.db.repository.HistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -59,6 +61,18 @@ public class HistoryServiceImpl implements HistoryService {
                     .memberSeq(purchaseRegisterPostReq.getMemberSeq())
                     .productSeq(purchaseRegisterPostReq.getProductSeq())
                     .salesPurchase(1)
+                    .build());
+        }
+        return 1;
+    }
+
+    @Override
+    public int registerSalesHistory(Long memberSeq, List<Product> productList, List<AuctionImage> auctionImageList) {
+        for (Product product : productList){
+            historyRepository.save(History.builder()
+                    .memberSeq(memberSeq)
+                    .productSeq(product.getSeq())
+                    .salesPurchase(0)
                     .build());
         }
         return 1;
