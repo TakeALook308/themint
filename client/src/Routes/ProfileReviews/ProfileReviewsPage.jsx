@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import ReviewCard from '../components/ui/profile/ReviewCard';
+import ReviewCard from '../../components/ui/profile/ReviewCard';
 
 function ProfileReviewsPage(props) {
   // 중첩 라우팅에서 memberSeq를 어떻게 전달할 것인가?

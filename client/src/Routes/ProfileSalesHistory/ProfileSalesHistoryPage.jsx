@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import IsellingButton from '../components/ui/profile/IsSellingButton';
-import IsSellingCardList from '../components/ui/profile/IsSellingCardList';
+import IsellingButton from '../../components/ui/profile/IsSellingButton';
+import IsSellingCardList from '../../components/ui/profile/IsSellingCardList';
 
 function ProfileSalesHistoryPage(props) {
   // /api/history/sales/{memberSeq}?page=&size=

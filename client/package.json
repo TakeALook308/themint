@@ -66,5 +66,9 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.7.1"
+<<<<<<< HEAD
   }
+=======
+  }  
+>>>>>>> 99e0b3d9fdbaf64020e4a45649d68cf7b8054d92
 }

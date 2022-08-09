@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { NavLink, Outlet } from 'react-router-dom';
-import ProfileCard from '../components/ui/profile/ProfileCard';
+import ProfileCard from '../../components/ui/profile/ProfileCard';
 
 function ProfilePage(props) {
   return (
