@@ -25,9 +25,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 
@@ -175,6 +175,7 @@ public class MemberController {
             return ResponseEntity.status(200).body("success");
         return ResponseEntity.status(409).body("fail");
     }
+
     /////////////////// 비밀번호 재설정 (비밀번호 찾기) end ////////////////////////
 
     // 회원 탈퇴

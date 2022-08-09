@@ -27,10 +27,7 @@ public class ChatMessageController {
      */
     // JWT 버전
     @MessageMapping("/chat/message")
-    public void message(ChatMessage message, @ApiIgnore Authentication authentication) {
-        MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
-        message.setNickname(memberDetails.getMemberNickname());
-        message.setMemberSeq(memberDetails.getMemberSeq());
+    public void message(ChatMessage message) {
         if (message.getType() == 0) { // 입장 메시지
             chatRoomService.enterChatRoom(message.getRoomId());
             message.setMessage(message.getNickname() + "님이 입장하셨습니다.");

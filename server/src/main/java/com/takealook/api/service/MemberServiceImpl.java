@@ -130,7 +130,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public int setNewPassword(MemberSetNewPwdPatchReq memberSetNewPwdPatchReq) {
-        Member member = memberRepository.findByEmail(memberSetNewPwdPatchReq.getMemberId());
+        Member member = memberRepository.findByMemberId(memberSetNewPwdPatchReq.getMemberId());
         if (member != null) {
             Long seq = member.getSeq();
             memberRepository.updateMemberPassword(seq, passwordEncoder.encode(memberSetNewPwdPatchReq.getPwd()));
