@@ -6,17 +6,7 @@ export const Container = styled.main`
   margin-left: auto;
   margin-right: auto;
   position: relative;
-  padding-top: ${(props) => !props.nonMember && '70px'};
-`;
-
-export const WarningMessage = styled.p`
-  font-size: ${(props) => props.theme.fontSizes.small};
-  color: ${(props) => props.theme.colors.pointRed};
-`;
-
-export const SuccessValidationMessage = styled.p`
-  font-size: ${(props) => props.theme.fontSizes.small};
-  color: ${(props) => props.theme.colors.pointBlue};
+  padding-top: ${(props) => !props.nonMember && '80px'};
 `;
 
 export const MessageWrapper = styled.div`

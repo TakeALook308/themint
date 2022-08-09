@@ -4,8 +4,8 @@ import React, { useEffect, useRef } from 'react';
 import { useInfiniteQuery } from 'react-query';
 import { instance } from '../utils/api/api';
 import useObserver from '../utils/hooks/useObserver';
-import AuctionCard from './common/AuctionCard';
-import SkeletonAuctionCard from './common/SkeletonAuctionCard';
+import AuctionCard from './CardList/AuctionCard';
+import SkeletonAuctionCard from './CardList/SkeletonAuctionCard';
 
 function InterestingAuctionList() {
   const bottom = useRef(null);

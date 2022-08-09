@@ -1,21 +1,40 @@
-import React, { useEffect } from 'react';
-import { Link, useNavigate, useState } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import axios from 'axios';
-// import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import SearchIcon from '@mui/icons-material/Search';
 import ChatIcon from '@mui/icons-material/Chat';
+import { useRecoilValue } from 'recoil';
+import { loggedinState, myInformationState } from '../../../atoms';
 
-function NavigationBar({ url, search, categoryName }) {
+function NavigationBar({ url, keyword, categoryName }) {
+  const loggedin = useRecoilValue(loggedinState);
+  const myInformation = useRecoilValue(myInformationState);
+  const [search, setSearch] = useState('');
+  const onChangeSearch = (e) => {
+    e.preventDefault();
+    setSearch(e.target.value);
+  };
+  const navigate = useNavigate();
+  const onClick = () => {
+    navigate(`${url}&keyword=${keyword}`);
+  };
+
+  const onSubmit = () => {
+    navigate(`${url}&keyword=${keyword}`);
+  };
+
   if (
     window.location.pathname.startsWith('/streamings') ||
     window.location.pathname.startsWith('/register') ||
-    window.location.pathname.startsWith('/login')
+    window.location.pathname.startsWith('/login') ||
+    window.location.pathname.startsWith('/help')
   )
     return null;
+
   return (
     <Container>
       <Wrapper>
@@ -23,33 +42,49 @@ function NavigationBar({ url, search, categoryName }) {
           <NavLogo>더민트</NavLogo>
         </Link>
         <NavList>
-          {/* <NavSearch onSubmit={(e) => onSearch(e)}>
-            <SearchIcon type="submit" aria-label="search" onClick={() => navigate(`/`)} />
+          <NavSearch onSubmit={onSubmit}>
+            <SearchIcon type="submit" aria-label="search" onClick={onClick} />
             <SearchBox
               type="text"
               value={search}
               placeholder="검색하기"
               inputProps={{ 'aria-label': '검색하기' }}
-              onChange={onChangeSearch}></SearchBox>
-          </NavSearch> */}
+              onChange={onChangeSearch}
+            />
+          </NavSearch>
           <NavItemText>
-            <Link to={`/categories/${categoryName}`}>
+            <Link to={`/categories/0`}>
               <p>카테고리</p>
             </Link>
-            <Link to="/">
+            <Link to="/auctions/new">
               <p>경매생성</p>
             </Link>
           </NavItemText>
           <NavItemIcon>
-            <Link to="/">
-              <ChatIcon />
-            </Link>
-            <Link to="/">
-              <NotificationsNoneIcon />
-            </Link>
-            <Link to="/profile/:userId">
-              <PersonOutlineIcon />
-            </Link>
+            {loggedin && (
+              <>
+                <Link to="/">
+                  <ChatIcon />
+                </Link>
+                <Link to="/">
+                  <NotificationsNoneIcon />
+                </Link>
+                <Link to={`profile/${myInformation.memberId}`}>
+                  <PersonOutlineIcon />
+                </Link>
+              </>
+            )}
+            {!loggedin && (
+              <>
+                <Link to="login">
+                  <p>로그인</p>
+                </Link>
+                |
+                <Link to="register">
+                  <p>회원가입</p>
+                </Link>
+              </>
+            )}
           </NavItemIcon>
         </NavList>
       </Wrapper>
