@@ -9,10 +9,7 @@ import com.takealook.api.response.AuctionStandByRes;
 import com.takealook.api.service.*;
 import com.takealook.common.auth.MemberDetails;
 import com.takealook.common.model.response.BaseResponseBody;
-import com.takealook.db.entity.Auction;
-import com.takealook.db.entity.AuctionImage;
-import com.takealook.db.entity.Member;
-import com.takealook.db.entity.Product;
+import com.takealook.db.entity.*;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -20,11 +17,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.annotation.Nullable;
+import javax.security.auth.login.LoginContext;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Api(value = "경매 API", tags = {"Auction"})
 @RestController
@@ -45,6 +46,9 @@ public class AuctionController {
 
     @Autowired
     HistoryService historyService;
+
+    @Autowired
+    InterestCategoryService interestCategoryService;
 
     @PostMapping
     public ResponseEntity<BaseResponseBody> registerAuction(@RequestBody AuctionRegisterPostReq auctionRegisterPostReq, @ApiIgnore Authentication authentication) {
@@ -114,7 +118,11 @@ public class AuctionController {
         Boolean hasMore = false;
         List<Auction> auctionList = null;
         List<Auction> hasMoreList = null;
-        if ("score".equals(sort)) { //판매자 신뢰도순
+        if ("main".equals(sort)) {
+            Pageable pageable = PageRequest.of(page, size);
+            auctionList = auctionService.getAuctionListToday(pageable);
+            hasMoreList = auctionService.getAuctionListToday(PageRequest.of(page + 1, size));
+        } else if ("score".equals(sort)) { //판매자 신뢰도순
             Pageable pageable = PageRequest.of(page, size);
             auctionList = auctionService.getAuctionListOrderByScore(word, pageable);
             hasMoreList = auctionService.getAuctionListOrderByScore(word, PageRequest.of(page + 1, size));
@@ -134,7 +142,7 @@ public class AuctionController {
             List<AuctionImage> auctionImageList = auctionImageService.getAuctionImageListByAuctionSeq(auction.getSeq());
             auctionListEntityResList.add(AuctionListEntityRes.of(auction, member, auctionImageList));
         }
-        return ResponseEntity.status(200).body(AuctionListRes.of(auctionListEntityResList, hasMore));
+        return ResponseEntity.status(200).body(AuctionListRes.of(auctionListEntityResList, false, 0L, hasMore));
     }
 
     // 경매 카테고리별 목록 조회
@@ -158,14 +166,51 @@ public class AuctionController {
             auctionList = auctionService.getAuctionListByCategorySeq(categorySeq, sortPageable);
             hasMoreList = auctionService.getAuctionListByCategorySeq(categorySeq, PageRequest.of(page + 1, size, Sort.by(sort).descending()));
         }
-        if(hasMoreList.size() != 0) hasMore = true;
+        if (hasMoreList.size() != 0) hasMore = true;
         for (Auction auction : auctionList) {
             Long memberSeq = auction.getMemberSeq();
             Member member = memberService.getMemberByMemberSeq(memberSeq);
             List<AuctionImage> auctionImageList = auctionImageService.getAuctionImageListByAuctionSeq(auction.getSeq());
             auctionListEntityResList.add(AuctionListEntityRes.of(auction, member, auctionImageList));
         }
-        return ResponseEntity.status(200).body(AuctionListRes.of(auctionListEntityResList, hasMore));
+        return ResponseEntity.status(200).body(AuctionListRes.of(auctionListEntityResList, false, 0L, hasMore));
+    }
+
+    // 메인 - 관심 카테고리 (로그인, 비로그인 구분)
+    @GetMapping("/main")
+    public ResponseEntity<AuctionListRes> getMainAuctionList(@RequestParam("page") int page, @RequestParam("size") int size, @ApiIgnore @Nullable Authentication authentication) {
+        List<AuctionListEntityRes> auctionListEntityResList = new ArrayList<>();
+        Boolean hasMore = false; Boolean isInterest = false; Long categorySeq = 0L;
+        List<Auction> auctionList = null;
+        List<Auction> hasMoreList = null;
+        Random rand = new Random();
+        Pageable pageable = PageRequest.of(page, size);
+        if (authentication != null) { // 로그인 유저
+            MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
+            Long loginMemberSeq = memberDetails.getMemberSeq();
+            List<Long> interestCategoryList = interestCategoryService.getInterestCategoryListByMemberSeq(loginMemberSeq);
+            if (interestCategoryList.size() != 0) { // 관심 카테고리 목록 존재
+                isInterest = true;
+                int randomIdx = rand.nextInt(interestCategoryList.size());
+                categorySeq = interestCategoryList.get(randomIdx);
+                auctionList = auctionService.getAuctionListByCategorySeq(categorySeq, pageable);
+                hasMoreList = auctionService.getAuctionListByCategorySeq(categorySeq, PageRequest.of(page + 1, size));
+            }
+        }
+        if (auctionList == null) { // 비로그인 유저 & 로그인 유저지만 관심 카테고리 없음
+            Long randomIdx = 1 + (long) (Math.random() * 14);
+            categorySeq = randomIdx;
+            auctionList = auctionService.getAuctionListByCategorySeq(categorySeq, pageable);
+            hasMoreList = auctionService.getAuctionListByCategorySeq(categorySeq, PageRequest.of(page + 1, size));
+        }
+        if (hasMoreList.size() != 0) hasMore = true;
+        for (Auction auction : auctionList) {
+            Long memberSeq = auction.getMemberSeq();
+            Member member = memberService.getMemberByMemberSeq(memberSeq);
+            List<AuctionImage> auctionImageList = auctionImageService.getAuctionImageListByAuctionSeq(auction.getSeq());
+            auctionListEntityResList.add(AuctionListEntityRes.of(auction, member, auctionImageList));
+        }
+        return ResponseEntity.status(200).body(AuctionListRes.of(auctionListEntityResList, isInterest, categorySeq, hasMore));
     }
 
     @GetMapping("/standby/{hash}")

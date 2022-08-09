@@ -15,7 +15,8 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
     Optional<Auction> findByHash(String hash);
     Optional<Auction> findBySeq(Long auctionSeq);
     Auction findFirstByMemberSeqOrderBySeqDesc(Long memberSeq);
-    List<Auction> findAllByStatusAndStartTimeBefore(int status, String currentTime);
+    List<Auction> findAllByStatus(int status);
+    List<Auction> findAllByStartTimeAfterAndStartTimeBeforeOrderByStartTimeAsc(String currentTime, String tomorrowTime, Pageable pageable);
     List<Auction> findAllByStartTimeAfter(String currentTime, Pageable pageable);
     List<Auction> findAllByTitleContainsOrContentContainsAndStartTimeAfter(String titleWord, String contentWord, String currentTime, Pageable pageable);
     @Query("SELECT a FROM Auction a JOIN Member m ON a.memberSeq = m.seq where a.categorySeq = :categorySeq AND a.startTime > :currentTime ORDER BY m.score DESC")

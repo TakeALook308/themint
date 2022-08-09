@@ -13,6 +13,7 @@ public interface AuctionService {
     Auction getAuctionBySeq(Long auctionSeq);
     List<Auction> getLiveAuctionList();
     List<Auction> getAuctionList(String word, Pageable pageable);
+    List<Auction> getAuctionListToday(Pageable pageable);
     List<Auction> getAuctionListOrderByScore(String word, Pageable pageable);
     List<Auction> getAuctionListByCategorySeqOrderByScore(Long categorySeq, Pageable pageable);
     List<Auction> getAuctionListByCategorySeq(Long categorySeq, Pageable pageable);
