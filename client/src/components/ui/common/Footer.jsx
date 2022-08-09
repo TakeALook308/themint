@@ -9,7 +9,8 @@ function Footer(props) {
   if (
     window.location.pathname.startsWith('/streamings') ||
     window.location.pathname.startsWith('/register') ||
-    window.location.pathname.startsWith('/login')
+    window.location.pathname.startsWith('/login') ||
+    window.location.pathname.startsWith('/help')
   )
     return null;
   return (
