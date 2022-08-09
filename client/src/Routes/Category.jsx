@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import CateCardList from '../components/ui/category/CateCardList';
-import CateList from '../components/ui/category/CateList';
-import Dropdown from '../components/ui/category/SelectBox';
 import { Container } from '../style/common';
 import { getAuctionList } from '../utils/api/getAuctionApi';
 

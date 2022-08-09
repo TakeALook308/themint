@@ -8,32 +8,11 @@ import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import SearchIcon from '@mui/icons-material/Search';
 import ChatIcon from '@mui/icons-material/Chat';
 
-<<<<<<< HEAD
-function NavigationBar({ url, categoryName }) {
-=======
 function NavigationBar({ url, keyword, categoryName }) {
->>>>>>> cbc100e779fde92dfab9d64ae371bcb33efa4186
   const [search, setSearch] = useState('');
   const onChangeSearch = (e) => {
     e.preventDefault();
     setSearch(e.target.value);
-<<<<<<< HEAD
-
-    console.log(keyword);
-  };
-  const keyword = search;
-  const navigate = useNavigate();
-  const onClick = () => {
-    navigate(`/search/products/${keyword}`);
-    console.log(keyword);
-  };
-
-  const onSubmit = () => {
-    console.log(keyword);
-    navigate(`/search/products/${keyword}`);
-  };
-
-=======
   };
   const navigate = useNavigate();
   const onClick = () => {
@@ -51,7 +30,6 @@ function NavigationBar({ url, keyword, categoryName }) {
   )
     return null;
 
->>>>>>> cbc100e779fde92dfab9d64ae371bcb33efa4186
   return (
     <Container>
       <Wrapper>

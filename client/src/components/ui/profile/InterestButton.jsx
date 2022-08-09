@@ -64,17 +64,11 @@ const ButtonNav = styled.nav`
 `;
 
 const StyledBtn = styled.div`
-<<<<<<< HEAD
-  text-align: center;
-  padding-top: 10px;
-  font-size: 16px;
-=======
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 10px 0px 10px 0px;
-  font-size: 18px;
->>>>>>> 86e9793d1be03b370d3d301e516a7b3dbeaa3163
+  font-size: 16px;
   width: 13%;
   height: 40px;
   margin-right: 20px;

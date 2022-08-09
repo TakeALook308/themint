@@ -51,7 +51,7 @@ function IsSellingCard({ ModalHandler, setModalKey, auctionitem }) {
         </Link>
       </div>
       <Plus type="button" onClick={ModalHandler}>
-        상세보기
+        판매 상세
       </Plus>
     </CardContainer>
   );
