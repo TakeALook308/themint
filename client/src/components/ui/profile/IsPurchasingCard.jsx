@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import Modal from '../../common/Modal';
 
-function IsSellingCard({ ModalHandler, auctionitem, historySales }) {
+function IsPurchasingCard({ ModalHandler, auctionitem, historySales }) {
   // TODO: 데이터 교체하기
 
   const [statusName, setStatusName] = useState(0);
@@ -56,7 +56,7 @@ function IsSellingCard({ ModalHandler, auctionitem, historySales }) {
   );
 }
 
-export default IsSellingCard;
+export default IsPurchasingCard;
 
 const CardContainer = styled.article`
   position: relative;

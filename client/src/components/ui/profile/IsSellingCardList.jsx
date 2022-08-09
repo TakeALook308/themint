@@ -1,46 +1,48 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { instance } from '../../../utils/api/api';
 import styled from 'styled-components';
 import IsSellingCard from './IsSellingCard';
 import Modal from '../../common/Modal';
+import { getAuctionList } from '../../../utils/api/getAuctionApi';
 
 function IsSellingCardList() {
-  const [historySales, setHistorySales] = useState(null); 
-  const [ historySeq, SetHistorySeq] = useState(null);
-  const [isModal, setIsModal] = useState(false);
-  const [memberSeq, setMemberSeq] = useState(0);
+  const [historySales, setHistorySales] = useState(null);
   const [historySeq, setHistorySeq] = useState(0);
+  const [historyDetail, setHistoryDetail] = useState(null);
+  const [isModal, setIsModal] = useState(false);
+  const [memberSeq, setMemberSeq] = useState(1);
+
   // memberSeq를 어디서 가져와야 하지?
   const getMemberSeq = (value) => {
     setMemberSeq(value);
   };
-  const getHistorySeq = (value) => {
-    setHistoryDetailSeq(value);
-  };
 
-  const ModalHandler = () => {
-    setIsModal((prev) => !prev);
-    setHistorySeq(auctionitem.historyseq) 
-  };
   useEffect(() => {
-    const res = async () => {
-      await axios.get(`/api/history/sales/${memberSeq}?page${1}=&size=${9}`);
+    const getSalesAuction = async (url) => {
+      const response = await instance.get(url);
+      return response;
     };
-    res.then((auctions) => {
-      setHistorySales(auctions.data);
-      console.log(auctions.data);
+    const res = getSalesAuction(`/api/history/sales/${memberSeq}?page${1}=&size=${9}`);
+    res.then((auctionitem) => {
+      setHistorySales(auctionitem.data);
+      console.log(auctionitem.data);
     });
   }, [memberSeq]);
 
-  useEffect(() => {
-    const res = async () => {
-      await axios.get(`/api/history/sales/${historySeq}`);
+  const ModalHandler = () => {
+    setIsModal((prev) => !prev);
+    setHistorySeq(auctionitem.data.historyseq);
+    const getSalesDetail = async (url) => {
+      const response = await instance.get(url);
+      return response;
     };
-    res.then((auction) => {
-      setHistoryDetailSeq(auction.data);
-      console.log(auction.data);
+    const res = getSalesDetail(`/api/history/sales/${historySeq}`);
+    res.then((auctionDetail) => {
+      setHistoryDetail(auctionDetail.data);
+      console.log(auctionDetail.data);
     });
-  }, [historySeq]);
+  };
+  // API 확인후 삭제
   const auctionitem = {
     historyseq: 1,
     memberSeq: 1,
@@ -53,6 +55,9 @@ function IsSellingCardList() {
       seq: 1,
       imageUrl: 'https://images.gnwcdn.com/2022/articles/2022-07-01-15-35/hero_top_sp.jpg',
     },
+  };
+
+  const auctionDetail = {
     nickname: '미노',
     remitName: '민호', // 입금자명
     name: '민호',
@@ -63,74 +68,31 @@ function IsSellingCardList() {
     profileUrl:
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiiGVRNg8egZNHf7d7-jeEA3JKgNTkStDZPQ&usqp=CAU',
   };
-  const auctionitem2 = {
-    historyseq: 1,
-    memberSeq: 1,
-    productName: '닌텐도 스위치',
-    startTime: 'Thu Jul 28 2022',
-    startPrice: 1000,
-    finalPrice: 2000,
-    status: 2, // 0: 판매중, 1:입금대기, 2:입금완료, 3: 판매완료, 4: 유찰, 5: 거래취소
-    auctionImage: {
-      seq: 1,
-      imageUrl: 'https://images.gnwcdn.com/2022/articles/2022-07-01-15-35/hero_top_sp.jpg',
-    },
-    nickname: '미노',
-    remitName: '민호', // 입금자명
-    name: '민호',
-    phone: '01012345678',
-    address: '서울시 역삼동 이것은 두번째 카드',
-    addressDetail: '11층 두번째이므로 내용이 달라야한다',
-    trackingNo: '',
-    profileUrl:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiiGVRNg8egZNHf7d7-jeEA3JKgNTkStDZPQ&usqp=CAU',
-  };
+
   return (
     <Container>
-      {[1, 2, 3].map((item) => (
-        <div>
-          <IsSellingCard
-            auctionitem={auctionitem}
-            ModalHandler={ModalHandler}
-            getHistorySeq={getHistorySeq}
-            key={item}></IsSellingCard>
-        </div>
-      ))}
+      <div>
+        <IsSellingCard
+          historySales={historySales}
+          auctionitem={auctionitem}
+          ModalHandler={ModalHandler}
+          key={historySeq}></IsSellingCard>
+      </div>
       <Modal open={isModal} close={ModalHandler} title="상품 관리">
         <ModalProfile>
-          <img src={auctionitem.profileUrl} alt="프로필이미지" />
-          <p>{auctionitem.nickname}</p>
+          <img src={auctionDetail.profileUrl} alt="프로필이미지" />
+          <p>{auctionDetail.nickname}</p>
         </ModalProfile>
         <ModalMain>
-          <p>입금자명 : {auctionitem.remitName}</p>
-          <p>입금자 전화번호: {auctionitem.phone}</p>
+          <p>입금자명 : {auctionDetail.remitName}</p>
+          <p>입금자 전화번호: {auctionDetail.phone}</p>
           <p>
-            구매자 배송지: {auctionitem.address}
-            <span>{auctionitem.addressDetail}</span>
+            구매자 배송지: {auctionDetail.address}
+            <span>{auctionDetail.addressDetail}</span>
           </p>
           <input placeholder="송장번호 입력"></input>
         </ModalMain>
       </Modal>
-      {[1, 2, 3].map((item) => (
-        <div>
-          <IsSellingCard auctionitem={auctionitem2} ModalHandler={ModalHandler}></IsSellingCard>
-          <Modal open={isModal} close={ModalHandler} title="상품 관리">
-            <ModalProfile>
-              <img src={auctionitem2.profileUrl} alt="프로필이미지" />
-              <p>{auctionitem2.nickname}</p>
-            </ModalProfile>
-            <ModalMain>
-              <p>입금자명 : {auctionitem2.remitName}</p>
-              <p>입금자 전화번호: {auctionitem2.phone}</p>
-              <p>
-                구매자 배송지: {auctionitem2.address}
-                <span>{auctionitem2.addressDetail}</span>
-              </p>
-              <input placeholder="송장번호 입력"></input>
-            </ModalMain>
-          </Modal>
-        </div>
-      ))}
     </Container>
   );
 }
