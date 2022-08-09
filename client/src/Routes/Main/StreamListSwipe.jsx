@@ -17,6 +17,9 @@ import { Navigation, EffectCoverflow } from 'swiper';
 function StreamList(props) {
   return (
     <Wrapper>
+      <ListHeader>
+        <h3>실시간 경매 ON</h3>
+      </ListHeader>
       <SwipeContainer>
         <Swiper
           effect={'coverflow'}
@@ -101,3 +104,15 @@ const SwipeContainer = styled.div`
 
 // prevEl: '.prev',
 // nextEl: '.next',
+
+const ListHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  > h3 {
+    font-size: 20px;
+    font-weight: bold;
+  }
+`;

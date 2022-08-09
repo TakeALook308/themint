@@ -18,12 +18,12 @@ function MainPage(props) {
       <Banner />
       <StreamList />
       <PostList />
-      <InfiniteAuctionList
+      {/* <InfiniteAuctionList
         url={auctionListApis.SEARCH_AUCTION_LIST_API()}
         queryKey={'interestingAuctionList'}
         CardComponent={AuctionCard}
         SkeltonCardComponent={SkeletonAuctionCard}
-      />
+      /> */}
     </Container>
   );
 }

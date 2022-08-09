@@ -39,9 +39,7 @@ function NavigationBar({ url, keyword, categoryName }) {
   return (
     <Container>
       <Wrapper>
-        <div style={{ width: '150px' }}>
-          <Logo />
-        </div>
+        <Logo />
         <NavList>
           <NavSearch onSubmit={onSubmit}>
             <SearchIcon type="submit" aria-label="search" onClick={onClick} />
@@ -112,7 +110,12 @@ const Wrapper = styled.nav`
   justify-content: space-between;
   background: ${(props) => props.theme.colors.mainBlack};
   max-width: 1024px;
+  height: 80px;
   margin: 0 auto;
+  > h1 {
+    width: 100px;
+    height: 40px;
+  }
 `;
 
 const NavList = styled.div`

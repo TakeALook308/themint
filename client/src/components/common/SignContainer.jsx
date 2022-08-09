@@ -8,7 +8,9 @@ function SignContainer({ children, pageName }) {
     <Container nonMember={true}>
       <RegisterContainer>
         <Header>
-          <Logo />
+          <nav>
+            <Logo />
+          </nav>
           <h2>{pageName}</h2>
         </Header>
         {children}
@@ -43,4 +45,8 @@ const Header = styled.header`
   gap: 2rem;
   font-size: ${(props) => props.theme.fontSizes.h4};
   font-weight: 700;
+  > nav {
+    max-width: 163px;
+    height: 79px;
+  }
 `;

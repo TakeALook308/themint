@@ -99,14 +99,12 @@ const Wrapper = styled.div`
   margin-bottom: 10px;
 `;
 
-const ListHeader = styled.header`
+const ListHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   margin-bottom: 20px;
   margin-top: 20px;
-  font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue',
-    'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
   > h3 {
     font-size: 20px;
     font-weight: bold;

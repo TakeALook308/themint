@@ -15,8 +15,12 @@ function Logo() {
 
 export default Logo;
 
-const LogoContainer = styled.div`
+const LogoContainer = styled.h1`
   width: 100%;
   display: flex;
   justify-content: center;
+  img {
+    width: 100%;
+    height: 100%;
+  }
 `;

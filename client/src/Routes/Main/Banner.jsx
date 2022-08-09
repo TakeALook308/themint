@@ -1,11 +1,36 @@
 import React from 'react';
 import styled from 'styled-components';
+import banner1 from '../../assets/images/banner1.png';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination, Autoplay, Navigation } from 'swiper';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import { Link } from 'react-router-dom';
+import './SwiperCSS.css';
 
 function Banner() {
   return (
     <Container>
       <Wrapper>
-        <ImgContainer src="https://images.gnwcdn.com/2022/articles/2022-07-01-15-35/hero_top_sp.jpg" />
+        <Swiper
+          modules={[Pagination, Autoplay, Navigation]}
+          pagination={{ clickable: true }}
+          scrollbar={{ draggable: true }}
+          autoplay={{
+            delay: 5000,
+            disableOnInteraction: false,
+          }}
+          className="mySwiper">
+          <SwiperSlide>
+            <ImgContainer src={banner1} alt="이벤트 배너" />
+          </SwiperSlide>
+          <SwiperSlide>
+            <ImgContainer src={banner1} alt="이벤트 배너" />
+          </SwiperSlide>
+          <SwiperSlide>
+            <ImgContainer src={banner1} alt="이벤트 배너" />
+          </SwiperSlide>
+        </Swiper>
       </Wrapper>
     </Container>
   );
@@ -15,7 +40,8 @@ export default Banner;
 const Container = styled.article`
   position: relative;
   width: 100%;
-  padding-top: 40%;
+  padding-top: 30%;
+  margin-bottom: 3rem;
 `;
 
 const Wrapper = styled.div`
