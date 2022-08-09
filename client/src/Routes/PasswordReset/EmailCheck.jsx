@@ -10,7 +10,7 @@ import { REGEX, REGISTER_MESSAGE } from '../../utils/constants/constant';
 import GradientButton from '../../components/ButtonList/GradientButton';
 import MintButton from '../../components/ButtonList/MintButton';
 import ValidationMessage from '../../components/common/ValidationMessage';
-import { errorToast, successToast } from '../../lib/toast';
+import { errorToast, infoToast, successToast } from '../../lib/toast';
 
 function EmailCheck({ memberId, setMemberId, setIsPassed }) {
   const [email, setEmail] = useState('');
@@ -22,27 +22,12 @@ function EmailCheck({ memberId, setMemberId, setIsPassed }) {
     watch,
     trigger,
     formState: { errors },
-  } = useForm({});
+  } = useForm({ mode: 'onChange' });
 
   const id = useRef({});
   id.current = watch('memberId', '');
   const auth = useRef({});
   auth.current = watch('email', '');
-
-  useEffect(() => {
-    if (!memberId || !auth) return;
-    (async () => {
-      try {
-        const response = await postData(userApis.AUTH_EMAIL, { memberId, email: auth.current });
-        if (response.status === 200) {
-          setIsEmailed(true);
-          setAuthNum(String(response.data?.randNum));
-        }
-      } catch (err) {
-        errorToast('아이디 또는 이메일을 확인해주세요.');
-      }
-    })();
-  }, [memberId]);
 
   const onValid = () => {
     trigger('authNumber');
@@ -51,14 +36,41 @@ function EmailCheck({ memberId, setMemberId, setIsPassed }) {
     successToast(REGISTER_MESSAGE.VALIDATED_EMAIL_AUTH);
   };
 
-  const sendAuthNumber = () => {
+  const setTimer = () => {
+    setTimeout(() => setIsEmailed(false), 60000);
+  };
+
+  const sendAuthEmail = async () => {
+    if (isEmailed) {
+      infoToast('인증번호를 이미 전송하였습니다. 잠시 후 다시 시도해주세요.');
+      return;
+    }
+    if (!validateIdAndEmail() || !id.current || !auth.current) {
+      errorToast('아이디 또는 이메일 주소를 확인해주세요.');
+      return;
+    }
+    try {
+      const response = await postData(userApis.AUTH_EMAIL, {
+        memberId: id.current,
+        email: auth.current,
+      });
+      if (response.status === 200) {
+        setEmail(auth.current);
+        setMemberId(id.current);
+        setIsEmailed(true);
+        setAuthNum(String(response.data?.randNum));
+        setTimer();
+      }
+    } catch (err) {
+      errorToast('아이디 또는 이메일 주소를 확인해주세요.');
+    }
+  };
+
+  const validateIdAndEmail = () => {
     trigger('memberId');
     trigger('email');
-    if (errors?.memberId) return;
-    if (errors?.email) return;
-    if (auth.current === email) return;
-    setEmail(auth.current);
-    setMemberId(id.current);
+    if (errors?.memberId || errors?.email) return false;
+    return true;
   };
 
   return (
@@ -100,7 +112,7 @@ function EmailCheck({ memberId, setMemberId, setIsPassed }) {
             />
             <label htmlFor="email">email</label>
           </ActiveInput>
-          <MintButton text={'인증'} type={'button'} onClick={sendAuthNumber} />
+          <MintButton text={'인증'} type={'button'} onClick={sendAuthEmail} />
         </InputContainer>
         <MessageWrapper>
           {!watch().email && !errors?.email && (
@@ -110,7 +122,7 @@ function EmailCheck({ memberId, setMemberId, setIsPassed }) {
         </MessageWrapper>
         {isEmailed && (
           <NoticeContainer isEmailed={isEmailed}>
-            <Email>{email}</Email>로 <br /> 비밀번호 재설정을 위한 <br /> 인증번호를 전송했습니다.{' '}
+            <Email>{email}</Email>로 <br /> 비밀번호 재설정을 위한 <br /> 인증번호를 전송했습니다.
             <br />
             비밀번호 재설정을 원하는 경우 <br /> 아래에 인증번호를 입력해주세요.
           </NoticeContainer>
