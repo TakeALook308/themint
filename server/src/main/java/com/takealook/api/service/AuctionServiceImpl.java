@@ -33,6 +33,9 @@ public class AuctionServiceImpl implements AuctionService {
     @Autowired
     AuctionImageRepository auctionImageRepository;
 
+    @Autowired
+    S3FileService s3FileService;
+
     @PersistenceContext
     EntityManager entityManager;
 
@@ -65,14 +68,26 @@ public class AuctionServiceImpl implements AuctionService {
                     .build();
             productRepository.save(product);
         }
-
-        for (AuctionImageRegisterPostReq auctionImageRegisterPostReq : auctionRegisterPostReq.getAuctionImageList()) {
-            AuctionImage auctionImage = AuctionImage.builder()
-                    .auctionSeq(auction.getSeq())
-                    .imageUrl(auctionImageRegisterPostReq.getImageUrl())
-                    .build();
-            auctionImageRepository.save(auctionImage);
+        // S3 버킷에 물품 이미지 저장 후 db에 imageUrl 저장
+        try {
+            List<String> imageUrlList = s3FileService.uploadProductIamge(auctionRegisterPostReq.getAuctionImageList(), auction.getHash());
+            for(String imageUrl: imageUrlList) {
+                AuctionImage auctionImage = AuctionImage.builder()
+                        .auctionSeq(auction.getSeq())
+                        .imageUrl(imageUrl)
+                        .build();
+                auctionImageRepository.save(auctionImage);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
+//        for (AuctionImageRegisterPostReq auctionImageRegisterPostReq : auctionRegisterPostReq.getAuctionImageList()) {
+//            AuctionImage auctionImage = AuctionImage.builder()
+//                    .auctionSeq(auction.getSeq())
+//                    .imageUrl(auctionImageRegisterPostReq.getImageUrl())
+//                    .build();
+//            auctionImageRepository.save(auctionImage);
+//        }
 
         return auction;
     }

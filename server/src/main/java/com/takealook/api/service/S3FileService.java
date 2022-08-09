@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -42,8 +44,32 @@ public class S3FileService {
         );
 
         String imagePath = amazonS3Client.getUrl(bucket + "/member", originalName).toString(); // 접근가능한 URL 가져오기
-        memberRepository.updateMemberProfileImage(memberSeq, imagePath.substring(50)); // 앞 url 제거
+        memberRepository.updateMemberProfileImage(memberSeq, imagePath.substring(50)); // 버킷 url 제거
         return imagePath;
+    }
+
+    public List<String> uploadProductIamge(MultipartFile[] multipartFileList, String hash) throws Exception {
+        List<String> imagePathList = new ArrayList<>();
+
+        for(MultipartFile multipartFile: multipartFileList) {
+            String originalName = createFileName(multipartFile.getOriginalFilename()); // 파일 이름
+            long size = multipartFile.getSize(); // 파일 크기
+
+            ObjectMetadata objectMetaData = new ObjectMetadata();
+            objectMetaData.setContentType(multipartFile.getContentType());
+            objectMetaData.setContentLength(size);
+
+            // S3에 업로드
+            amazonS3Client.putObject(
+                    new PutObjectRequest(bucket + "/product/" + hash, originalName, multipartFile.getInputStream(), objectMetaData)
+                            .withCannedAcl(CannedAccessControlList.PublicRead)
+            );
+
+            String imagePath = amazonS3Client.getUrl(bucket + "/product" + hash, originalName).toString(); // 접근가능한 URL 가져오기
+            imagePathList.add(imagePath.substring(50)); // 버킷 url 제거
+        }
+
+        return imagePathList;
     }
 
     public void deleteFile(String fileName) {
