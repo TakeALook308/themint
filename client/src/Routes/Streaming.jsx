@@ -1,35 +1,64 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import StreamingComponent from '../components/StreamingComponent';
+import StreamingComponent from '../components/webRTC/StreamingComponent';
 import StreamingHeader from '../components/Streaming/StreamingHeader';
-import AuctionList from '../components/Streaming/AuctionList';
 import StreamChat from '../components/Streaming/StreamChat';
 import AuctionBidding from '../components/Streaming/AuctionBidding';
-import AuctionInfo from '../components/Streaming/AuctionInfo';
+import AuctionList from '../components/Streaming/AuctionList';
+import { useRecoilValue } from 'recoil';
+import { myInformationState } from '../atoms';
 function Streaming(props) {
+  const [nowProduct, setNowProduct] = useState(0);
+  const [products, setProducts] = useState([
+    {
+      productName: '닌텐도 스위치',
+      startPrice: 180000,
+      status: 0,
+    },
+    {
+      productName: '아이패드',
+      startPrice: 520000,
+      status: 0,
+    },
+  ]);
+
+  const userInfo = useRecoilValue(myInformationState);
+  const auctionData = { memberId: 'ney9083' };
+
   return (
-    <First>
-      <Main>
-        <Left>
-          <AuctionList />
-        </Left>
-        <Middle>
-          <AuctionInfo />
-          <StreamingComponent />
-        </Middle>
-        <Right>
-          <AuctionBidding />
-          <StreamChat />
-        </Right>
-      </Main>
+    <Stream>
       <Header>
         <StreamingHeader />
       </Header>
-    </First>
+      <Main>
+        <Section>
+          <AuctionList products={products} />
+
+          <StreamingComponent userInfo={userInfo} auctionData={auctionData} />
+        </Section>
+        <Aside>
+          <AuctionBidding product={products[nowProduct]} />
+          <StreamChat />
+        </Aside>
+      </Main>
+    </Stream>
   );
 }
 
-const First = styled.div`
+// const Stream = styled.div`
+//   width: 100%;
+//   display: grid;
+//   grid-template-rows: 80px 1fr;
+// `;
+
+// const Main = styled.main``;
+
+// const Header = styled.header``;
+// const Section = styled.section``;
+
+// const Aside = styled.aside``;
+
+const Stream = styled.div`
   width: 100%;
 `;
 
@@ -44,24 +73,21 @@ const Header = styled.header`
   display: flex;
   width: 100%;
   height: 80px;
-  background-color: red;
 `;
-const Left = styled.div`
-  width: 25%;
-  margin: 10px 5px 10px 10px;
-`;
-const Middle = styled.div`
+const Section = styled.section`
   display: flex;
   flex-direction: column;
-  width: 50%;
-  margin: 10px 5px 10px;
+  width: 75%;
+  margin: 10px 5px 10px 0;
+  gap: 10px;
 `;
 
-const Right = styled.div`
+const Aside = styled.aside`
   display: flex;
   flex-direction: column;
   width: 25%;
-  margin: 10px 10px 10px 5px;
+  margin: 10px 0 10px 5px;
+  gap: 10px;
 `;
 
 export default Streaming;

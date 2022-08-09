@@ -1,52 +1,67 @@
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
-import { getAuctionList } from '../../../utils/api/getAuctionApi';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
-const Dropdown = ({ url, sortBy }) => {
+const Dropdown = ({ getSortKey }) => {
   const dropdownItems = [
-    { value: 1, name: '최신순' },
-    { value: 2, name: '가격순' },
-    { value: 3, name: '인기순' },
-    { value: 4, name: '판매자 신뢰도' },
+    { value: 'startTime', name: '경매임박순' },
+    { value: 'seq', name: '최신등록순' },
+    { value: 'interest', name: '인기순' },
+    { value: 'score', name: '판매자신뢰도순' },
   ];
+  const [sortName, setSortName] = useState('경매임박순');
   const [isActive, setIsActive] = useState(false);
-  const [value, setValue] = useState(1);
+  const [value, setValue] = useState('startTime');
   const onActiveToggle = useCallback(() => {
     setIsActive((prev) => !prev);
   }, []);
 
-  const onSelectItem = async (e) => {
-    setValue(e.target.value);
-    console.log(e.target.value);
+  const onSelectItem = (e) => {
+    console.log(e.target.id);
+    console.log(e.target.innerText);
+    setValue(e.target);
+    setSortName(e.target.innerText);
     setIsActive((prev) => !prev);
-    const sortBy = value;
-    const res = await getAuctionList(`${url}}?word=&key=${sortBy}&category=&pageno=`);
-    return res?.data;
+    getSortKey(e.target.id);
   };
 
   return (
-    <DropdownContainer>
-      <DropdownBody onClick={onActiveToggle}>
-        <DropdownSelect>정렬순서 🔻</DropdownSelect>
-      </DropdownBody>
-      <DropdownMenu isActive={isActive}>
-        {dropdownItems.map((item) => (
-          <DropdownItemContainer
-            id="item"
-            key={item.value}
-            value={item.value}
-            onClick={onSelectItem}>
-            {item.name}
-          </DropdownItemContainer>
-        ))}
-      </DropdownMenu>
-    </DropdownContainer>
+    <Wrapper>
+      <DropdownContainer>
+        <DropdownBody onClick={onActiveToggle}>
+          <DropdownSelect>
+            {sortName}
+            <span>
+              <ArrowDropDownIcon />
+            </span>
+          </DropdownSelect>
+        </DropdownBody>
+        <DropdownMenu isActive={isActive}>
+          {dropdownItems.map((dropdownItems) => (
+            <DropdownItemContainer
+              id={dropdownItems.value}
+              key={dropdownItems.value}
+              value={dropdownItems.value}
+              name={dropdownItems.name}
+              onClick={onSelectItem}>
+              {dropdownItems.name}
+            </DropdownItemContainer>
+          ))}
+        </DropdownMenu>
+      </DropdownContainer>
+    </Wrapper>
   );
 };
 
 export default Dropdown;
 
-export const DropdownContainer = styled.div`
+const Wrapper = styled.div`
+  display: flex;
+  justify-content: end;
+  margin-bottom: 20px;
+`;
+
+export const DropdownContainer = styled.main`
   width: 12%;
 
   &:hover {
@@ -58,6 +73,7 @@ const DropdownBody = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  height: 40px;
   color: ${(props) => props.theme.colors.white};
   background-color: ${(props) => props.theme.colors.mainBlack};
   padding: 5px;
@@ -65,20 +81,28 @@ const DropdownBody = styled.div`
   border-top-right-radius: 5px;
   border: none;
   border-bottom: 2px solid ${(props) => props.theme.colors.white};
+  z-index: 5;
 `;
 
 const DropdownSelect = styled.p`
   font-weight: bold;
+  > span {
+    position: absolute;
+    right: 0px;
+  }
 `;
 
 const DropdownMenu = styled.ul`
   display: ${(props) => (props.isActive ? `block` : `none`)};
-  width: 12;
+  margin-top: 5px;
+  width: 12%;
+  height: 100px;
   color: ${(props) => props.theme.colors.white};
   background-color: ${(props) => props.theme.colors.mainBlack};
   position: absolute;
   opacity: 0.7;
-  border: none;
+  border-radius: 5px;
+  z-index: 5;
 `;
 
 const DropdownItemContainer = styled.li`

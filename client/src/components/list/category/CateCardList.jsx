@@ -6,7 +6,7 @@ function CateCardList(props) {
   return (
     <Wrapper>
       <ListHeader>
-        <h3>카테고리&gt;</h3>
+        <h3>카테고리></h3>
       </ListHeader>
       <CateCardContainer>
         <CateCard categoryName={'전체보기'} />
@@ -50,6 +50,8 @@ const ListHeader = styled.div`
   align-items: baseline;
   margin-bottom: 20px;
   margin-top: 20px;
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue',
+    'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
   > h3 {
     font-size: 20px;
   }

@@ -1,15 +1,39 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-function AuctionList() {
-  return <Article>경매리스트</Article>;
+function AuctionList({ products }) {
+  return (
+    <Article>
+      <h3>경매리스트</h3>
+      <List>
+        {products.map((item, i) => (
+          <li key={i}>
+            <p>{item.productName}</p>
+            <span>{item.startPrice}</span>
+            {item.status === 1 ? <span>끝</span> : null}
+          </li>
+        ))}
+      </List>
+    </Article>
+  );
 }
 
 const Article = styled.article`
-  height: 100%;
+  height: 20%;
   width: 100%;
-  background-color: orange;
+  background-color: purple;
+  /* background-color: ${(props) => props.theme.colors.subBlack}; */
   border-radius: 10px;
+`;
+
+const List = styled.ul`
+  display: flex;
+  li {
+    width: 200px;
+    height: 50px;
+    background-color: green;
+    border: 1px solid yellow;
+  }
 `;
 
 export default AuctionList;

@@ -15,6 +15,9 @@ import PurchaseHistoryDetail from './Routes/PurchaseHistoryDetail';
 import Talks from './Routes/Talks';
 import NavigationBar from './components/ui/common/NavigationBar';
 import Footer from './components/ui/common/Footer';
+import FindPassword from './Routes/FindPassword';
+import AuctionCreate from './Routes/AuctionCreate';
+import Standby from './Routes/Standby';
 
 function Router() {
   return (
@@ -23,6 +26,7 @@ function Router() {
       <Routes>
         {/* <Route path="/" element={<Main />} /> */}
         <Route path="/login" element={<Login />} />
+        <Route path="/help/password" element={<FindPassword />} />
         <Route path="/register" element={<Register />} />
         <Route path="/main" element={<Main />} />
         <Route path="/categories/:categoryName" element={<Category />} />
@@ -31,10 +35,12 @@ function Router() {
         <Route path="/accounts/password" element={<AccountsPassword />} />
         <Route path="/accounts/phone-number" element={<AccountsPhoneNumber />} />
         <Route path="/accounts/withdrawl" element={<AccountsWithdrawl />} />
-        <Route path="/streamings/:roomNumber" element={<Streaming />} />
+        <Route path="/streamings/:auctionId" element={<Streaming />} />
+        <Route path="/standby/:auctionId" element={<Standby />} />
         <Route path="/talks" element={<Talks />} />
         <Route path="/auctions/:auctionsId" element={<AuctionDetail />} />
-        <Route path="/puchase-history/purchseId" element={<PurchaseHistoryDetail />} />
+        <Route path="/auctions/new" element={<AuctionCreate />} />
+        <Route path="/puchase-history/:purchaseId" element={<PurchaseHistoryDetail />} />
       </Routes>
       <Footer />
     </BrowserRouter>
