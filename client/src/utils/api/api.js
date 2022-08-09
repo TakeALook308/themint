@@ -72,3 +72,4 @@ instance.interceptors.response.use(
 
 export const getData = async (url) => await instance.get(url);
 export const postData = async (url, body) => await instance.post(url, body);
+export const patchData = async (url, body) => await instance.patch(url, body);

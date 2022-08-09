@@ -10,7 +10,7 @@ import { myInformationState } from '../../atoms';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 
-function Streaming(props) {
+function StreamingPage(props) {
   var sock = new SockJS('http://localhost:8081/api/ws-stomp');
   let client = Stomp.over(sock);
   let nickname = '민서';
@@ -81,7 +81,9 @@ function Streaming(props) {
       status: 0,
     },
   ]);
+
   console.log(chat);
+
   const userInfo = useRecoilValue(myInformationState);
   const auctionData = { memberId: 'ney9083' };
 
@@ -150,4 +152,4 @@ const Aside = styled.aside`
   gap: 10px;
 `;
 
-export default Streaming;
+export default StreamingPage;

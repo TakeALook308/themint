@@ -15,7 +15,7 @@ export default Banner;
 const Container = styled.article`
   position: relative;
   width: 100%;
-  padding-top: 56%;
+  padding-top: 40%;
 `;
 
 const Wrapper = styled.div`

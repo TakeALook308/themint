@@ -7,7 +7,7 @@ import ProductTable from './ProductTable';
 import Modal from '../../components/common/Modal';
 import { useDropzone } from 'react-dropzone';
 
-function AuctionCreate(props) {
+function AuctionCreatePage(props) {
   const [im, setIm] = useState([]);
   const onDrop = (acceptedFiles) => {
     let temp = [...im];
@@ -270,4 +270,4 @@ const Label = styled.p`
   position: relative;
 `;
 
-export default AuctionCreate;
+export default AuctionCreatePage;
