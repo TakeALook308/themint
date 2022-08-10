@@ -27,7 +27,7 @@ function App(props) {
         />
         <QueryClientProvider client={queryClient}>
           <Router />
-          <ReactQueryDevtools initialIsOpen={true} />
+          <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
       </Container>
     </>
