@@ -65,7 +65,7 @@ function NavigationBar({ url, keyword, categoryName }) {
                 <Link to="/">
                   <HiOutlineBell size={25} />
                 </Link>
-                <Link to={`profile/${myInformation.memberId}`}>
+                <Link to={`profile/${myInformation.memberSeq}`}>
                   <AiOutlineUser size={25} />
                 </Link>
               </>

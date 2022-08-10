@@ -51,11 +51,11 @@ function ProfileInterestsPage({ params }) {
         </StyledBtn>
       </ButtonNav>
       {params === strMemberSeq && (
-        <KeywordContainer>
+        <InterestContainer>
           {numActive === 1 && <InterestKeywordList />}
           {numActive === 2 && <InterestCateList />}
           {numActive === 3 && <InterestAuctionList />}
-        </KeywordContainer>
+        </InterestContainer>
       )}
     </Container>
   );
@@ -105,6 +105,6 @@ const StyledBtn = styled.div`
   }
 `;
 
-const KeywordContainer = styled.div`
+const InterestContainer = styled.div`
   width: 100%;
 `;
