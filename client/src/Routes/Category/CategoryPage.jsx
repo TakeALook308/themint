@@ -22,8 +22,9 @@ function CategoryPage({ categoryName }) {
       `/api/auction/category?category-seq=${categorySeq}&page=${0}&size=${9}&sort=${sortKey}`,
     );
     res.then((auctions) => {
-      setAuctions(auctions.data);
-      console.log(auctions.data);
+      console.log(auctions.data.resultList);
+      setAuctions(auctions.data.resultList);
+      console.log(auctions);
     });
   }, [sortKey, categorySeq]);
   return (
