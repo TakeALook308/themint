@@ -4,7 +4,7 @@ import CateCardList from '../../components/ui/category/CateCardList';
 import CateList from '../../components/ui/category/CateList';
 import Dropdown from '../../components/ui/category/SelectBox';
 import { Container } from '../../style/common';
-import { getAuctionList } from '../../utils/api/getAuctionApi';
+import { getAuctionList } from '../../utils/apis/auctionApis';
 
 function CategoryPage({ categoryName }) {
   const [categorySeq, setCategorySeq] = useState('0');

@@ -1,6 +1,20 @@
 import React from 'react';
 import CateAuctionCard from './CategoryListItem';
 import styled from 'styled-components';
+<<<<<<< HEAD
+=======
+// Import Swiper React components
+import { Swiper, SwiperSlide } from 'swiper/react';
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/effect-coverflow';
+import '../../../Routes/Main/SwiperCSS.css';
+
+// import required modules
+import { Navigation } from 'swiper';
+>>>>>>> 0330df70a70ae7486b2f34c7f371866a24f33613
 
 function CateList({ auctions }) {
   return (

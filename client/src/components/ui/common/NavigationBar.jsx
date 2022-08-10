@@ -9,6 +9,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import ChatIcon from '@mui/icons-material/Chat';
 import { useRecoilValue } from 'recoil';
 import { loggedinState, myInformationState } from '../../../atoms';
+import Logo from '../../common/Logo';
 
 function NavigationBar({ url, keyword, categoryName }) {
   const loggedin = useRecoilValue(loggedinState);
@@ -38,9 +39,7 @@ function NavigationBar({ url, keyword, categoryName }) {
   return (
     <Container>
       <Wrapper>
-        <Link to="/">
-          <NavLogo>더민트</NavLogo>
-        </Link>
+        <Logo />
         <NavList>
           <NavSearch onSubmit={onSubmit}>
             <SearchIcon type="submit" aria-label="search" onClick={onClick} />
@@ -111,7 +110,12 @@ const Wrapper = styled.nav`
   justify-content: space-between;
   background: ${(props) => props.theme.colors.mainBlack};
   max-width: 1024px;
+  height: 80px;
   margin: 0 auto;
+  > h1 {
+    width: 100px;
+    height: 40px;
+  }
 `;
 
 const NavList = styled.div`

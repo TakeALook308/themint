@@ -30,6 +30,10 @@ public class MemberDetails implements UserDetails {
     		return this.member;
     }
 	public Long getMemberSeq() { return this.member.getSeq();}
+
+	public String getMemberId() {return this.member.getMemberId();}
+
+	public String getMemberNickname() {return this.member.getNickname();}
 	@Override
 	public String getPassword() {
 		return this.member.getPwd();
