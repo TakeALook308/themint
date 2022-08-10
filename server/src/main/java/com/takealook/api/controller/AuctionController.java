@@ -70,6 +70,9 @@ public class AuctionController {
         Long auctionSeq = auction.getSeq();
         List<Product> productList = productService.getProductListByAuctionSeq(auctionSeq);
         List<AuctionImage> auctionImageList = auctionImageService.getAuctionImageListByAuctionSeq(auctionSeq);
+        if(auctionImageList.size() == 0){
+            auctionImageList.add(auctionImageService.getBaseImage());
+        }
         Member member = memberService.getMemberByMemberSeq(auction.getMemberSeq());
 
         return ResponseEntity.status(200).body(AuctionRes.of(auction, productList, auctionImageList, member));
@@ -105,6 +108,9 @@ public class AuctionController {
             Long memberSeq = auction.getMemberSeq();
             Member member = memberService.getMemberByMemberSeq(memberSeq);
             List<AuctionImage> auctionImageList = auctionImageService.getAuctionImageListByAuctionSeq(auction.getSeq());
+            if(auctionImageList.size() == 0){
+                auctionImageList.add(auctionImageService.getBaseImage());
+            }
             auctionListEntityResList.add(AuctionListEntityRes.of(auction, member, auctionImageList));
         }
         return ResponseEntity.status(200).body(auctionListEntityResList);
@@ -140,6 +146,9 @@ public class AuctionController {
             Long memberSeq = auction.getMemberSeq();
             Member member = memberService.getMemberByMemberSeq(memberSeq);
             List<AuctionImage> auctionImageList = auctionImageService.getAuctionImageListByAuctionSeq(auction.getSeq());
+            if(auctionImageList.size() == 0){
+                auctionImageList.add(auctionImageService.getBaseImage());
+            }
             auctionListEntityResList.add(AuctionListEntityRes.of(auction, member, auctionImageList));
         }
         return ResponseEntity.status(200).body(AuctionListRes.of(auctionListEntityResList, false, 0L, hasMore));
@@ -171,6 +180,9 @@ public class AuctionController {
             Long memberSeq = auction.getMemberSeq();
             Member member = memberService.getMemberByMemberSeq(memberSeq);
             List<AuctionImage> auctionImageList = auctionImageService.getAuctionImageListByAuctionSeq(auction.getSeq());
+            if(auctionImageList.size() == 0){
+                auctionImageList.add(auctionImageService.getBaseImage());
+            }
             auctionListEntityResList.add(AuctionListEntityRes.of(auction, member, auctionImageList));
         }
         return ResponseEntity.status(200).body(AuctionListRes.of(auctionListEntityResList, false, 0L, hasMore));
@@ -208,6 +220,9 @@ public class AuctionController {
             Long memberSeq = auction.getMemberSeq();
             Member member = memberService.getMemberByMemberSeq(memberSeq);
             List<AuctionImage> auctionImageList = auctionImageService.getAuctionImageListByAuctionSeq(auction.getSeq());
+            if(auctionImageList.size() == 0){
+                auctionImageList.add(auctionImageService.getBaseImage());
+            }
             auctionListEntityResList.add(AuctionListEntityRes.of(auction, member, auctionImageList));
         }
         return ResponseEntity.status(200).body(AuctionListRes.of(auctionListEntityResList, isInterest, categorySeq, hasMore));
