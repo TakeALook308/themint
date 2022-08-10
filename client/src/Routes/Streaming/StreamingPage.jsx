@@ -11,12 +11,17 @@ import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 
 function StreamingPage(props) {
+  const userInfo = useRecoilValue(myInformationState);
+  const auctionData = { memberId: 'themint' };
+
   var sock = new SockJS('https://i7a308.p.ssafy.io/api/ws-stomp');
   let client = Stomp.over(sock);
+  // const [nickname, memberSeq] = userInfo;
   let nickname = userInfo.nickname;
+  let memberSeq = userInfo.memberSeq;
   let roomId = 'test';
   const [chat, setChat] = useState([]);
-  const [price, setPrice] = useState([]);
+  const [priceList, setPriceList] = useState([]);
 
   //처음 접속했을 때
   useEffect(() => {
@@ -25,7 +30,8 @@ function StreamingPage(props) {
       //연결 후 데이터 가져오기
       client.subscribe('/sub/chat/room/' + roomId, function (message) {
         const messagedto = JSON.parse(message.body);
-        if (Object.keys(messagedto).includes('price')) setPrice((prev) => [...prev, messagedto]);
+        if (Object.keys(messagedto).includes('price'))
+          setPriceList((prev) => [...prev, messagedto]);
         else setChat((prev) => [...prev, messagedto]);
       });
 
@@ -33,7 +39,7 @@ function StreamingPage(props) {
       client.send(
         '/pub/chat/message',
         {},
-        JSON.stringify({ type: 0, roomId: roomId, nickname: nickname, memberSeq: 1 }),
+        JSON.stringify({ type: 0, roomId: roomId, nickname: nickname, memberSeq: memberSeq }),
       );
     });
     //종료
@@ -82,11 +88,6 @@ function StreamingPage(props) {
     },
   ]);
 
-  console.log(chat);
-
-  const userInfo = useRecoilValue(myInformationState);
-  const auctionData = { memberId: 'themint' };
-
   return (
     <Stream>
       <Header>
@@ -99,7 +100,16 @@ function StreamingPage(props) {
           <StreamingComponent userInfo={userInfo} auctionData={auctionData} />
         </Section>
         <Aside>
-          <AuctionBidding product={products[nowProduct]} sendPrice={sendPrice} price={price} />
+          <AuctionBidding
+            product={products[nowProduct]}
+            sendPrice={sendPrice}
+            price={priceList}
+            lastPrice={
+              priceList.length !== 0
+                ? priceList[priceList.length - 1].price
+                : products[nowProduct].startPrice
+            }
+          />
           <StreamChat sendMessage={sendMessage} chat={chat} />
         </Aside>
       </Main>
@@ -121,6 +131,10 @@ function StreamingPage(props) {
 // const Aside = styled.aside``;
 
 const Stream = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
   width: 100%;
 `;
 

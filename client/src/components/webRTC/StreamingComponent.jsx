@@ -32,7 +32,7 @@ class StreamingComponent extends Component {
   componentDidMount() {
     window.addEventListener('beforeunload', this.onbeforeunload);
     this.joinSession();
-    console.log('내 정보 확인', this.props.userInfo);
+    // console.log('내 정보 확인', this.props.userInfo);
   }
 
   componentWillUnmount() {
@@ -229,7 +229,7 @@ class StreamingComponent extends Component {
   render() {
     const mySessionId = this.state.mySessionId;
     const myUserName = this.state.myUserName;
-    console.log(this.props.userInfo);
+    // console.log(this.props.userInfo);
 
     return (
       <div className="container">
@@ -331,7 +331,7 @@ class StreamingComponent extends Component {
           },
         })
         .then((response) => {
-          console.log('TOKEN', response);
+          // console.log('TOKEN', response);
           resolve(response.data.token);
         })
         .catch((error) => reject(error));
