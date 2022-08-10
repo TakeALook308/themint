@@ -19,7 +19,7 @@ function AuctionCard({ auction }) {
   //   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiiGVRNg8egZNHf7d7-jeEA3JKgNTkStDZPQ&usqp=CAU';
 
   const CalculateTime = () => {
-    const auctionStartTime = new Date(auction.startTime);
+    const auctionStartTime = new Date(auction?.startTime);
     const today = new Date();
     const diff = auctionStartTime - today;
     const diffDay = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -52,11 +52,11 @@ function AuctionCard({ auction }) {
   return (
     <CardContainer>
       <div>
-        <Link to={`/auctions/${auction.hash}`}>
+        <Link to={`/auctions/${auction?.hash}`}>
           <div>
             <picture>
               <img
-                src={process.env.REACT_APP_IMAGE_URL + auction.auctionImage.imageUrl}
+                src={process.env.REACT_APP_IMAGE_URL + auction?.auctionImage?.imageUrl}
                 alt="닌텐도 스위치"
                 width="400"
                 height="300"
@@ -64,7 +64,7 @@ function AuctionCard({ auction }) {
             </picture>
             <AuctionInfoContainer>
               <div>
-                <p>{auction.title}</p>
+                <p>{auction?.title}</p>
                 <AuctionTimeMessage time={auctionTime.moreThenOneDay}>
                   경매시작: {auctionTime.time}
                 </AuctionTimeMessage>
@@ -72,12 +72,12 @@ function AuctionCard({ auction }) {
             </AuctionInfoContainer>
           </div>
         </Link>
-        <Link to={`/profile/${auction.memberSeq}`}>
+        <Link to={`/profile/${auction?.memberSeq}`}>
           <div>
             <picture>
               <img
-                src={auction.profileUrl}
-                alt={`${auction.nickname} 프로필 이미지`}
+                src={process.env.REACT_APP_IMAGE_URL + auction?.profileUrl}
+                alt={`${auction?.nickname} 프로필 이미지`}
                 width="50"
                 height="50"
               />
