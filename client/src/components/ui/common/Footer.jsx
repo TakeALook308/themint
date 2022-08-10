@@ -20,7 +20,7 @@ function Footer(props) {
         <FooterText>
           <p>고객센터 | themint@mint.co.kr</p>
           <p>광고문의 | themint@mint.co.kr</p>
-          <p>제휴 및 대회 협력 | themint@mint.co.kr</p>
+          <p>제휴 및 대외 협력 | themint@mint.co.kr</p>
           <br />
           <p>
             주식회사 더민트 | 대표 강민서 김수환 김혜성 남은열 정민호 | 서울특별시 강남구 테헤란로

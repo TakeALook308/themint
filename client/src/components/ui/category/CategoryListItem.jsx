@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
 function CateAuctionCard({ auction }) {
+  console.log(auction);
   const [auctionTime, setAuctionTime] = useState({ moreThenOneDay: false, time: '' });
 
   const CalculateTime = () => {

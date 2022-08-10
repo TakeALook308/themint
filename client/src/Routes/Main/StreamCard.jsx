@@ -39,7 +39,7 @@ function StreamCard({ auction }) {
               <Link to={`/profile/${auction.memberSeq}`}>
                 <picture>
                   <img
-                    src={auction.profileUrl}
+                    src={process.env.REACT_APP_IMAGE_URL + auction.profileUrl}
                     alt={`${auction.nickname} 프로필 이미지`}
                     width="50"
                     height="50"

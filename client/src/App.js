@@ -5,6 +5,7 @@ import Router from './Router';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import Session from './utils/functions/storage';
+import { ReactQueryDevtools } from 'react-query/devtools';
 
 export const session = new Session();
 function App(props) {
@@ -25,7 +26,8 @@ function App(props) {
           pauseOnHover
         />
         <QueryClientProvider client={queryClient}>
-          <Router></Router>
+          <Router />
+          <ReactQueryDevtools initialIsOpen={true} />
         </QueryClientProvider>
       </Container>
     </>

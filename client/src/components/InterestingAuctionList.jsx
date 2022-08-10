@@ -46,9 +46,9 @@ function InterestingAuctionList() {
           <div
             key={index}
             style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridGap: '1rem' }}>
-            {group.results.map((pokemon) => (
+            {group.results.map((pokemon, i) => (
               // <p key={pokemon.name}>{pokemon.name}</p>
-              <AuctionCard />
+              <SkeletonAuctionCard key={i} />
             ))}
           </div>
         ))}
