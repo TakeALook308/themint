@@ -85,7 +85,7 @@ function StreamingPage(props) {
   console.log(chat);
 
   const userInfo = useRecoilValue(myInformationState);
-  const auctionData = { memberId: 'ney9083' };
+  const auctionData = { memberId: 'themint' };
 
   return (
     <Stream>
