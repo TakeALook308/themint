@@ -42,12 +42,7 @@ function CateAuctionCard({ auction }) {
         <Link to="/">
           <div>
             <picture>
-              <img
-                src={auction.auctionImageList.imageUrl}
-                alt="카드 이미지"
-                width="400"
-                height="300"
-              />
+              <img src={auction.auctionImage.imageUrl} alt="카드 이미지" width="400" height="300" />
             </picture>
             <AuctionInfoContainer>
               <div>
