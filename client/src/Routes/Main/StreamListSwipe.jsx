@@ -17,6 +17,7 @@ function StreamList(props) {
   };
   const { isLoading, isError, data, error } = useQuery(['liveAuctionList'], getLiveAuctionList, {
     refetchInterval: 60 * 1000,
+    refetchOnWindowFocus: false,
     retry: 0,
     onError: (e) => {
       console.log(e.message);

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 function StreamChat({ sendMessage, chat }) {
   const [chatMessage, setChatMessage] = useState('');
-  console.log(chat);
+
   return (
     <Article>
       <ul>
@@ -25,8 +25,10 @@ function StreamChat({ sendMessage, chat }) {
       />
       <button
         onClick={() => {
-          sendMessage(chatMessage);
-          setChatMessage('');
+          if (chatMessage) {
+            sendMessage(chatMessage);
+            setChatMessage('');
+          }
         }}>
         send
       </button>

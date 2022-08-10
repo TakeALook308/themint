@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { useInfiniteQuery } from 'react-query';
 import styled from 'styled-components';
+import { getData } from '../../utils/apis/api';
 import { getAuctionList } from '../../utils/apis/auctionApis';
 import useObserver from '../../utils/hooks/useObserver';
 
@@ -8,14 +9,18 @@ function InfiniteAuctionList({ getUrl, queryKey, CardComponent, SkeltonCardCompo
   const [hasError, setHasError] = useState(false);
   const bottom = useRef(null);
   let pageNo = 0;
-  const getTargetAuctionList = async ({ pageNo = 0 }) => {
+  const getTargetAuctionList = async ({ pageParam = 0 }) => {
+    if (pageParam === false) {
+      setHasError(true);
+      return;
+    }
     try {
-      const res = await getAuctionList(getUrl(pageNo));
-      console.log(queryKey, 'res', res);
-      if (data.length < 1) {
-        setHasError(true);
-        return;
-      }
+      const res = await getData(getUrl(pageParam));
+      console.log(queryKey, 'res', pageParam, res);
+      // if (data.length < 1) {
+      //   setHasError(true);
+      //   return;
+      // }
       return res?.data;
     } catch (_) {
       setHasError(true);
@@ -24,10 +29,15 @@ function InfiniteAuctionList({ getUrl, queryKey, CardComponent, SkeltonCardCompo
 
   const { isLoading, data, isError, error, fetchNextPage, isFetchingNextPage, status } =
     useInfiniteQuery(queryKey, getTargetAuctionList, {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchOnMount: false,
+      refetchInterval: 60 * 1000,
       getNextPageParam: (lastPage) => {
         if (lastPage?.hasOwnProperty('hasMore')) {
           const { hasMore } = lastPage;
-          if (hasMore) return pageNo++;
+          console.log('lastPage', lastPage);
+          if (hasMore) return ++pageNo;
           return false;
         }
         return false;
@@ -41,7 +51,7 @@ function InfiniteAuctionList({ getUrl, queryKey, CardComponent, SkeltonCardCompo
     onIntersect,
     hasMore:
       data?.pageParams?.length > 1 ? Boolean(data?.pageParams[data?.pageParams?.length - 1]) : true,
-    hasError,
+    // hasError,
   });
   console.log(data, queryKey);
   return (
