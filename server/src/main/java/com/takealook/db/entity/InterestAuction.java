@@ -20,5 +20,5 @@ public class InterestAuction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long seq;
     Long memberSeq;
-    Long auctionSeq;
+    String hash;
 }
