@@ -11,6 +11,7 @@ function InfiniteAuctionList({ getUrl, queryKey, CardComponent, SkeltonCardCompo
   const getTargetAuctionList = async ({ pageNo = 0 }) => {
     try {
       const res = await getAuctionList(getUrl(pageNo));
+      console.log(queryKey, 'res', res);
       if (data.length < 1) {
         setHasError(true);
         return;
@@ -42,10 +43,10 @@ function InfiniteAuctionList({ getUrl, queryKey, CardComponent, SkeltonCardCompo
       data?.pageParams?.length > 1 ? Boolean(data?.pageParams[data?.pageParams?.length - 1]) : true,
     hasError,
   });
-
+  console.log(data, queryKey);
   return (
     <div>
-      {(hasError || !data?.resultList?.length) && <p>{text}</p>}
+      {/* {(hasError || !data?.pages?.length) && <p>{text}</p>} */}
       {isLoading && (
         <GridContainer>
           {[1, 2, 3, 4, 5, 6].map((i) => (
@@ -55,11 +56,10 @@ function InfiniteAuctionList({ getUrl, queryKey, CardComponent, SkeltonCardCompo
       )}
       {status === 'error' && <p>{error.message}</p>}
       {status === 'success' &&
-        data.length > 0 &&
         data.pages.map((group, index) => (
           <GridContainer key={index}>
-            {group?.resultList?.map((auction) => (
-              <CardComponent auction={auction} />
+            {group?.resultList?.map((auction, idx) => (
+              <CardComponent auction={auction} key={idx} />
             ))}
           </GridContainer>
         ))}

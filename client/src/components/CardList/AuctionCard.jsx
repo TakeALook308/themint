@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-function AuctionCard({ hash, memberSeq, title, startTime, auctionImage, profileUrl, nickname }) {
+function AuctionCard({ auction }) {
   const [auctionTime, setAuctionTime] = useState({ moreThenOneDay: false, time: '' });
   // TODO: 데이터 교체하기
   // const auctions = {
@@ -19,7 +19,7 @@ function AuctionCard({ hash, memberSeq, title, startTime, auctionImage, profileU
   //   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiiGVRNg8egZNHf7d7-jeEA3JKgNTkStDZPQ&usqp=CAU';
 
   const CalculateTime = () => {
-    const auctionStartTime = new Date(startTime);
+    const auctionStartTime = new Date(auction.startTime);
     const today = new Date();
     const diff = auctionStartTime - today;
     const diffDay = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -52,14 +52,19 @@ function AuctionCard({ hash, memberSeq, title, startTime, auctionImage, profileU
   return (
     <CardContainer>
       <div>
-        <Link to={`/auctions/${hash}`}>
+        <Link to={`/auctions/${auction.hash}`}>
           <div>
             <picture>
-              <img src={auctionImage.imageUrl} alt="닌텐도 스위치" width="400" height="300" />
+              <img
+                src={process.env.REACT_APP_IMAGE_URL + auction.auctionImage.imageUrl}
+                alt="닌텐도 스위치"
+                width="400"
+                height="300"
+              />
             </picture>
             <AuctionInfoContainer>
               <div>
-                <p>{title}</p>
+                <p>{auction.title}</p>
                 <AuctionTimeMessage time={auctionTime.moreThenOneDay}>
                   경매시작: {auctionTime.time}
                 </AuctionTimeMessage>
@@ -67,10 +72,15 @@ function AuctionCard({ hash, memberSeq, title, startTime, auctionImage, profileU
             </AuctionInfoContainer>
           </div>
         </Link>
-        <Link to={`/profile/${memberSeq}`}>
+        <Link to={`/profile/${auction.memberSeq}`}>
           <div>
             <picture>
-              <img src={profileUrl} alt={`${nickname} 프로필 이미지`} width="50" height="50" />
+              <img
+                src={auction.profileUrl}
+                alt={`${auction.nickname} 프로필 이미지`}
+                width="50"
+                height="50"
+              />
             </picture>
           </div>
         </Link>
