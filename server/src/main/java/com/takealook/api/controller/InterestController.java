@@ -118,17 +118,17 @@ public class InterestController {
     /*
         관심 경매 생성, 조회, 삭제
      */
-    @PostMapping("/auction/{auctionSeq}")
+    @PostMapping("/auction/{hash}")
     @ApiOperation(value = "관심 경매 등록", notes = "<strong>관심 경매 정보</strong>를 등록한다.")
     @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "인증 실패"),
             @ApiResponse(code = 404, message = "사용자 없음"), @ApiResponse(code = 500, message = "서버 오류") })
-    public ResponseEntity<? extends BaseResponseBody> registerAuction(@PathVariable Long auctionSeq, @ApiIgnore Authentication authentication){
+    public ResponseEntity<? extends BaseResponseBody> registerAuction(@PathVariable String hash, @ApiIgnore Authentication authentication){
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
-        int result = interestAuctionService.createInterestAuction(memberSeq, auctionSeq);
+        int result = interestAuctionService.createInterestAuction(memberSeq, hash);
         if(result == 1){
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
-        } else{ // auctionSeq에 해당하는 경매 없음
+        } else{ // 이미 추가한 경매, 경매 없음
             return ResponseEntity.status(409).body(BaseResponseBody.of(409, "Fail"));
         }
 
@@ -152,14 +152,14 @@ public class InterestController {
         return ResponseEntity.status(200).body(auctionListRes);
     }
 
-    @DeleteMapping("/auction/{auctionSeq}")
+    @DeleteMapping("/auction/{hash}")
     @ApiOperation(value = "관심 경매 삭제", notes = "관심 경매를 삭제한다.")
     @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "인증 실패"),
             @ApiResponse(code = 404, message = "사용자 없음"), @ApiResponse(code = 500, message = "서버 오류") })
-    public ResponseEntity<? extends BaseResponseBody> deleteAuction(@PathVariable Long auctionSeq, @ApiIgnore Authentication authentication){
+    public ResponseEntity<? extends BaseResponseBody> deleteAuction(@PathVariable String hash, @ApiIgnore Authentication authentication){
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
-        int result = interestAuctionService.deleteAuction(memberSeq, auctionSeq);
+        int result = interestAuctionService.deleteAuction(memberSeq, hash);
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
     }
 }

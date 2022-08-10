@@ -9,8 +9,8 @@ import java.util.List;
 
 @Repository
 public interface InterestAuctionRepository extends JpaRepository<InterestAuction, Long> {
-    InterestAuction findByMemberSeqAndAuctionSeq(Long memberSeq, Long auctionSeq);
+    InterestAuction findByMemberSeqAndHash(Long memberSeq, String hash);
     List<InterestAuction> findAllByMemberSeq(Long memberSeq);
     @Transactional
-    int deleteByMemberSeqAndAuctionSeq(Long memberSeq, Long auctionSeq);
+    int deleteByMemberSeqAndHash(Long memberSeq, String hash);
 }

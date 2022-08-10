@@ -18,6 +18,10 @@ public class InterestKeywordServiceImpl implements InterestKeywordService {
      */
     @Override
     public InterestKeyword createInterestKeyword(Long memberSeq, String keywordName) {
+        InterestKeyword check = interestKeywordRepository.findByMemberSeqAndKeywordName(memberSeq, keywordName);
+        if(check != null){
+            return check;
+        }
         InterestKeyword interestKeyword = InterestKeyword.builder()
                 .memberSeq(memberSeq)
                 .keywordName(keywordName)
