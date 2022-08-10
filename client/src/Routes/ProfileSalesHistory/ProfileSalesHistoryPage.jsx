@@ -17,13 +17,6 @@ function ProfileSalesHistoryPage({ params }) {
       console.log(sellingItem);
     });
   }, []);
-  // 판매중/ 판매완료 구분 버튼 기능
-  const [active, setActive] = useState(1);
-  const getActive = (value) => {
-    setActive(value);
-    console.log(active);
-  };
-
   return (
     <Container>
       <IsSellingCardList sellingItem={sellingItem} />

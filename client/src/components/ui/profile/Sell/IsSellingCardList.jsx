@@ -56,9 +56,11 @@ function IsSellingCardList({ sellingItem }) {
 
   const onSelling = () => {
     setActive('1');
+    const nextItems = sellingItem.filter((sellingItem) => sellingItem.status <= 2);
   };
   const onSold = async () => {
     setActive('2');
+    const 
   };
   return (
     <Container>
@@ -78,9 +80,9 @@ function IsSellingCardList({ sellingItem }) {
           판매완료
         </StyledBtn>
       </ButtonNav>
-      <div>
+      <CardContainer>
         <IsSellingCard sellingItem={sellingItem} ModalHandler={ModalHandler}></IsSellingCard>
-      </div>
+      </CardContainer>
       <Modal open={isModal} close={ModalHandler} title="상품 관리">
         <ModalProfile>
           <img src={auctionDetail.profileUrl} alt="프로필이미지" />
@@ -103,6 +105,10 @@ function IsSellingCardList({ sellingItem }) {
 export default IsSellingCardList;
 
 const Container = styled.div`
+  width: 100%;
+`;
+
+const CardContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 1rem;
