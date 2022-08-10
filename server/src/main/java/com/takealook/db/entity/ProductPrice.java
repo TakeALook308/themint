@@ -10,6 +10,8 @@ import lombok.ToString;
 @ToString
 public class ProductPrice {
     String roomId;
+    Long memberSeq;
+    String nickname;
     Long productSeq;
     int price;
 }

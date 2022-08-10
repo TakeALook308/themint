@@ -2,6 +2,7 @@ package com.takealook.db.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +12,7 @@ import javax.persistence.Id;
 @Getter
 @Setter
 @Entity
+@DynamicInsert // JPA insert 시 null인 필드 제외
 public class ChatMessage {
 
     @Id
