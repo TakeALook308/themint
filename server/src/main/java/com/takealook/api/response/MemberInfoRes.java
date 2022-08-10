@@ -21,6 +21,7 @@ public class MemberInfoRes {
 	String nickname;
 	String email;
 	String address;
+	String addressDetail;
 	String phone;
 	String profileUrl;
 	int bankCode;
@@ -36,6 +37,7 @@ public class MemberInfoRes {
 				.nickname(member.getNickname())
 				.email(member.getEmail())
 				.address(member.getAddress())
+				.addressDetail(member.getAddressDetail())
 				.phone(member.getPhone())
 				.profileUrl(member.getProfileUrl())
 				.bankCode(member.getBankCode())

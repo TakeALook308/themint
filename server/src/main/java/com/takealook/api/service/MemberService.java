@@ -2,17 +2,22 @@ package com.takealook.api.service;
 
 import com.takealook.api.request.*;
 import com.takealook.db.entity.Member;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface MemberService {
 
     // 회원 가입
     Member createMember(MemberRegisterPostReq memberRegisterPostReq);
 
+    List<Member> getMemberListByWord(String word, Pageable pageable);
+
     // 회원 정보 보기
     Member getMemberByMemberSeq(Long seq);
 
     // 회원 정보 수정
-    void updateMember(Long seq, MemberUpdatePostReq memberUpdatePostReq);
+    void updateMember(Long memberSeq, MemberUpdatePostReq memberUpdatePostReq);
 
     // 비밀번호 변경
     void updateMemberPassword(Long seq, String pwd);
@@ -20,10 +25,12 @@ public interface MemberService {
     // 이메일 체크
     Member getMemberByEmail(String email);
 
+    // 아이디-이메일 체크
+    Member getMemberByMemberIdAndEmail(MemberSetNewPwdCheckPostReq memberSetNewPwdCheckPostReq);
     // 이메일 송신
     int sendEmail(int randNum, String email);
 
-    void setNewPassword(String email, String pwd);
+    int setNewPassword(MemberSetNewPwdPatchReq memberSetNewPwdPatchReq);
 
     // 회원 삭제
     void deleteMember(Long memberSeq);
@@ -39,4 +46,7 @@ public interface MemberService {
 
     // 신뢰도 수정
     void updateMemberScore(MemberScoreUpdatePatchReq memberScoreUpdatePatchReq);
+
+    // 휴대폰 중복체크
+    Member getMemberByPhone(String phone);
 }

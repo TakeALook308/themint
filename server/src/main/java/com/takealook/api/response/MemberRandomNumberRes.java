@@ -1,18 +1,17 @@
 package com.takealook.api.response;
 
-import com.takealook.common.model.response.BaseResponseBody;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class MemberRandomNumberRes extends BaseResponseBody {
+public class MemberRandomNumberRes {
     int randNum;
 
-    public static MemberRandomNumberRes of (Integer statusCode, String message, int randNum) {
+    public static MemberRandomNumberRes of (int randNum) {
         MemberRandomNumberRes res = new MemberRandomNumberRes();
-        res.setStatusCode(statusCode);
-        res.setMessage(message);
         res.setRandNum(randNum);
         return res;
     }
