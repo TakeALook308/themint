@@ -12,6 +12,7 @@ import javax.persistence.Id;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -25,6 +26,7 @@ public class Member{
     String nickname;
     String email;
     String address;
+    String addressDetail;
     String phone;
     String profileUrl;
     int bankCode;

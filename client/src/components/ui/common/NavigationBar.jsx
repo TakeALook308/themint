@@ -7,8 +7,13 @@ import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import SearchIcon from '@mui/icons-material/Search';
 import ChatIcon from '@mui/icons-material/Chat';
+import { useRecoilValue } from 'recoil';
+import { loggedinState, myInformationState } from '../../../atoms';
+import Logo from '../../common/Logo';
 
 function NavigationBar({ url, keyword, categoryName }) {
+  const loggedin = useRecoilValue(loggedinState);
+  const myInformation = useRecoilValue(myInformationState);
   const [search, setSearch] = useState('');
   const onChangeSearch = (e) => {
     e.preventDefault();
@@ -26,16 +31,15 @@ function NavigationBar({ url, keyword, categoryName }) {
   if (
     window.location.pathname.startsWith('/streamings') ||
     window.location.pathname.startsWith('/register') ||
-    window.location.pathname.startsWith('/login')
+    window.location.pathname.startsWith('/login') ||
+    window.location.pathname.startsWith('/help')
   )
     return null;
 
   return (
     <Container>
       <Wrapper>
-        <Link to="/">
-          <NavLogo>더민트</NavLogo>
-        </Link>
+        <Logo />
         <NavList>
           <NavSearch onSubmit={onSubmit}>
             <SearchIcon type="submit" aria-label="search" onClick={onClick} />
@@ -56,15 +60,30 @@ function NavigationBar({ url, keyword, categoryName }) {
             </Link>
           </NavItemText>
           <NavItemIcon>
-            <Link to="/">
-              <ChatIcon />
-            </Link>
-            <Link to="/">
-              <NotificationsNoneIcon />
-            </Link>
-            <Link to="/profile/:userId">
-              <PersonOutlineIcon />
-            </Link>
+            {loggedin && (
+              <>
+                <Link to="/">
+                  <ChatIcon />
+                </Link>
+                <Link to="/">
+                  <NotificationsNoneIcon />
+                </Link>
+                <Link to={`profile/${myInformation.memberId}`}>
+                  <PersonOutlineIcon />
+                </Link>
+              </>
+            )}
+            {!loggedin && (
+              <>
+                <Link to="login">
+                  <p>로그인</p>
+                </Link>
+                |
+                <Link to="register">
+                  <p>회원가입</p>
+                </Link>
+              </>
+            )}
           </NavItemIcon>
         </NavList>
       </Wrapper>
@@ -91,7 +110,12 @@ const Wrapper = styled.nav`
   justify-content: space-between;
   background: ${(props) => props.theme.colors.mainBlack};
   max-width: 1024px;
+  height: 80px;
   margin: 0 auto;
+  > h1 {
+    width: 100px;
+    height: 40px;
+  }
 `;
 
 const NavList = styled.div`

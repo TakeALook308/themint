@@ -8,7 +8,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/effect-coverflow';
-import '../main/SwiperCSS.css';
+import '../../../Routes/Main/SwiperCSS.css';
 
 // import required modules
 import { Navigation } from 'swiper';
