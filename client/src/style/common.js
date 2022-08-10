@@ -7,6 +7,7 @@ export const Container = styled.main`
   margin-right: auto;
   position: relative;
   padding-top: ${(props) => !props.nonMember && '80px'};
+  scroll-behavior: smooth;
 `;
 
 export const MessageWrapper = styled.div`
