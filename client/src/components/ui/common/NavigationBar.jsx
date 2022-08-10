@@ -2,14 +2,11 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-
-import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
-import SearchIcon from '@mui/icons-material/Search';
-import ChatIcon from '@mui/icons-material/Chat';
 import { useRecoilValue } from 'recoil';
 import { loggedinState, myInformationState } from '../../../atoms';
 import Logo from '../../common/Logo';
+import { HiSearch, HiOutlineChat, HiOutlineBell } from 'react-icons/hi';
+import { AiOutlineUser } from 'react-icons/ai';
 
 function NavigationBar({ url, keyword, categoryName }) {
   const loggedin = useRecoilValue(loggedinState);
@@ -42,7 +39,7 @@ function NavigationBar({ url, keyword, categoryName }) {
         <Logo />
         <NavList>
           <NavSearch onSubmit={onSubmit}>
-            <SearchIcon type="submit" aria-label="search" onClick={onClick} />
+            <HiSearch type="submit" aria-label="search" onClick={onClick} />
             <SearchBox
               type="text"
               value={search}
@@ -63,13 +60,13 @@ function NavigationBar({ url, keyword, categoryName }) {
             {loggedin && (
               <>
                 <Link to="/">
-                  <ChatIcon />
+                  <HiOutlineChat size={25} />
                 </Link>
                 <Link to="/">
-                  <NotificationsNoneIcon />
+                  <HiOutlineBell size={25} />
                 </Link>
-                <Link to={`profile/${myInformation.memberSeq}`}>
-                  <PersonOutlineIcon />
+                <Link to={`profile/${myInformation.memberId}`}>
+                  <AiOutlineUser size={25} />
                 </Link>
               </>
             )}

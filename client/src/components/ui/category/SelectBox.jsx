@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { IoCaretDownOutline } from 'react-icons/io5';
 
 const Dropdown = ({ getSortKey }) => {
   const dropdownItems = [
@@ -35,7 +35,7 @@ const Dropdown = ({ getSortKey }) => {
           <DropdownSelect>
             {sortName}
             <span>
-              <ArrowDropDownIcon />
+              <IoCaretDownOutline />
             </span>
           </DropdownSelect>
         </DropdownBody>
