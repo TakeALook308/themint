@@ -13,7 +13,7 @@ const OPENVIDU_SERVER_URL = 'https://i7a308.p.ssafy.io:8443';
 const OPENVIDU_SERVER_SECRET = 'themint';
 
 function StandbyPage() {
-  const memberId = 'lucas';
+  const memberId = 'themint';
   const navigate = useNavigate();
   const { auctionId } = useParams();
   const userInfo = useRecoilValue(myInformationState);

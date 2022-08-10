@@ -7,8 +7,8 @@ import useObserver from '../../utils/hooks/useObserver';
 function InfiniteAuctionList({ getUrl, queryKey, CardComponent, SkeltonCardComponent, text }) {
   const [hasError, setHasError] = useState(false);
   const bottom = useRef(null);
-  let pageNo = 1;
-  const getTargetAuctionList = async ({ pageNo = 1 }) => {
+  let pageNo = 0;
+  const getTargetAuctionList = async ({ pageNo = 0 }) => {
     try {
       const res = await getAuctionList(getUrl(pageNo));
       if (data.length < 1) {
@@ -45,7 +45,7 @@ function InfiniteAuctionList({ getUrl, queryKey, CardComponent, SkeltonCardCompo
 
   return (
     <div>
-      {hasError && <p>{text}</p>}
+      {(hasError || !data?.resultList?.length) && <p>{text}</p>}
       {isLoading && (
         <GridContainer>
           {[1, 2, 3, 4, 5, 6].map((i) => (

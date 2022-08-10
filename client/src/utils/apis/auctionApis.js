@@ -5,6 +5,9 @@ export const auctionListApis = {
   AUCTION_LIST: (word, size, sort) => {
     return (page) => `/api/auction/search?word=${word}&page=${page}&size=${size}&sort=${sort}`;
   },
+  MAIN_CATEGORY_AUCTION_LIST: (size) => {
+    return (page) => `/api/auction/main?page=${page}&size=${size}`;
+  },
   CATEGORY_AUCTION_LIST: (category, size, sort) => {
     return (page) =>
       `/api/auction/category?category-seq=${category}&page=${page}&size=${size}&sort=${sort}`;

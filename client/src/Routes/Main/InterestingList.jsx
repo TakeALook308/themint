@@ -16,17 +16,17 @@ function InterestingList() {
         {myInformation?.nickname ? (
           <h3>{myInformation.nickname}님의 관심 카테고리 경매</h3>
         ) : (
-          <h3>특별한 경매</h3>
+          <h3>추천 경매 목록</h3>
         )}
       </ListHeader>
       <InfiniteAuctionList
-        getUrl={auctionListApis.AUCTION_LIST('', 12, 'startTime')}
+        getUrl={auctionListApis.MAIN_CATEGORY_AUCTION_LIST(9)}
         queryKey={['interestingAuctionList']}
         CardComponent={AuctionCard}
         SkeltonCardComponent={SkeletonAuctionCard}
         text={'경매 목록이 없습니다.'}
+        type={'interest'}
       />
-      {/* <InterestingAuctionList /> */}
     </Wrapper>
   );
 }
