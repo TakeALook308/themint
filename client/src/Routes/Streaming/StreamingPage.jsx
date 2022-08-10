@@ -9,31 +9,42 @@ import { useRecoilValue } from 'recoil';
 import { myInformationState } from '../../atoms';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
-
+let sock;
+let client;
 function StreamingPage(props) {
-  var sock = new SockJS('https://i7a308.p.ssafy.io/api/ws-stomp');
-  let client = Stomp.over(sock);
+  const userInfo = useRecoilValue(myInformationState);
+  const auctionData = { memberId: 'themint' };
+
+  // const [nickname, memberSeq] = userInfo;
   let nickname = userInfo.nickname;
+  let memberSeq = userInfo.memberSeq;
   let roomId = 'test';
   const [chat, setChat] = useState([]);
-  const [price, setPrice] = useState([]);
+  const [priceList, setPriceList] = useState([]);
 
   //처음 접속했을 때
   useEffect(() => {
+    sock = new SockJS('https://i7a308.p.ssafy.io/api/ws-stomp');
+    client = Stomp.over(sock);
     client.connect({}, () => {
       console.log('Connected : ' + roomId);
       //연결 후 데이터 가져오기
-      client.subscribe('/sub/chat/room/' + roomId, function (message) {
-        const messagedto = JSON.parse(message.body);
-        if (Object.keys(messagedto).includes('price')) setPrice((prev) => [...prev, messagedto]);
-        else setChat((prev) => [...prev, messagedto]);
-      });
+      client.subscribe(
+        '/sub/chat/room/' + roomId,
+        function (message) {
+          const messagedto = JSON.parse(message.body);
+          if (Object.keys(messagedto).includes('price'))
+            setPriceList((prev) => [...prev, messagedto]);
+          else setChat((prev) => [...prev, messagedto]);
+        },
+        (err) => {},
+      );
 
       //방 접속 알림 모두에게 쏴주기
       client.send(
         '/pub/chat/message',
         {},
-        JSON.stringify({ type: 0, roomId: roomId, nickname: nickname, memberSeq: 1 }),
+        JSON.stringify({ type: 0, roomId: roomId, nickname: nickname, memberSeq: memberSeq }),
       );
     });
     //종료
@@ -82,11 +93,6 @@ function StreamingPage(props) {
     },
   ]);
 
-  console.log(chat);
-
-  const userInfo = useRecoilValue(myInformationState);
-  const auctionData = { memberId: 'themint' };
-
   return (
     <Stream>
       <Header>
@@ -99,7 +105,16 @@ function StreamingPage(props) {
           <StreamingComponent userInfo={userInfo} auctionData={auctionData} />
         </Section>
         <Aside>
-          <AuctionBidding product={products[nowProduct]} sendPrice={sendPrice} price={price} />
+          <AuctionBidding
+            product={products[nowProduct]}
+            sendPrice={sendPrice}
+            price={priceList}
+            lastPrice={
+              priceList.length !== 0
+                ? priceList[priceList.length - 1].price
+                : products[nowProduct].startPrice
+            }
+          />
           <StreamChat sendMessage={sendMessage} chat={chat} />
         </Aside>
       </Main>
@@ -121,6 +136,10 @@ function StreamingPage(props) {
 // const Aside = styled.aside``;
 
 const Stream = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
   width: 100%;
 `;
 
