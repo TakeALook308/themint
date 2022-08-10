@@ -56,11 +56,11 @@ function IsSellingCardList({ sellingItem }) {
 
   const onSelling = () => {
     setActive('1');
-    const nextItems = sellingItem.filter((sellingItem) => sellingItem.status <= 2);
+    const onSellingItems = sellingItem.filter((sellingItem) => sellingItem.status <= 2);
   };
   const onSold = async () => {
     setActive('2');
-    const 
+    const onSoldItems = sellingItem.filter((sellingItem) => sellingItem.status > 2);
   };
   return (
     <Container>
@@ -81,6 +81,7 @@ function IsSellingCardList({ sellingItem }) {
         </StyledBtn>
       </ButtonNav>
       <CardContainer>
+        <onSellingItems></onSellingItems>
         <IsSellingCard sellingItem={sellingItem} ModalHandler={ModalHandler}></IsSellingCard>
       </CardContainer>
       <Modal open={isModal} close={ModalHandler} title="상품 관리">
