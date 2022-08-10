@@ -18,7 +18,6 @@ function AuctionBidding({ product, sendPrice, price }) {
     return () => clearInterval(countdown);
   }, [seconds]);
 
-  setProductPrice(price[-1].price);
   return (
     <Article>
       <AuctionInfo>
