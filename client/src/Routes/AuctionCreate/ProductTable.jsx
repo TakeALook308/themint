@@ -17,7 +17,7 @@ function ProductTable({ productList, mng, deleteProducts }) {
           </tr>
         </thead>
         <tbody>
-          {productList.length > 0 ? (
+          {productList?.length > 0 ? (
             productList.map((item, i) => (
               <tr key={i}>
                 <td>{mng ? <Minus onClick={() => deleteProducts(i)}>-</Minus> : null}</td>

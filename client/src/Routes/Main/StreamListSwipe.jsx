@@ -22,6 +22,7 @@ function StreamList(props) {
       console.log(e.message);
     },
   });
+  console.log(data, 'main');
 
   return (
     <Wrapper>
@@ -29,7 +30,7 @@ function StreamList(props) {
         <h3>실시간 경매 ON</h3>
       </ListHeader>
       {isLoading && <span>Loading...</span>}
-      {!isLoading && !data.length && <p>실시간 진행중인 경매가 없습니다.</p>}
+      {!isLoading && !data?.length && <p>실시간 진행중인 경매가 없습니다.</p>}
       {data && (
         <SwipeContainer>
           <Swiper

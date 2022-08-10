@@ -2,16 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-function StreamCard({
-  hash,
-  memberSeq,
-  title,
-  startTime,
-  content,
-  auctionImage,
-  profileUrl,
-  nickname,
-}) {
+function StreamCard({ auction }) {
   // const auctions = {
   //   seq: 1,
   //   memberSeq: 1,
@@ -33,24 +24,34 @@ function StreamCard({
   return (
     <Wrapper>
       <ImgContainer>
-        <StyledImg src={auctionImage?.imageUrl} alt={`${title} 썸네일`} width="400" height="300" />
+        <StyledImg
+          src={process.env.REACT_APP_IMAGE_URL + auction.auctionImage?.imageUrl}
+          alt={`${auction.title} 썸네일`}
+          width="400"
+          height="300"
+        />
       </ImgContainer>
       <AuctionInfoContainer>
         <AuctionText>
-          <h4>{title}</h4>
+          <h4>{auction.title}</h4>
           <ProfileCard>
             <StreamProfile>
-              <Link to={`/profile/${memberSeq}`}>
+              <Link to={`/profile/${auction.memberSeq}`}>
                 <picture>
-                  <img src={profileUrl} alt={`${nickname} 프로필 이미지`} width="50" height="50" />
+                  <img
+                    src={auction.profileUrl}
+                    alt={`${auction.nickname} 프로필 이미지`}
+                    width="50"
+                    height="50"
+                  />
                 </picture>
               </Link>
             </StreamProfile>
-            <p>{nickname}</p>
+            <p>{auction.nickname}</p>
           </ProfileCard>
-          <p>{content}</p>
+          <p>{auction.content}</p>
         </AuctionText>
-        <Link to={`/streamings/${hash}`}>
+        <Link to={`/streamings/${auction.hash}`}>
           <StreamGo>
             <p>경매참여</p>
           </StreamGo>
