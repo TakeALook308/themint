@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { instance } from '../../utils/api/api';
 import styled from 'styled-components';
-import IsellingButton from '../../components/ui/profile/Sell/IsSellingButton';
 import IsSellingCardList from '../../components/ui/profile/Sell/IsSellingCardList';
 
 function ProfileSalesHistoryPage({ params }) {
@@ -24,10 +23,9 @@ function ProfileSalesHistoryPage({ params }) {
     setActive(value);
     console.log(active);
   };
-  
+
   return (
     <Container>
-      <IsellingButton sellingItem={sellingItem} getActive={getActive} />
       <IsSellingCardList sellingItem={sellingItem} />
     </Container>
   );
