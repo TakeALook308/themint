@@ -15,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -32,9 +30,6 @@ public class AuctionServiceImpl implements AuctionService {
 
     @Autowired
     AuctionImageRepository auctionImageRepository;
-
-    @PersistenceContext
-    EntityManager entityManager;
 
     @Override
     public Auction createAuction(Long memberSeq, AuctionRegisterPostReq auctionRegisterPostReq) {
@@ -66,7 +61,15 @@ public class AuctionServiceImpl implements AuctionService {
             productRepository.save(product);
         }
 
-        for (AuctionImageRegisterPostReq auctionImageRegisterPostReq : auctionRegisterPostReq.getAuctionImageList()) {
+        List<AuctionImageRegisterPostReq> auctionImageList = auctionRegisterPostReq.getAuctionImageList();
+        System.out.println(auctionImageList.size());
+        if(auctionImageList == null || auctionImageList.size() == 0){
+            auctionImageRepository.save(AuctionImage.builder()
+                    .auctionSeq(auction.getSeq())
+                    .imageUrl("/product/basic1.png")
+                    .build());
+        }
+        for (AuctionImageRegisterPostReq auctionImageRegisterPostReq : auctionImageList) {
             AuctionImage auctionImage = AuctionImage.builder()
                     .auctionSeq(auction.getSeq())
                     .imageUrl(auctionImageRegisterPostReq.getImageUrl())
