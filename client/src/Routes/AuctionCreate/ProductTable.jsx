@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-function ProductTable({ products, mng, deleteProducts }) {
+function ProductTable({ productList, mng, deleteProducts }) {
   return (
     <TableBox>
       <Table>
@@ -17,8 +17,8 @@ function ProductTable({ products, mng, deleteProducts }) {
           </tr>
         </thead>
         <tbody>
-          {products.length > 0 ? (
-            products.map((item, i) => (
+          {productList.length > 0 ? (
+            productList.map((item, i) => (
               <tr key={i}>
                 <td>{mng ? <Minus onClick={() => deleteProducts(i)}>-</Minus> : null}</td>
                 <td>{item.productName}</td>
