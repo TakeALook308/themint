@@ -13,8 +13,8 @@ import { useNavigate } from 'react-router-dom';
 function AuctionCreatePage(props) {
   const navigate = useNavigate();
   const onDrop = (acceptedFiles) => {
-    let temp = new FormData();
-    acceptedFiles.map((item) => temp.append('assents', item, item.name));
+    let temp = [...productList];
+    acceptedFiles.map((item) => temp.push(item));
     onChange({
       target: { name: 'auctionImageList', value: temp },
     });
@@ -24,7 +24,7 @@ function AuctionCreatePage(props) {
 
   const [inputAuction, setInputAuction] = useState({
     categorySeq: 1,
-    auctionImageList: new FormData(),
+    auctionImageList: [],
     title: '',
     content: '',
     startTime: '',
@@ -112,11 +112,10 @@ function AuctionCreatePage(props) {
         </Div>
 
         <Div>
-          {console.log(auctionImageList)}
           <Label>사진 업로드</Label>
           <FileUpload>
             <div {...getRootProps()}>
-              <input {...getInputProps()} multiple="true" />
+              <input {...getInputProps()} />
               {isDragActive ? (
                 <p>Drop the files here ...</p>
               ) : auctionImageList.length === 0 ? (
