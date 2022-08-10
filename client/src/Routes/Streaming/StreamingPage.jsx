@@ -11,7 +11,7 @@ import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 
 function StreamingPage(props) {
-  var sock = new SockJS('http://i7a308.p.ssafy.io/api/ws-stomp');
+  var sock = new SockJS('https://i7a308.p.ssafy.io/api/ws-stomp');
   let client = Stomp.over(sock);
   let nickname = '민서';
   let roomId = 'test';
