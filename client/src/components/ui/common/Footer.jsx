@@ -39,7 +39,7 @@ function Footer(props) {
             <AiOutlineInstagram size={25} />
           </Link>
           <Link to="/">
-            <BsChatLeftDots size={25} />
+            <BsChatLeftDots size={20} />
           </Link>
         </FooterItem>
       </FooterBody>
