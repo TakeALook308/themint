@@ -1,4 +1,4 @@
-import { instance } from '../../utils/api/api';
+import { instance } from '../../utils/apis/api';
 import React, { useEffect, useState, useParams } from 'react';
 import styled from 'styled-components';
 import ReviewCard from '../../components/ui/profile/Review/ReviewCard';

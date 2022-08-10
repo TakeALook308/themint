@@ -12,7 +12,6 @@ function InterestingAuctionList() {
     const res = await axios.get(
       `https://pokeapi.co/api/v2/pokemon?limit=${OFFSET}&offset=${pageParam}`,
     );
-    console.log(res);
     return res?.data;
   };
 
@@ -28,9 +27,9 @@ function InterestingAuctionList() {
       },
     },
   );
-  console.log(data);
 
   const onIntersect = ([entry]) => entry.isIntersecting && fetchNextPage();
+  console.log(data);
 
   useObserver({
     target: bottom,

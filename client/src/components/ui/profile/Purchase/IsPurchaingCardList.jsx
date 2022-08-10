@@ -1,36 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { instance } from '../../../../utils/api/api';
+import { instance } from '../../../../utils/apis/api';
 import styled from 'styled-components';
 import Modal from '../../../common/Modal';
 import IsPurchasingCard from './IsPurchasingCard';
 
-function IsPurchasingCardList() {
+function IsPurchasingCardList({ auctionItems }) {
   const [historySales, setHistorySales] = useState(null);
   const [historySeq, setHistorySeq] = useState(0);
   const [historyDetail, setHistoryDetail] = useState(null);
   const [isModal, setIsModal] = useState(false);
-  const [memberSeq, setMemberSeq] = useState(1);
-
-  // memberSeq를 어디서 가져와야 하지?
-  const getMemberSeq = (value) => {
-    setMemberSeq(value);
-  };
-
-  useEffect(() => {
-    const getSalesAuction = async (url) => {
-      const response = await instance.get(url);
-      return response;
-    };
-    const res = getSalesAuction(`/api/history/sales/${memberSeq}?page${1}=&size=${9}`);
-    res.then((auctionitem) => {
-      setHistorySales(auctionitem.data);
-      console.log(auctionitem.data);
-    });
-  }, [memberSeq]);
-
+  // 모달 열었을 때 상세 보기 API 요청
   const ModalHandler = () => {
     setIsModal((prev) => !prev);
-    setHistorySeq(auctionitem.data.historyseq);
+    setHistorySeq(auctionItems.data.historyseq);
     const getSalesDetail = async (url) => {
       const response = await instance.get(url);
       return response;
@@ -40,6 +22,18 @@ function IsPurchasingCardList() {
       setHistoryDetail(auctionDetail.data);
       console.log(auctionDetail.data);
     });
+  };
+  // 상세보기 요청이 historyDetail에 저장
+  console.log(historyDetail);
+
+  // 버튼에 따른 카드 노출 변경
+  const [active, setActive] = useState('1');
+  const numActive = active * 1;
+  const onSelling = async () => {
+    setActive('1');
+  };
+  const onSold = async () => {
+    setActive('2');
   };
 
   // API 확인후 삭제
@@ -58,7 +52,6 @@ function IsPurchasingCardList() {
     profileUrl:
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiiGVRNg8egZNHf7d7-jeEA3JKgNTkStDZPQ&usqp=CAU',
   };
-
   const auctionDetail = {
     nickname: '미노',
     remitName: '민호', // 입금자명
@@ -73,14 +66,30 @@ function IsPurchasingCardList() {
 
   return (
     <Container>
-      <div>
+      <ButtonNav>
+        <StyledBtn
+          key={1}
+          className={active === '1' ? 'active' : undefined}
+          id={'1'}
+          onClick={onSelling}>
+          진행중
+        </StyledBtn>
+        <StyledBtn
+          key={2}
+          className={active === '2' ? 'active' : undefined}
+          id={'2'}
+          onClick={onSold}>
+          구매완료
+        </StyledBtn>
+      </ButtonNav>
+      <CardContainer>
         <IsPurchasingCard
           historySales={historySales}
           auctionitem={auctionitem}
           ModalHandler={ModalHandler}
           key={historySeq}
         />
-      </div>
+      </CardContainer>
       <Modal open={isModal} close={ModalHandler} title="상품 관리">
         <ModalProfile>
           <img src={auctionDetail.profileUrl} alt="프로필이미지" />
@@ -108,11 +117,14 @@ function IsPurchasingCardList() {
 export default IsPurchasingCardList;
 
 const Container = styled.div`
+  width: 100%;
+`;
+
+const CardContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 1rem;
 `;
-
 const ModalProfile = styled.div`
   padding-left: 20px;
   width: 100%;
@@ -138,5 +150,43 @@ const ModalMain = styled.main`
   height: 140px;
   > p {
     margin-bottom: 15px;
+  }
+`;
+
+const ButtonNav = styled.nav`
+  width: 100%;
+  display: flex;
+  margin-bottom: 50px;
+`;
+
+const StyledBtn = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0px 10px 0px;
+  font-size: 16px;
+  width: 13%;
+  height: 40px;
+  margin-right: 20px;
+  color: ${(props) => props.theme.colors.white};
+  background-color: ${(props) => props.theme.colors.mainBlack};
+  border: 2px solid ${(props) => props.theme.colors.white};
+  border-radius: 24px;
+  &:link {
+    transition: 0.8s;
+    text-decoration: none;
+  }
+  &:hover {
+    color: ${(props) => props.theme.colors.subMint};
+    border-color: ${(props) => props.theme.colors.subMint};
+    cursor: pointer;
+  }
+
+  &.active {
+    font-weight: 900;
+    color: ${(props) => props.theme.colors.mainBlack};
+    background-color: ${(props) => props.theme.colors.subMint};
+    border-color: ${(props) => props.theme.colors.subMint};
+    position: relative;
   }
 `;

@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { ImCross } from 'react-icons/im';
-import { instance } from '../../../../utils/api/api';
+import { instance } from '../../../../utils/apis/api';
 
 function InterestKeyWordCard({ keyword }) {
   const [keywordName, setKeywordName] = useState('');
 
-  const onClick = (e) => {
-    console.log(e.target.parentElement.parentElement.parentElement.innerText);
-    setKeywordName(e);
+  const onClick = () => {
+    console.log(keyword);
+    setKeywordName(keyword);
     const keyword_name = keywordName;
+    console.log(keyword_name);
     const deleteInterest = async (url) => {
       const response = await instance.delete(url);
       return response;

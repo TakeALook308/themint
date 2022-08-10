@@ -3,8 +3,6 @@ import org.apache.tools.ant.filters.ReplaceTokens
 buildscript {
 	ext {
 		springBootVer = '2.5.6'
-		querydslVer = '5.0.0'
-		querydslPluginVer = '1.0.10'
 		springDependencyMgmtVer = '1.0.11'
 		springLoadedVer = '1.2.8'
 		nodePluginVer = '1.3.1'
@@ -12,14 +10,12 @@ buildscript {
 }
 
 plugins {
-	id 'org.springframework.boot' version "${springBootVer}"
-	id 'io.spring.dependency-management' version "${springDependencyMgmtVer}.RELEASE"
+	id 'org.springframework.boot' version '2.5.6'
+	id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 	id 'com.github.node-gradle.node' version '2.2.3'
-	id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
 	id 'java'
 }
 
-apply plugin: 'com.ewerk.gradle.plugins.querydsl'
 
 group = 'com.takealook'
 version = '0.0.1-SNAPSHOT'
@@ -36,20 +32,22 @@ repositories {
 	maven { url 'https://repo.spring.io/snapshot' }
 	maven { url 'https://repo.spring.io/milestone' }
 	maven { url "https://repo.spring.io/libs-release" }
-	maven { url "https://repo.maven.apache.org/maven2" }
+	maven { url "https://repo.maven.apache.org/m" }
 	maven { url "https://build.shibboleth.net/nexus/content/repositories/releases" }
 }
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("org.springframework.boot:spring-boot-starter-websocket")
 	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("org.springframework.boot:spring-boot-starter-jdbc")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.springframework.boot:spring-boot-starter-jdbc")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.plugin:spring-plugin-core:2.0.0.RELEASE")
 	testImplementation("org.springframework.security:spring-security-test")
 	annotationProcessor("org.springframework.boot:spring-boot-starter-data-jpa")
-	runtimeOnly("mysql:mysql-connector-java")
+//	runtimeOnly("mysql:mysql-connector-java")
+	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.29'
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 	// test 관련
@@ -61,11 +59,6 @@ dependencies {
 	implementation("org.apache.commons:commons-collections4:4.4")
 	implementation("org.apache.commons:commons-lang3:3.9")
 
-	implementation("com.querydsl:querydsl-jpa:${querydslVer}")
-	implementation("com.querydsl:querydsl-apt:${querydslVer}")
-	// QueryDSL 버전 명시
-	implementation("com.querydsl:querydsl-core:${querydslVer}")
-	annotationProcessor("com.querydsl:querydsl-apt:${querydslVer}:jpa")
 
 	implementation("com.squareup.retrofit2:retrofit:2.7.1")
 	implementation("com.squareup.retrofit2:converter-jackson:2.7.1")
@@ -95,45 +88,30 @@ dependencies {
 
 	testCompileOnly('org.springframework.boot:spring-boot-starter-test')
 
-	// 이메일 전송 위해
-	// https://mvnrepository.com/artifact/javax.mail/mail
-//	implementation group: 'javax.mail', name: 'mail', version: '1.4'
+	// data format
+	implementation('com.fasterxml.jackson.datatype:jackson-datatype-jdk8')
+	implementation('com.fasterxml.jackson.datatype:jackson-datatype-jsr310')
+	implementation('com.fasterxml.jackson.core:jackson-databind:2.12.4')
+
+	// email
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
+	// web socket
+	implementation("org.springframework.boot:spring-boot-starter-websocket")
+	// STOMP
+	implementation 'org.webjars:stomp-websocket:2.3.3-1'
+	// redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	// embedded redis
+	implementation 'it.ozimov:embedded-redis:0.7.2'
+	annotationProcessor(
+			"javax.persistence:javax.persistence-api",
+			"javax.annotation:javax.annotation-api")
+	implementation("org.projectlombok:lombok:1.18.20")
+	annotationProcessor("org.projectlombok:lombok:1.18.20")
+	// S3
+	implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.3.1'
 }
-
-//querydsl 추가 시작
-def querydslDir = 'src/main/generated'
-querydsl {
-	jpa = true
-	querydslSourcesDir = querydslDir
-	//library = "com.querydsl:querydsl-apt"
-}
-
-sourceSets {
-//    main {
-//        java {
-//            srcDirs = ['src/main/java', querydslDir]
-//        }
-//    }
-	main.java.srcDir querydslDir
-}
-configurations {
-	querydsl.extendsFrom compileClasspath
-}
-
-compileQuerydsl {
-	options.annotationProcessorPath = configurations.querydsl
-}
-
-tasks.withType(JavaCompile) {
-	options.generatedSourceOutputDirectory = file(querydslDir)
-}
-
-clean.doLast {
-	file(querydslDir).deleteDir()
-}
-//querydsl 추가 끝
 
 tasks {
 	processResources {
@@ -156,12 +134,12 @@ configurations {
 	providedRuntime
 }
 
-task webpack(type: NpmTask, dependsOn: 'npmInstall') {
-	args = ['run','build']
-}
+//task webpack(type: NpmTask, dependsOn: 'npmInstall') {
+//   args = ['run','build']
+//}
 
 // processResources is a Java task. Run the webpack bundling before this task using the 'build' task in the package.json
-processResources.dependsOn 'webpack'
+//processResources.dependsOn 'webpack'
 
 //set build time and inject value to application.properties
 def buildTime() {

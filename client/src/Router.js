@@ -53,13 +53,13 @@ function Router() {
           <Route path="accounts/withdrawl" element={<AccountsWithdrawl />} />
           <Route path="talks" element={<Talks />} />
           <Route path="puchase-history/:purchaseId" element={<PurchaseHistoryDetail />} />
-          <Route path="standby/:roomNumber" element={<StandBy />} />
-          <Route path="/auctions/new" element={<AuctionCreate />} />
-          <Route path="streamings/:roomNumber" element={<Streaming />} />
+          <Route path="standby/:auctionId" element={<StandBy />} />
+          <Route path="auctions/new" element={<AuctionCreate />} />
+          <Route path="streamings/:auctionId" element={<Streaming />} />
         </Route>
         <Route path="main" element={<Main />} />
         <Route path="categories/:categoryName" element={<Category />} />
-        <Route path="auctions/:auctionsId" element={<AuctionDetail />} />
+        <Route path="auctions/:auctionId" element={<AuctionDetail />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />

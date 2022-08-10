@@ -5,10 +5,10 @@ import { Link } from 'react-router-dom';
 function IsPurchasingCard({ ModalHandler, auctionitem }) {
   // TODO: 데이터 교체하기
 
-  const [statusName, setStatusName] = useState(0);
+  const [statusNum, setStatusNum] = useState(0);
   useEffect(() => {
     console.log(auctionitem.status);
-    setStatusName(auctionitem.status);
+    setStatusNum(auctionitem.status);
   });
 
   const auctionstr = ['판매중', '입금대기', '발송대기', '구매완료', '', '거래취소'];
@@ -46,12 +46,12 @@ function IsPurchasingCard({ ModalHandler, auctionitem }) {
           </div>
         </Link>
       </div>
-      {statusName > 3 && (
+      {statusNum > 3 && (
         <Plus type="button" onClick={ModalHandler}>
           구매 정보 입력
         </Plus>
       )}
-      {4 > statusName && (
+      {4 > statusNum && (
         <Plus type="button" onClick={ModalHandler}>
           배송 확인 리뷰
         </Plus>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { NavLink, Route, Routes, useParams } from 'react-router-dom';
 import ProfileCard from '../../components/ui/profile/ProfileCard';
-import { instance } from '../../utils/api/api';
+import { instance } from '../../utils/apis/api';
 import ProfileReviewsPage from '../ProfileReviews/ProfileReviewsPage';
 import ProfileSalesHistoryPage from '../ProfileSalesHistory/ProfileSalesHistoryPage';
 import ProfilePurchaseHistoryPage from '../ProfilePurchaseHistory/ProfilePurchaseHistoryPage';
@@ -11,7 +11,6 @@ import ProfileInterestsPage from '../ProfileInterests/ProfileInterestsPage';
 function ProfilePage(props) {
   const params = useParams();
   console.log(params.userId);
-
   useEffect(() => {
     const getProfile = async (url) => {
       const response = await instance.get(url);

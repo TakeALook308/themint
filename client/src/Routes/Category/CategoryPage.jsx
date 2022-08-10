@@ -4,7 +4,7 @@ import CateCardList from '../../components/ui/category/CateCardList';
 import CateList from '../../components/ui/category/CateList';
 import Dropdown from '../../components/ui/category/SelectBox';
 import { Container } from '../../style/common';
-import { getAuctionList } from '../../utils/api/getAuctionApi';
+import { getAuctionList } from '../../utils/apis/auctionApis';
 
 function CategoryPage({ categoryName }) {
   const [categorySeq, setCategorySeq] = useState('0');
@@ -22,8 +22,9 @@ function CategoryPage({ categoryName }) {
       `/api/auction/category?category-seq=${categorySeq}&page=${0}&size=${9}&sort=${sortKey}`,
     );
     res.then((auctions) => {
-      setAuctions(auctions.data);
-      console.log(auctions.data);
+      console.log(auctions.data.resultList);
+      setAuctions(auctions.data.resultList);
+      console.log(auctions);
     });
   }, [sortKey, categorySeq]);
   return (

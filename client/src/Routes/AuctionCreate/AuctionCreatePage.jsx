@@ -1,42 +1,56 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Container, Title } from '../../style/style';
 import { categories } from '../../utils/constants/constant';
 import ActiveInputBox from '../../components/common/ActiveInputBox';
-import ProductTable from '../../components/common/ProductTable';
+import ProductTable from './ProductTable';
 import Modal from '../../components/common/Modal';
 import { useDropzone } from 'react-dropzone';
+import { auctionApis } from '../../utils/apis/auctionApi';
+import { postData } from '../../utils/apis/api';
+import { useNavigate } from 'react-router-dom';
 
 function AuctionCreatePage(props) {
-  const [im, setIm] = useState([]);
+  const navigate = useNavigate();
   const onDrop = (acceptedFiles) => {
-    let temp = [...im];
+    let temp = [...productList];
     acceptedFiles.map((item) => temp.push(item));
-    setIm(temp);
+    onChange({
+      target: { name: 'auctionImageList', value: temp },
+    });
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   const [inputAuction, setInputAuction] = useState({
     categorySeq: 1,
-    auctionImages: [],
+    auctionImageList: [],
     title: '',
     content: '',
     startTime: '',
-    products: [],
+    productList: [],
   });
 
-  const { categorySeq, auctionImages, title, content, startTime, products } = inputAuction;
-
+  const { categorySeq, auctionImageList, title, content, productList } = inputAuction;
+  const startTime =
+    inputAuction.startTime.substring(0, 10) + 'T' + inputAuction.startTime.substring(11, 16);
   const [reservation, setReservation] = useState(false);
   const [productName, setProductName] = useState('');
   const [startPrice, setStartPrice] = useState('');
 
   const onChange = ({ target: { name, value } }) => {
-    setInputAuction({
-      ...inputAuction,
-      [name]: value,
-    });
+    if (name === 'startTime') {
+      const time = value.substring(0, 10) + ' ' + value.substring(11) + ':00';
+      setInputAuction({
+        ...inputAuction,
+        [name]: time,
+      });
+    } else {
+      setInputAuction({
+        ...inputAuction,
+        [name]: value,
+      });
+    }
   };
 
   const isChecked = (checked) => {
@@ -49,7 +63,9 @@ function AuctionCreatePage(props) {
 
   const createProducts = (e) => {
     if (productName && startPrice) {
-      onChange({ target: { name: 'products', value: [...products, { productName, startPrice }] } });
+      onChange({
+        target: { name: 'productList', value: [...productList, { productName, startPrice }] },
+      });
       setProductName('');
       setStartPrice('');
     }
@@ -57,7 +73,7 @@ function AuctionCreatePage(props) {
 
   const deleteProducts = (index) => {
     onChange({
-      target: { name: 'products', value: products.filter((product, i) => index !== i) },
+      target: { name: 'productList', value: productList.filter((product, i) => index !== i) },
     });
   };
 
@@ -65,12 +81,25 @@ function AuctionCreatePage(props) {
   const ModalHandler = () => {
     setIsModal((prev) => !prev);
   };
-
   return (
     <Container>
       <Title>경매 생성</Title>
-      <p>{inputAuction.title}</p>
-      <form action="">
+
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          postData(auctionApis.AUCTION_CREATE_API, inputAuction)
+            .then(() => {
+              console.log(inputAuction);
+              alert('성공');
+              // navigate(`/main`);
+            })
+            .catch(() => {
+              console.log(inputAuction);
+              alert('실패');
+              // navigate(`/main`);
+            });
+        }}>
         <Div>
           <Label>카테고리</Label>
           <Select name="categorySeq" value={categorySeq} onChange={onChange}>
@@ -86,12 +115,17 @@ function AuctionCreatePage(props) {
           <Label>사진 업로드</Label>
           <FileUpload>
             <div {...getRootProps()}>
-              {console.log(im)}
               <input {...getInputProps()} />
               {isDragActive ? (
                 <p>Drop the files here ...</p>
+              ) : auctionImageList.length === 0 ? (
+                <div>파일을 추가해주세요</div>
               ) : (
-                <p>Drag 'n' drop some files here, or click to select files</p>
+                <div>
+                  {/* {auctionImageList.map((item, i) => (
+                    <p key={i}>{item.path}</p>
+                  ))} */}
+                </div>
               )}
             </div>
           </FileUpload>
@@ -140,13 +174,13 @@ function AuctionCreatePage(props) {
 
         <Div>
           <Label>
-            상품 ({products.length})
+            상품 ({productList.length})
             <Plus type="button" onClick={ModalHandler}>
               +
             </Plus>
           </Label>
 
-          <ProductTable products={products} />
+          <ProductTable productList={productList} />
         </Div>
         <SubmitBox>
           <button type="submit">생성</button>
@@ -154,8 +188,11 @@ function AuctionCreatePage(props) {
       </form>
 
       <Modal open={isModal} close={ModalHandler} title="상품 관리">
-        <Label>상품 ({products.length})</Label>
-        <ProductTable products={products} mng={true} deleteProducts={deleteProducts}></ProductTable>
+        <Label>상품 ({productList.length})</Label>
+        <ProductTable
+          productList={productList}
+          mng={true}
+          deleteProducts={deleteProducts}></ProductTable>
         <Label>이름</Label>
         <ActiveInputBox
           placeholder="이름 입력"

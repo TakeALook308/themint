@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { instance } from '../../utils/api/api';
+import { instance } from '../../utils/apis/api';
 import styled from 'styled-components';
 import IsSellingCardList from '../../components/ui/profile/Sell/IsSellingCardList';
 

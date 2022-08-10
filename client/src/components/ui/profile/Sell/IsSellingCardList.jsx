@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { instance } from '../../../../utils/api/api';
+import { instance } from '../../../../utils/apis/api';
 import styled from 'styled-components';
 import IsSellingCard from './IsSellingCard';
 import Modal from '../../../common/Modal';
@@ -81,7 +81,6 @@ function IsSellingCardList({ sellingItem }) {
         </StyledBtn>
       </ButtonNav>
       <CardContainer>
-        <onSellingItems></onSellingItems>
         <IsSellingCard sellingItem={sellingItem} ModalHandler={ModalHandler}></IsSellingCard>
       </CardContainer>
       <Modal open={isModal} close={ModalHandler} title="상품 관리">

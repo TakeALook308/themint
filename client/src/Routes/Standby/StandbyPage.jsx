@@ -13,7 +13,7 @@ const OPENVIDU_SERVER_URL = 'https://i7a308.p.ssafy.io:8443';
 const OPENVIDU_SERVER_SECRET = 'themint';
 
 function StandbyPage() {
-  const memberId = 'ney9083';
+  const memberId = 'mint308';
   const navigate = useNavigate();
   const { auctionId } = useParams();
   const userInfo = useRecoilValue(myInformationState);
@@ -24,9 +24,9 @@ function StandbyPage() {
   const OV = new OpenVidu();
   const testSession = OV.initSession();
 
-  const getToken = (curSessionId) => {
+  const getToken = async (curSessionId) => {
     console.log('===== 세션 연결 중 : ', curSessionId);
-    return createSession(curSessionId).then((sessionId) => createToken(sessionId));
+    return await createSession(curSessionId).then((sessionId) => createToken(sessionId));
   };
 
   const standbyJoin = (standbySession, nickName) => {
@@ -136,7 +136,7 @@ function StandbyPage() {
   });
 
   useEffect(() => {
-    standbyJoin(testSession, userInfo.memberId);
+    standbyJoin(testSession, userInfo.nickname);
   }, []);
 
   useEffect(() => {
@@ -144,6 +144,7 @@ function StandbyPage() {
       setVideo(1);
     }
   }, [publisher]);
+
   const videoControll = (num) => {
     setVideo(num);
     publisher.publishVideo(!publisher.stream.videoActive);
@@ -153,6 +154,7 @@ function StandbyPage() {
     leaveSession();
     navigate(`/streamings/${auctionId}`);
   };
+
   return (
     <Container>
       <AuctionCreatorVideoContainer>
