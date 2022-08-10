@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * 멤버 관련 비즈니스 로직 처리를 위한 서비스 구현
@@ -29,6 +30,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Member createMember(MemberRegisterPostReq memberRegisterPostReq) {
+        int randomIdx = new Random().nextInt(6);
+        String profileUrl = "/member/basic" + randomIdx + ".png";
         Member member = Member.builder()
                 .memberId(memberRegisterPostReq.getMemberId())
                 .pwd(passwordEncoder.encode(memberRegisterPostReq.getPwd()))
@@ -40,6 +43,7 @@ public class MemberServiceImpl implements MemberService {
                 .phone(memberRegisterPostReq.getPhone())
                 .noticeKakao(memberRegisterPostReq.getNoticeKakao())
                 .noticeEmail(memberRegisterPostReq.getNoticeEmail())
+                .profileUrl(profileUrl) // 기본이미지
                 .build();
         return memberRepository.save(member);
     }

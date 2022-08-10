@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -70,7 +71,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(), memberService)) //HTTP 요청에 JWT 토큰 인증 필터를 거치도록 필터를 추가
                 .authorizeRequests()
-                .antMatchers("/api/keyword", "/api/keyword/{keywordName}", "api/member/my", "api/history/purchase").authenticated()       //인증이 필요한 URL과 필요하지 않은 URL에 대하여 설정
+                .antMatchers(HttpMethod.PATCH, "/api/member").authenticated()
+                .antMatchers(HttpMethod.PATCH, "/api/member/img").authenticated()
+                .antMatchers(HttpMethod.PATCH, "/api/member/password").authenticated()
+                .antMatchers(HttpMethod.DELETE, "/api/member").authenticated()
+                .antMatchers(HttpMethod.GET, "/api/member/info").authenticated()
+                .antMatchers("/api/interest/*").authenticated()
+                .antMatchers(HttpMethod.GET, "/api/history/sales/detail/*").authenticated()
+                .antMatchers(HttpMethod.GET, "/api/history/purchase/*").authenticated()
+                .antMatchers(HttpMethod.PATCH, "/api/delivery/*").authenticated()
+                .antMatchers(HttpMethod.PATCH, "/api/product/remit/*").authenticated()
+                .antMatchers(HttpMethod.POST, "/api/review").authenticated()
+                .antMatchers(HttpMethod.POST, "/api/auction").authenticated()
+                .antMatchers(HttpMethod.PATCH, "/api/auction").authenticated()
+                .antMatchers(HttpMethod.DELETE, "/api/auction/*").authenticated()
+                .antMatchers(HttpMethod.POST, "/api/chat/*").authenticated()
+                .antMatchers(HttpMethod.GET, "/api/chat/*").authenticated()//인증이 필요한 URL과 필요하지 않은 URL에 대하여 설정
                 .anyRequest().permitAll()
                 .and().cors();
     }
