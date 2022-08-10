@@ -108,7 +108,7 @@ public class AuctionServiceImpl implements AuctionService {
         return auctionList;
     }
 
-    // 인기순, 최신순 정렬 검색 - startTime 현재시간보다 큰 것만
+    // 인기순, 최신순 정렬 검색 - startTime 현재시간보다 이후거나 현재 진행 중인 것들
     @Override
     public List<Auction> getAuctionList(String word, Pageable pageable) {
         List<Auction> auctionList = null;
@@ -116,11 +116,11 @@ public class AuctionServiceImpl implements AuctionService {
         if (word == null) {
             word = "";
         }
-        auctionList = auctionRepository.findAllByTitleContainsOrContentContainsAndStartTimeAfter(word, word, currentTime, pageable);
+        auctionList = auctionRepository.findAllByTitleContainsOrContentContainsAndStartTimeAfterOrStatus(word, word, currentTime, 1, pageable);
         return auctionList;
     }
 
-    // 판매자 신뢰도순 정렬 검색 - startTime 현재시간보다 큰 것만
+    // 판매자 신뢰도순 정렬 검색 - startTime 현재시간보다 이후거나 현재 진행 중인 것들
     @Override
     public List<Auction> getAuctionListOrderByScore(String word, Pageable pageable) {
         List<Auction> auctionList = null;
@@ -128,7 +128,7 @@ public class AuctionServiceImpl implements AuctionService {
         if (word == null) {
             word = "";
         }
-        auctionList = auctionRepository.findAllByTitleOrContentContainsAndStartTimeAfterOrderByMemberScore(word, currentTime, pageable);
+        auctionList = auctionRepository.findAllByTitleOrContentContainsAndStartTimeAfterOrderByMemberScore(word, currentTime,1, pageable);
         return auctionList;
     }
 
@@ -137,9 +137,9 @@ public class AuctionServiceImpl implements AuctionService {
         String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         List<Auction> auctionList = null;
         if (categorySeq == 0) { // 전체 조회
-            auctionList = auctionRepository.findAllByStartTimeAfterOrderByMemberScore(currentTime, pageable);
+            auctionList = auctionRepository.findAllByStartTimeAfterOrderByMemberScore(currentTime, 1, pageable);
         } else {
-            auctionList = auctionRepository.findAllByCategorySeqAndStartTimeAfterOrderByMemberScore(categorySeq, currentTime, pageable);
+            auctionList = auctionRepository.findAllByCategorySeqAndStartTimeAfterOrderByMemberScore(categorySeq, currentTime, 1, pageable);
         }
         return auctionList;
     }
@@ -149,9 +149,9 @@ public class AuctionServiceImpl implements AuctionService {
         String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         List<Auction> auctionList = null;
         if (categorySeq == 0) { // 전체 조회
-            auctionList = auctionRepository.findAllByStartTimeAfter(currentTime, pageable);
+            auctionList = auctionRepository.findAllByStatusOrStartTimeAfter(1, currentTime, pageable);
         } else {
-            auctionList = auctionRepository.findAllByCategorySeqAndStartTimeAfter(categorySeq, currentTime, pageable);
+            auctionList = auctionRepository.findAllByCategorySeqAndStartTimeAfterOrStatus(categorySeq, currentTime, 1, pageable);
         }
         return auctionList;
     }
