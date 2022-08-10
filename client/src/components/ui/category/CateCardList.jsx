@@ -55,7 +55,6 @@ export default CateCardList;
 
 const Container = styled.main`
   margin: auto;
-  margin-bottom: 10px;
   width: 100%;
 `;
 

@@ -17,7 +17,7 @@ const NavStyle = styled(NavLink)`
   align-items: center;
   justify-content: center;
   color: ${(props) => props.theme.colors.white};
-  width: 252px;
+  width: 256px;
   height: 36px;
   font-size: 16px;
   font-weight: 400;
