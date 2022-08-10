@@ -13,7 +13,7 @@ import Stomp from 'stompjs';
 function StreamingPage(props) {
   var sock = new SockJS('https://i7a308.p.ssafy.io/api/ws-stomp');
   let client = Stomp.over(sock);
-  let nickname = '민서';
+  let nickname = userInfo.nickname;
   let roomId = 'test';
   const [chat, setChat] = useState([]);
   const [price, setPrice] = useState([]);
