@@ -47,6 +47,7 @@ public class MemberController {
 
     @Autowired
     S3FileService s3FileService;
+
     // 회원 가입
     @PostMapping
     public ResponseEntity<?> registerMember(@RequestBody MemberRegisterPostReq memberRegisterPostReq) {
@@ -75,14 +76,17 @@ public class MemberController {
 
     // 회원 목록 검색
     @GetMapping
-    public ResponseEntity<List<MemberListEntityRes>> getMemberList(@RequestParam(value = "word", required = false) String word, @RequestParam("page") int page, @RequestParam("size") int size) {
+    public ResponseEntity<MemberListRes> getMemberList(@RequestParam(value = "word", required = false) String word, @RequestParam("page") int page, @RequestParam("size") int size) {
         List<MemberListEntityRes> memberListEntityResList = new ArrayList<>();
+        Boolean hasMore = false;
         Pageable pageable = PageRequest.of(page, size, Sort.by("score").descending());
         List<Member> memberList = memberService.getMemberListByWord(word, pageable);
-        for (Member member : memberList){
+        List<Member> hasMoreList = memberService.getMemberListByWord(word, PageRequest.of(page + 1, size, Sort.by("score").descending()));
+        if (hasMoreList.size() != 0) hasMore = true;
+        for (Member member : memberList) {
             memberListEntityResList.add(MemberListEntityRes.of(member));
         }
-        return ResponseEntity.status(200).body(memberListEntityResList);
+        return ResponseEntity.status(200).body(MemberListRes.of(memberListEntityResList, hasMore));
     }
 
     // 내 정보 조회

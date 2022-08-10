@@ -73,10 +73,10 @@ public class ChatRoomServiceImpl implements ChatRoomService{
         redisMessageListener.addMessageListener(redisSubscriber, topic);
         topics.put(roomId, topic);
         // 이전 메시지 출력
-        List<ChatMessage> messages = chatMessageRepository.getChatMessagesByRoomId(roomId);
-        for (ChatMessage message: messages) {
-            redisPublisher.publish(topic, message);
-        }
+//        List<ChatMessage> messages = chatMessageRepository.getChatMessagesByRoomId(roomId);
+//        for (ChatMessage message: messages) {
+//            redisPublisher.publish(topic, message);
+//        }
     }
 
     // 1:1 대화 내역 보기
