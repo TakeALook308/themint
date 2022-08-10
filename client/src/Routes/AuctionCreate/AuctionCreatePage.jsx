@@ -6,8 +6,8 @@ import ActiveInputBox from '../../components/common/ActiveInputBox';
 import ProductTable from './ProductTable';
 import Modal from '../../components/common/Modal';
 import { useDropzone } from 'react-dropzone';
-import { auctionApis } from '../../utils/api/auctionApi';
-import { postData } from '../../utils/api/api';
+import { auctionApis } from '../../utils/apis/auctionApi';
+import { postData } from '../../utils/apis/api';
 import { useNavigate } from 'react-router-dom';
 
 function AuctionCreatePage(props) {
@@ -81,32 +81,10 @@ function AuctionCreatePage(props) {
   const ModalHandler = () => {
     setIsModal((prev) => !prev);
   };
-  const [filett, setFilett] = useState('');
-
   return (
     <Container>
       <Title>경매 생성</Title>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          postData(auctionApis.AUCTION_CREATE_API, filett)
-            .then(() => {
-              console.log(inputAuction);
-              alert('성공');
-              // navigate(`/main`);
-            })
-            .catch(() => {
-              console.log(inputAuction);
-              alert('실패');
-              // navigate(`/main`);
-            });
-        }}>
-        <input type="file" multiple="true" onChange={(e) => setFilett(e.target.value)} />
-        <input
-          type="submit
-        "
-        />
-      </form>
+
       <form
         onSubmit={(e) => {
           e.preventDefault();
