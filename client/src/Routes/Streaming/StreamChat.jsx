@@ -25,8 +25,10 @@ function StreamChat({ sendMessage, chat }) {
       />
       <button
         onClick={() => {
-          sendMessage(chatMessage);
-          setChatMessage('');
+          if (chatMessage) {
+            sendMessage(chatMessage);
+            setChatMessage('');
+          }
         }}>
         send
       </button>
