@@ -196,9 +196,6 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member getMemberByMemberId(String memberId) {
         Member member = memberRepository.findByMemberId(memberId);
-        if (member == null) {
-            throw new MemberNotFoundException("member with memberID " + memberId + " not found", ErrorCode.MEMBER_NOT_FOUND);
-        }
         return member;
     }
 
@@ -214,9 +211,6 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member getMemberByEmail(String email) {
         Member member = memberRepository.findByEmail(email);
-        if (member == null) {
-            throw new MemberNotFoundException("member with email " + email + " not found", ErrorCode.MEMBER_NOT_FOUND);
-        }
         return member;
     }
 
@@ -232,9 +226,6 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member getMemberByPhone(String phone) {
         Member member = memberRepository.findByPhone(phone);
-        if (member == null) {
-            throw new MemberNotFoundException("member with phone " + phone + " not found", ErrorCode.MEMBER_NOT_FOUND);
-        }
         return member;
     }
 
@@ -266,7 +257,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public String FindMemberId(MemberFindMemberIdReq memberFindMemberIdReq) {
+    public String findMemberId(MemberFindMemberIdReq memberFindMemberIdReq) {
         String memberName = memberFindMemberIdReq.getMemberName();
         String phone = memberFindMemberIdReq.getPhone();
         Member member = memberRepository.findByMemberNameAndPhone(memberName, phone);

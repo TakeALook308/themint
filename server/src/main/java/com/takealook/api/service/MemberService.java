@@ -47,7 +47,7 @@ public interface MemberService {
     Member getMemberByNickname(String nickname);
 
     // 아이디 찾기
-    String FindMemberId(MemberFindMemberIdReq memberFindMemberIdReq);
+    String findMemberId(MemberFindMemberIdReq memberFindMemberIdReq);
 
     // 신뢰도 수정
     void updateMemberScore(Long memberSeq, int score);

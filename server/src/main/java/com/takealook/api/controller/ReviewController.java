@@ -47,7 +47,7 @@ public class ReviewController {
         int score = reviewRegisterPostReq.getScore();
         if(score < 3) {
             memberService.updateMemberScore(reviewRegisterPostReq.getReceiverSeq(), -score);
-        } else if(score > 5){
+        } else if(score > 3){
             memberService.updateMemberScore(reviewRegisterPostReq.getReceiverSeq(), score);
         }
         reviewService.registerReview(writerSeq, reviewRegisterPostReq);

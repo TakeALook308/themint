@@ -127,10 +127,10 @@ public class MemberController {
         Long memberSeq = memberDetails.getMemberSeq();
         Member member = memberService.getMemberByMemberSeq(memberSeq);
         if (member != null) {
-            memberService.updateMember(memberSeq, memberUpdatePostReq);
             if((member.getAccountNo() == null || member.getAccountNo().length() == 0) && memberUpdatePostReq.getAccountNo().length() != 0 ){ // 계좌번호 원래 없었는데 입력하면 신뢰도 +3
                 memberService.updateMemberScore(memberSeq, 3);
             }
+            memberService.updateMember(memberSeq, memberUpdatePostReq);
             return ResponseEntity.status(200).body("success");
         } else {
             throw new MemberNotFoundException("member not found", ErrorCode.MEMBER_NOT_FOUND);
@@ -170,7 +170,6 @@ public class MemberController {
     public ResponseEntity<?> checkEmail(@RequestBody MemberSetNewPwdCheckPostReq memberSetNewPwdCheckPostReq) {
         // 아이디-이메일 체크
         Member member = memberService.getMemberByMemberIdAndEmail(memberSetNewPwdCheckPostReq);
-        if (member == null) return ResponseEntity.status(409).body("fail");
         // 메일로 인증번호 전송
         int randNum = ThreadLocalRandom.current().nextInt(100000, 1000000);
         int result = memberService.sendEmail(randNum, member.getEmail());
@@ -258,10 +257,7 @@ public class MemberController {
     // 아이디 찾기
     @PostMapping("/id")
     public ResponseEntity<?> findMemberId(@RequestBody MemberFindMemberIdReq memberFindMemberIdReq) {
-        String memberId = memberService.FindMemberId(memberFindMemberIdReq);
-        if (memberId == null) {
-            return ResponseEntity.status(409).body("fail");
-        }
+        String memberId = memberService.findMemberId(memberFindMemberIdReq);
         return ResponseEntity.status(200).body(MemberFindMemberIdRes.of(memberId));
     }
 
