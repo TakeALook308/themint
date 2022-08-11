@@ -122,12 +122,12 @@ public class MemberController {
 
     // 회원 정보 수정
     @PatchMapping
-    public ResponseEntity<?> updateMyInfo(@RequestBody MemberUpdatePostReq memberUpdatePostReq, @ApiIgnore Authentication authentication) {
+    public ResponseEntity<?> updateMyInfo(@RequestBody MemberUpdatePatchReq memberUpdatePostReq, @ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
         Member member = memberService.getMemberByMemberSeq(memberSeq);
         if (member != null) {
-            if((member.getAccountNo() == null || member.getAccountNo().length() == 0) && memberUpdatePostReq.getAccountNo().length() != 0 ){ // 계좌번호 원래 없었는데 입력하면 신뢰도 +3
+            if(member.getAccountNo() == null && memberUpdatePostReq.getAccountNo() != null){ // 계좌번호 원래 없었는데 입력하면 신뢰도 +3
                 memberService.updateMemberScore(memberSeq, 3);
             }
             memberService.updateMember(memberSeq, memberUpdatePostReq);
