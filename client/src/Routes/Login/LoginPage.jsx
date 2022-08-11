@@ -11,7 +11,7 @@ import { setCookie } from '../../utils/functions/cookies';
 import { postData } from '../../utils/apis/api';
 import { userApis } from '../../utils/apis/userApis';
 import { useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import { successToast } from '../../lib/toast';
 function LoginPage() {
   const setUserInfo = useSetRecoilState(myInformationState);

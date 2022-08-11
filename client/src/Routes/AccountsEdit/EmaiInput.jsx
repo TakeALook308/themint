@@ -10,8 +10,8 @@ import { userApis } from '../../utils/apis/userApis';
 import { REGEX, REGISTER_MESSAGE, STANDARD } from '../../utils/constants/constant';
 import debounce from '../../utils/functions/debounce';
 
-function NicknameInput({ text, setEditMode, changeInformation }) {
-  const [duplicatedNickname, setDuplicatedNickname] = useState(false);
+function EmaiInput({ text, setEditMode, changeInformation }) {
+  const [isDuplicatedEmail, setIsDuplicatedEmail] = useState(false);
   const {
     register,
     setError,
@@ -26,11 +26,11 @@ function NicknameInput({ text, setEditMode, changeInformation }) {
     try {
       const response = await getData(userApis.NICKNAME_DUPLICATE_CHECK_API(value));
       if (response.status === 200) {
-        setDuplicatedNickname(false);
+        setIsDuplicatedEmail(false);
       }
     } catch {
       setError('nickname', { message: REGISTER_MESSAGE.DUPLICATED_ID }, { shouldFocus: true });
-      setDuplicatedNickname(true);
+      setIsDuplicatedEmail(true);
     }
   };
 
@@ -40,7 +40,7 @@ function NicknameInput({ text, setEditMode, changeInformation }) {
   );
 
   const onValid = async (data) => {
-    if (duplicatedNickname) {
+    if (isDuplicatedEmail) {
       setError(
         'nickname',
         { message: REGISTER_MESSAGE.DUPLICATED_NIACKNAME },
@@ -107,7 +107,7 @@ function NicknameInput({ text, setEditMode, changeInformation }) {
   );
 }
 
-export default NicknameInput;
+export default EmaiInput;
 
 export const FormContainer = styled.form`
   width: 100%;

@@ -47,7 +47,11 @@ function Register3({ setUserInfo }) {
 
   const onValid = (data) => {
     if (duplicatedNickname) {
-      setError('memberId', { message: REGISTER_MESSAGE.DUPLICATED_ID }, { shouldFocus: true });
+      setError(
+        'nickname',
+        { message: REGISTER_MESSAGE.DUPLICATED_NIACKNAME },
+        { shouldFocus: true },
+      );
       return;
     }
     setUserInfo((prev) => ({ ...prev, ...data }));

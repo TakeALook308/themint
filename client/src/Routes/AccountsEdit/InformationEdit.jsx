@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { BsFillPersonFill, BsHouseFill } from 'react-icons/bs';
 import { MdOutlineSmartphone, MdMail } from 'react-icons/md';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import DefaultButton from '../../components/common/DefaultButton';
 import { ActiveInput } from '../../style/style';
 import { REGEX, REGISTER_MESSAGE, STANDARD } from '../../utils/constants/constant';
@@ -10,29 +10,31 @@ import { useForm } from 'react-hook-form';
 import { MessageWrapper } from '../../style/common';
 import ValidationMessage from '../../components/common/ValidationMessage';
 import NicknameInput from './NicknameInput';
+import { patchData } from '../../utils/apis/api';
+import { userApis } from '../../utils/apis/userApis';
+import EmaiInput from './EmaiInput';
 
 function InformationEdit({ userAllInfo, setUserAllInfo }) {
+  const navigate = useNavigate();
   return (
     <Container>
       <Information
         icon={<BsFillPersonFill />}
         textList={[userAllInfo.nickname]}
-        onClick={() => console.log('fuck')}
         Component={NicknameInput}
+        setUserAllInfo={setUserAllInfo}
       />
-      <div>
-        <MdOutlineSmartphone />
-      </div>
       <Information
-        icon={<MdMail />}
-        textList={[userAllInfo.email]}
-        onClick={() => console.log('fuck')}
-        Component={EmailComponent}
+        icon={<MdOutlineSmartphone />}
+        textList={[userAllInfo.phone]}
+        onClick={() => navigate('/accounts/phone-number')}
+        Component={EmaiInput}
+        setUserAllInfo={setUserAllInfo}
       />
+      <Information icon={<MdMail />} textList={[userAllInfo.email]} Component={EmailComponent} />
       <Information
         icon={<BsHouseFill />}
         textList={['05130', userAllInfo.address, userAllInfo.addressDetail]}
-        onClick={() => console.log('fuck')}
         Component={AddressComponent}
       />
     </Container>
@@ -51,11 +53,18 @@ const Container = styled.article`
   min-height: 72px;
 `;
 
-const Information = ({ icon, textList, onClick, Component }) => {
+const Information = ({ icon, textList, onClick, Component, setUserAllInfo }) => {
   const [editMode, setEditMode] = useState(false);
-  const changeInformation = () => {
+  const changeInformation = async (prop) => {
     setEditMode(false);
-    onClick();
+    try {
+      const response = await patchData(userApis.INFORMATION_CHANGE, { prop });
+      if (response.status === 200) {
+        setUserAllInfo((prev) => ({ ...prev, prop }));
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
   return (
     <InformationContainer>
@@ -71,11 +80,15 @@ const Information = ({ icon, textList, onClick, Component }) => {
             title={'수정'}
             type="button"
             widthValue="70px"
-            onClick={() => setEditMode(true)}
+            onClick={onClick ? onClick : () => setEditMode(true)}
           />
         </NotEditMode>
       ) : (
-        <Component text={textList} setEditMode={setEditMode} />
+        <Component
+          text={textList}
+          setEditMode={setEditMode}
+          changeInformation={changeInformation}
+        />
       )}
     </InformationContainer>
   );
@@ -141,7 +154,12 @@ const AddressComponent = () => {
 };
 
 const TextConatiners = styled.div`
-  width: 100%;
+  width: 80%;
+  p {
+    &:not(:first-child) {
+      line-height: 2;
+    }
+  }
 `;
 
 const InformationContainer = styled.div`
@@ -156,7 +174,6 @@ const InformationContainer = styled.div`
 
 const NotEditMode = styled.div`
   padding-top: 0.7rem;
-
   display: flex;
   width: 100%;
   justify-content: space-between;

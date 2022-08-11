@@ -39,7 +39,7 @@ function Router() {
         </Route>
         <Route element={<ProtectedRoute loggedin={loggedin} />}>
           <Route path="profile/:userId" element={<Profile />} />
-          <Route path="accounts/" element={<Accounts />}>
+          <Route path="accounts" element={<Accounts />}>
             <Route path="edit" element={<AccountsEdit />} />
             <Route path="password" element={<AccountsPassword />} />
             <Route path="phone-number" element={<AccountsPhoneNumber />} />

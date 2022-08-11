@@ -27,7 +27,7 @@ function Register2({ setUserInfo, setStep }) {
   } = useForm({
     defaultValues: {
       memberName: '',
-      nickname: '',
+      email: '',
       phone: '',
     },
     mode: 'onChange',

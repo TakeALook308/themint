@@ -13,7 +13,7 @@ import { makeLoginMessageRandomNumber } from '../../utils/functions/util';
 import { useRecoilState } from 'recoil';
 import { loggedinState, myInformationState } from '../../atoms';
 import { session } from '../../App';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
 function RegisterPage() {
   const [userInfo, setUserInfo] = useState({

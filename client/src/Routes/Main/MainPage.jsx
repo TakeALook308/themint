@@ -3,7 +3,7 @@ import Banner from './Banner';
 import StreamList from './StreamListSwipe';
 import PostList from './PostList';
 import { Container } from '../../style/common';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import InterestingList from './InterestingList';
 
 function MainPage(props) {
