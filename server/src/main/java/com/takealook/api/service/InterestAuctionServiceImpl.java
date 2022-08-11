@@ -19,18 +19,18 @@ public class InterestAuctionServiceImpl implements InterestAuctionService{
     AuctionRepository auctionRepository;
 
     @Override
-    public int createInterestAuction(Long memberSeq, Long auctionSeq) {
-        InterestAuction check = interestAuctionRepository.findByMemberSeqAndAuctionSeq(memberSeq, auctionSeq);
+    public int createInterestAuction(Long memberSeq, String hash) {
+        InterestAuction check = interestAuctionRepository.findByMemberSeqAndHash(memberSeq, hash);
         if(check != null){
             return 0; // 이미 추가된 관심 경매
         }
         InterestAuction interestAuction = InterestAuction.builder()
                 .memberSeq(memberSeq)
-                .auctionSeq(auctionSeq)
+                .hash(hash)
                 .build();
         interestAuctionRepository.save(interestAuction);
         // 경매 인기도 증가
-        Auction auction = auctionRepository.findBySeq(auctionSeq).orElse(null);
+        Auction auction = auctionRepository.findByHash(hash).orElse(null);
         if(auction != null){
             Auction auctionUpdate = Auction.builder()
                     .seq(auction.getSeq())
@@ -40,7 +40,6 @@ public class InterestAuctionServiceImpl implements InterestAuctionService{
                     .content(auction.getContent())
                     .categorySeq(auction.getCategorySeq())
                     .startTime(auction.getStartTime())
-                    .link(auction.getLink())
                     .status(auction.getStatus())
                     .interest(auction.getInterest() + 1)
                     .build();
@@ -55,15 +54,15 @@ public class InterestAuctionServiceImpl implements InterestAuctionService{
         List<InterestAuction> interestAuctionList = interestAuctionRepository.findAllByMemberSeq(memberSeq);
         List<Auction> auctionList = new ArrayList<>();
         for (InterestAuction interestAuction : interestAuctionList){
-            auctionList.add(auctionRepository.findBySeq(interestAuction.getAuctionSeq()).get());
+            auctionList.add(auctionRepository.findByHash(interestAuction.getHash()).get());
         }
         return auctionList;
     }
 
     @Override
-    public int deleteAuction(Long memberSeq, Long auctionSeq) {
+    public int deleteAuction(Long memberSeq, String hash) {
         // 경매 인기도 감소
-        Auction auction = auctionRepository.findBySeq(auctionSeq).orElse(null);
+        Auction auction = auctionRepository.findByHash(hash).orElse(null);
         if(auction != null){
             Auction auctionUpdate = Auction.builder()
                     .seq(auction.getSeq())
@@ -73,13 +72,12 @@ public class InterestAuctionServiceImpl implements InterestAuctionService{
                     .content(auction.getContent())
                     .categorySeq(auction.getCategorySeq())
                     .startTime(auction.getStartTime())
-                    .link(auction.getLink())
                     .status(auction.getStatus())
                     .interest(auction.getInterest() - 1)
                     .build();
             auctionRepository.save(auctionUpdate);
         }
-        int result = interestAuctionRepository.deleteByMemberSeqAndAuctionSeq(memberSeq, auctionSeq);
+        int result = interestAuctionRepository.deleteByMemberSeqAndHash(memberSeq, hash);
         return result;
     }
 }

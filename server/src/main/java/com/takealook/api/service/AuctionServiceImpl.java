@@ -1,6 +1,5 @@
 package com.takealook.api.service;
 
-import com.takealook.api.request.AuctionImageRegisterPostReq;
 import com.takealook.api.request.AuctionRegisterPostReq;
 import com.takealook.api.request.AuctionUpdatePatchReq;
 import com.takealook.api.request.ProductRegisterPostReq;
@@ -14,9 +13,8 @@ import com.takealook.db.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -36,22 +34,19 @@ public class AuctionServiceImpl implements AuctionService {
     @Autowired
     S3FileService s3FileService;
 
-    @PersistenceContext
-    EntityManager entityManager;
-
     @Override
-    public Auction createAuction(Long memberSeq, AuctionRegisterPostReq auctionRegisterPostReq) {
+    public Auction createAuction(Long memberSeq, AuctionRegisterPostReq auctionRegisterPostReq, List<MultipartFile> multipartFileList) {
         // 화상회의 링크 생성해야 함!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         // title, content, categorySeq, startTime, productlist(productname, startprice), auctionImagelist(imageurl)
+        String hash = HashUtil.MD5(LocalDateTime.now().toString() + memberSeq);
         Auction auction = Auction.builder()
-                .hash(HashUtil.MD5(LocalDateTime.now().toString() + memberSeq))
+                .hash(hash)
                 .memberSeq(memberSeq)
                 .title(auctionRegisterPostReq.getTitle())
                 .content(auctionRegisterPostReq.getContent())
                 .categorySeq(auctionRegisterPostReq.getCategorySeq())
                 .startTime(auctionRegisterPostReq.getStartTime())
-//                .link()
                 .build();
         auctionRepository.save(auction);
 
@@ -68,27 +63,28 @@ public class AuctionServiceImpl implements AuctionService {
                     .build();
             productRepository.save(product);
         }
-        // S3 버킷에 물품 이미지 저장 후 db에 imageUrl 저장
-        try {
-            List<String> imageUrlList = s3FileService.uploadProductIamge(auctionRegisterPostReq.getAuctionImageList(), auction.getHash());
-            for(String imageUrl: imageUrlList) {
-                AuctionImage auctionImage = AuctionImage.builder()
-                        .auctionSeq(auction.getSeq())
-                        .imageUrl(imageUrl)
-                        .build();
-                auctionImageRepository.save(auctionImage);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-//        for (AuctionImageRegisterPostReq auctionImageRegisterPostReq : auctionRegisterPostReq.getAuctionImageList()) {
-//            AuctionImage auctionImage = AuctionImage.builder()
-//                    .auctionSeq(auction.getSeq())
-//                    .imageUrl(auctionImageRegisterPostReq.getImageUrl())
-//                    .build();
-//            auctionImageRepository.save(auctionImage);
-//        }
 
+        // 옥션 이미지 없을 시 기본이미지 넣기
+        if (multipartFileList == null || multipartFileList.size() == 0) {
+            auctionImageRepository.save(AuctionImage.builder()
+                    .auctionSeq(auction.getSeq())
+                    .imageUrl("/product/basic1.png")
+                    .build());
+        } else {
+            // S3 버킷에 물품 이미지 저장 후 db에 imageUrl 저장
+            try {
+                List<String> imageUrlList = s3FileService.uploadProductIamge(multipartFileList, auction.getHash());
+                for (String imageUrl : imageUrlList) {
+                    AuctionImage auctionImage = AuctionImage.builder()
+                            .auctionSeq(auction.getSeq())
+                            .imageUrl(imageUrl)
+                            .build();
+                    auctionImageRepository.save(auctionImage);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
         return auction;
     }
 
@@ -106,12 +102,21 @@ public class AuctionServiceImpl implements AuctionService {
 
     // 실시간 경매 조회
     @Override
-    public List<Auction> getLiveAuctionList(Pageable pageable) {
-        List<Auction> auctionList = auctionRepository.findAllByStatus(1, pageable);
+    public List<Auction> getLiveAuctionList() {
+        List<Auction> auctionList = auctionRepository.findAllByStatus(1);
         return auctionList;
     }
 
-    // 인기순, 최신순 정렬 검색 - startTime 현재시간보다 큰 것만
+    // 메인 - 경매임박순 정렬 검색 (24시간 이내만 조회)
+    @Override
+    public List<Auction> getAuctionListToday(Pageable pageable) {
+        String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        String tomorrowTime = LocalDateTime.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        List<Auction> auctionList = auctionRepository.findAllByStartTimeAfterAndStartTimeBeforeOrderByStartTimeAsc(currentTime, tomorrowTime, pageable);
+        return auctionList;
+    }
+
+    // 인기순, 최신순 정렬 검색 - startTime 현재시간보다 이후거나 현재 진행 중인 것들
     @Override
     public List<Auction> getAuctionList(String word, Pageable pageable) {
         List<Auction> auctionList = null;
@@ -119,11 +124,11 @@ public class AuctionServiceImpl implements AuctionService {
         if (word == null) {
             word = "";
         }
-        auctionList = auctionRepository.findAllByTitleContainsOrContentContainsAndStartTimeAfter(word, word, currentTime, pageable);
+        auctionList = auctionRepository.findAllByTitleContainsOrContentContainsAndStartTimeAfterOrStatus(word, word, currentTime, 1, pageable);
         return auctionList;
     }
 
-    // 판매자 신뢰도순 정렬 검색 - startTime 현재시간보다 큰 것만
+    // 판매자 신뢰도순 정렬 검색 - startTime 현재시간보다 이후거나 현재 진행 중인 것들
     @Override
     public List<Auction> getAuctionListOrderByScore(String word, Pageable pageable) {
         List<Auction> auctionList = null;
@@ -131,7 +136,7 @@ public class AuctionServiceImpl implements AuctionService {
         if (word == null) {
             word = "";
         }
-        auctionList = auctionRepository.findAllByTitleOrContentContainsAndStartTimeAfterOrderByMemberScore(word, currentTime, pageable);
+        auctionList = auctionRepository.findAllByTitleOrContentContainsAndStartTimeAfterOrderByMemberScore(word, currentTime, 1, pageable);
         return auctionList;
     }
 
@@ -140,9 +145,9 @@ public class AuctionServiceImpl implements AuctionService {
         String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         List<Auction> auctionList = null;
         if (categorySeq == 0) { // 전체 조회
-            auctionList = auctionRepository.findAllByStartTimeAfterOrderByMemberScore(currentTime, pageable);
+            auctionList = auctionRepository.findAllByStartTimeAfterOrderByMemberScore(currentTime, 1, pageable);
         } else {
-            auctionList = auctionRepository.findAllByCategorySeqAndStartTimeAfterOrderByMemberScore(categorySeq, currentTime, pageable);
+            auctionList = auctionRepository.findAllByCategorySeqAndStartTimeAfterOrderByMemberScore(categorySeq, currentTime, 1, pageable);
         }
         return auctionList;
     }
@@ -152,9 +157,9 @@ public class AuctionServiceImpl implements AuctionService {
         String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         List<Auction> auctionList = null;
         if (categorySeq == 0) { // 전체 조회
-            auctionList = auctionRepository.findAllByStartTimeAfter(currentTime, pageable);
+            auctionList = auctionRepository.findAllByStatusOrStartTimeAfter(1, currentTime, pageable);
         } else {
-            auctionList = auctionRepository.findAllByCategorySeqAndStartTimeAfter(categorySeq, currentTime, pageable);
+            auctionList = auctionRepository.findAllByCategorySeqAndStartTimeAfterOrStatus(categorySeq, currentTime, 1, pageable);
         }
         return auctionList;
     }
@@ -169,7 +174,6 @@ public class AuctionServiceImpl implements AuctionService {
                 .content(auctionUpdatePatchReq.getContent())
                 .categorySeq(auctionUpdatePatchReq.getCategorySeq())
                 .startTime(auctionUpdatePatchReq.getStartTime())
-                .link(auctionUpdatePatchReq.getLink())
                 .status(auctionUpdatePatchReq.getStatus())
                 .interest(auctionUpdatePatchReq.getInterest())
                 .build();

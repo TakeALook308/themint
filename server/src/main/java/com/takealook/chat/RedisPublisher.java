@@ -1,6 +1,7 @@
 package com.takealook.chat;
 
 import com.takealook.db.entity.ChatMessage;
+import com.takealook.db.entity.ProductPrice;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -16,5 +17,8 @@ public class RedisPublisher {
 
     public void publish(ChannelTopic topic, ChatMessage message) {
         redisTemplate.convertAndSend(topic.getTopic(), message);
+    }
+    public void publish(ChannelTopic topic, ProductPrice productPrice) {
+        redisTemplate.convertAndSend(topic.getTopic(), productPrice);
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,6 +48,7 @@ public class MemberController {
 
     @Autowired
     S3FileService s3FileService;
+
     // 회원 가입
     @PostMapping
     public ResponseEntity<?> registerMember(@RequestBody MemberRegisterPostReq memberRegisterPostReq) {
@@ -63,7 +65,6 @@ public class MemberController {
     public ResponseEntity<?> login(@RequestBody MemberLoginPostReq memberLoginPostReq) {
         String memberId = memberLoginPostReq.getMemberId();
         String pwd = memberLoginPostReq.getPwd();
-
         Member member = memberService.getMemberByMemberId(memberId);
         // 로그인 요청한 유저의 패스워드와 같은 경우 (유효한 패스워드인지 확인)
         if (member != null && passwordEncoder.matches(pwd, member.getPwd())) {
@@ -73,16 +74,30 @@ public class MemberController {
         return ResponseEntity.status(409).body("fail");
     }
 
+//    @GetMapping("/klogin")
+//    public ResponseEntity<?> klogin(@RequestParam String authorize_code) throws Exception{
+//        System.out.println(authorize_code);
+//        String access_token = memberService.getAccessTokenKakao(authorize_code);
+//        System.out.println(access_token);
+//        Member member = memberService.getMemberKakao(access_token);
+//        Member findMember = memberService.getMemberByEmail(member.getEmail());
+//
+//        return ResponseEntity.status(200).body(MemberLoginPostRes.of(JwtTokenUtil.getToken(findMember.getMemberId()), member.getSeq(), member.getMemberId(), member.getNickname()));
+//    }
+
     // 회원 목록 검색
     @GetMapping
-    public ResponseEntity<List<MemberListEntityRes>> getMemberList(@RequestParam(value = "word", required = false) String word, @RequestParam("page") int page, @RequestParam("size") int size) {
+    public ResponseEntity<MemberListRes> getMemberList(@RequestParam(value = "word", required = false) String word, @RequestParam("page") int page, @RequestParam("size") int size) {
         List<MemberListEntityRes> memberListEntityResList = new ArrayList<>();
+        Boolean hasMore = false;
         Pageable pageable = PageRequest.of(page, size, Sort.by("score").descending());
         List<Member> memberList = memberService.getMemberListByWord(word, pageable);
-        for (Member member : memberList){
+        List<Member> hasMoreList = memberService.getMemberListByWord(word, PageRequest.of(page + 1, size, Sort.by("score").descending()));
+        if (hasMoreList.size() != 0) hasMore = true;
+        for (Member member : memberList) {
             memberListEntityResList.add(MemberListEntityRes.of(member));
         }
-        return ResponseEntity.status(200).body(memberListEntityResList);
+        return ResponseEntity.status(200).body(MemberListRes.of(memberListEntityResList, hasMore));
     }
 
     // 내 정보 조회
@@ -118,13 +133,15 @@ public class MemberController {
     }
 
     // 프로필 사진 변경
-    @PatchMapping("img")
-    public ResponseEntity<?> updateProfileImage(MultipartFile multipartFile, @ApiIgnore Authentication authentication) throws Exception {
+    @PostMapping("img")
+    public ResponseEntity<?> updateProfileImage(@RequestPart MultipartFile multipartFile, @ApiIgnore Authentication authentication) throws Exception {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
         Member member = memberService.getMemberByMemberSeq(memberSeq);
         if (member != null) {
-            return ResponseEntity.status(200).body(s3FileService.uploadProfileImage(multipartFile, memberSeq));
+            String result = s3FileService.uploadProfileImage(multipartFile, memberSeq);
+            if (result == "fail") ResponseEntity.status(409).body("fail");
+            return ResponseEntity.status(200).body(result);
         }
         return ResponseEntity.status(409).body("fail");
     }

@@ -32,6 +32,12 @@ public class S3FileService {
     public String uploadProfileImage(MultipartFile multipartFile, Long memberSeq) throws Exception {
         String originalName = createFileName(multipartFile.getOriginalFilename()); // 파일 이름
         long size = multipartFile.getSize(); // 파일 크기
+        System.out.println(originalName);
+        String extension = originalName.substring(originalName.lastIndexOf("."));
+        System.out.println(extension);
+        if (!(extension.equals(".jpeg") || extension.equals(".JPEG") || extension.equals(".jpg")|| extension.equals(".JPG") || extension.equals(".png") || extension.equals(".PNG"))) {
+            return "fail";
+        }
 
         ObjectMetadata objectMetaData = new ObjectMetadata();
         objectMetaData.setContentType(multipartFile.getContentType());
@@ -42,13 +48,12 @@ public class S3FileService {
                 new PutObjectRequest(bucket + "/member", originalName, multipartFile.getInputStream(), objectMetaData)
                         .withCannedAcl(CannedAccessControlList.PublicRead)
         );
-
-        String imagePath = amazonS3Client.getUrl(bucket + "/member", originalName).toString(); // 접근가능한 URL 가져오기
-        memberRepository.updateMemberProfileImage(memberSeq, imagePath.substring(50)); // 버킷 url 제거
+        String imagePath = amazonS3Client.getUrl(bucket + "/member", originalName).toString().substring(50); // 접근가능한 URL 가져오기, 버킷 URL 제거
+        memberRepository.updateMemberProfileImage(memberSeq, imagePath);
         return imagePath;
     }
 
-    public List<String> uploadProductIamge(MultipartFile[] multipartFileList, String hash) throws Exception {
+    public List<String> uploadProductIamge(List<MultipartFile> multipartFileList, String hash) throws Exception {
         List<String> imagePathList = new ArrayList<>();
 
         for(MultipartFile multipartFile: multipartFileList) {
@@ -65,8 +70,8 @@ public class S3FileService {
                             .withCannedAcl(CannedAccessControlList.PublicRead)
             );
 
-            String imagePath = amazonS3Client.getUrl(bucket + "/product" + hash, originalName).toString(); // 접근가능한 URL 가져오기
-            imagePathList.add(imagePath.substring(50)); // 버킷 url 제거
+            String imagePath = amazonS3Client.getUrl(bucket + "/product/" + hash, originalName).toString().substring(50); // 접근가능한 URL 가져오기, 버킷 url 제거
+            imagePathList.add(imagePath);
         }
 
         return imagePathList;

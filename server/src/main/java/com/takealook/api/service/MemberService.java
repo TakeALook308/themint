@@ -11,6 +11,11 @@ public interface MemberService {
     // 회원 가입
     Member createMember(MemberRegisterPostReq memberRegisterPostReq);
 
+    // 카카오 로그인
+    String getAccessTokenKakao(String authorize_code) throws Exception;
+
+    Member getMemberKakao(String access_token) throws Exception;
+
     List<Member> getMemberListByWord(String word, Pageable pageable);
 
     // 회원 정보 보기
