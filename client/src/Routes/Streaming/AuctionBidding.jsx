@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { auctionApis } from '../../utils/apis/auctionApis';
+import { getData } from '../../utils/apis/api';
 
 function AuctionBidding({ product, sendPrice, price, lastPrice }) {
   const my = '민트강';
@@ -8,13 +10,16 @@ function AuctionBidding({ product, sendPrice, price, lastPrice }) {
   // const [productPrice, setProductPrice] = useState(product.startPrice);
   const [myPrice, setMyPrice] = useState(Number(lastPrice) + 1000);
   // const [priceList, setPriceList] = useState([]);
+  const [realtime, setRealtime] = useState('');
   useEffect(() => {
     const countdown = setInterval(() => {
-      if (parseInt(seconds) > 0) {
-        setSeconds(parseInt(seconds) - 1);
-      } else if (parseInt(seconds) === 0) {
-        clearInterval(countdown);
-      }
+      getData(auctionApis.AUCTION_DATE_API).then((res) => setRealtime(res.data));
+      console.log(realtime, price.date);
+      // if (parseInt(seconds) > 0) {
+      //   setSeconds(parseInt(seconds) - 1);
+      // } else if (parseInt(seconds) === 0) {
+      //   clearInterval(countdown);
+      // }
     }, 1000);
     return () => clearInterval(countdown);
   }, [seconds]);
