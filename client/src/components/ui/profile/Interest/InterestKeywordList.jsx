@@ -12,6 +12,7 @@ function InterestKeywordList() {
     console.log(e.target.value);
     setAddKeyword(e.target.value);
   };
+  // 키워드 추가
   const onClick = () => {
     const keyword_name = addKeyword;
     console.log(keyword_name);
@@ -24,6 +25,7 @@ function InterestKeywordList() {
       console.log(keyword_name);
     });
   };
+  // 키워드 조회 API
   useEffect(() => {
     const getKeyword = async (url) => {
       const response = await instance.get(url);

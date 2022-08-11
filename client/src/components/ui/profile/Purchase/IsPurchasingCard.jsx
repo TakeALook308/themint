@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 
 function IsPurchasingCard({ ModalHandler, auctionitem }) {
   // TODO: 데이터 교체하기
-
   const [statusNum, setStatusNum] = useState(0);
   useEffect(() => {
     console.log(auctionitem.status);
