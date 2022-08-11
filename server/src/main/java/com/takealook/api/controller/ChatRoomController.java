@@ -1,9 +1,11 @@
 package com.takealook.api.controller;
 
 import com.takealook.api.request.ChatRoomRegisterPostReq;
+import com.takealook.api.request.EnterChatRoomPostReq;
 import com.takealook.api.service.ChatRoomMemberService;
 import com.takealook.api.service.ChatRoomService;
 import com.takealook.common.auth.MemberDetails;
+import com.takealook.db.entity.ChatRoomMember;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,13 +42,16 @@ public class ChatRoomController {
         return ResponseEntity.status(200).body(chatRoomService.createChatRoom(chatRoomRegisterPostReq));
     }
 
-    // 채팅방 입장 (JWT 토큰으로 memberSeq 인식)
+    // 채팅방 입장(1:1 채팅방만 입장 관리)
     @PostMapping("/room/enter")
-    public ResponseEntity<?> enterChatRoom(@RequestBody Map<String, String> roomIdMap, @ApiIgnore Authentication authentication) {
-        MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
-        Long memberSeq = memberDetails.getMemberSeq();
-        return ResponseEntity.status(200).body(chatRoomMemberService.saveChatRoomMember(roomIdMap.get("roomId"), memberSeq));
+    public ResponseEntity<?> enterChatRoom(@RequestBody EnterChatRoomPostReq enterChatRoomPostReq) {
+        ChatRoomMember chatRoomMember = chatRoomMemberService.saveChatRoomMember(enterChatRoomPostReq.getRoomId(), enterChatRoomPostReq.getMemberSeq());
+        if (chatRoomMember == null)
+            return ResponseEntity.status(409).body("fail"); // 이미 입장한 채팅방
+        return ResponseEntity.status(200).body("success");
     }
+
+    // 채팅 내역 불러오기
 
     // 채팅방 삭제( 실시간 경매 끝남 )
     @DeleteMapping("/room")
