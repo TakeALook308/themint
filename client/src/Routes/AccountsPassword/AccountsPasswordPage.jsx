@@ -16,11 +16,11 @@ function AccountsPasswordPage() {
   return (
     <Container>
       <PasswordDescriptionContainer>
-        <p>· 비밀번호는 8~32 자의 영문 대소문자, 숫자, 특수문자를 조합하여 설정해 주세요.</p>
-        <p>
-          · 안전을 위해 자주 사용했거나 쉬운 비밀번호가 아닌 새 비밀번호를 등록하고, 주기적으로
-          변경해 주세요.
-        </p>
+        <li>비밀번호는 8~32 자의 영문 대소문자, 숫자, 특수문자를 조합하여 설정해 주세요.</li>
+        <li>
+          안전을 위해 자주 사용했거나 쉬운 비밀번호가 아닌 새 비밀번호를 등록하고, 주기적으로 변경해
+          주세요.
+        </li>
       </PasswordDescriptionContainer>
       <Form>
         <InputContainer>
@@ -60,7 +60,7 @@ function AccountsPasswordPage() {
 
 export default AccountsPasswordPage;
 
-const Container = styled.article`
+export const Container = styled.article`
   width: 100%;
   height: 100%;
   display: flex;
@@ -68,28 +68,27 @@ const Container = styled.article`
   gap: 3rem;
 `;
 
-const PasswordDescriptionContainer = styled.div`
+const PasswordDescriptionContainer = styled.ul`
   color: ${(props) => props.theme.colors.pointRed};
   line-height: 1.7;
+  list-style-type: disc;
 `;
 
-const Form = styled.form`
+export const Form = styled.form`
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  justify-content: center;
-  align-items: center;
 `;
 
-const InputContainer = styled.div`
+export const InputContainer = styled.div`
   display: flex;
-  width: 60%;
+  width: 70%;
   align-items: center;
   > label {
-    width: 40%;
+    width: 30%;
   }
 `;
 
-const ButtonContainer = styled.div`
+export const ButtonContainer = styled.div`
   margin: 0 auto;
 `;
