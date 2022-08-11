@@ -7,6 +7,8 @@ import com.takealook.api.service.MemberService;
 import com.takealook.api.service.S3FileService;
 import com.takealook.api.service.SmsService;
 import com.takealook.common.auth.MemberDetails;
+import com.takealook.common.exception.code.ErrorCode;
+import com.takealook.common.exception.member.MemberNotFoundException;
 import com.takealook.common.util.JwtTokenUtil;
 import com.takealook.db.entity.Member;
 import io.swagger.annotations.Api;
@@ -126,9 +128,13 @@ public class MemberController {
         Member member = memberService.getMemberByMemberSeq(memberSeq);
         if (member != null) {
             memberService.updateMember(memberSeq, memberUpdatePostReq);
+            if((member.getAccountNo() == null || member.getAccountNo().length() == 0) && memberUpdatePostReq.getAccountNo().length() != 0 ){ // 계좌번호 원래 없었는데 입력하면 신뢰도 +3
+                memberService.updateMemberScore(memberSeq, 3);
+            }
             return ResponseEntity.status(200).body("success");
+        } else {
+            throw new MemberNotFoundException("member not found", ErrorCode.MEMBER_NOT_FOUND);
         }
-        return ResponseEntity.status(409).body("fail");
     }
 
     // 프로필 사진 변경
@@ -262,18 +268,17 @@ public class MemberController {
     // 신뢰도 수정
     //1. 리뷰 달렸을 때 score 기준으로
     // - 1, 2 점이면 다운, 3이면 유지, 4,5점이면 업
-    //2. 경매 게시글 하나 올리면 1점 업?
+    //2. 경매 게시글 하나 올리면 1점 업
     //3. 경매 예약 시간 지났는데 status 0이면 -3점?
-    //4. 계좌번호나 프로필 사진 등 개인 정보 더 추가했을 때 1점씩 업?
+    //4. 계좌번호 등 개인 정보 더 추가했을 때 3점씩 업
     //5. 낙찰됐는데 일주일 내에 입금 안하면 -5점?
     @PatchMapping("/score")
     public ResponseEntity<?> updateScore(@RequestBody MemberScoreUpdatePatchReq memberScoreUpdatePatchReq) {
         Member member = memberService.getMemberByMemberSeq(memberScoreUpdatePatchReq.getSeq());
-        if (member == null) return ResponseEntity.status(409).body("fail");
-        memberService.updateMemberScore(memberScoreUpdatePatchReq);
+        if (member == null) throw new MemberNotFoundException("member not found", ErrorCode.MEMBER_NOT_FOUND);
+        memberService.updateMemberScore(memberScoreUpdatePatchReq.getSeq(), memberScoreUpdatePatchReq.getScore());
         return ResponseEntity.status(200).body("success");
     }
-
 
     // 문자 인증
     @PostMapping("/sms")

@@ -22,6 +22,7 @@ public class MemberInfoRes {
 	String email;
 	String address;
 	String addressDetail;
+	String zipCode;
 	String phone;
 	String profileUrl;
 	int bankCode;
@@ -38,6 +39,7 @@ public class MemberInfoRes {
 				.email(member.getEmail())
 				.address(member.getAddress())
 				.addressDetail(member.getAddressDetail())
+				.zipCode(member.getZipCode())
 				.phone(member.getPhone())
 				.profileUrl(member.getProfileUrl())
 				.bankCode(member.getBankCode())

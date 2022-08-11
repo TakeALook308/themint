@@ -48,6 +48,7 @@ public class MemberServiceImpl implements MemberService {
                 .email(memberRegisterPostReq.getEmail())
                 .address(memberRegisterPostReq.getAddress())
                 .addressDetail(memberRegisterPostReq.getAddressDetail())
+                .zipCode(memberRegisterPostReq.getZipCode())
                 .phone(memberRegisterPostReq.getPhone())
                 .noticeKakao(memberRegisterPostReq.getNoticeKakao())
                 .noticeEmail(memberRegisterPostReq.getNoticeEmail())
@@ -171,6 +172,7 @@ public class MemberServiceImpl implements MemberService {
         member.setEmail(memberUpdatePostReq.getEmail());
         member.setAddress(memberUpdatePostReq.getAddress());
         member.setAddressDetail(memberUpdatePostReq.getAddressDetail());
+        member.setZipCode(memberUpdatePostReq.getZipCode());
         member.setPhone(memberUpdatePostReq.getPhone());
         member.setBankCode(memberUpdatePostReq.getBankCode());
         member.setAccountNo(memberUpdatePostReq.getAccountNo());
@@ -275,9 +277,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void updateMemberScore(MemberScoreUpdatePatchReq memberScoreUpdatePatchReq) {
-        Long seq = memberScoreUpdatePatchReq.getSeq();
-        int score = memberScoreUpdatePatchReq.getScore();
-        memberRepository.updateMemberScore(seq, score);
+    public void updateMemberScore(Long memberSeq, int score) {
+        memberRepository.updateMemberScore(memberSeq, score);
     }
 }

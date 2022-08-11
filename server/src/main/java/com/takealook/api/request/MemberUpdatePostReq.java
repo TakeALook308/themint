@@ -14,6 +14,7 @@ public class MemberUpdatePostReq {
     String email;
     String address;
     String addressDetail;
+    String zipCode;
     String phone;
     int bankCode;
     String accountNo;
