@@ -9,7 +9,6 @@ function CateCardList({ getCategorySeq, categoryName, key }) {
   const [categoryNow, setCategoryNow] = useState('전체보기');
   const onClick = (e) => {
     setCategoryNow(e.target.innerText);
-    console.log(e.target.id);
     getCategorySeq(e.target.id);
   };
 

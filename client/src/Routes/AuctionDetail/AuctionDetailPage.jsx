@@ -74,9 +74,9 @@ function AuctionDetailPage(props) {
           <GradientButton
             text="경매 참여"
             onClick={() => {
-              // if (auctionInfo.memberSeq === userInfo.memberSeq)
-              //   navigate(`/standby/${params.auctionId}`);
-              // else navigate(`/streamings/${params.auctionId}`);
+              if (auctionInfo.memberSeq === userInfo.memberSeq)
+                navigate(`/standby/${params.auctionId}`);
+              else navigate(`/streamings/${params.auctionId}`);
             }}></GradientButton>
         </AuctionMainInfo>
         {/* <AuctionList></AuctionList> */}

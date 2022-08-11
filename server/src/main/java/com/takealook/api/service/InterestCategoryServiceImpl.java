@@ -15,6 +15,10 @@ public class InterestCategoryServiceImpl implements InterestCategoryService{
 
     @Override
     public InterestCategory createInterestCategory(Long memberSeq, Long categorySeq) {
+        InterestCategory check = interestCategoryRepository.findByMemberSeqAndCategorySeq(memberSeq, categorySeq);
+        if(check != null){
+            return check;
+        }
         InterestCategory interestCategory = InterestCategory.builder()
                 .memberSeq(memberSeq)
                 .categorySeq(categorySeq)

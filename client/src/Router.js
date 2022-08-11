@@ -45,11 +45,11 @@ function Router() {
           <Route path="talks" element={<Talks />} />
           <Route path="puchase-history/:purchaseId" element={<PurchaseHistoryDetail />} />
           <Route path="standby/:auctionId" element={<StandBy />} />
-          <Route path="/auctions/new" element={<AuctionCreate />} />
+          <Route path="auctions/new" element={<AuctionCreate />} />
           <Route path="streamings/:auctionId" element={<Streaming />} />
         </Route>
         <Route path="main" element={<Main />} />
-        <Route path="categories/:categoryName" element={<Category />} />
+        <Route path="categories/:categoryId" element={<Category />} />
         <Route path="auctions/:auctionId" element={<AuctionDetail />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

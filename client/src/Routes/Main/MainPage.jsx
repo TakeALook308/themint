@@ -26,6 +26,7 @@ function MainPage(props) {
         <StreamList />
         <PostList />
         <InterestingList />
+        {/* <InterestingAuctionList /> */}
       </Container>
     </>
   );

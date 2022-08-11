@@ -102,13 +102,6 @@ dependencies {
 	implementation 'org.webjars:stomp-websocket:2.3.3-1'
 	// redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-	// embedded redis
-	implementation 'it.ozimov:embedded-redis:0.7.2'
-	annotationProcessor(
-			"javax.persistence:javax.persistence-api",
-			"javax.annotation:javax.annotation-api")
-	implementation("org.projectlombok:lombok:1.18.20")
-	annotationProcessor("org.projectlombok:lombok:1.18.20")
 	// S3
 	implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.3.1'
 }

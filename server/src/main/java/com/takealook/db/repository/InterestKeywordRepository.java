@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface InterestKeywordRepository extends JpaRepository<InterestKeyword, Long> {
+    InterestKeyword findByMemberSeqAndKeywordName(Long memberSeq, String keywordName);
     Optional<List<InterestKeyword>> findAllByMemberSeq(Long memberSeq);
     @Transactional
     void deleteByMemberSeqAndKeywordName(Long memberSeq, String keywordName);

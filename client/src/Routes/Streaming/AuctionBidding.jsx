@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
-function AuctionBidding({ product, sendPrice, price }) {
-  const my = '민트강';
+function AuctionBidding({ product, sendPrice, price, lastPrice, userInfo }) {
+  const nickname = userInfo.nickname;
   const [seconds, setSeconds] = useState(30);
-  const [productPrice, setProductPrice] = useState(product.startPrice);
-  const [myPrice, setMyPrice] = useState(productPrice + 1000);
-  // const [priceList, setPriceList] = useState([]);
+  const [myPrice, setMyPrice] = useState(Number(lastPrice) + 1000);
+
   useEffect(() => {
     const countdown = setInterval(() => {
       if (parseInt(seconds) > 0) {
@@ -24,7 +23,7 @@ function AuctionBidding({ product, sendPrice, price }) {
         <div>
           <p>{product.productName}</p>
           <span>시작가: {product.startPrice} </span>
-          <span>현재가: {productPrice}</span>
+          <span>현재가: {lastPrice}</span>
         </div>
         <div>{seconds < 10 ? `0${seconds}` : seconds}초</div>
       </AuctionInfo>
@@ -39,7 +38,7 @@ function AuctionBidding({ product, sendPrice, price }) {
         <div>
           <button
             onClick={() => {
-              if (myPrice - 1000 > productPrice) setMyPrice(myPrice - 1000);
+              if (myPrice - 1000 > lastPrice) setMyPrice(myPrice - 1000);
               else alert('안돼');
             }}>
             -
@@ -54,7 +53,7 @@ function AuctionBidding({ product, sendPrice, price }) {
         </div>
         <button
           onClick={() => {
-            if (myPrice > productPrice && seconds !== 0) {
+            if (myPrice > lastPrice && seconds !== 0) {
               sendPrice(myPrice);
               setMyPrice(myPrice + 1000);
               // setPriceList([...priceList, { nickname: price.nickname, price: price.price }]);
