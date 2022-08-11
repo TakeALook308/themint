@@ -36,14 +36,14 @@ public class AuctionServiceImpl implements AuctionService {
         // 화상회의 링크 생성해야 함!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         // title, content, categorySeq, startTime, productlist(productname, startprice), auctionImagelist(imageurl)
+        String hash = HashUtil.MD5(LocalDateTime.now().toString() + memberSeq);
         Auction auction = Auction.builder()
-                .hash(HashUtil.MD5(LocalDateTime.now().toString() + memberSeq))
+                .hash(hash)
                 .memberSeq(memberSeq)
                 .title(auctionRegisterPostReq.getTitle())
                 .content(auctionRegisterPostReq.getContent())
                 .categorySeq(auctionRegisterPostReq.getCategorySeq())
                 .startTime(auctionRegisterPostReq.getStartTime())
-//                .link()
                 .build();
         auctionRepository.save(auction);
 
@@ -166,7 +166,6 @@ public class AuctionServiceImpl implements AuctionService {
                 .content(auctionUpdatePatchReq.getContent())
                 .categorySeq(auctionUpdatePatchReq.getCategorySeq())
                 .startTime(auctionUpdatePatchReq.getStartTime())
-                .link(auctionUpdatePatchReq.getLink())
                 .status(auctionUpdatePatchReq.getStatus())
                 .interest(auctionUpdatePatchReq.getInterest())
                 .build();

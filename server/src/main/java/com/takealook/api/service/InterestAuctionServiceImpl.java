@@ -40,7 +40,6 @@ public class InterestAuctionServiceImpl implements InterestAuctionService{
                     .content(auction.getContent())
                     .categorySeq(auction.getCategorySeq())
                     .startTime(auction.getStartTime())
-                    .link(auction.getLink())
                     .status(auction.getStatus())
                     .interest(auction.getInterest() + 1)
                     .build();
@@ -73,7 +72,6 @@ public class InterestAuctionServiceImpl implements InterestAuctionService{
                     .content(auction.getContent())
                     .categorySeq(auction.getCategorySeq())
                     .startTime(auction.getStartTime())
-                    .link(auction.getLink())
                     .status(auction.getStatus())
                     .interest(auction.getInterest() - 1)
                     .build();
