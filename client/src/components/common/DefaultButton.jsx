@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
-function DefaultButton({ title, widthValue, type, onClick }) {
+function DefaultButton({ title, widthValue, type, onClick, disabled }) {
   return (
-    <Button widthValue={widthValue} type={type} onClick={onClick}>
+    <Button widthValue={widthValue} type={type} onClick={onClick} disabled={disabled}>
       {title}
     </Button>
   );

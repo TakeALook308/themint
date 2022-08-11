@@ -18,24 +18,24 @@ function EmaiInput({ text, setEditMode, changeInformation }) {
     watch,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm({ defaultValues: { nickname: text[0] }, mode: 'onChange' });
+  } = useForm({ defaultValues: { email: text[0] }, mode: 'onChange' });
 
-  const checkNickname = async (value) => {
-    if (errors?.nickname?.type === 'pattern' || !value || value.length < STANDARD.NAME_MIN_LENGTH)
+  const checkEmail = async (value) => {
+    if (errors?.email?.type === 'pattern' || !value || value.length < STANDARD.NAME_MIN_LENGTH)
       return;
     try {
-      const response = await getData(userApis.NICKNAME_DUPLICATE_CHECK_API(value));
+      const response = await getData(userApis.EMAIL_DUPLICATE_CHECK_API(value));
       if (response.status === 200) {
         setIsDuplicatedEmail(false);
       }
     } catch {
-      setError('nickname', { message: REGISTER_MESSAGE.DUPLICATED_ID }, { shouldFocus: true });
+      setError('email', { message: REGISTER_MESSAGE.DUPLICATED_ID }, { shouldFocus: true });
       setIsDuplicatedEmail(true);
     }
   };
 
-  const debounceCheckNickname = useMemo(
-    () => debounce(async (value) => await checkNickname(value), 1000),
+  const debounceCheckEmail = useMemo(
+    () => debounce(async (value) => await checkEmail(value), 1000),
     [],
   );
 
@@ -52,7 +52,7 @@ function EmaiInput({ text, setEditMode, changeInformation }) {
   };
 
   const registers = {
-    ...register('nickname', {
+    ...register('email', {
       required: REGISTER_MESSAGE.REQUIRED_NICKNAME,
       minLength: {
         value: STANDARD.NAME_MIN_LENGTH,
@@ -66,7 +66,7 @@ function EmaiInput({ text, setEditMode, changeInformation }) {
         value: REGEX.NICKNAME,
         message: REGISTER_MESSAGE.NICKNAME_STANDARD,
       },
-      validate: debounceCheckNickname,
+      validate: debounceCheckEmail,
     }),
   };
 
@@ -75,22 +75,20 @@ function EmaiInput({ text, setEditMode, changeInformation }) {
       <InputContainer>
         <ActiveInput active={true}>
           <input
-            name="nickname"
-            id="nickname"
-            type="text"
+            name="email"
+            id="email"
+            type="email"
             autoComplete="off"
             placeholder=" "
             required
-            maxLength={STANDARD.NAME_MAX_LENGTH}
-            minLength={STANDARD.NAME_MIN_LENGTH}
             {...registers}
           />
-          <label htmlFor="nickname">닉네임</label>
+          <label htmlFor="email">email</label>
         </ActiveInput>
         <MessageWrapper>
-          <ValidationMessage text={errors?.nickname?.message} state={'fail'} />
-          {watch().nickname && !errors?.nickname && (
-            <ValidationMessage text={REGISTER_MESSAGE.VALIDATED_NICKNAME} state={'pass'} />
+          <ValidationMessage text={errors?.email?.message} state={'fail'} />
+          {watch().email && !errors?.email && (
+            <ValidationMessage text={REGISTER_MESSAGE.VALIDATED_EMAIL} state={'pass'} />
           )}
         </MessageWrapper>
       </InputContainer>

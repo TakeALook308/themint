@@ -11,7 +11,7 @@ import { REGEX, REGISTER_MESSAGE, STANDARD } from '../../utils/constants/constan
 import debounce from '../../utils/functions/debounce';
 
 function NicknameInput({ text, setEditMode, changeInformation }) {
-  const [duplicatedNickname, setDuplicatedNickname] = useState(false);
+  const [isDuplicatedNickname, setIsDuplicatedNickname] = useState(false);
   const {
     register,
     setError,
@@ -26,11 +26,11 @@ function NicknameInput({ text, setEditMode, changeInformation }) {
     try {
       const response = await getData(userApis.NICKNAME_DUPLICATE_CHECK_API(value));
       if (response.status === 200) {
-        setDuplicatedNickname(false);
+        setIsDuplicatedNickname(false);
       }
     } catch {
       setError('nickname', { message: REGISTER_MESSAGE.DUPLICATED_ID }, { shouldFocus: true });
-      setDuplicatedNickname(true);
+      setIsDuplicatedNickname(true);
     }
   };
 
@@ -40,7 +40,7 @@ function NicknameInput({ text, setEditMode, changeInformation }) {
   );
 
   const onValid = async (data) => {
-    if (duplicatedNickname) {
+    if (isDuplicatedNickname) {
       setError(
         'nickname',
         { message: REGISTER_MESSAGE.DUPLICATED_NIACKNAME },
@@ -100,6 +100,7 @@ function NicknameInput({ text, setEditMode, changeInformation }) {
           type="button"
           widthValue="70px"
           onClick={() => setEditMode(false)}
+          disabled={isSubmitting}
         />
         <DefaultButton title={'변경'} type="submit" widthValue="70px" />
       </ButtonContainer>
