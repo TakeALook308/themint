@@ -19,7 +19,7 @@ function CategoryPage({ categoryName }) {
   };
   useEffect(() => {
     const res = getAuctionList(
-      `/api/auction/category?category-seq=${categorySeq}&page=${0}&size=${9}&sort=${sortKey}`,
+      `/api/auction/category?category-seq=${categorySeq}&page=${0}&size=${12}&sort=${sortKey}`,
     );
     res.then((auctions) => {
       console.log(auctions.data.resultList);

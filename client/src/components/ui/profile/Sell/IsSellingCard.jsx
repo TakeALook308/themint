@@ -2,17 +2,17 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-function IsSellingCard({ ModalHandler, sellingItem }) {
+function IsSellingCard({ ModalHandler, sellingItem, auctionitem }) {
   // TODO: 데이터 교체하기
 
   const [statusName, setStatusName] = useState(0);
   useEffect(() => {
-    console.log(sellingItem.status);
-    setStatusName(sellingItem.status);
-  });
+    console.log(auctionitem.status);
+    setStatusName(auctionitem.status);
+  }, []);
 
   const auctionstr = ['판매중', '입금대기', '입금완료', '판매완료', '유찰', '거래취소'];
-
+  // API 연결후 acutionitem 전부 sellingItem으로 변경
   return (
     <CardContainer>
       <div>
@@ -20,7 +20,7 @@ function IsSellingCard({ ModalHandler, sellingItem }) {
           <div>
             <picture>
               <img
-                // src={sellingItem.auctionImage.imageUrl}
+                src={auctionitem.auctionImage.imageUrl}
                 alt="닌텐도 스위치"
                 width="400"
                 height="300"
@@ -28,13 +28,13 @@ function IsSellingCard({ ModalHandler, sellingItem }) {
             </picture>
             <AuctionInfoContainer>
               <div>
-                <h4>{sellingItem.productName}</h4>
-                {4 > statusName > 0 && <p>{sellingItem.finalPrice}</p>}
-                {statusName >= 4 && <p>{sellingItem.startPrice}</p>}
-                {statusName === 0 && <p>{sellingItem.startPrice}</p>}
-                <AcutionTime>{sellingItem.startTime}</AcutionTime>
-                <AuctionStatus auctionstrkey={sellingItem.status}>
-                  {auctionstr[sellingItem.status]}
+                <h4>{auctionitem.productName}</h4>
+                {4 > statusName > 0 && <p>{auctionitem.finalPrice}</p>}
+                {statusName >= 4 && <p>{auctionitem.startPrice}</p>}
+                {statusName === 0 && <p>{auctionitem.startPrice}</p>}
+                <AcutionTime>{auctionitem.startTime}</AcutionTime>
+                <AuctionStatus auctionstrkey={auctionitem.status}>
+                  {auctionstr[auctionitem.status]}
                 </AuctionStatus>
               </div>
             </AuctionInfoContainer>
@@ -43,7 +43,7 @@ function IsSellingCard({ ModalHandler, sellingItem }) {
         <Link to="/">
           <div>
             <picture>
-              <img src={sellingItem.profileUrl} alt="유저 프로필" width="50" height="50" />
+              <img src={auctionitem.profileUrl} alt="유저 프로필" width="50" height="50" />
             </picture>
           </div>
         </Link>

@@ -17,6 +17,7 @@ function InterestCateList() {
     });
   }, []);
   console.log(showCateList);
+
   return (
     <Container>
       {showCateList.map((keyword, i) => (
@@ -28,5 +29,7 @@ function InterestCateList() {
 export default InterestCateList;
 
 const Container = styled.div`
-  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 3rem;
 `;

@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import IsSellingCardList from '../../components/ui/profile/Sell/IsSellingCardList';
 
 function ProfileSalesHistoryPage({ params }) {
-  console.log(params);
   const [sellingItem, setSellingItem] = useState([]);
   const [sellingStatus, setSellingStatus] = useState(0);
   //판매내역 API 요청
@@ -17,9 +16,8 @@ function ProfileSalesHistoryPage({ params }) {
     res.then((items) => {
       setSellingItem(items.data.resultList);
       setSellingStatus(items.data.resultList.status);
-      console.log(sellingItem);
     });
-  }, [params]);
+  }, []);
   // 버튼 클릭으로 판매중 판매완료 구분
   const [active, setActive] = useState('1');
   const numActive = active * 1;
@@ -29,7 +27,6 @@ function ProfileSalesHistoryPage({ params }) {
   const onSold = async () => {
     setActive('2');
   };
-  console.log(active);
   return (
     <Container>
       <ButtonNav>
@@ -48,7 +45,7 @@ function ProfileSalesHistoryPage({ params }) {
           판매완료
         </StyledBtn>
       </ButtonNav>
-      {numActive === 1 && (
+      {/* {numActive === 1 && (
         <IsSellingContainer>
           {sellingStatus < 3 && <IsSellingCardList sellingItem={sellingItem} />}
         </IsSellingContainer>
@@ -57,7 +54,8 @@ function ProfileSalesHistoryPage({ params }) {
         <IsSellingContainer>
           {sellingStatus >= 3 && <IsSellingCardList sellingItem={sellingItem} />}
         </IsSellingContainer>
-      )}
+      )} */}
+      <IsSellingCardList sellingItem={sellingItem} />
     </Container>
   );
 }

@@ -5,7 +5,7 @@ import { instance } from '../../../../utils/apis/api';
 
 function InterestKeyWordCard({ keyword }) {
   const [keywordName, setKeywordName] = useState('');
-
+  // 관심 키워드 삭제
   const onClick = () => {
     console.log(keyword);
     setKeywordName(keyword);
