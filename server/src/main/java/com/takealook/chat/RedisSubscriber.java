@@ -12,6 +12,9 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -40,6 +43,8 @@ public class RedisSubscriber implements MessageListener {
             // 경매 가격 메시지를 받았다면
             else if (publishMessage.contains("price")) {
                 ProductPrice priceMessage = objectMapper.readValue(publishMessage, ProductPrice.class);
+                // 현재 서버시간 설정
+                priceMessage.setDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                 // Websocket 구독자에게 메시지 Send
                 messagingTemplate.convertAndSend("/sub/chat/room/" + priceMessage.getRoomId(), priceMessage);
             }

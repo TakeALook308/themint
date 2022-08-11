@@ -23,6 +23,8 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Nullable;
 import javax.security.auth.login.LoginContext;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -92,7 +94,7 @@ public class AuctionController {
         Long auctionSeq = auctionService.getAuctionByHash(auctionHash).getSeq();
         productService.deleteProductList(auctionSeq);
         auctionImageService.deleteAuctionImageList(auctionSeq);
-        auctionService.deleteAuction(memberSeq, auctionSeq);
+        auctionService.deleteAuction(auctionSeq);
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
     }
 
@@ -220,4 +222,9 @@ public class AuctionController {
         return ResponseEntity.status(200).body(AuctionStandByRes.of(auction, member));
     }
 
+    @GetMapping("/date")
+    public ResponseEntity<?> getServerTime() {
+        String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        return ResponseEntity.status(200).body(date);
+    }
 }

@@ -56,7 +56,7 @@ public class MemberController {
         if (member != null) {
             return ResponseEntity.status(200).body(MemberLoginPostRes.of(JwtTokenUtil.getToken(member.getMemberId()), member.getSeq(), member.getMemberId(), member.getNickname()));
         }
-        return ResponseEntity.status(409).body("fail");
+        return ResponseEntity.status(409).body("signup fail");
     }
 
     // 로그인
@@ -64,7 +64,6 @@ public class MemberController {
     public ResponseEntity<?> login(@RequestBody MemberLoginPostReq memberLoginPostReq) {
         String memberId = memberLoginPostReq.getMemberId();
         String pwd = memberLoginPostReq.getPwd();
-
         Member member = memberService.getMemberByMemberId(memberId);
         // 로그인 요청한 유저의 패스워드와 같은 경우 (유효한 패스워드인지 확인)
         if (member != null && passwordEncoder.matches(pwd, member.getPwd())) {
@@ -73,6 +72,17 @@ public class MemberController {
         // 유효하지 않는 패스워드인 경우, 로그인 실패
         return ResponseEntity.status(409).body("fail");
     }
+
+//    @GetMapping("/klogin")
+//    public ResponseEntity<?> klogin(@RequestParam String authorize_code) throws Exception{
+//        System.out.println(authorize_code);
+//        String access_token = memberService.getAccessTokenKakao(authorize_code);
+//        System.out.println(access_token);
+//        Member member = memberService.getMemberKakao(access_token);
+//        Member findMember = memberService.getMemberByEmail(member.getEmail());
+//
+//        return ResponseEntity.status(200).body(MemberLoginPostRes.of(JwtTokenUtil.getToken(findMember.getMemberId()), member.getSeq(), member.getMemberId(), member.getNickname()));
+//    }
 
     // 회원 목록 검색
     @GetMapping
@@ -122,13 +132,15 @@ public class MemberController {
     }
 
     // 프로필 사진 변경
-    @PatchMapping("img")
-    public ResponseEntity<?> updateProfileImage(MultipartFile multipartFile, @ApiIgnore Authentication authentication) throws Exception {
+    @PostMapping("img")
+    public ResponseEntity<?> updateProfileImage(@RequestPart MultipartFile multipartFile, @ApiIgnore Authentication authentication) throws Exception {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
         Member member = memberService.getMemberByMemberSeq(memberSeq);
         if (member != null) {
-            return ResponseEntity.status(200).body(s3FileService.uploadProfileImage(multipartFile, memberSeq));
+            String result = s3FileService.uploadProfileImage(multipartFile, memberSeq);
+            if (result == "fail") ResponseEntity.status(409).body("fail");
+            return ResponseEntity.status(200).body(result);
         }
         return ResponseEntity.status(409).body("fail");
     }
@@ -174,10 +186,8 @@ public class MemberController {
     // 3. 비밀번호 재설정
     @PatchMapping("password/change")
     public ResponseEntity<?> setNewPassword(@RequestBody MemberSetNewPwdPatchReq memberSetNewPwdPatchReq) {
-        int result = memberService.setNewPassword(memberSetNewPwdPatchReq);
-        if (result == 1)
-            return ResponseEntity.status(200).body("success");
-        return ResponseEntity.status(409).body("fail");
+        memberService.setNewPassword(memberSetNewPwdPatchReq);
+        return ResponseEntity.status(200).body("success");
     }
 
     /////////////////// 비밀번호 재설정 (비밀번호 찾기) end ////////////////////////
@@ -250,6 +260,12 @@ public class MemberController {
     }
 
     // 신뢰도 수정
+    //1. 리뷰 달렸을 때 score 기준으로
+    // - 1, 2 점이면 다운, 3이면 유지, 4,5점이면 업
+    //2. 경매 게시글 하나 올리면 1점 업?
+    //3. 경매 예약 시간 지났는데 status 0이면 -3점?
+    //4. 계좌번호나 프로필 사진 등 개인 정보 더 추가했을 때 1점씩 업?
+    //5. 낙찰됐는데 일주일 내에 입금 안하면 -5점?
     @PatchMapping("/score")
     public ResponseEntity<?> updateScore(@RequestBody MemberScoreUpdatePatchReq memberScoreUpdatePatchReq) {
         Member member = memberService.getMemberByMemberSeq(memberScoreUpdatePatchReq.getSeq());

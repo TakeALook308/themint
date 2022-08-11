@@ -26,7 +26,6 @@ public class AuctionUpdatePatchReq {
     Long categorySeq;
     @ApiModelProperty(name = "경매 시작 시간", example = "2022:08:10 15:00:00")
     String startTime;
-    String link;
     int interest;
     int status;
     @ApiModelProperty(name = "", example = "")

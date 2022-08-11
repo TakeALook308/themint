@@ -11,6 +11,11 @@ public interface MemberService {
     // 회원 가입
     Member createMember(MemberRegisterPostReq memberRegisterPostReq);
 
+    // 카카오 로그인
+    String getAccessTokenKakao(String authorize_code) throws Exception;
+
+    Member getMemberKakao(String access_token) throws Exception;
+
     List<Member> getMemberListByWord(String word, Pageable pageable);
 
     // 회원 정보 보기
@@ -30,7 +35,7 @@ public interface MemberService {
     // 이메일 송신
     int sendEmail(int randNum, String email);
 
-    int setNewPassword(MemberSetNewPwdPatchReq memberSetNewPwdPatchReq);
+    void setNewPassword(MemberSetNewPwdPatchReq memberSetNewPwdPatchReq);
 
     // 회원 삭제
     void deleteMember(Long memberSeq);

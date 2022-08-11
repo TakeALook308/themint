@@ -1,6 +1,11 @@
 package com.takealook.api.service;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.takealook.api.request.*;
+import com.takealook.common.exception.code.ErrorCode;
+import com.takealook.common.exception.member.MemberNotFoundException;
 import com.takealook.db.entity.Member;
 import com.takealook.db.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +15,9 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 import java.util.Random;
 
@@ -49,6 +57,91 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public String getAccessTokenKakao(String authorize_code) throws Exception {
+        String access_token = "";
+        String reqURL = "https://kauth.kakao.com/oauth/token";
+
+        try {
+            URL url = new URL(reqURL);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
+            StringBuilder sb = new StringBuilder();
+            sb.append("grant_type=authorization_code");
+            sb.append("&client_id=b72159a0aae4327b4b1b463c3c529e6d");
+            sb.append("&redirect_uri=https://i7a308.p.ssafy.io/kakaologin");
+            sb.append("&code=" + authorize_code);
+            bw.write(sb.toString());
+            bw.flush();
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+            String line = "";
+            String result = "";
+
+            while ((line = br.readLine()) != null) {
+                result += line;
+            }
+
+            JsonElement element = JsonParser.parseString(result);
+
+            access_token = element.getAsJsonObject().get("access_token").getAsString();
+
+            br.close();
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return access_token;
+    }
+
+    @Override
+    public Member getMemberKakao(String access_token) throws Exception {
+        Member member = new Member();
+        String reqURL = "https://kapi.kakao.com/v2/user/me";
+
+        try {
+
+            URL url = new URL(reqURL);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+
+            conn.setRequestProperty("Authorization", "Bearer " + access_token);
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+            String line = "";
+            String result = "";
+
+            while ((line = br.readLine()) != null) {
+                result += line;
+            }
+
+            System.out.println(result);
+            JsonElement element = JsonParser.parseString(result);
+
+            JsonObject kakao_account = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
+            String id = element.getAsJsonObject().get("id").getAsString();
+            String nickname = kakao_account.getAsJsonObject().get("profile_nickname").getAsString();
+            String profile_image = kakao_account.getAsJsonObject().get("profile_image").getAsString();
+            String email = kakao_account.getAsJsonObject().get("email").getAsString();
+            System.out.println(id + " " + nickname + " " + profile_image + " " + email);
+            member.setMemberId(id);
+            member.setNickname(nickname);
+            member.setProfileUrl(profile_image);
+            member.setEmail(email);
+
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return member;
+    }
+
+    @Override
     public List<Member> getMemberListByWord(String word, Pageable pageable) {
         List<Member> memberList = null;
         if (word == null) {
@@ -60,13 +153,20 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Member getMemberByMemberSeq(Long seq) {
-        return memberRepository.findBySeq(seq);
+        Member member = memberRepository.findBySeq(seq);
+        if (member == null) {
+            throw new MemberNotFoundException("member with seq " + seq + " not found", ErrorCode.MEMBER_NOT_FOUND);
+        }
+        return member;
 
     }
 
     @Override
     public void updateMember(Long memberSeq, MemberUpdatePostReq memberUpdatePostReq) {
         Member member = memberRepository.findBySeq(memberSeq);
+        if (member == null) {
+            throw new MemberNotFoundException("member with seq " + memberSeq + " not found", ErrorCode.MEMBER_NOT_FOUND);
+        }
         member.setNickname(memberUpdatePostReq.getNickname());
         member.setEmail(memberUpdatePostReq.getEmail());
         member.setAddress(memberUpdatePostReq.getAddress());
@@ -93,27 +193,47 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Member getMemberByMemberId(String memberId) {
-        return memberRepository.findByMemberId(memberId);
+        Member member = memberRepository.findByMemberId(memberId);
+        if (member == null) {
+            throw new MemberNotFoundException("member with memberID " + memberId + " not found", ErrorCode.MEMBER_NOT_FOUND);
+        }
+        return member;
     }
 
     @Override
     public Member getMemberByNickname(String nickname) {
-        return memberRepository.findByNickname(nickname);
+        Member member = memberRepository.findByNickname(nickname);
+        if (member == null) {
+            throw new MemberNotFoundException("member with nickname " + nickname + " not found", ErrorCode.MEMBER_NOT_FOUND);
+        }
+        return member;
     }
 
     @Override
     public Member getMemberByEmail(String email) {
-        return memberRepository.findByEmail(email);
+        Member member = memberRepository.findByEmail(email);
+        if (member == null) {
+            throw new MemberNotFoundException("member with email " + email + " not found", ErrorCode.MEMBER_NOT_FOUND);
+        }
+        return member;
     }
 
     @Override
     public Member getMemberByMemberIdAndEmail(MemberSetNewPwdCheckPostReq memberSetNewPwdCheckPostReq) {
-        return memberRepository.findByMemberIdAndEmail(memberSetNewPwdCheckPostReq.getMemberId(), memberSetNewPwdCheckPostReq.getEmail());
+        Member member = memberRepository.findByMemberIdAndEmail(memberSetNewPwdCheckPostReq.getMemberId(), memberSetNewPwdCheckPostReq.getEmail());
+        if (member == null) {
+            throw new MemberNotFoundException("member not found", ErrorCode.MEMBER_NOT_FOUND);
+        }
+        return member;
     }
 
     @Override
     public Member getMemberByPhone(String phone) {
-        return memberRepository.findByPhone(phone);
+        Member member = memberRepository.findByPhone(phone);
+        if (member == null) {
+            throw new MemberNotFoundException("member with phone " + phone + " not found", ErrorCode.MEMBER_NOT_FOUND);
+        }
+        return member;
     }
 
     @Override
@@ -133,14 +253,14 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public int setNewPassword(MemberSetNewPwdPatchReq memberSetNewPwdPatchReq) {
+    public void setNewPassword(MemberSetNewPwdPatchReq memberSetNewPwdPatchReq) {
         Member member = memberRepository.findByMemberId(memberSetNewPwdPatchReq.getMemberId());
-        if (member != null) {
+        if (member == null) {
+            throw new MemberNotFoundException("member with memberID " + memberSetNewPwdPatchReq.getMemberId() + " not found", ErrorCode.MEMBER_NOT_FOUND);
+        } else {
             Long seq = member.getSeq();
             memberRepository.updateMemberPassword(seq, passwordEncoder.encode(memberSetNewPwdPatchReq.getPwd()));
-            return 1;
         }
-        return 0;
     }
 
     @Override
@@ -148,7 +268,9 @@ public class MemberServiceImpl implements MemberService {
         String memberName = memberFindMemberIdReq.getMemberName();
         String phone = memberFindMemberIdReq.getPhone();
         Member member = memberRepository.findByMemberNameAndPhone(memberName, phone);
-        if (member == null) return null;
+        if (member == null) {
+            throw new MemberNotFoundException("member not found", ErrorCode.MEMBER_NOT_FOUND);
+        }
         return member.getMemberId();
     }
 
