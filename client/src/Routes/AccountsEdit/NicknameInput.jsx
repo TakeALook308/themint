@@ -5,7 +5,7 @@ import DefaultButton from '../../components/common/DefaultButton';
 import ValidationMessage from '../../components/common/ValidationMessage';
 import { MessageWrapper } from '../../style/common';
 import { ActiveInput } from '../../style/style';
-import { getData } from '../../utils/apis/api';
+import { fetchData } from '../../utils/apis/api';
 import { userApis } from '../../utils/apis/userApis';
 import { REGEX, REGISTER_MESSAGE, STANDARD } from '../../utils/constants/constant';
 import debounce from '../../utils/functions/debounce';
@@ -24,7 +24,7 @@ function NicknameInput({ text, setEditMode, changeInformation }) {
     if (errors?.nickname?.type === 'pattern' || !value || value.length < STANDARD.NAME_MIN_LENGTH)
       return;
     try {
-      const response = await getData(userApis.NICKNAME_DUPLICATE_CHECK_API(value));
+      const response = await fetchData.get(userApis.NICKNAME_DUPLICATE_CHECK_API(value));
       if (response.status === 200) {
         setIsDuplicatedNickname(false);
       }
@@ -35,7 +35,7 @@ function NicknameInput({ text, setEditMode, changeInformation }) {
   };
 
   const debounceCheckNickname = useMemo(
-    () => debounce(async (value) => await checkNickname(value), 1000),
+    () => debounce(async (value) => await checkNickname(value), 700),
     [],
   );
 
@@ -48,7 +48,7 @@ function NicknameInput({ text, setEditMode, changeInformation }) {
       );
       return;
     }
-    await changeInformation(data);
+    setTimeout(() => changeInformation(data), 1000);
   };
 
   const registers = {
@@ -117,7 +117,6 @@ export const FormContainer = styled.form`
 `;
 
 export const ButtonContainer = styled.div`
-  padding-top: 0.7rem;
   display: flex;
   gap: 1rem;
 `;

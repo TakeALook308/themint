@@ -34,8 +34,8 @@ const GridContainer = styled(Container)`
   display: grid;
   width: 100%;
   grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: 10% 90%;
-  gap: 1rem 3rem;
+  grid-template-rows: 60px 90%;
+  gap: 10px 3rem;
   > article {
     &:nth-child(1) {
       grid-column: 1 / 6;

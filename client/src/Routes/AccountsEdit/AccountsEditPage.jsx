@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 import { myInformationState } from '../../atoms';
-import { getData } from '../../utils/apis/api';
+import { fetchData } from '../../utils/apis/api';
 import { userApis } from '../../utils/apis/userApis';
 import InformationEdit from './InformationEdit';
 import ProfileImage from './ProfileImage';
@@ -23,8 +23,9 @@ function AccountsEditPage(props) {
     score: '',
   });
 
+  console.log(userAllInfo);
   const getUserData = async () => {
-    const response = await getData(userApis.USER_INFORMATION(myInformation.memberSeq));
+    const response = await fetchData.get(userApis.USER_INFORMATION(myInformation.memberSeq));
     return response?.data;
   };
 

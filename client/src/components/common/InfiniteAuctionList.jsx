@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { useInfiniteQuery } from 'react-query';
 import styled from 'styled-components';
-import { getData } from '../../utils/apis/api';
+import { fetchData } from '../../utils/apis/api';
 import useObserver from '../../utils/hooks/useObserver';
 
 function InfiniteAuctionList({ getUrl, queryKey, CardComponent, SkeltonCardComponent, text }) {
@@ -14,7 +14,7 @@ function InfiniteAuctionList({ getUrl, queryKey, CardComponent, SkeltonCardCompo
       return;
     }
     try {
-      const res = await getData(getUrl(pageParam));
+      const res = await fetchData.get(getUrl(pageParam));
       return { data: res?.data, page: pageParam };
     } catch (_) {
       setHasError(true);

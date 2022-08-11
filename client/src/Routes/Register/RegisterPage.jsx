@@ -3,14 +3,14 @@ import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import { Register1, Register2, Register3 } from '.';
 import { userApis } from '../../utils/apis/userApis';
-import { postData } from '../../utils/apis/api';
+import { fetchData } from '../../utils/apis/api';
 import SocialLogginButton from '../../components/ButtonList/SocialLogginButton';
 import SignContainer from '../../components/common/SignContainer';
 import { LOGIN_MESSAGE, PAGES } from '../../utils/constants/constant';
 import { setCookie } from '../../utils/functions/cookies';
 import { toast } from 'react-toastify';
 import { makeLoginMessageRandomNumber } from '../../utils/functions/util';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { loggedinState, myInformationState } from '../../atoms';
 import { session } from '../../App';
 import { Helmet } from 'react-helmet-async';
@@ -24,6 +24,7 @@ function RegisterPage() {
     email: '',
     address: '',
     addressDetail: '',
+    zipCode: '',
     phone: '',
   });
   const [step, setStep] = useState({
@@ -31,8 +32,8 @@ function RegisterPage() {
     step2: false,
     step3: false,
   });
-  const [user, setUser] = useRecoilState(myInformationState);
-  const [logged, setLogged] = useRecoilState(loggedinState);
+  const setUser = useSetRecoilState(myInformationState);
+  const setLogged = useSetRecoilState(loggedinState);
   const navigate = useNavigate();
   useEffect(() => {
     if (!step.step3) return;
@@ -76,7 +77,7 @@ function RegisterPage() {
   };
 
   const register = async () => {
-    return await postData(userApis.REGISTER, userInfo);
+    return await fetchData.post(userApis.REGISTER, userInfo);
   };
 
   return (

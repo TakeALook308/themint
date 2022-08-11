@@ -1,4 +1,3 @@
-import { useScrollTrigger } from '@mui/material';
 import React, { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import DefaultButton from '../../components/common/DefaultButton';
@@ -11,14 +10,13 @@ import { REGEX, REGISTER_MESSAGE, STANDARD } from '../../utils/constants/constan
 import debounce from '../../utils/functions/debounce';
 import { ButtonContainer, FormContainer, InputContainer } from './NicknameInput';
 
-function EmaiInput({ text, setEditMode, changeInformation }) {
+function AccountInput({ text, setEditMode, changeInformation }) {
   const [isDuplicatedEmail, setIsDuplicatedEmail] = useState(false);
   const {
     register,
     setError,
     watch,
     handleSubmit,
-    trigger,
     formState: { errors, isSubmitting },
   } = useForm({ defaultValues: { email: text[0] }, mode: 'onChange' });
 
@@ -97,4 +95,4 @@ function EmaiInput({ text, setEditMode, changeInformation }) {
   );
 }
 
-export default EmaiInput;
+export default AccountInput;

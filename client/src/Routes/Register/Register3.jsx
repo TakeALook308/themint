@@ -4,7 +4,7 @@ import GradientButton from '../../components/ButtonList/GradientButton';
 import MintButton from '../../components/ButtonList/MintButton';
 import { ActiveInput } from '../../style/style';
 import { userApis } from '../../utils/apis/userApis';
-import { getData } from '../../utils/apis/api';
+import { fetchData } from '../../utils/apis/api';
 import { REGEX, REGISTER_MESSAGE, STANDARD } from '../../utils/constants/constant';
 import debounce from '../../utils/functions/debounce';
 import PopupDom from './PopupDom';
@@ -13,6 +13,7 @@ import { InputContainer } from './Register2';
 import StepSignal from './StepSignal';
 import { MessageWrapper } from '../../style/common';
 import ValidationMessage from '../../components/common/ValidationMessage';
+import styled from 'styled-components';
 
 function Register3({ setUserInfo }) {
   const [duplicatedNickname, setDuplicatedNickname] = useState(false);
@@ -36,6 +37,7 @@ function Register3({ setUserInfo }) {
     setError,
     watch,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -61,7 +63,7 @@ function Register3({ setUserInfo }) {
     if (errors?.nickname?.type === 'pattern' || !value || value.length < STANDARD.NAME_MIN_LENGTH)
       return;
     try {
-      const response = await getData(userApis.NICKNAME_DUPLICATE_CHECK_API(value));
+      const response = await fetchData.get(userApis.NICKNAME_DUPLICATE_CHECK_API(value));
       if (response.status === 200) {
         setDuplicatedNickname(false);
       }
@@ -117,41 +119,56 @@ function Register3({ setUserInfo }) {
         <InputContainer>
           <ActiveInput active={true}>
             <input
-              name="address"
-              id="address"
+              name="zipCode"
+              id="zipCode"
               type="text"
-              value={address || ''}
-              onChange={handleInput}
-              {...register('address', {
+              {...register('zipCode', {
                 required: REGISTER_MESSAGE.REQUIRED_ADDRESS,
+                disabled: true,
               })}
+              disabled
               placeholder=" "
               required
             />
-            <label htmlFor="address">주소</label>
+            <label htmlFor="zipCode">우편번호</label>
           </ActiveInput>
-          <MintButton text={'찾기'} type={'button'} onClick={togglePostCode} />
+          <MintButton text={'조회'} type={'button'} onClick={togglePostCode} />
         </InputContainer>
         <div id="popupDom">
           {isPopupOpen && (
             <PopupDom>
-              <PopupPostCode onClose={closePostCode} setAddress={setAddress} />
+              <PopupPostCode onClose={closePostCode} setAddress={setValue} />
             </PopupDom>
           )}
         </div>
         <MessageWrapper>
           <ValidationMessage text={errors?.pwd?.message} state={'fail'} />
         </MessageWrapper>
-        <ActiveInput active={true}>
-          <input
-            name="addressDetail"
-            id="addressDetail"
-            type="text"
-            {...register('addressDetail')}
-            placeholder=" "
-          />
-          <label htmlFor="addressDetail">상세주소</label>
-        </ActiveInput>
+        <AddressContainer>
+          <ActiveInput active={true}>
+            <input
+              name="address"
+              id="address"
+              type="text"
+              {...register('address', {
+                disabled: true,
+              })}
+              placeholder=" "
+            />
+            <label htmlFor="address">주소</label>
+          </ActiveInput>
+          <ActiveInput active={true}>
+            <input
+              name="addressDetail"
+              id="addressDetail"
+              type="text"
+              {...register('addressDetail')}
+              disabled
+              placeholder=" "
+            />
+            <label htmlFor="addressDetail">상세주소</label>
+          </ActiveInput>
+        </AddressContainer>
         <MessageWrapper></MessageWrapper>
 
         <StepSignal step={'register3'} />
@@ -162,3 +179,9 @@ function Register3({ setUserInfo }) {
 }
 
 export default Register3;
+
+const AddressContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;

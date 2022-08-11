@@ -1,6 +1,5 @@
 import AuctionCard from '../../components/CardList/AuctionCard';
 import styled from 'styled-components';
-import InterestingAuctionList from '../../components/InterestingAuctionList';
 import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
 import { auctionListApis } from '../../utils/apis/auctionApis';
 import SkeletonAuctionCard from '../../components/CardList/SkeletonAuctionCard';

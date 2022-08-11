@@ -15,7 +15,8 @@ function PopupPostCode({ onClose, setAddress }) {
       }
       fullAddress += extraAddress !== '' ? ` (${extraAddress})` : '';
     }
-    setAddress(fullAddress);
+    setAddress('zipCode', data.zonecode);
+    setAddress('address', fullAddress);
     onClose();
   };
 

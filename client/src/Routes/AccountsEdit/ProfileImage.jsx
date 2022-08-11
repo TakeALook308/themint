@@ -3,7 +3,7 @@ import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 import { myInformationState } from '../../atoms';
 import { errorToast, successToast } from '../../lib/toast';
-import { postData } from '../../utils/apis/api';
+import { fetchData } from '../../utils/apis/api';
 import { userApis } from '../../utils/apis/userApis';
 import { FaCamera } from 'react-icons/fa';
 
@@ -15,7 +15,7 @@ function ProfileImage({ userAllInfo, setUserAllInfo }) {
   const myInformation = useRecoilValue(myInformationState);
   const requestProfileImage = async (image) => {
     try {
-      const res = await postData(userApis.PROFILE_IMAGE_CHANGE, image, {
+      const res = await fetchData.post(userApis.PROFILE_IMAGE_CHANGE, image, {
         headers: {
           'Content-Type': 'multipart/form-data:',
         },
