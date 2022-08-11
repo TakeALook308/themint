@@ -18,5 +18,5 @@ public interface AuctionService {
     List<Auction> getAuctionListByCategorySeqOrderByScore(Long categorySeq, Pageable pageable);
     List<Auction> getAuctionListByCategorySeq(Long categorySeq, Pageable pageable);
     void updateAuction(Long memberSeq, AuctionUpdatePatchReq auctionUpdatePostReq);
-    void deleteAuction(Long memberSeq, Long auctionSeq);
+    void deleteAuction(Long auctionSeq);
 }

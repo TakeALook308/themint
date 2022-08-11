@@ -1,5 +1,7 @@
 package com.takealook.api.service;
 
+import com.takealook.common.exception.code.ErrorCode;
+import com.takealook.common.exception.product.ProductNotFoundException;
 import com.takealook.db.entity.Product;
 import com.takealook.db.repository.AuctionRepository;
 import com.takealook.db.repository.ProductRepository;
@@ -68,6 +70,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void updateStatus(Long productSeq, int status) {
         Product product = productRepository.findBySeq(productSeq);
+        if(product == null){
+            throw new ProductNotFoundException("product with seq " + productSeq + " not found", ErrorCode.PRODUCT_NOT_FOUND);
+        }
         productRepository.save(Product.builder()
                 .seq(productSeq)
                 .auctionSeq(product.getAuctionSeq())
@@ -81,6 +86,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void updateFinalPrice(Long productSeq, int finalPrice) {
         Product product = productRepository.findBySeq(productSeq);
+        if(product == null){
+            throw new ProductNotFoundException("product with seq " + productSeq + " not found", ErrorCode.PRODUCT_NOT_FOUND);
+        }
         productRepository.save(Product.builder()
                 .seq(productSeq)
                 .auctionSeq(product.getAuctionSeq())
@@ -95,7 +103,7 @@ public class ProductServiceImpl implements ProductService {
     public void updateProductList(Long auctionSeq, List<Product> productList) {
         productRepository.deleteAllByAuctionSeq(auctionSeq);
         for (Product product : productList) {
-            if (product.getSeq() != 0) {
+            if (product.getSeq() != null || product.getSeq() != 0) {
                 productRepository.save(product);
             } else {
                 Product newProduct = Product.builder()

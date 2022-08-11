@@ -1,5 +1,8 @@
 package com.takealook.api.service;
 
+import com.takealook.common.exception.auction.AuctionNotFoundException;
+import com.takealook.common.exception.code.ErrorCode;
+import com.takealook.common.exception.interest.InterestDuplicateException;
 import com.takealook.db.entity.Auction;
 import com.takealook.db.entity.InterestAuction;
 import com.takealook.db.repository.AuctionRepository;
@@ -11,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class InterestAuctionServiceImpl implements InterestAuctionService{
+public class InterestAuctionServiceImpl implements InterestAuctionService {
     @Autowired
     InterestAuctionRepository interestAuctionRepository;
 
@@ -19,10 +22,10 @@ public class InterestAuctionServiceImpl implements InterestAuctionService{
     AuctionRepository auctionRepository;
 
     @Override
-    public int createInterestAuction(Long memberSeq, String hash) {
+    public void createInterestAuction(Long memberSeq, String hash) {
         InterestAuction check = interestAuctionRepository.findByMemberSeqAndHash(memberSeq, hash);
-        if(check != null){
-            return 0; // 이미 추가된 관심 경매
+        if (check != null) {
+            throw new InterestDuplicateException("interest auction with hash " + hash + " duplicated", ErrorCode.INTEREST_DUPLICATION);
         }
         InterestAuction interestAuction = InterestAuction.builder()
                 .memberSeq(memberSeq)
@@ -31,7 +34,7 @@ public class InterestAuctionServiceImpl implements InterestAuctionService{
         interestAuctionRepository.save(interestAuction);
         // 경매 인기도 증가
         Auction auction = auctionRepository.findByHash(hash).orElse(null);
-        if(auction != null){
+        if (auction != null) {
             Auction auctionUpdate = Auction.builder()
                     .seq(auction.getSeq())
                     .hash(auction.getHash())
@@ -44,26 +47,31 @@ public class InterestAuctionServiceImpl implements InterestAuctionService{
                     .interest(auction.getInterest() + 1)
                     .build();
             auctionRepository.save(auctionUpdate);
-            return 1;
+        } else {
+            throw new AuctionNotFoundException("auction with hash " + hash + " not found", ErrorCode.AUCTION_NOT_FOUND);
         }
-        return 0;
     }
 
     @Override
     public List<Auction> getInterestAuctionListByMemberSeq(Long memberSeq) {
         List<InterestAuction> interestAuctionList = interestAuctionRepository.findAllByMemberSeq(memberSeq);
         List<Auction> auctionList = new ArrayList<>();
-        for (InterestAuction interestAuction : interestAuctionList){
-            auctionList.add(auctionRepository.findByHash(interestAuction.getHash()).get());
+        for (InterestAuction interestAuction : interestAuctionList) {
+            Auction auction = auctionRepository.findByHash(interestAuction.getHash()).get();
+            if (auction != null) {
+                auctionList.add(auction);
+            } else {
+                throw new AuctionNotFoundException("auction with hash " + interestAuction.getHash() + " not found", ErrorCode.AUCTION_NOT_FOUND);
+            }
         }
         return auctionList;
     }
 
     @Override
-    public int deleteAuction(Long memberSeq, String hash) {
+    public void deleteAuction(Long memberSeq, String hash) {
         // 경매 인기도 감소
         Auction auction = auctionRepository.findByHash(hash).orElse(null);
-        if(auction != null){
+        if (auction != null) {
             Auction auctionUpdate = Auction.builder()
                     .seq(auction.getSeq())
                     .hash(auction.getHash())
@@ -76,8 +84,9 @@ public class InterestAuctionServiceImpl implements InterestAuctionService{
                     .interest(auction.getInterest() - 1)
                     .build();
             auctionRepository.save(auctionUpdate);
+        } else {
+            throw new AuctionNotFoundException("auction with hash " + hash + " not found", ErrorCode.AUCTION_NOT_FOUND);
         }
-        int result = interestAuctionRepository.deleteByMemberSeqAndHash(memberSeq, hash);
-        return result;
+        interestAuctionRepository.deleteByMemberSeqAndHash(memberSeq, hash);
     }
 }

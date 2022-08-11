@@ -35,7 +35,7 @@ public interface MemberService {
     // 이메일 송신
     int sendEmail(int randNum, String email);
 
-    int setNewPassword(MemberSetNewPwdPatchReq memberSetNewPwdPatchReq);
+    void setNewPassword(MemberSetNewPwdPatchReq memberSetNewPwdPatchReq);
 
     // 회원 삭제
     void deleteMember(Long memberSeq);

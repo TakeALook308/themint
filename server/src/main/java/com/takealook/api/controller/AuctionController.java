@@ -94,7 +94,7 @@ public class AuctionController {
         Long auctionSeq = auctionService.getAuctionByHash(auctionHash).getSeq();
         productService.deleteProductList(auctionSeq);
         auctionImageService.deleteAuctionImageList(auctionSeq);
-        auctionService.deleteAuction(memberSeq, auctionSeq);
+        auctionService.deleteAuction(auctionSeq);
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
     }
 
