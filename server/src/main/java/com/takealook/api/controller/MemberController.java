@@ -133,13 +133,15 @@ public class MemberController {
     }
 
     // 프로필 사진 변경
-    @PatchMapping("img")
+    @PostMapping("img")
     public ResponseEntity<?> updateProfileImage(@RequestPart MultipartFile multipartFile, @ApiIgnore Authentication authentication) throws Exception {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
         Member member = memberService.getMemberByMemberSeq(memberSeq);
         if (member != null) {
-            return ResponseEntity.status(200).body(s3FileService.uploadProfileImage(multipartFile, memberSeq));
+            String result = s3FileService.uploadProfileImage(multipartFile, memberSeq);
+            if (result == "fail") ResponseEntity.status(409).body("fail");
+            return ResponseEntity.status(200).body(result);
         }
         return ResponseEntity.status(409).body("fail");
     }
