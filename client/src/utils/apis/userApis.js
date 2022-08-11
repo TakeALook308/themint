@@ -14,6 +14,7 @@ export const userApis = {
   USER_INFORMATION: (memberSeq) => `/api/member/${memberSeq}`,
   PROFILE_IMAGE_CHANGE: '/api/member/img',
   MY_BASIC_INFORMATION: '/api/member/info',
+  INFORMATION_CHANGE: '/api/member',
   USER_LIST: (word, size) => {
     return (page) => `/api/member?word=${word}&page=${page}&size=${size}`;
   },

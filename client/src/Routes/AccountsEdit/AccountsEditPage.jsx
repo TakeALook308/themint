@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 import { myInformationState } from '../../atoms';
@@ -32,16 +33,20 @@ function AccountsEditPage(props) {
   useEffect(() => {
     (async () => {
       const response = await getUserData();
-      console.log(response);
       setUserAllInfo(response);
     })();
   }, []);
 
   return (
-    <Container>
-      <ProfileImage src={userAllInfo.profileUrl} />
-      <InformationEdit />
-    </Container>
+    <>
+      <Helmet>
+        <title>회원 정보 수정 | 더민트</title>
+      </Helmet>
+      <Container>
+        <ProfileImage userAllInfo={userAllInfo} setUserAllInfo={setUserAllInfo} />
+        <InformationEdit userAllInfo={userAllInfo} setUserAllInfo={setUserAllInfo} />
+      </Container>
+    </>
   );
 }
 
@@ -50,4 +55,7 @@ export default AccountsEditPage;
 const Container = styled.div`
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 `;

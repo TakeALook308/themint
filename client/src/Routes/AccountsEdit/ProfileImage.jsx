@@ -5,17 +5,14 @@ import { myInformationState } from '../../atoms';
 import { errorToast, successToast } from '../../lib/toast';
 import { postData } from '../../utils/apis/api';
 import { userApis } from '../../utils/apis/userApis';
+import { FaCamera } from 'react-icons/fa';
 
-function ProfileImage({ src }) {
+function ProfileImage({ userAllInfo, setUserAllInfo }) {
   const [files, setFiles] = useState({
     file: '',
     imagePreviewUrl: '',
   });
   const myInformation = useRecoilValue(myInformationState);
-  const deleteFileImage = () => {
-    URL.revokeObjectURL(files.imagePreviewUrl);
-  };
-
   const requestProfileImage = async (image) => {
     try {
       const res = await postData(userApis.PROFILE_IMAGE_CHANGE, image, {
@@ -23,14 +20,13 @@ function ProfileImage({ src }) {
           'Content-Type': 'multipart/form-data:',
         },
       });
-
-      setFiles((prev) => ({
+      setUserAllInfo((prev) => ({
         ...prev,
-        imagePreviewUrl: process.env.REACT_APP_IMAGE_URL + res?.data,
+        profileUrl: res?.data,
       }));
-      successToast('프로필 이미지 변경✅');
+      successToast('프로필 사진이 변경되었습니다.');
     } catch (err) {
-      errorToast('프로필 이미지 변경에 실패하였습니다.');
+      errorToast('프로필 사진 변경에 실패하였습니다.');
     }
   };
 
@@ -52,26 +48,27 @@ function ProfileImage({ src }) {
   };
 
   useEffect(() => {
-    if (src) {
+    if (userAllInfo?.profileUrl) {
       setFiles({
-        files: '',
-        imagePreviewUrl: process.env.REACT_APP_IMAGE_URL + src,
+        imagePreviewUrl: process.env.REACT_APP_IMAGE_URL + userAllInfo?.profileUrl,
       });
     }
-    return () => deleteFileImage();
-  }, [src]);
+  }, [userAllInfo]);
 
   return (
-    <div>
+    <Container>
       <div>
         <form>
           <CustomFileUpload htmlFor="photo-upload">
             <ImageWrapper>
-              {src && (
+              {userAllInfo?.profileUrl && (
                 <Img
                   htmlFor="photo-upload"
+                  loading="lazy"
                   src={files.imagePreviewUrl}
                   alt={`${myInformation.nickname} 프로필 이미지`}
+                  width="200"
+                  height="200"
                 />
               )}
             </ImageWrapper>
@@ -81,23 +78,54 @@ function ProfileImage({ src }) {
               accept="image/png, image/jpeg, image/jpg"
               onChange={photoUpload}
             />
+            <Svg />
           </CustomFileUpload>
         </form>
       </div>
-      <div>
-        <p>이름</p>
-        <p>아이디</p>
-      </div>
-    </div>
+      <NameContainer>
+        <p>{userAllInfo.memberName}</p>
+        <p>{userAllInfo.memberId}</p>
+      </NameContainer>
+    </Container>
   );
 }
 
 export default ProfileImage;
 
+const Container = styled.article`
+  display: flex;
+  gap: 2rem;
+`;
+
+const NameContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  p {
+    &:first-child {
+      font-size: ${(props) => props.theme.fontSizes.h5};
+      font-weight: bold;
+    }
+  }
+`;
+
+const Svg = styled(FaCamera)`
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  font-size: ${(props) => props.theme.fontSizes.h4};
+  color: ${(props) => props.theme.colors.pointGray};
+  z-index: 2;
+`;
+
 const Img = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid black;
+  background-color: ${(props) => props.theme.colors.mainMint};
 `;
 
 const FileInput = styled.input`
@@ -116,6 +144,8 @@ const CustomFileUpload = styled.label`
   display: inline-block;
   position: relative;
   padding: 6px;
+  width: 100%;
+  height: 100%;
   cursor: pointer;
   background: ${(props) => props.theme.colors.gradientMainMintToSubMint};
   &:before {
@@ -125,6 +155,8 @@ const CustomFileUpload = styled.label`
     justify-content: center;
     align-items: center;
     color: #63d3a6;
+    bottom: 5px;
+    left: 5px;
     width: calc(100% - 10px);
     height: calc(100% - 10px);
     border-radius: 50%;

@@ -2,7 +2,7 @@ const colors = {
   mainMint: '#2CDCB2',
   subMint: '#99E8E8',
   mainPurple: '#893CD6',
-  white: '#FFFFFF',
+  white: '#F5F5F5',
   mainBlack: '#0D0C0F',
   subBlack: '#191919',
   pointRed: '#F58181',
