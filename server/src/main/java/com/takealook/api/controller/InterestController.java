@@ -48,19 +48,19 @@ public class InterestController {
      */
     @PostMapping("/keyword/{keywordName}")
     @ApiOperation(value = "관심 키워드 등록", notes = "<strong>관심 키워드 정보</strong>를 등록한다.")
-    @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "인증 실패"),
-            @ApiResponse(code = 404, message = "사용자 없음"), @ApiResponse(code = 500, message = "서버 오류") })
-    public ResponseEntity<? extends BaseResponseBody> registerKeyword(@PathVariable String keywordName, @ApiIgnore Authentication authentication){
+    @ApiResponses({@ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "인증 실패"),
+            @ApiResponse(code = 404, message = "사용자 없음"), @ApiResponse(code = 500, message = "서버 오류")})
+    public ResponseEntity<? extends BaseResponseBody> registerKeyword(@PathVariable String keywordName, @ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
-        InterestKeyword interestKeyword = interestKeywordService.createInterestKeyword(memberSeq, keywordName);
+        interestKeywordService.createInterestKeyword(memberSeq, keywordName);
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
     }
 
     @GetMapping("/keyword")
     @ApiOperation(value = "멤버의 관심 키워드 조회", notes = "로그인한 회원의 관심 키워드 목록을 응답한다.")
-    @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "인증 실패"),
-            @ApiResponse(code = 404, message = "사용자 없음"), @ApiResponse(code = 500, message = "서버 오류") })
+    @ApiResponses({@ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "인증 실패"),
+            @ApiResponse(code = 404, message = "사용자 없음"), @ApiResponse(code = 500, message = "서버 오류")})
     public ResponseEntity<InterestKeywordRes> getInterestKeywordList(@ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
@@ -70,9 +70,9 @@ public class InterestController {
 
     @DeleteMapping("/keyword/{keywordName}")
     @ApiOperation(value = "관심 키워드 삭제", notes = "관심 키워드를 삭제한다.")
-    @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "인증 실패"),
-            @ApiResponse(code = 404, message = "사용자 없음"), @ApiResponse(code = 500, message = "서버 오류") })
-    public ResponseEntity<? extends BaseResponseBody> deleteKeyword(@PathVariable String keywordName, @ApiIgnore Authentication authentication){
+    @ApiResponses({@ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "인증 실패"),
+            @ApiResponse(code = 404, message = "사용자 없음"), @ApiResponse(code = 500, message = "서버 오류")})
+    public ResponseEntity<? extends BaseResponseBody> deleteKeyword(@PathVariable String keywordName, @ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
         interestKeywordService.deleteKeyword(memberSeq, keywordName);
@@ -84,19 +84,19 @@ public class InterestController {
      */
     @PostMapping("/category/{categorySeq}")
     @ApiOperation(value = "관심 카테고리 등록", notes = "<strong>관심 카테고리 정보</strong>를 등록한다.")
-    @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "인증 실패"),
-            @ApiResponse(code = 404, message = "사용자 없음"), @ApiResponse(code = 500, message = "서버 오류") })
-    public ResponseEntity<? extends BaseResponseBody> registerCategory(@PathVariable Long categorySeq, @ApiIgnore Authentication authentication){
+    @ApiResponses({@ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "인증 실패"),
+            @ApiResponse(code = 404, message = "사용자 없음"), @ApiResponse(code = 500, message = "서버 오류")})
+    public ResponseEntity<? extends BaseResponseBody> registerCategory(@PathVariable Long categorySeq, @ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
-        InterestCategory interestCategory = interestCategoryService.createInterestCategory(memberSeq, categorySeq);
+        interestCategoryService.createInterestCategory(memberSeq, categorySeq);
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
     }
 
     @GetMapping("/category")
     @ApiOperation(value = "멤버의 관심 카테고리 조회", notes = "로그인한 회원의 관심 카테고리 목록을 응답한다.")
-    @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "인증 실패"),
-            @ApiResponse(code = 404, message = "사용자 없음"), @ApiResponse(code = 500, message = "서버 오류") })
+    @ApiResponses({@ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "인증 실패"),
+            @ApiResponse(code = 404, message = "사용자 없음"), @ApiResponse(code = 500, message = "서버 오류")})
     public ResponseEntity<InterestCategoryRes> getInterestCategoryList(@ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
@@ -106,12 +106,12 @@ public class InterestController {
 
     @DeleteMapping("/category/{categorySeq}")
     @ApiOperation(value = "관심 카테고리 삭제", notes = "관심 카테고리를 삭제한다.")
-    @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "인증 실패"),
-            @ApiResponse(code = 404, message = "사용자 없음"), @ApiResponse(code = 500, message = "서버 오류") })
-    public ResponseEntity<? extends BaseResponseBody> deleteCategory(@PathVariable Long categorySeq, @ApiIgnore Authentication authentication){
+    @ApiResponses({@ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "인증 실패"),
+            @ApiResponse(code = 404, message = "사용자 없음"), @ApiResponse(code = 500, message = "서버 오류")})
+    public ResponseEntity<? extends BaseResponseBody> deleteCategory(@PathVariable Long categorySeq, @ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
-        int result = interestCategoryService.deleteCategory(memberSeq, categorySeq);
+        interestCategoryService.deleteCategory(memberSeq, categorySeq);
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
     }
 
@@ -120,30 +120,26 @@ public class InterestController {
      */
     @PostMapping("/auction/{hash}")
     @ApiOperation(value = "관심 경매 등록", notes = "<strong>관심 경매 정보</strong>를 등록한다.")
-    @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "인증 실패"),
-            @ApiResponse(code = 404, message = "사용자 없음"), @ApiResponse(code = 500, message = "서버 오류") })
-    public ResponseEntity<? extends BaseResponseBody> registerAuction(@PathVariable String hash, @ApiIgnore Authentication authentication){
+    @ApiResponses({@ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "인증 실패"),
+            @ApiResponse(code = 404, message = "사용자 없음"), @ApiResponse(code = 500, message = "서버 오류")})
+    public ResponseEntity<? extends BaseResponseBody> registerAuction(@PathVariable String hash, @ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
-        int result = interestAuctionService.createInterestAuction(memberSeq, hash);
-        if(result == 1){
-            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
-        } else{ // 이미 추가한 경매, 경매 없음
-            return ResponseEntity.status(409).body(BaseResponseBody.of(409, "Fail"));
-        }
+        interestAuctionService.createInterestAuction(memberSeq, hash);
+        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
 
     }
 
     @GetMapping("/auction")
     @ApiOperation(value = "멤버의 관심 경매 조회", notes = "로그인한 회원의 관심 경매 목록을 응답한다.")
-    @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "인증 실패"),
-            @ApiResponse(code = 404, message = "사용자 없음"), @ApiResponse(code = 500, message = "서버 오류") })
+    @ApiResponses({@ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "인증 실패"),
+            @ApiResponse(code = 404, message = "사용자 없음"), @ApiResponse(code = 500, message = "서버 오류")})
     public ResponseEntity<List<AuctionListEntityRes>> getInterestAuctionList(@ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
         List<AuctionListEntityRes> auctionListRes = new ArrayList<>();
         List<Auction> auctionList = interestAuctionService.getInterestAuctionListByMemberSeq(memberSeq);
-        for(Auction auction : auctionList){
+        for (Auction auction : auctionList) {
             Long auctionMemberSeq = auction.getMemberSeq();
             Member member = memberService.getMemberByMemberSeq(auctionMemberSeq);
             List<AuctionImage> auctionImageList = auctionImageService.getAuctionImageListByAuctionSeq(auction.getSeq());
@@ -154,12 +150,12 @@ public class InterestController {
 
     @DeleteMapping("/auction/{hash}")
     @ApiOperation(value = "관심 경매 삭제", notes = "관심 경매를 삭제한다.")
-    @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "인증 실패"),
-            @ApiResponse(code = 404, message = "사용자 없음"), @ApiResponse(code = 500, message = "서버 오류") })
-    public ResponseEntity<? extends BaseResponseBody> deleteAuction(@PathVariable String hash, @ApiIgnore Authentication authentication){
+    @ApiResponses({@ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "인증 실패"),
+            @ApiResponse(code = 404, message = "사용자 없음"), @ApiResponse(code = 500, message = "서버 오류")})
+    public ResponseEntity<? extends BaseResponseBody> deleteAuction(@PathVariable String hash, @ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
-        int result = interestAuctionService.deleteAuction(memberSeq, hash);
+        interestAuctionService.deleteAuction(memberSeq, hash);
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
     }
 }

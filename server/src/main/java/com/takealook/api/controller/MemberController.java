@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -57,7 +56,7 @@ public class MemberController {
         if (member != null) {
             return ResponseEntity.status(200).body(MemberLoginPostRes.of(JwtTokenUtil.getToken(member.getMemberId()), member.getSeq(), member.getMemberId(), member.getNickname()));
         }
-        return ResponseEntity.status(409).body("fail");
+        return ResponseEntity.status(409).body("signup fail");
     }
 
     // 로그인
@@ -133,7 +132,7 @@ public class MemberController {
     }
 
     // 프로필 사진 변경
-    @PatchMapping("img")
+    @PostMapping("img")
     public ResponseEntity<?> updateProfileImage(@RequestPart MultipartFile multipartFile, @ApiIgnore Authentication authentication) throws Exception {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
@@ -185,10 +184,8 @@ public class MemberController {
     // 3. 비밀번호 재설정
     @PatchMapping("password/change")
     public ResponseEntity<?> setNewPassword(@RequestBody MemberSetNewPwdPatchReq memberSetNewPwdPatchReq) {
-        int result = memberService.setNewPassword(memberSetNewPwdPatchReq);
-        if (result == 1)
-            return ResponseEntity.status(200).body("success");
-        return ResponseEntity.status(409).body("fail");
+        memberService.setNewPassword(memberSetNewPwdPatchReq);
+        return ResponseEntity.status(200).body("success");
     }
 
     /////////////////// 비밀번호 재설정 (비밀번호 찾기) end ////////////////////////
@@ -261,6 +258,12 @@ public class MemberController {
     }
 
     // 신뢰도 수정
+    //1. 리뷰 달렸을 때 score 기준으로
+    // - 1, 2 점이면 다운, 3이면 유지, 4,5점이면 업
+    //2. 경매 게시글 하나 올리면 1점 업?
+    //3. 경매 예약 시간 지났는데 status 0이면 -3점?
+    //4. 계좌번호나 프로필 사진 등 개인 정보 더 추가했을 때 1점씩 업?
+    //5. 낙찰됐는데 일주일 내에 입금 안하면 -5점?
     @PatchMapping("/score")
     public ResponseEntity<?> updateScore(@RequestBody MemberScoreUpdatePatchReq memberScoreUpdatePatchReq) {
         Member member = memberService.getMemberByMemberSeq(memberScoreUpdatePatchReq.getSeq());
