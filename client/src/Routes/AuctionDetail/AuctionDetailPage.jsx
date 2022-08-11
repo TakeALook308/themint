@@ -8,58 +8,91 @@ import { categories } from '../../utils/constants/constant';
 import GradientButton from '../../components/ButtonList/GradientButton';
 import { myInformationState } from '../../atoms';
 import { useRecoilValue } from 'recoil';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination, Autoplay, Navigation } from 'swiper';
+import 'swiper/css';
+import 'swiper/css/pagination';
 
 function AuctionDetailPage(props) {
-  const userInfo = useRecoilValue(myInformationState);
-  const navigate = useNavigate();
-
   const params = useParams();
-  const [auctionInfo, setAuctionInfo] = useState({});
-  useEffect(() => {
-    getData(auctionApis.AUCTION_DETAIL_API(params.auctionId))
+  const [auctionInfo, setAuctionInfo] = useState(null);
+  const ff = async () => {
+    await getData(auctionApis.AUCTION_DETAIL_API(params.auctionId))
       .then((res) => {
         setAuctionInfo(res.data);
       })
       .catch(() => {
         console.log('error');
       });
+  };
+  useEffect(() => {
+    ff();
   }, []);
   console.log(auctionInfo);
-  return (
-    <Container>
-      <AuctionMainInfo>
-        {/* <Crl></Crl> */}
-        {/* <div>
-          <p>{categories[auctionInfo.categorySeq - 1].name}</p>
-          <p>{auctionInfo.title}</p>
+  const userInfo = useRecoilValue(myInformationState);
+  const navigate = useNavigate();
+  if (auctionInfo) {
+    return (
+      <Container>
+        <AuctionMainInfo>
+          <AuctionImage>
+            <Swiper
+              modules={[Pagination, Autoplay, Navigation]}
+              pagination={{ clickable: true }}
+              scrollbar={{ draggable: true }}
+              autoplay={{
+                delay: 5000,
+                disableOnInteraction: false,
+              }}>
+              {auctionInfo.auctionImageList.map((item, i) => {
+                <SwiperSlide key={i}>
+                  <p>여어</p>
+                  <img
+                    src={`https://s3.ap-northeast-2.amazonaws.com/s3-themint${item.imageUrl}`}
+                    alt="상품 이미지"
+                    width="100%"
+                  />
+                </SwiperSlide>;
+              })}
+            </Swiper>
+          </AuctionImage>
           <div>
-            <img
-              src={`https://s3.ap-northeast-2.amazonaws.com/s3-themint${auctionInfo.profileUrl}`}
-              alt="프로필 이미지"
-              width="30px"
-            />
-            <span>{auctionInfo.nickname}</span>
+            {/* <p>{categories[auctionInfo.categorySeq-1].name}</p> */}
+            <p>{auctionInfo.title}</p>
+            <div>
+              <img
+                src={`https://s3.ap-northeast-2.amazonaws.com/s3-themint${auctionInfo.profileUrl}`}
+                alt="프로필 이미지"
+                width="30px"
+              />
+              <span>{auctionInfo.nickname}</span>
+            </div>
           </div>
-        </div>
-        <div>
-          <span>{auctionInfo.startTime}</span>
-        </div> */}
-        <GradientButton
-          text="경매 참여"
-          onClick={() => {
-            if (auctionInfo.memberSeq === userInfo.memberSeq)
-              navigate(`/standby/${params.auctionId}`);
-            else navigate(`/streamings/${params.auctionId}`);
-          }}></GradientButton>
-      </AuctionMainInfo>
-      {/* <AuctionList></AuctionList>
-      <AuctionContent></AuctionContent> */}
-    </Container>
-  );
+          <div>
+            <span>{auctionInfo.startTime}</span>
+          </div>
+          <GradientButton
+            text="경매 참여"
+            onClick={() => {
+              // if (auctionInfo.memberSeq === userInfo.memberSeq)
+              //   navigate(`/standby/${params.auctionId}`);
+              // else navigate(`/streamings/${params.auctionId}`);
+            }}></GradientButton>
+        </AuctionMainInfo>
+        {/* <AuctionList></AuctionList> */}
+        <AuctionContent>
+          <p>{auctionInfo.content}</p>
+        </AuctionContent>
+      </Container>
+    );
+  } else return <Container>상품이 존재하지 않습니다.</Container>;
 }
+
+const AuctionImage = styled.div``;
 
 const AuctionMainInfo = styled.div`
   display: flex;
 `;
 
+const AuctionContent = styled.div``;
 export default AuctionDetailPage;
