@@ -23,7 +23,6 @@ function AccountsEditPage(props) {
     score: '',
   });
 
-  console.log(userAllInfo);
   const getUserData = async () => {
     const response = await fetchData.get(userApis.USER_INFORMATION(myInformation.memberSeq));
     return response?.data;
@@ -53,7 +52,7 @@ function AccountsEditPage(props) {
 
 export default AccountsEditPage;
 
-const Container = styled.div`
+const Container = styled.article`
   width: 100%;
   height: 100%;
   display: flex;

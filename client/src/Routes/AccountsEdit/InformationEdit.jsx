@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { BsFillPersonFill, BsHouseFill } from 'react-icons/bs';
 import { MdOutlineSmartphone, MdMail } from 'react-icons/md';
@@ -10,6 +10,7 @@ import { fetchData } from '../../utils/apis/api';
 import { userApis } from '../../utils/apis/userApis';
 import EmaiInput from './EmaiInput';
 import AddressInput from './AddressInput';
+import { bankList } from '../../utils/constants/bankList';
 
 function InformationEdit({ userAllInfo, setUserAllInfo }) {
   const navigate = useNavigate();
@@ -37,10 +38,12 @@ function InformationEdit({ userAllInfo, setUserAllInfo }) {
       />
       <Information
         icon={<AiFillDollarCircle aria-label="계좌번호" />}
-        textList={[userAllInfo.accounts]}
+        // textList={[userAllInfo.backCode, userAllInfo.accountNo]}
+        textList={[2, '01032359083']}
         Component={EmaiInput}
         setUserAllInfo={setUserAllInfo}
         userAllInfo={userAllInfo}
+        type={'account'}
       />
       <Information
         icon={<BsHouseFill aria-label="주소" />}
@@ -55,7 +58,7 @@ function InformationEdit({ userAllInfo, setUserAllInfo }) {
 
 export default InformationEdit;
 
-const Information = ({ icon, textList, onClick, Component, setUserAllInfo, userAllInfo }) => {
+const Information = ({ icon, textList, onClick, Component, setUserAllInfo, userAllInfo, type }) => {
   const [editMode, setEditMode] = useState(false);
   const changeInformation = async (prop) => {
     setEditMode(false);
@@ -110,7 +113,7 @@ const Container = styled.article`
 
 const TextConatiners = styled.div`
   width: 80%;
-  p {
+  > p {
     &:not(:first-child) {
       line-height: 2;
     }
@@ -125,8 +128,16 @@ const InformationContainer = styled.div`
 `;
 
 const NotEditMode = styled.div`
-  /* padding-top: 0.7rem; */
   display: flex;
   width: 100%;
   justify-content: space-between;
+`;
+
+const AccountContainer = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 2rem;
+  p {
+    line-height: 1;
+  }
 `;

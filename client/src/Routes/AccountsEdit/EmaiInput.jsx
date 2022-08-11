@@ -1,4 +1,3 @@
-import { useScrollTrigger } from '@mui/material';
 import React, { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import DefaultButton from '../../components/common/DefaultButton';

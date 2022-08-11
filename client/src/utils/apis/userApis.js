@@ -8,6 +8,7 @@ export const userApis = {
   LOGIN: '/api/member/login',
   AUTH_EMAIL: '/api/member/password/check',
   PASSWORD_CHANGE: '/api/member/password/change',
+  PASSWORD: '/api/member/password',
   FIND_ID: '/api/member/id',
   SCORE_CHANGE: '/api/member/score',
   DELETE_USER: '/api/member',
