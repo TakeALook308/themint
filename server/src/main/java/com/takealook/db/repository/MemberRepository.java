@@ -28,7 +28,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Transactional // update, delete 필수
     @Modifying(clearAutomatically = true) // 영속성 컨텍스트 초기화
-    @Query("UPDATE Member SET score = :score WHERE seq = :seq")
+    @Query("UPDATE Member SET score = score + :score WHERE seq = :seq")
     int updateMemberScore(Long seq, int score);
 
     @Transactional // update, delete 필수

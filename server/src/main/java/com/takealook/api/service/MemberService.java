@@ -47,10 +47,10 @@ public interface MemberService {
     Member getMemberByNickname(String nickname);
 
     // 아이디 찾기
-    String FindMemberId(MemberFindMemberIdReq memberFindMemberIdReq);
+    String findMemberId(MemberFindMemberIdReq memberFindMemberIdReq);
 
     // 신뢰도 수정
-    void updateMemberScore(MemberScoreUpdatePatchReq memberScoreUpdatePatchReq);
+    void updateMemberScore(Long memberSeq, int score);
 
     // 휴대폰 중복체크
     Member getMemberByPhone(String phone);

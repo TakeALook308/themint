@@ -30,10 +30,10 @@ public class ReviewController {
     MemberService memberService;
 
     @GetMapping("/{memberSeq}")
-    public ResponseEntity<List<ReviewListEntityRes>> getReviewList(@PathVariable("memberSeq") Long memberSeq){
+    public ResponseEntity<List<ReviewListEntityRes>> getReviewList(@PathVariable("memberSeq") Long memberSeq) {
         List<Review> reviewList = reviewService.getReviewList(memberSeq);
         List<ReviewListEntityRes> reviewListEntityResList = new ArrayList<>();
-        for (Review review : reviewList){
+        for (Review review : reviewList) {
             Member writer = memberService.getMemberByMemberSeq(review.getWriterSeq());
             reviewListEntityResList.add(ReviewListEntityRes.of(writer, review));
         }
@@ -41,13 +41,16 @@ public class ReviewController {
     }
 
     @PostMapping
-    public ResponseEntity<? extends BaseResponseBody> registerReview(@RequestBody ReviewRegisterPostReq reviewRegisterPostReq, @ApiIgnore Authentication authentication){
+    public ResponseEntity<? extends BaseResponseBody> registerReview(@RequestBody ReviewRegisterPostReq reviewRegisterPostReq, @ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long writerSeq = memberDetails.getMemberSeq();
-        int result = reviewService.registerReview(writerSeq, reviewRegisterPostReq);
-        if(result == 1) {
-            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
+        int score = reviewRegisterPostReq.getScore();
+        if(score < 3) {
+            memberService.updateMemberScore(reviewRegisterPostReq.getReceiverSeq(), -score);
+        } else if(score > 3){
+            memberService.updateMemberScore(reviewRegisterPostReq.getReceiverSeq(), score);
         }
-        return ResponseEntity.status(409).body(BaseResponseBody.of(409, "fail"));
+        reviewService.registerReview(writerSeq, reviewRegisterPostReq);
+        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
     }
 }

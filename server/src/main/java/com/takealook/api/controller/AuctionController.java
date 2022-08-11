@@ -60,6 +60,7 @@ public class AuctionController {
         List<Product> productList = productService.getProductListByAuctionSeq(auction.getSeq());
         List<AuctionImage> auctionImageList = auctionImageService.getAuctionImageListByAuctionSeq(auction.getSeq());
         historyService.registerSalesHistory(memberSeq, productList, auctionImageList);
+        memberService.updateMemberScore(memberSeq, 1);
         if (auction == null) {
             return ResponseEntity.status(409).body(BaseResponseBody.of(409, "fail"));
         }
