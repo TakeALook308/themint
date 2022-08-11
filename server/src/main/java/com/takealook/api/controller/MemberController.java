@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -73,6 +74,17 @@ public class MemberController {
         // 유효하지 않는 패스워드인 경우, 로그인 실패
         return ResponseEntity.status(409).body("fail");
     }
+
+//    @GetMapping("/klogin")
+//    public ResponseEntity<?> klogin(@RequestParam String authorize_code) throws Exception{
+//        System.out.println(authorize_code);
+//        String access_token = memberService.getAccessTokenKakao(authorize_code);
+//        System.out.println(access_token);
+//        Member member = memberService.getMemberKakao(access_token);
+//        Member findMember = memberService.getMemberByEmail(member.getEmail());
+//
+//        return ResponseEntity.status(200).body(MemberLoginPostRes.of(JwtTokenUtil.getToken(findMember.getMemberId()), member.getSeq(), member.getMemberId(), member.getNickname()));
+//    }
 
     // 회원 목록 검색
     @GetMapping
