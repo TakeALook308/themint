@@ -64,7 +64,6 @@ public class MemberController {
     public ResponseEntity<?> login(@RequestBody MemberLoginPostReq memberLoginPostReq) {
         String memberId = memberLoginPostReq.getMemberId();
         String pwd = memberLoginPostReq.getPwd();
-
         Member member = memberService.getMemberByMemberId(memberId);
         // 로그인 요청한 유저의 패스워드와 같은 경우 (유효한 패스워드인지 확인)
         if (member != null && passwordEncoder.matches(pwd, member.getPwd())) {
@@ -123,7 +122,7 @@ public class MemberController {
 
     // 프로필 사진 변경
     @PatchMapping("img")
-    public ResponseEntity<?> updateProfileImage(MultipartFile multipartFile, @ApiIgnore Authentication authentication) throws Exception {
+    public ResponseEntity<?> updateProfileImage(@RequestPart MultipartFile multipartFile, @ApiIgnore Authentication authentication) throws Exception {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
         Member member = memberService.getMemberByMemberSeq(memberSeq);

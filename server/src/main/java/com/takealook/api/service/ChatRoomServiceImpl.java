@@ -1,6 +1,7 @@
 package com.takealook.api.service;
 
 import com.takealook.api.request.ChatRoomRegisterPostReq;
+import com.takealook.api.response.ChatRoomsInterface;
 import com.takealook.chat.RedisPublisher;
 import com.takealook.chat.RedisSubscriber;
 import com.takealook.common.util.HashUtil;
@@ -81,8 +82,8 @@ public class ChatRoomServiceImpl implements ChatRoomService{
 
     // 1:1 대화 내역 보기
     @Override
-    public List<ChatRoom> getChatRooms(Long memberSeq) {
-        return null;
+    public List<ChatRoomsInterface> getChatRooms(Long memberSeq) {
+        return chatRoomRepository.getChatRooms(memberSeq);
     }
 
     @Override
