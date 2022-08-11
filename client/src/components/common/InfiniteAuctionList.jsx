@@ -41,8 +41,6 @@ function InfiniteAuctionList({ getUrl, queryKey, CardComponent, SkeltonCardCompo
     },
   );
 
-  console.log(data);
-
   const onIntersect = ([entry]) => entry.isIntersecting && fetchNextPage();
 
   useObserver({

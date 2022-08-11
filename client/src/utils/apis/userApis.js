@@ -11,8 +11,8 @@ export const userApis = {
   FIND_ID: '/api/member/id',
   SCORE_CHANGE: '/api/member/score',
   DELETE_USER: '/api/member',
-  MY_INFORMATION: '/api/member/myinfo',
   USER_INFORMATION: (memberSeq) => `/api/member/${memberSeq}`,
+  PROFILE_IMAGE_CHANGE: '/api/member/img',
   MY_BASIC_INFORMATION: '/api/member/info',
   USER_LIST: (word, size) => {
     return (page) => `/api/member?word=${word}&page=${page}&size=${size}`;

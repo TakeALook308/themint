@@ -10,7 +10,7 @@ function PostList() {
     <Wrapper>
       <hr></hr>
       <ListHeader>
-        <h3>실시간 임박 경매</h3>
+        <h2>실시간 임박 경매</h2>
       </ListHeader>
       <InfiniteAuctionList
         getUrl={auctionListApis.AUCTION_LIST('', 9, 'main')}
