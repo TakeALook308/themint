@@ -24,6 +24,7 @@ public class PurchaseDetailRes {
     String phone;
     String address;
     String addressDetail;
+    String zipCode;
     String trackingNo;
 
     public static PurchaseDetailRes of(History history, Product product, ProductDelivery productDelivery, Member member){
@@ -39,6 +40,7 @@ public class PurchaseDetailRes {
                 .phone(productDelivery.getPhone())
                 .address(productDelivery.getAddress())
                 .addressDetail(productDelivery.getAddressDetail())
+                .zipCode(productDelivery.getZipCode())
                 .trackingNo(productDelivery.getTrackingNo())
                 .build();
         return res;
