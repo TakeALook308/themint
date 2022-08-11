@@ -163,7 +163,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void updateMember(Long memberSeq, MemberUpdatePostReq memberUpdatePostReq) {
+    public void updateMember(Long memberSeq, MemberUpdatePatchReq memberUpdatePostReq) {
         Member member = memberRepository.findBySeq(memberSeq);
         if (member == null) {
             throw new MemberNotFoundException("member with seq " + memberSeq + " not found", ErrorCode.MEMBER_NOT_FOUND);
@@ -175,7 +175,8 @@ public class MemberServiceImpl implements MemberService {
         member.setZipCode(memberUpdatePostReq.getZipCode());
         member.setPhone(memberUpdatePostReq.getPhone());
         member.setBankCode(memberUpdatePostReq.getBankCode());
-        member.setAccountNo(memberUpdatePostReq.getAccountNo());
+        if (memberUpdatePostReq.getAccountNo() != null)
+            member.setAccountNo(memberUpdatePostReq.getAccountNo());
         member.setNoticeKakao(memberUpdatePostReq.getNoticeKakao());
         member.setNoticeEmail(memberUpdatePostReq.getNoticeEmail());
         memberRepository.save(member);
@@ -269,6 +270,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void updateMemberScore(Long memberSeq, int score) {
-        memberRepository.updateMemberScore(memberSeq, score);
+        Member member = memberRepository.findBySeq(memberSeq);
+        memberRepository.updateMemberScore(memberSeq, member.getScore() + score);
     }
 }
