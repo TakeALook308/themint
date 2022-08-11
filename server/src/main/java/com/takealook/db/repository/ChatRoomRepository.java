@@ -14,6 +14,8 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
     @Transactional
     void deleteChatRoomByRoomId(String roomId);
 
+    ChatRoom getChatRoomByRoomId(String roomId);
+
     @Query(value = "select d.room_id as roomId, d.member_seq as memberSeq, a.nickname, a.profile_url as profileUrl from member a\n" +
             "join \n" +
             "(select b.room_id, b.member_seq from chat_room_member b \n" +
