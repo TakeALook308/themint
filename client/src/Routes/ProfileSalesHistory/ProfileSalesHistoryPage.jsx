@@ -49,7 +49,7 @@ function ProfileSalesHistoryPage({ params }) {
       const response = await instance.get(url);
       return response;
     };
-    const res = getSalesDetail(`/api/history/sales/detail/${historySeq}`); // 테스트는 32넣어서 확인
+    const res = getSalesDetail(`/api/history/sales/detail/${historySeq}`);
     console.log(historySeq);
     res.then((itemDetail) => {
       setSalesDetail(itemDetail.data); // 상세보기 내용을 salesDetail에 저장
@@ -58,7 +58,7 @@ function ProfileSalesHistoryPage({ params }) {
   console.log(salesDetail.productSeq);
   // 송장번호 입력& PATCH 요청을 위한 getTrackingNo
   const [getTrackingNo, setGetTrackingNo] = useState({
-    productSeq: salesDetail.productSeq,
+    productSeq: 1,
     parcelCompanyCode: '',
     trackingNo: '',
   });
@@ -82,6 +82,10 @@ function ProfileSalesHistoryPage({ params }) {
     setGetTrackingNo({
       ...getTrackingNo,
       [name]: value,
+    });
+    setGetTrackingNo({
+      ...getTrackingNo,
+      [productSeq]: salesDetail.productSeq,
     });
   };
   console.log(sellingItem);

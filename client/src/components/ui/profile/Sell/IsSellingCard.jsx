@@ -52,7 +52,7 @@ function IsSellingCard({ auction, func }) {
       <Plus
         type="button"
         onClick={() => {
-          func(auction.historySeq);
+          func(auction.historySeq, auction.productSeq);
         }}>
         판매 상세
       </Plus>
