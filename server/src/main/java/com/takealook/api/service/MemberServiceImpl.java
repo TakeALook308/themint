@@ -153,10 +153,10 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member getMemberByMemberSeq(Long seq) {
-        Member member = memberRepository.findBySeq(seq);
+    public Member getMemberByMemberSeq(Long memberSeq) {
+        Member member = memberRepository.findBySeq(memberSeq);
         if (member == null) {
-            throw new MemberNotFoundException("member with seq " + seq + " not found", ErrorCode.MEMBER_NOT_FOUND);
+            throw new MemberNotFoundException("member with seq " + memberSeq + " not found", ErrorCode.MEMBER_NOT_FOUND);
         }
         return member;
 
@@ -183,8 +183,13 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void updateMemberPassword(Long seq, String pwd) {
-        memberRepository.updateMemberPassword(seq, passwordEncoder.encode(pwd));
+    public void updateMemberPassword(Long memberSeq, String pwd) {
+        memberRepository.updateMemberPassword(memberSeq, passwordEncoder.encode(pwd));
+    }
+
+    @Override
+    public void updateMemberPhone(Long memberSeq, String phone) {
+        memberRepository.updateMemberPhone(memberSeq, phone);
     }
 
 
