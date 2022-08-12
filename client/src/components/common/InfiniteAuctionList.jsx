@@ -3,7 +3,6 @@ import { useInfiniteQuery } from 'react-query';
 import styled from 'styled-components';
 import { fetchData } from '../../utils/apis/api';
 import useObserver from '../../utils/hooks/useObserver';
-import Modal from './Modal';
 
 function InfiniteAuctionList({
   getUrl,

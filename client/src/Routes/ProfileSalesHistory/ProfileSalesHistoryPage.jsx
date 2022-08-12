@@ -43,10 +43,7 @@ function ProfileSalesHistoryPage({ params }) {
   const ModalHandler = (number) => {
     setIsModal((prev) => !prev);
     setHistorySeq(number); // 모달 버튼 누르면 그 옥션의 historyseq를 historySeq에 저장
-    // 판매내역 상세보기 API 요청 -> 상세내역
   };
-  console.log('historySeq', historySeq);
-
   useEffect(() => {
     const getSalesDetail = async (url) => {
       const response = await instance.get(url);
@@ -58,14 +55,13 @@ function ProfileSalesHistoryPage({ params }) {
       setSalesDetail(itemDetail.data); // 상세보기 내용을 salesDetail에 저장
     });
   }, [historySeq]);
-  console.log(salesDetail);
+  console.log(salesDetail.productSeq);
   // 송장번호 입력& PATCH 요청을 위한 getTrackingNo
   const [getTrackingNo, setGetTrackingNo] = useState({
-    productSeq: sellingItem.productSeq,
+    productSeq: salesDetail.productSeq,
     parcelCompanyCode: '',
     trackingNo: '',
   });
-  console.log(sellingItem.productSeq);
   // 택배사 코드 이름 리스트
   const [companyList, setCompanyList] = useState([]);
   useEffect(() => {
@@ -81,7 +77,7 @@ function ProfileSalesHistoryPage({ params }) {
     });
   }, []);
   // 송장번호 입력, 택배사 코드 저장하기
-  const { parcelCompanyCode, trackingNo } = getTrackingNo;
+  const { productSeq, parcelCompanyCode, trackingNo } = getTrackingNo;
   const onChange = ({ target: { name, value } }) => {
     setGetTrackingNo({
       ...getTrackingNo,
@@ -92,6 +88,8 @@ function ProfileSalesHistoryPage({ params }) {
 
   // 버튼 클릭하면 송장번호를 patch
   const onClick = () => {
+    console.log(salesDetail.productSeq);
+    console.log(getTrackingNo);
     const patchTrackingNo = async (url) => {
       const response = await instance.patch(url);
       return response;
