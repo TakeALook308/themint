@@ -16,5 +16,6 @@ public class ProductPrice {
     String nickname;
     Long productSeq;
     int price;
+    int index;
     String date;
 }
