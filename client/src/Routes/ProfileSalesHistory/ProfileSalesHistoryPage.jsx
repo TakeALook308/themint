@@ -11,27 +11,27 @@ import Modal from '../../components/common/Modal';
 function ProfileSalesHistoryPage({ params }) {
   // 판매내역 전체 요청 API
 
-  const getUrl = (paramsnum, size, active) => {
-    console.log(active);
-    return (page) => `/api/history/sales/inprogress/${paramsnum}?page=${page}&size=${size}`;
-  };
-  const getUrlCompleted = (paramsnum, size, active) => {
-    console.log(active);
-    return (page) => `/api/history/sales/complete/${paramsnum}?page=${page}&size=${size}`;
-  };
-
   // 버튼 클릭으로 판매중 판매완료 구분
   const [active, setActive] = useState('inprogress');
   const onSelling = () => {
     setActive('inprogress');
   };
   const onSold = () => {
-    setActive('completed');
+    setActive('complete');
   };
 
   // Modal 연결
   const [salesDetail, setSalesDetail] = useState([]); // 판매내역 상세 내용 저장
   const [isModal, setIsModal] = useState(false);
+
+  const getUrl = (paramsnum, size) => {
+    console.log(active);
+    return (page) => `/api/history/sales/${active}/${paramsnum}?page=${page}&size=${size}`;
+  };
+  const getUrlCompleted = (paramsnum, size, active) => {
+    console.log(active);
+    return (page) => `/api/history/sales/complete/${paramsnum}?page=${page}&size=${size}`;
+  };
 
   const ModalHandler = (auction) => {
     const getSalesDetail = async (url) => {
@@ -99,7 +99,7 @@ function ProfileSalesHistoryPage({ params }) {
         </StyledBtn>
         <StyledBtn
           key={2}
-          className={active === 'completed' ? 'active' : undefined}
+          className={active === 'complete' ? 'active' : undefined}
           id={'2'}
           onClick={onSold}>
           판매완료
@@ -107,14 +107,14 @@ function ProfileSalesHistoryPage({ params }) {
       </ButtonNav>
       <InfiniteAuctionList
         getUrl={getUrl(params, 9)}
-        queryKey={['imminentAuctionList']}
+        queryKey={[`${params}${active}`]}
         CardComponent={IsSellingCard}
         SkeltonCardComponent={SkeletonAuctionCard}
         text={'실시간 임박 경매가 없습니다.'}
         func={ModalHandler}
         active={active}
       />
-      <InfiniteAuctionList
+      {/* <InfiniteAuctionList
         getUrl={getUrlCompleted(params, 9)}
         queryKey={['imminentAuctionList']}
         CardComponent={IsSellingCard}
@@ -122,7 +122,7 @@ function ProfileSalesHistoryPage({ params }) {
         text={'실시간 임박 경매가 없습니다.'}
         func={ModalHandler}
         active={active}
-      />
+      /> */}
       <Modal open={isModal} close={ModalHandler} title="상품 관리">
         <ModalProfile>
           <img src={process.env.REACT_APP_IMAGE_URL + salesDetail.profileUrl} alt="프로필이미지" />
