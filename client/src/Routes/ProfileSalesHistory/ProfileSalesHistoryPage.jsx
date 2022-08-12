@@ -131,6 +131,7 @@ function ProfileSalesHistoryPage({ params }) {
         CardComponent={IsSellingCard}
         SkeltonCardComponent={SkeletonAuctionCard}
         text={'실시간 임박 경매가 없습니다.'}
+        func={ModalHandler}
       />
       <Modal open={isModal} close={ModalHandler} title="상품 관리">
         <ModalProfile>

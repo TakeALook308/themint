@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-function IsSellingCard({ auction }) {
+function IsSellingCard({ auction, func }) {
   const [statusName, setStatusName] = useState(0);
   useEffect(() => {
     setStatusName(auction.status);
@@ -13,7 +13,7 @@ function IsSellingCard({ auction }) {
   return (
     <CardContainer>
       <div>
-        <Link to="/">
+        <Link to="#">
           <div>
             <picture>
               <img
@@ -50,9 +50,14 @@ function IsSellingCard({ auction }) {
           </div>
         </Link>
       </div>
-      {/* <Plus type="button" onClick={ModalHandler}>
+      <Plus
+        type="button"
+        onClick={() => {
+          console.log('클릭했어용');
+          func();
+        }}>
         판매 상세
-      </Plus> */}
+      </Plus>
     </CardContainer>
   );
 }
@@ -186,7 +191,7 @@ const AuctionStatus = styled.div`
       : 'black'};
 `;
 
-const Plus = styled.span`
+const Plus = styled.button`
   position: absolute;
   border-radius: 5px;
   padding: 5px;
@@ -195,4 +200,5 @@ const Plus = styled.span`
   background-color: ${(props) => props.theme.colors.mainBlack};
   color: ${(props) => props.theme.colors.subMint};
   border: 1px solid ${(props) => props.theme.colors.subMint};
+  cursor: pointer;
 `;
