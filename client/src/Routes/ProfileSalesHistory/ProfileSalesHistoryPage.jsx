@@ -40,12 +40,13 @@ function ProfileSalesHistoryPage({ params }) {
   const [historySeq, setHistorySeq] = useState(1); // 판매내역 상세 요청 seq값 저장
   const [salesDetail, setSalesDetail] = useState([]); // 판매내역 상세 내용 저장
   const [isModal, setIsModal] = useState(false);
-  const ModalHandler = () => {
+  const ModalHandler = (number) => {
     setIsModal((prev) => !prev);
-    setHistorySeq(sellingItem.historyseq); // 모달 버튼 누르면 그 옥션의 historyseq를 historySeq에 저장
+    setHistorySeq(number); // 모달 버튼 누르면 그 옥션의 historyseq를 historySeq에 저장
 
     // 판매내역 상세보기 API 요청 -> 상세내역
   };
+  console.log('historySeq', historySeq);
   useEffect(() => {
     const getSalesDetail = async (url) => {
       const response = await instance.get(url);
