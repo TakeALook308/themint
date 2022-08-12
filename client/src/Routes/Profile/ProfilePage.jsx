@@ -68,11 +68,12 @@ const Container = styled.div`
   position: relative;
   padding-top: 1px;
   margin-bottom: 20px;
+  min-height: calc(100vh - 260px);
 `;
 
 const Header = styled.header`
   margin-bottom: 1.25rem;
-  margin-top: 70px;
+  margin-top: 80px;
   > h2 {
     font-size: 30px;
     font-weight: bold;

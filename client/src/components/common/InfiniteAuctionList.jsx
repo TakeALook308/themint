@@ -3,6 +3,7 @@ import { useInfiniteQuery } from 'react-query';
 import styled from 'styled-components';
 import { fetchData } from '../../utils/apis/api';
 import useObserver from '../../utils/hooks/useObserver';
+import Modal from './Modal';
 
 function InfiniteAuctionList({ getUrl, queryKey, CardComponent, SkeltonCardComponent, text }) {
   const [hasError, setHasError] = useState(false);
@@ -66,7 +67,7 @@ function InfiniteAuctionList({ getUrl, queryKey, CardComponent, SkeltonCardCompo
         data.pages.map((group, index) => (
           <GridContainer key={index}>
             {group?.data?.resultList?.map((auction, idx) => (
-              <CardComponent auction={auction} key={idx} />
+              <CardComponent auction={auction} key={idx} ModalHandler={Modal} />
             ))}
           </GridContainer>
         ))}

@@ -8,10 +8,9 @@ function InterestCateCard({ keyword }) {
   const [keywordName, setKeywordName] = useState('');
   console.log(keyword);
   const onClick = () => {
-    console.log(keyword);
     setKeywordName(keyword);
+    console.log(keyword);
     const keyword_name = keywordName;
-    console.log(keyword_name);
     const deleteInterest = async (url) => {
       const response = await instance.delete(url);
       return response;
