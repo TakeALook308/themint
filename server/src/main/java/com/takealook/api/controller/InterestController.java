@@ -54,7 +54,7 @@ public class InterestController {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
         interestKeywordService.createInterestKeyword(memberSeq, keywordName);
-        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
     }
 
     @GetMapping("/keyword")
@@ -76,7 +76,7 @@ public class InterestController {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
         interestKeywordService.deleteKeyword(memberSeq, keywordName);
-        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
     }
 
     /*
@@ -90,7 +90,7 @@ public class InterestController {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
         interestCategoryService.createInterestCategory(memberSeq, categorySeq);
-        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
     }
 
     @GetMapping("/category")
@@ -112,7 +112,7 @@ public class InterestController {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
         interestCategoryService.deleteCategory(memberSeq, categorySeq);
-        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
     }
 
     /*
@@ -126,7 +126,7 @@ public class InterestController {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
         interestAuctionService.createInterestAuction(memberSeq, hash);
-        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
 
     }
 
@@ -156,6 +156,6 @@ public class InterestController {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
         interestAuctionService.deleteAuction(memberSeq, hash);
-        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
     }
 }

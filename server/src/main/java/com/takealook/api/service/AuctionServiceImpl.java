@@ -80,7 +80,7 @@ public class AuctionServiceImpl implements AuctionService {
         }
 
         // 옥션 이미지 없을 시 기본이미지 넣기
-        if (multipartFileList == null || multipartFileList.size() == 0) {
+        if (multipartFileList.get(0).isEmpty()) {
             auctionImageRepository.save(AuctionImage.builder()
                     .auctionSeq(auction.getSeq())
                     .imageUrl("/product/basic1.png")

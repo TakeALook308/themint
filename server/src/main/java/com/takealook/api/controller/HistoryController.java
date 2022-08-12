@@ -104,7 +104,7 @@ public class HistoryController {
         if (result == 1) {
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
         }
-        return ResponseEntity.status(409).body(BaseResponseBody.of(409, "fail"));
+        return ResponseEntity.status(409).body(BaseResponseBody.of(409, "상품 구매에 실패하였습니다."));
     }
 
     @GetMapping("/purchase/detail/{historySeq}")

@@ -216,7 +216,7 @@ public class MemberServiceImpl implements MemberService {
     public Member getMemberByMemberIdAndEmail(MemberSetNewPwdCheckPostReq memberSetNewPwdCheckPostReq) {
         Member member = memberRepository.findByMemberIdAndEmail(memberSetNewPwdCheckPostReq.getMemberId(), memberSetNewPwdCheckPostReq.getEmail());
         if (member == null) {
-            throw new MemberNotFoundException("member not found", ErrorCode.MEMBER_NOT_FOUND);
+            throw new MemberNotFoundException("존재하지 않는 회원입니다.", ErrorCode.MEMBER_NOT_FOUND);
         }
         return member;
     }
