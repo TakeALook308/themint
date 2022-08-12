@@ -23,6 +23,7 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
     List<Auction> findAllByTitleContainsOrContentContainsAndStartTimeAfterOrStatus(String titleWord, String contentWord, String currentTime, int status, Pageable pageable);
     @Query("SELECT a FROM Auction a JOIN Member m ON a.memberSeq = m.seq where a.categorySeq = :categorySeq AND (a.startTime > :currentTime OR a.status = :status) ORDER BY m.score DESC")
     List<Auction> findAllByCategorySeqAndStartTimeAfterOrderByMemberScore(Long categorySeq, String currentTime, int status, Pageable pageable);
+    @Query("SELECT a FROM Auction a WHERE a.categorySeq = :categorySeq AND (a.startTime > :currentTime OR a.status = :status)")
     List<Auction> findAllByCategorySeqAndStartTimeAfterOrStatus(Long categorySeq, String currentTime, int status, Pageable pageable);
     @Query("SELECT a FROM Auction a JOIN Member m ON a.memberSeq = m.seq where ((a.title like CONCAT('%', :word, '%') OR a.content like CONCAT('%', :word, '%')) AND (a.startTime > :currentTime OR a.status = :status)) ORDER BY m.score DESC")
     List<Auction> findAllByTitleOrContentContainsAndStartTimeAfterOrderByMemberScore(String word, String currentTime, int status, Pageable pageable);

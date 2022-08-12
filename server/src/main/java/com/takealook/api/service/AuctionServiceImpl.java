@@ -1,6 +1,5 @@
 package com.takealook.api.service;
 
-import com.takealook.api.request.AuctionImageRegisterPostReq;
 import com.takealook.api.request.AuctionRegisterPostReq;
 import com.takealook.api.request.AuctionUpdatePatchReq;
 import com.takealook.api.request.ProductRegisterPostReq;
@@ -17,7 +16,9 @@ import com.takealook.db.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -35,8 +36,12 @@ public class AuctionServiceImpl implements AuctionService {
     @Autowired
     AuctionImageRepository auctionImageRepository;
 
+    @Autowired
+    S3FileService s3FileService;
+
+    @Transactional
     @Override
-    public Auction createAuction(Long memberSeq, AuctionRegisterPostReq auctionRegisterPostReq) {
+    public Auction createAuction(Long memberSeq, AuctionRegisterPostReq auctionRegisterPostReq, List<MultipartFile> multipartFileList) {
         String hash = HashUtil.MD5(LocalDateTime.now().toString() + memberSeq);
         Auction auction = Auction.builder()
                 .hash(hash)
@@ -54,7 +59,7 @@ public class AuctionServiceImpl implements AuctionService {
         List<Auction> auctionList = auctionRepository.findAllByMemberSeq(memberSeq);
         for (Auction auc : auctionList){
             LocalDateTime check = LocalDateTime.parse(auc.getStartTime(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            if(check.isAfter(minStartTime) || check.isBefore(maxStartTime)){
+            if(check.isAfter(minStartTime) && check.isBefore(maxStartTime)){
                 throw new AuctionTimeDuplicateException("auction time is overlapped with auction hash " + auc.getHash(), ErrorCode.AUCTION_TIME_DUPLICATION);
             }
         }
@@ -74,21 +79,27 @@ public class AuctionServiceImpl implements AuctionService {
             productRepository.save(product);
         }
 
-        List<AuctionImageRegisterPostReq> auctionImageList = auctionRegisterPostReq.getAuctionImageList();
-        if(auctionImageList == null || auctionImageList.size() == 0){
+        // 옥션 이미지 없을 시 기본이미지 넣기
+        if (multipartFileList == null || multipartFileList.size() == 0) {
             auctionImageRepository.save(AuctionImage.builder()
                     .auctionSeq(auction.getSeq())
                     .imageUrl("/product/basic1.png")
                     .build());
+        } else {
+            // S3 버킷에 물품 이미지 저장 후 db에 imageUrl 저장
+            try {
+                List<String> imageUrlList = s3FileService.uploadProductIamge(multipartFileList, auction.getHash());
+                for (String imageUrl : imageUrlList) {
+                    AuctionImage auctionImage = AuctionImage.builder()
+                            .auctionSeq(auction.getSeq())
+                            .imageUrl(imageUrl)
+                            .build();
+                    auctionImageRepository.save(auctionImage);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
-        for (AuctionImageRegisterPostReq auctionImageRegisterPostReq : auctionImageList) {
-            AuctionImage auctionImage = AuctionImage.builder()
-                    .auctionSeq(auction.getSeq())
-                    .imageUrl(auctionImageRegisterPostReq.getImageUrl())
-                    .build();
-            auctionImageRepository.save(auctionImage);
-        }
-
         return auction;
     }
 
@@ -146,7 +157,7 @@ public class AuctionServiceImpl implements AuctionService {
         if (word == null) {
             word = "";
         }
-        auctionList = auctionRepository.findAllByTitleOrContentContainsAndStartTimeAfterOrderByMemberScore(word, currentTime,1, pageable);
+        auctionList = auctionRepository.findAllByTitleOrContentContainsAndStartTimeAfterOrderByMemberScore(word, currentTime, 1, pageable);
         return auctionList;
     }
 

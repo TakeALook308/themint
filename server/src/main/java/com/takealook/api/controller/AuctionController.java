@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Nullable;
@@ -53,13 +54,13 @@ public class AuctionController {
     InterestCategoryService interestCategoryService;
 
     @PostMapping
-    public ResponseEntity<BaseResponseBody> registerAuction(@RequestBody AuctionRegisterPostReq auctionRegisterPostReq, @ApiIgnore Authentication authentication) {
+    public ResponseEntity<BaseResponseBody> registerAuction(@RequestPart("auctionInfo")AuctionRegisterPostReq auctionRegisterPostReq, @RequestPart(required = false) List<MultipartFile> auctionImageList, @ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
-        Auction auction = auctionService.createAuction(memberSeq, auctionRegisterPostReq);
+        Auction auction = auctionService.createAuction(memberSeq, auctionRegisterPostReq, auctionImageList);
         List<Product> productList = productService.getProductListByAuctionSeq(auction.getSeq());
-        List<AuctionImage> auctionImageList = auctionImageService.getAuctionImageListByAuctionSeq(auction.getSeq());
-        historyService.registerSalesHistory(memberSeq, productList, auctionImageList);
+        List<AuctionImage> auctionImagePathList = auctionImageService.getAuctionImageListByAuctionSeq(auction.getSeq());
+        historyService.registerSalesHistory(memberSeq, productList, auctionImagePathList);
         memberService.updateMemberScore(memberSeq, 1);
         if (auction == null) {
             return ResponseEntity.status(409).body(BaseResponseBody.of(409, "fail"));

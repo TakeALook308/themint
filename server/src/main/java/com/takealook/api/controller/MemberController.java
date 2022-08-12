@@ -158,6 +158,8 @@ public class MemberController {
         Long memberSeq = memberDetails.getMemberSeq();
         Member member = memberService.getMemberByMemberSeq(memberSeq);
         if (member != null) {
+            if (passwordEncoder.matches(pwdMap.get("pwd"), member.getPwd()))
+                return ResponseEntity.status(409).body("중복입니다.");
             memberService.updateMemberPassword(member.getSeq(), pwdMap.get("pwd"));
             return ResponseEntity.status(200).body("success");
         }
