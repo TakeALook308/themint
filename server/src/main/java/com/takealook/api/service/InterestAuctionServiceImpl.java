@@ -8,6 +8,7 @@ import com.takealook.db.entity.InterestAuction;
 import com.takealook.db.repository.AuctionRepository;
 import com.takealook.db.repository.InterestAuctionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -53,8 +54,8 @@ public class InterestAuctionServiceImpl implements InterestAuctionService {
     }
 
     @Override
-    public List<Auction> getInterestAuctionListByMemberSeq(Long memberSeq) {
-        List<InterestAuction> interestAuctionList = interestAuctionRepository.findAllByMemberSeq(memberSeq);
+    public List<Auction> getInterestAuctionListByMemberSeq(Long memberSeq, Pageable pageable) {
+        List<InterestAuction> interestAuctionList = interestAuctionRepository.findAllByMemberSeq(memberSeq, pageable);
         List<Auction> auctionList = new ArrayList<>();
         for (InterestAuction interestAuction : interestAuctionList) {
             Auction auction = auctionRepository.findByHash(interestAuction.getHash()).get();
