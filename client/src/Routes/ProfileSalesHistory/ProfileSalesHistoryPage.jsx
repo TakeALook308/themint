@@ -43,9 +43,8 @@ function ProfileSalesHistoryPage({ params }) {
   const ModalHandler = () => {
     setIsModal((prev) => !prev);
     setHistorySeq(sellingItem.historyseq); // 모달 버튼 누르면 그 옥션의 historyseq를 historySeq에 저장
-
-    // 판매내역 상세보기 API 요청 -> 상세내역
   };
+  // 판매내역 상세보기 API 요청 -> 상세내역
   useEffect(() => {
     const getSalesDetail = async (url) => {
       const response = await instance.get(url);

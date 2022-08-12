@@ -13,7 +13,7 @@ function IsSellingCard({ auction }) {
   return (
     <CardContainer>
       <div>
-        <Link to="/">
+        <div>
           <div>
             <picture>
               <img
@@ -36,7 +36,7 @@ function IsSellingCard({ auction }) {
               </div>
             </AuctionInfoContainer>
           </div>
-        </Link>
+        </div>
         <Link to="/">
           <div>
             <picture>
@@ -50,9 +50,12 @@ function IsSellingCard({ auction }) {
           </div>
         </Link>
       </div>
-      {/* <Plus type="button" onClick={ModalHandler}>
+      <Plus
+        type="button"
+        // onClick={ModalHandler}
+      >
         판매 상세
-      </Plus> */}
+      </Plus>
     </CardContainer>
   );
 }
