@@ -17,6 +17,7 @@ function AccountsPasswordPage() {
     watch,
     setError,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm({
     defaultValue: {
@@ -28,10 +29,6 @@ function AccountsPasswordPage() {
 
   const password = useRef({});
   password.current = watch('pwd', '');
-
-  const getData = async (data) => {
-    await fetchData.patch(userApis.PASSWORD, data);
-  };
 
   const pwdRegister = {
     ...register('pwd', {
@@ -66,9 +63,15 @@ function AccountsPasswordPage() {
       const body = { pwd: data.pwd };
       const response = await fetchData.patch(userApis.PASSWORD, body);
       if (response.status === 200) {
-        successToast();
+        successToast('비밀번호 변경 완료');
+        setValue('pwd', '');
+        setValue('pwdCheck', '');
       }
-    } catch (err) {}
+    } catch (err) {
+      if (err.response.data.message) {
+        errorToast('비밀번호 변경에 실패하였습니다.');
+      }
+    }
   };
 
   return (
@@ -154,7 +157,7 @@ export const ButtonContainer = styled.div`
   margin: 0 auto;
 `;
 
-const InputMessageContainer = styled.div`
+export const InputMessageContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;

@@ -13,5 +13,6 @@ export const Container = styled.main`
 export const MessageWrapper = styled.div`
   height: 2rem;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
 `;

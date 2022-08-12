@@ -13,9 +13,9 @@ import StepSignal from './StepSignal';
 import ValidationMessage from '../../components/common/ValidationMessage';
 
 function Register2({ setUserInfo, setStep }) {
-  const [certificatedNumber, setCertificatedNumber] = useState();
-  const [duplicatedEmail, setDuplicatedEmail] = useState(false);
-  const [duplicatedPhone, setDuplicatedPhone] = useState(false);
+  const [authNumber, setAuthNumber] = useState();
+  const [isDuplicatedEmail, setIsDuplicatedEmail] = useState(false);
+  const [isDuplicatedPhone, setIsDuplicatedPhone] = useState(false);
 
   const {
     register,
@@ -34,11 +34,11 @@ function Register2({ setUserInfo, setStep }) {
   });
 
   const onValid = (data) => {
-    if (duplicatedEmail) {
+    if (isDuplicatedEmail) {
       setError('email', { message: REGISTER_MESSAGE.DUPLICATED_ID }, { shouldFocus: true });
       return;
     }
-    trigger('certificationNumber');
+    trigger('authNumber');
     setUserInfo((prev) => ({ ...prev, ...data }));
     setStep((prev) => ({ ...prev, step2: false, step3: true }));
   };
@@ -60,7 +60,7 @@ function Register2({ setUserInfo, setStep }) {
     await checkMemberInfo(
       value,
       userApis.EMAIL_DUPLICATE_CHECK_API(value),
-      setDuplicatedEmail,
+      setIsDuplicatedEmail,
       'email',
       REGISTER_MESSAGE.DUPLICATED_EMAIL,
     );
@@ -71,14 +71,14 @@ function Register2({ setUserInfo, setStep }) {
     const response = await fetchData.post(userApis.PHONE_CERTIFICATE_API, {
       phone: watch().phone,
     });
-    setCertificatedNumber(String(response.data));
+    setAuthNumber(String(response.data));
   };
 
   const debouncePhoneChange = async (value) =>
     await checkMemberInfo(
       value,
       userApis.PHONE_DUPLICATE_CEHCK_API(value),
-      setDuplicatedPhone,
+      setIsDuplicatedPhone,
       'phone',
       REGISTER_MESSAGE.DUPLICATED_PHONE,
     );
@@ -179,25 +179,25 @@ function Register2({ setUserInfo, setStep }) {
         </MessageWrapper>
         <ActiveInput active={true}>
           <input
-            name="certificationNumber"
-            id="certificationNumber"
+            name="authNumber"
+            id="authNumber"
             type="text"
-            {...register('certificationNumber', {
+            {...register('authNumber', {
               required: REGISTER_MESSAGE.REQUIRED_CERTIFICATION_NUMBER,
               validate: {
                 certi: (value) =>
-                  value !== certificatedNumber ? REGISTER_MESSAGE.FAILED_CERTICATION_NUMBER : true,
+                  value !== authNumber ? REGISTER_MESSAGE.FAILED_CERTICATION_NUMBER : true,
               },
             })}
             placeholder=" "
             autoComplete="off"
             required
           />
-          <label htmlFor="certificationNumber">인증번호</label>
+          <label htmlFor="authNumber">인증번호</label>
         </ActiveInput>
         <MessageWrapper>
-          <ValidationMessage text={errors?.certificationNumber?.message} state={'fail'} />
-          {watch().certificationNumber && !errors?.certificationNumber && (
+          <ValidationMessage text={errors?.authNumber?.message} state={'fail'} />
+          {watch().authNumber && !errors?.authNumber && (
             <ValidationMessage
               text={REGISTER_MESSAGE.VALIDATED_CERTICATION_NUMBER}
               state={'pass'}

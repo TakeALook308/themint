@@ -1,15 +1,134 @@
-import React from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import GradientButton from '../../components/ButtonList/GradientButton';
+import MintButton from '../../components/ButtonList/MintButton';
 import ActiveInputBox from '../../components/common/ActiveInputBox';
+import ValidationMessage from '../../components/common/ValidationMessage';
+import { MessageWrapper } from '../../style/common';
+import { fetchData } from '../../utils/apis/api';
+import { userApis } from '../../utils/apis/userApis';
+import { REGEX, REGISTER_MESSAGE } from '../../utils/constants/constant';
+import debounce from '../../utils/functions/debounce';
 import {
   ButtonContainer,
   Container,
   Form,
   InputContainer,
+  InputMessageContainer,
 } from '../AccountsPassword/AccountsPasswordPage';
+import { InputContainer as InputWrapper } from '../Register/Register2';
 
-function AccountsPhoneNumberPage(props) {
+function AccountsPhoneNumberPage() {
+  const [authNumber, setAuthNumber] = useState();
+  const [isDuplicatedPhone, setIsDuplicatedPhone] = useState(false);
+  // const [min, setMin] = useState(3);
+  // const [sec, setSec] = useState(0);
+  // const time = useRef(180);
+  // const timerId = useRef(null);
+
+  // useEffect(() => {
+  //   timerId.current = setInterval(() => {
+  //     setMin(parseInt(time.current / 60));
+  //     setSec(time.current % 60);
+  //     time.current -= 1;
+  //   }, 1000);
+  //   return () => clearInterval(timerId.current);
+  // }, []);
+
+  // useEffect(() => {
+  //   if (time.current <= 0) {
+  //     console.log('타임아웃');
+  //     clearInterval(timerId.current);
+  //   }
+  // }, [sec]);
+
+  const {
+    register,
+    watch,
+    setError,
+    handleSubmit,
+    trigger,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      phone: '',
+    },
+    mode: 'onChange',
+  });
+
+  const checkMemberInfo = async (value, url, setState, key, errorMessage) => {
+    if (!value || errors[key]) return;
+    try {
+      const response = await fetchData.get(url);
+      if (response.status === 200) {
+        setState(false);
+      }
+    } catch (err) {
+      console.log(err);
+      setError(key, { message: errorMessage }, { shouldFocus: true });
+      setState(true);
+    }
+  };
+
+  const debouncePhoneChange = async (value) =>
+    await checkMemberInfo(
+      value,
+      userApis.PHONE_DUPLICATE_CEHCK_API(value),
+      setIsDuplicatedPhone,
+      'phone',
+      REGISTER_MESSAGE.DUPLICATED_PHONE,
+    );
+
+  const debouncedValidatePhoneNumber = useMemo(
+    () => debounce((value) => debouncePhoneChange(value), 700),
+    [],
+  );
+
+  const phoneRegister = {
+    ...register('phone', {
+      required: REGISTER_MESSAGE.REQUIRED_PHONE,
+      pattern: {
+        value: REGEX.PHONE,
+        message: REGISTER_MESSAGE.PHONE_STANDARD,
+      },
+      validate: debouncedValidatePhoneNumber,
+    }),
+  };
+
+  const authRegister = {
+    ...register('authNumber', {
+      required: REGISTER_MESSAGE.REQUIRED_CERTIFICATION_NUMBER,
+      validate: {
+        certi: (value) =>
+          value !== authNumber ? REGISTER_MESSAGE.FAILED_CERTICATION_NUMBER : true,
+      },
+    }),
+  };
+
+  const onValid = (data) => {
+    console.log(data);
+  };
+
+  const onInValid = (data) => {};
+
+  const phone = useRef({});
+  phone.current = watch('phone', '');
+
+  const certificatePhoneNumber = async (event) => {
+    event.preventDefault();
+    if (!phone.current) return;
+    if (errors.phone) return;
+    try {
+      const response = await fetchData.post(userApis.PHONE_CERTIFICATE_API, {
+        phone: phone.current,
+      });
+      setAuthNumber(String(response.data));
+    } catch (err) {
+      if (err.response.status) {
+      }
+    }
+  };
   return (
     <Container>
       <PhoneNumberDescriptionContainer>
@@ -20,25 +139,57 @@ function AccountsPhoneNumberPage(props) {
           합니다.
         </li>
       </PhoneNumberDescriptionContainer>
-      <Form>
+      <Form onSubmit={handleSubmit(onValid, onInValid)}>
         <InputContainer>
-          <label htmlFor="pastPassword">전화번호</label>
-          <ActiveInputBox
-            type="password"
-            id="pastPassword"
-            name="pastPassword"
-            placeholder={'현재 비밀번호를 입력해주세요.'}
-          />
+          <label htmlFor="phone">전화번호</label>
+          <InputMessageContainer>
+            <InputWrapper>
+              <ActiveInputBox
+                type="text"
+                id="phone"
+                name="phone"
+                placeholder={'전화번호를 입력하세요.'}
+                register={phoneRegister}
+                disabled={authNumber}
+              />
+              <MintButton
+                text={'인증'}
+                type={'button'}
+                onClick={certificatePhoneNumber}
+                disabled={authNumber}
+              />
+            </InputWrapper>
+            <MessageWrapper>
+              <ValidationMessage text={errors?.phone?.message} state={'fail'} />
+              {watch().phone && !errors?.phone && (
+                <ValidationMessage text={REGISTER_MESSAGE.VALIDATED_PHONE} state={'pass'} />
+              )}
+              {authNumber && <ValidationMessage text={'인증번호를 확인해주세요.'} state={'pass'} />}
+            </MessageWrapper>
+          </InputMessageContainer>
         </InputContainer>
         <InputContainer>
           <label htmlFor="newPassword">인증코드</label>
-          <ActiveInputBox
-            type="password"
-            id="newPassword"
-            name="newPassword"
-            placeholder={'새로운 비밀번호를 입력하세요.'}
-          />
+          <InputMessageContainer>
+            <ActiveInputBox
+              type="password"
+              id="newPassword"
+              name="newPassword"
+              placeholder={'문자로 통해 받은 인증코드를 입력하세요.'}
+              register={authRegister}
+            />
+            <MessageWrapper>
+              {/* <ValidationMessage text={errors?.authNumber?.message} state={'fail'} /> */}
+              {/* {watch().authNumber && !errors?.authNumber && (
+                <ValidationMessage
+                  text={REGISTER_MESSAGE.VALIDATED_CERTICATION_NUMBER}
+                  state={'pass'}
+                />
+              )} */}
+            </MessageWrapper>
+          </InputMessageContainer>
         </InputContainer>
+        <MessageWrapper />
         <ButtonContainer>
           <GradientButton text={'전화번호 변경'} type={'submit'} size={'200px'} />
         </ButtonContainer>

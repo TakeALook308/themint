@@ -22,7 +22,7 @@ function AccountsEditPage(props) {
     noticeEmail: '',
     score: '',
   });
-
+  console.log(userAllInfo);
   const getUserData = async () => {
     const response = await fetchData.get(userApis.USER_INFORMATION(myInformation.memberSeq));
     return response?.data;
