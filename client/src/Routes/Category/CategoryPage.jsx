@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import AuctionCard from '../../components/CardList/AuctionCard';
 import SkeletonAuctionCard from '../../components/CardList/SkeletonAuctionCard';
 import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
-import CateCardList from '../../components/ui/category/CateCardList';
-import Dropdown from '../../components/ui/category/SelectBox';
+import CateCardList from './CateCardList';
+import Dropdown from './SelectBox';
 import { Container } from '../../style/common';
 import { auctionListApis } from '../../utils/apis/auctionApis';
 

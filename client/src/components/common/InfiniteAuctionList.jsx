@@ -4,7 +4,15 @@ import styled from 'styled-components';
 import { fetchData } from '../../utils/apis/api';
 import useObserver from '../../utils/hooks/useObserver';
 
-function InfiniteAuctionList({ getUrl, queryKey, CardComponent, SkeltonCardComponent, text }) {
+function InfiniteAuctionList({
+  getUrl,
+  queryKey,
+  CardComponent,
+  SkeltonCardComponent,
+  text,
+  func,
+  active,
+}) {
   const [hasError, setHasError] = useState(false);
   const [isMore, SetIsMore] = useState(true);
   const bottom = useRef(null);
@@ -50,7 +58,6 @@ function InfiniteAuctionList({ getUrl, queryKey, CardComponent, SkeltonCardCompo
       data?.pageParams?.length > 1 ? Boolean(data?.pageParams[data?.pageParams?.length - 1]) : true,
     hasError,
   });
-
   return (
     <div>
       {data?.pages[0]?.data?.resultList.length < 1 && <p>{text}</p>}
@@ -66,7 +73,7 @@ function InfiniteAuctionList({ getUrl, queryKey, CardComponent, SkeltonCardCompo
         data.pages.map((group, index) => (
           <GridContainer key={index}>
             {group?.data?.resultList?.map((auction, idx) => (
-              <CardComponent auction={auction} key={idx} />
+              <CardComponent auction={auction} key={idx} func={func} />
             ))}
           </GridContainer>
         ))}
@@ -89,3 +96,5 @@ const GridContainer = styled.div`
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 1rem;
 `;
+
+const ActiveContainer = styled.div``;

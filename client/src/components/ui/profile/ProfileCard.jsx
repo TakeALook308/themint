@@ -9,7 +9,12 @@ function ProfileCard({ member }) {
         <ProfileImg>
           <div>
             <picture>
-              <img src={member.profileUrl} alt="유저 프로필" width="168" height="168" />
+              <img
+                src={process.env.REACT_APP_IMAGE_URL + member.profileUrl}
+                alt="유저 프로필"
+                width="168"
+                height="168"
+              />
             </picture>
           </div>
         </ProfileImg>
