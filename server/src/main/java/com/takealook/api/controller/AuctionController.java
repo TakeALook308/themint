@@ -8,6 +8,8 @@ import com.takealook.api.response.AuctionRes;
 import com.takealook.api.response.AuctionStandByRes;
 import com.takealook.api.service.*;
 import com.takealook.common.auth.MemberDetails;
+import com.takealook.common.exception.auction.AuctionDeleteFailException;
+import com.takealook.common.exception.code.ErrorCode;
 import com.takealook.common.model.response.BaseResponseBody;
 import com.takealook.db.entity.*;
 import io.swagger.annotations.Api;
@@ -63,7 +65,7 @@ public class AuctionController {
         historyService.registerSalesHistory(memberSeq, productList, auctionImagePathList);
         memberService.updateMemberScore(memberSeq, 1);
         if (auction == null) {
-            return ResponseEntity.status(409).body(BaseResponseBody.of(409, "fail"));
+            return ResponseEntity.status(409).body(BaseResponseBody.of(409, "경매 생성에 실패하였습니다."));
         }
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
     }
@@ -93,7 +95,13 @@ public class AuctionController {
     public ResponseEntity<? extends BaseResponseBody> deleteAuction(@PathVariable String auctionHash, @ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
-        Long auctionSeq = auctionService.getAuctionByHash(auctionHash).getSeq();
+        Auction auction = auctionService.getAuctionByHash(auctionHash);
+        if (LocalDateTime.parse(auction.getStartTime(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).isBefore(LocalDateTime.now())) {
+            throw new AuctionDeleteFailException("auction cannot be deleted after its startTime", ErrorCode.AUCTION_DELETE_FAIL);
+        }
+        Long auctionSeq = auction.getSeq();
+        List<Product> productList = productService.getProductListByAuctionSeq(auctionSeq);
+        historyService.deleteSalesHistory(productList);
         productService.deleteProductList(auctionSeq);
         auctionImageService.deleteAuctionImageList(auctionSeq);
         auctionService.deleteAuction(auctionSeq);
@@ -184,7 +192,9 @@ public class AuctionController {
     @GetMapping("/main")
     public ResponseEntity<AuctionListRes> getMainAuctionList(@RequestParam("page") int page, @RequestParam("size") int size, @ApiIgnore @Nullable Authentication authentication) {
         List<AuctionListEntityRes> auctionListEntityResList = new ArrayList<>();
-        Boolean hasMore = false; Boolean isInterest = false; Long categorySeq = 0L;
+        Boolean hasMore = false;
+        Boolean isInterest = false;
+        Long categorySeq = 0L;
         List<Auction> auctionList = null;
         List<Auction> hasMoreList = null;
         Random rand = new Random();

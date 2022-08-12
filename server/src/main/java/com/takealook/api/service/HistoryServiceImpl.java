@@ -1,6 +1,8 @@
 package com.takealook.api.service;
 
 import com.takealook.api.request.PurchaseRegisterPostReq;
+import com.takealook.common.exception.code.ErrorCode;
+import com.takealook.common.exception.history.HistoryNotFoundException;
 import com.takealook.db.entity.AuctionImage;
 import com.takealook.db.entity.History;
 import com.takealook.db.entity.Product;
@@ -37,13 +39,26 @@ public class HistoryServiceImpl implements HistoryService {
     @Override
     public History getPurchaseByProductSeq(Long productSeq) {
         History history = historyRepository.findByProductSeqAndSalesPurchase(productSeq, 1);
+        if(history == null){
+            throw new HistoryNotFoundException("purchase history not found", ErrorCode.HISTORY_NOT_FOUND);
+        }
         return history;
     }
 
     @Override
     public History getSalesByProductSeq(Long productSeq) {
         History history = historyRepository.findByProductSeqAndSalesPurchase(productSeq, 0);
+        if(history == null){
+            throw new HistoryNotFoundException("sales history not found", ErrorCode.HISTORY_NOT_FOUND);
+        }
         return history;
+    }
+
+    @Override
+    public void deleteSalesHistory(List<Product> productList) {
+        for (Product product : productList){
+            historyRepository.deleteByProductSeqAndSalesPurchase(product.getSeq(), 0);
+        }
     }
 
     @Override
