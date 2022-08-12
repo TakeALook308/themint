@@ -268,6 +268,6 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void updateMemberScore(Long memberSeq, int score) {
         Member member = memberRepository.findBySeq(memberSeq);
-        memberRepository.updateMemberScore(memberSeq, member.getScore() + score);
+        memberRepository.updateMemberScore(memberSeq, score);
     }
 }

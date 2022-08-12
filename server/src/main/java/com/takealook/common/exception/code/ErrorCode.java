@@ -14,6 +14,7 @@ public enum ErrorCode {
     AUCTION_NOT_FOUND(404, "AUCTION_ERR_404", "AUCTION NOT FOUND"),
     AUCTION_TIME_DUPLICATION(409, "AUCTION_ERR_409", "다른 경매의 시작시간의 전후 30분 이내로는 경매를 예약할 수 없습니다."),
     AUCTION_DELETE_FAIL(409, "AUCTION_ERR_409", "이미 시작시간이 지난 경매는 삭제할 수 없습니다."),
+    AUCTION_UPDATE_FAIL(409, "AUCTION_ERR_409", "이미 시작시간이 지난 경매는 수정할 수 없습니다."),
     // 물품
     PRODUCT_NOT_FOUND(404, "PRODUCT_ERR_404", "PRODUCT NOT FOUND"),
     // 구매내역
