@@ -5,6 +5,7 @@ import com.takealook.api.request.EnterChatRoomPostReq;
 import com.takealook.api.service.ChatRoomMemberService;
 import com.takealook.api.service.ChatRoomService;
 import com.takealook.common.auth.MemberDetails;
+import com.takealook.common.model.response.BaseResponseBody;
 import com.takealook.db.entity.ChatRoomMember;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -47,8 +48,8 @@ public class ChatRoomController {
     public ResponseEntity<?> enterChatRoom(@RequestBody EnterChatRoomPostReq enterChatRoomPostReq) {
         ChatRoomMember chatRoomMember = chatRoomMemberService.saveChatRoomMember(enterChatRoomPostReq.getRoomId(), enterChatRoomPostReq.getMemberSeq());
         if (chatRoomMember == null)
-            return ResponseEntity.status(409).body("fail"); // 이미 입장한 채팅방
-        return ResponseEntity.status(200).body("success");
+            return ResponseEntity.status(409).body(BaseResponseBody.of(409, "이미 참여 중인 채팅방입니다.")); // 이미 입장한 채팅방
+        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
     }
 
     // 채팅 내역 불러오기
@@ -57,6 +58,6 @@ public class ChatRoomController {
     @DeleteMapping("/room")
     public ResponseEntity<?> deleteChatRoom(@RequestBody Map<String, String> roomIdMap) {
         chatRoomService.deleteChatRoom(roomIdMap.get("roomId"));
-        return ResponseEntity.status(200).body("success");
+        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
     }
 }

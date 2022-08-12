@@ -18,4 +18,5 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
     List<History> findPurchaseByMemberSeqOrderBySeq(Long memberSeq, Pageable pageable);
     History findBySeq(Long historySeq);
     History findByProductSeqAndSalesPurchase(Long productSeq, int salesPurchase);
+    void deleteByProductSeqAndSalesPurchase(Long productSeq, int salesPurchase);
 }
