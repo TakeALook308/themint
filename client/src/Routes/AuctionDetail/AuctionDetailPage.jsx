@@ -28,7 +28,7 @@ function AuctionDetailPage(props) {
   useEffect(() => {
     ff();
   }, []);
-  console.log(auctionInfo);
+
   const userInfo = useRecoilValue(myInformationState);
   const navigate = useNavigate();
   if (auctionInfo) {
@@ -45,14 +45,15 @@ function AuctionDetailPage(props) {
                 disableOnInteraction: false,
               }}>
               {auctionInfo.auctionImageList.map((item, i) => {
-                <SwiperSlide key={i}>
-                  <p>여어</p>
-                  <img
-                    src={`https://s3.ap-northeast-2.amazonaws.com/s3-themint${item.imageUrl}`}
-                    alt="상품 이미지"
-                    width="100%"
-                  />
-                </SwiperSlide>;
+                return (
+                  <SwiperSlide key={i}>
+                    <img
+                      src={`https://s3.ap-northeast-2.amazonaws.com/s3-themint${item.imageUrl}`}
+                      alt=""
+                      width="100%"
+                    />
+                  </SwiperSlide>
+                );
               })}
             </Swiper>
           </AuctionImage>
@@ -88,10 +89,13 @@ function AuctionDetailPage(props) {
   } else return <Container>상품이 존재하지 않습니다.</Container>;
 }
 
-const AuctionImage = styled.div``;
+const AuctionImage = styled.div`
+  width: 40%;
+`;
 
 const AuctionMainInfo = styled.div`
   display: flex;
+  height: 300px;
 `;
 
 const AuctionContent = styled.div``;
