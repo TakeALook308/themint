@@ -11,8 +11,9 @@ import java.util.List;
 @Repository
 public interface HistoryRepository extends JpaRepository<History, Long> {
     // 판매 내역 조회
-    @Query(value = "SELECT * FROM history h LEFT JOIN (SELECT a.start_time, p.auction_seq, p.seq FROM auction a JOIN product p ON a.seq = p.auction_seq) j ON h.product_seq = j.seq WHERE h.member_seq = :memberSeq AND h.sales_purchase = 0 ORDER BY j.start_time", nativeQuery = true)
+    @Query(value = "SELECT * FROM history h LEFT JOIN (SELECT a.start_time, p.auction_seq, p.seq FROM auction a JOIN product p ON a.seq = p.auction_seq) j ON h.product_seq = j.seq WHERE h.member_seq = :memberSeq AND h.sales_purchase = 0 ORDER BY j.start_time DESC", nativeQuery = true)
     List<History> findSalesByMemberSeqOrderByStartTime(Long memberSeq, Pageable pageable);
+    List<History> findAllByDateAfterAndDateBeforeAndSalesPurchase(String minTime, String maxTime, int salesPurchase);
     // 구매 내역 조회
     @Query(value = "SELECT * FROM history h LEFT JOIN (SELECT a.start_time, p.auction_seq, p.seq FROM auction a JOIN product p ON a.seq = p.auction_seq) j ON h.product_seq = j.seq WHERE h.member_seq = :memberSeq AND h.sales_purchase = 1 ORDER BY h.seq", nativeQuery = true)
     List<History> findPurchaseByMemberSeqOrderBySeq(Long memberSeq, Pageable pageable);

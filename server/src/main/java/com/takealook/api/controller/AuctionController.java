@@ -9,6 +9,7 @@ import com.takealook.api.response.AuctionStandByRes;
 import com.takealook.api.service.*;
 import com.takealook.common.auth.MemberDetails;
 import com.takealook.common.exception.auction.AuctionDeleteFailException;
+import com.takealook.common.exception.auction.AuctionUpdateFailException;
 import com.takealook.common.exception.code.ErrorCode;
 import com.takealook.common.model.response.BaseResponseBody;
 import com.takealook.db.entity.*;
@@ -56,7 +57,7 @@ public class AuctionController {
     InterestCategoryService interestCategoryService;
 
     @PostMapping
-    public ResponseEntity<BaseResponseBody> registerAuction(@RequestPart("auctionInfo")AuctionRegisterPostReq auctionRegisterPostReq, @RequestPart(required = false) List<MultipartFile> auctionImageList, @ApiIgnore Authentication authentication) {
+    public ResponseEntity<?> registerAuction(@RequestPart("auctionInfo")AuctionRegisterPostReq auctionRegisterPostReq, @RequestPart(required = false) List<MultipartFile> auctionImageList, @ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
         Auction auction = auctionService.createAuction(memberSeq, auctionRegisterPostReq, auctionImageList);
@@ -67,7 +68,7 @@ public class AuctionController {
         if (auction == null) {
             return ResponseEntity.status(409).body(BaseResponseBody.of(409, "경매 생성에 실패하였습니다."));
         }
-        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
+        return ResponseEntity.status(200).body(auction.getHash());
     }
 
     @GetMapping("/{auctionHash}")
@@ -85,6 +86,9 @@ public class AuctionController {
     public ResponseEntity<? extends BaseResponseBody> modifyAuction(@RequestBody AuctionUpdatePatchReq auctionUpdatePatchReq, @ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
+        if (LocalDateTime.parse(auctionUpdatePatchReq.getStartTime(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).isBefore(LocalDateTime.now())) {
+            throw new AuctionUpdateFailException("auction cannot be modified after its startTime", ErrorCode.AUCTION_UPDATE_FAIL);
+        }
         auctionService.updateAuction(memberSeq, auctionUpdatePatchReq);
         productService.updateProductList(auctionUpdatePatchReq.getSeq(), auctionUpdatePatchReq.getProductList());
         auctionImageService.updateAuctionImageList(auctionUpdatePatchReq.getSeq(), auctionUpdatePatchReq.getAuctionImageList());

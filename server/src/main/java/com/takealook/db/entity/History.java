@@ -5,10 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.annotation.Nullable;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -22,4 +20,5 @@ public class History {
     Long memberSeq;
     Long productSeq;
     int salesPurchase;
+    String date;
 }
