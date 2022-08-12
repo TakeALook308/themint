@@ -9,18 +9,18 @@ import { useRecoilValue } from 'recoil';
 import { myInformationState } from '../../atoms';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getData } from '../../utils/apis/api';
 import { auctionApis } from '../../utils/apis/auctionApis';
 import moment from 'moment';
 let sock;
 let client;
 function StreamingPage(props) {
+  const navigate = useNavigate();
   const userInfo = useRecoilValue(myInformationState);
   const { auctionId } = useParams();
   const [auctionInfo, setAuctionInfo] = useState({});
   const [auctionData, setAuctionData] = useState({});
-  const [nowProduct, setNowProduct] = useState(-1);
   // const [products, setProducts] = useState([]);
   const [products, setProducts] = useState([
     {
@@ -56,7 +56,8 @@ function StreamingPage(props) {
         function (message) {
           const messagedto = JSON.parse(message.body);
           if (Object.keys(messagedto).includes('price')) {
-            setPriceList((prev) => [...prev, messagedto]);
+            if (messagedto.price === -1) setPriceList([messagedto]);
+            else setPriceList((prev) => [...prev, messagedto]);
           } else setChat((prev) => [...prev, messagedto]);
         },
         (err) => {},
@@ -86,7 +87,7 @@ function StreamingPage(props) {
       }),
     );
   };
-  const sendPrice = (msg) => {
+  const sendPrice = (msg, index) => {
     client.send(
       '/pub/product/message',
       {},
@@ -96,6 +97,7 @@ function StreamingPage(props) {
         productSeq: 1,
         price: msg,
         memberSeq: 1,
+        index: index,
       }),
     );
     setNewTime(moment());
@@ -105,6 +107,10 @@ function StreamingPage(props) {
     <Stream>
       <Header>
         <StreamingHeader auctionInfo={auctionInfo} />
+        <button
+          onClick={() => {
+            navigate('/main');
+          }}></button>
       </Header>
       <Main>
         <Section>
@@ -117,6 +123,7 @@ function StreamingPage(props) {
             sendPrice={sendPrice}
             price={priceList}
             newTime={newTime}
+            producter={userInfo.memberSeq == auctionInfo.memberSeq ? true : false}
           />
 
           <StreamChat sendMessage={sendMessage} chat={chat} userInfo={userInfo} />

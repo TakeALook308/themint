@@ -4,19 +4,20 @@ import { auctionApis } from '../../utils/apis/auctionApis';
 import { getData } from '../../utils/apis/api';
 import moment from 'moment';
 import { useInterval } from './useInterval';
-function AuctionBidding({ products, sendPrice, price }) {
+function AuctionBidding({ products, sendPrice, price, producter }) {
   const [nowProduct, setNowProduct] = useState(-1);
   const [nowPrice, setNowPrice] = useState(0);
   const [myPrice, setMyPrice] = useState(0);
   const [resetTime, setResetTime] = useState(moment());
   const [second, setSecond] = useState(30);
+  const [start, setStart] = useState(false);
   const startAuction = () => {
     // setNowProduct(nowProduct + 1);
     setNowPrice(products[nowProduct + 1].startPrice);
     setMyPrice(products[nowProduct + 1].startPrice + 1000);
     // getData(auctionApis.AUCTION_DATE_API).then((res) => setResetTime(new Date(res.data)));
     setSecond(29);
-    sendPrice(-1);
+    sendPrice(-1, nowProduct + 1);
   };
   // useInterval()
 
@@ -50,22 +51,29 @@ function AuctionBidding({ products, sendPrice, price }) {
   //   return () => clearInterval(timer);
   // };
 
+  // useEffect(() => {
+  //
+  //     setStart(true);
+  //   }
+  // }, [start]);
   useEffect(() => {
     if (price.length > 0) {
       if (price.length === 1 && price[0].price === -1) {
-        // setNowProduct(nowProduct + 1);
-        console.log('조건성립');
-      } else setNowPrice(price[price.length - 1].price);
+        setNowPrice(products[nowProduct + 1].startPrice);
+        // setMyPrice(products[nowProduct + 1].startPrice);
+      } else {
+        setNowPrice(price[price.length - 1].price);
+      }
     }
   });
-
-  if (products[nowProduct])
+  console.log(price[0]);
+  if (price[0])
     return (
       <Article>
         <AuctionInfo>
           <div>
-            <p>{products[nowProduct].productName}</p>
-            <span>시작가: {products[nowProduct].startPrice} </span>
+            <p>{products[Number(price[0].index)].productName}</p>
+            <span>시작가: {products[Number(price[0].index)].startPrice} </span>
             <span>현재가: {nowPrice}</span>
           </div>
           {/* <div id="timer">{countDownTimer(30)}</div> */}
@@ -83,38 +91,51 @@ function AuctionBidding({ products, sendPrice, price }) {
             }
           })}
         </PriceList>
-        <Bidding>
-          <div>
+        {producter ? (
+          <button onClick={startAuction}>경매시작</button>
+        ) : (
+          <Bidding>
+            <div>
+              <button
+                onClick={() => {
+                  if (Number(myPrice) - 1000 > nowPrice) setMyPrice(Number(myPrice) - 1000);
+                  else alert('안돼');
+                }}>
+                -
+              </button>
+              <p>
+                <input
+                  type="number"
+                  min={nowPrice}
+                  value={myPrice}
+                  onChange={(e) => setMyPrice(e.target.value)}
+                />
+                원
+              </p>
+              <button
+                onClick={() => {
+                  setMyPrice(Number(myPrice) + 1000);
+                }}>
+                +
+              </button>
+            </div>
             <button
               onClick={() => {
-                if (myPrice - 1000 > nowPrice) setMyPrice(myPrice - 1000);
-                else alert('안돼');
+                if (myPrice > nowPrice) {
+                  sendPrice(myPrice);
+                  setMyPrice(Number(myPrice) + 1000);
+                } else alert('안돼');
               }}>
-              -
+              응찰
             </button>
-            <p>{myPrice}원</p>
-            <button
-              onClick={() => {
-                setMyPrice(myPrice + 1000);
-              }}>
-              +
-            </button>
-          </div>
-          <button
-            onClick={() => {
-              sendPrice(myPrice);
-              setMyPrice(myPrice + 1000);
-            }}>
-            응찰
-          </button>
-        </Bidding>
-        <button onClick={startAuction}>경매시작</button>
+          </Bidding>
+        )}
       </Article>
     );
   else
     return (
       <p>
-        경매 시작 전입니다. <button onClick={startAuction}>경매시작</button>
+        경매 시작 전입니다. {producter ? <button onClick={startAuction}>경매시작</button> : null}
       </p>
     );
 }

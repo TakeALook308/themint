@@ -36,6 +36,8 @@ class StreamingComponent extends Component {
   }
 
   componentWillUnmount() {
+    console.log('leave');
+    this.leaveSession();
     window.removeEventListener('beforeunload', this.onbeforeunload);
   }
 
