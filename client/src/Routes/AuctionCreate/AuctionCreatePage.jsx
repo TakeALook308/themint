@@ -15,23 +15,20 @@ function AuctionCreatePage(props) {
   const onDrop = (acceptedFiles) => {
     let temp = [...productList];
     acceptedFiles.map((item) => temp.push(item));
-    onChange({
-      target: { name: 'auctionImageList', value: temp },
-    });
+    setAuctionImageList(temp);
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
-
+  const [auctionImageList, setAuctionImageList] = useState(null);
   const [inputAuction, setInputAuction] = useState({
     categorySeq: 1,
-    auctionImageList: [],
     title: '',
     content: '',
     startTime: '',
     productList: [],
   });
 
-  const { categorySeq, auctionImageList, title, content, productList } = inputAuction;
+  const { categorySeq, title, content, productList } = inputAuction;
   const startTime =
     inputAuction.startTime.substring(0, 10) + 'T' + inputAuction.startTime.substring(11, 16);
   const [reservation, setReservation] = useState(false);
@@ -88,7 +85,21 @@ function AuctionCreatePage(props) {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          postData(auctionApis.AUCTION_CREATE_API, inputAuction)
+          const formData = new FormData();
+          // auctionImageList.map((file) => formData.append('files', file));
+          for (let i = 0; i < auctionImageList.length; i++) {
+            formData.append('file', auctionImageList[i]);
+          }
+          formData.append(
+            'key',
+            new Blob([JSON.stringify(inputAuction)], { type: 'application/json' }),
+          );
+          console.log(formData.get('file'), formData.get('key'));
+          postData(auctionApis.AUCTION_CREATE_API, formData, {
+            headers: {
+              'Content-Type': `multipart/form-data`,
+            },
+          })
             .then(() => {
               console.log(inputAuction);
               alert('성공');
@@ -118,14 +129,10 @@ function AuctionCreatePage(props) {
               <input {...getInputProps()} />
               {isDragActive ? (
                 <p>Drop the files here ...</p>
-              ) : auctionImageList.length === 0 ? (
+              ) : auctionImageList === null ? (
                 <div>파일을 추가해주세요</div>
               ) : (
-                <div>
-                  {/* {auctionImageList.map((item, i) => (
-                    <p key={i}>{item.path}</p>
-                  ))} */}
-                </div>
+                <div>{console.log(auctionImageList)}</div>
               )}
             </div>
           </FileUpload>
