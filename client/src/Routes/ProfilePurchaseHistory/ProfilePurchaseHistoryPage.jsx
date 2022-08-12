@@ -14,17 +14,16 @@ function ProfilePurchaseHistoryPage({ params }) {
   const strMemberSeq = `${myInformation.memberSeq}`;
   // 구매내역 API 요청
   const getPurchaseUrl = (paramsnum, size) => {
-    return (page) => `/api/history/purchase/inprogress?${paramsnum}?page=${page}&size=${size}`;
+    return (page) => `/api/history/purchase/${active}?${paramsnum}?page=${page}&size=${size}`;
   };
 
   // 버튼클릭으로 구매중 구매완료 구분
-  const [active, setActive] = useState('1');
-  const numActive = active * 1;
+  const [active, setActive] = useState('inprogress');
   const onSelling = async () => {
-    setActive('1');
+    setActive('inprogress');
   };
   const onSold = async () => {
-    setActive('2');
+    setActive('complete');
   };
   // Modal 연결
   const [purchaseDetail, setPurchaseDetail] = useState([]); // 판매내역 상세 내용 저장
@@ -65,12 +64,12 @@ function ProfilePurchaseHistoryPage({ params }) {
         <IsUserSame>
           <InfiniteAuctionList
             getUrl={getPurchaseUrl(params, 9)}
-            queryKey={['imminentAuctionList']}
+            queryKey={[`${params}${active}`]}
             CardComponent={IsPurchasingCard}
             SkeltonCardComponent={SkeletonAuctionCard}
-            text={'실시간 임박 경매가 없습니다.'}
+            text={'판매 내역이 없습니다'}
             func={ModalHandler}
-            numActive={numActive}
+            active={active}
           />
         </IsUserSame>
       )}
