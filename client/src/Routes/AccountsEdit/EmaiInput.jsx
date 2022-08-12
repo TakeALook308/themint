@@ -26,11 +26,13 @@ function EmaiInput({ text, setEditMode, changeInformation }) {
       return;
     try {
       const response = await fetchData.get(userApis.EMAIL_DUPLICATE_CHECK_API(value));
+      console.log(response);
       if (response.status === 200) {
         setIsDuplicatedEmail(false);
         return true;
       }
-    } catch {
+    } catch (err) {
+      console.log(err.response);
       setError('email', { message: REGISTER_MESSAGE.DUPLICATED_ID }, { shouldFocus: true });
       setIsDuplicatedEmail(true);
       return false;
