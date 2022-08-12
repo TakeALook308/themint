@@ -24,6 +24,7 @@ public class ProductDelivery {
     String phone;
     String address;
     String addressDetail;
+    String zipCode;
     String remitName;
     String parcelCompanyCode;
     String trackingNo;

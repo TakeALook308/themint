@@ -3,6 +3,9 @@ package com.takealook.api.service;
 import com.takealook.api.request.AuctionRegisterPostReq;
 import com.takealook.api.request.AuctionUpdatePatchReq;
 import com.takealook.api.request.ProductRegisterPostReq;
+import com.takealook.common.exception.auction.AuctionNotFoundException;
+import com.takealook.common.exception.auction.AuctionTimeDuplicateException;
+import com.takealook.common.exception.code.ErrorCode;
 import com.takealook.common.util.HashUtil;
 import com.takealook.db.entity.Auction;
 import com.takealook.db.entity.AuctionImage;
@@ -15,8 +18,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -34,11 +39,9 @@ public class AuctionServiceImpl implements AuctionService {
     @Autowired
     S3FileService s3FileService;
 
+//    @Transactional
     @Override
-    public Auction createAuction(Long memberSeq, AuctionRegisterPostReq auctionRegisterPostReq, List<MultipartFile> multipartFileList) {
-        // 화상회의 링크 생성해야 함!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-        // title, content, categorySeq, startTime, productlist(productname, startprice), auctionImagelist(imageurl)
+    public Auction createAuction(Long memberSeq, AuctionRegisterPostReq auctionRegisterPostReq, List<MultipartFile> auctionImageList) {
         String hash = HashUtil.MD5(LocalDateTime.now().toString() + memberSeq);
         Auction auction = Auction.builder()
                 .hash(hash)
@@ -48,6 +51,18 @@ public class AuctionServiceImpl implements AuctionService {
                 .categorySeq(auctionRegisterPostReq.getCategorySeq())
                 .startTime(auctionRegisterPostReq.getStartTime())
                 .build();
+        LocalDateTime startTime = LocalDateTime.parse(auction.getStartTime(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        LocalDateTime minStartTime = startTime.minusMinutes(30);
+        LocalDateTime maxStartTime = startTime.plusMinutes(30);
+
+        // 멤버 본인이 올린 다른 경매와 시간 겹치는지 체크
+        List<Auction> auctionList = auctionRepository.findAllByMemberSeq(memberSeq);
+        for (Auction auc : auctionList){
+            LocalDateTime check = LocalDateTime.parse(auc.getStartTime(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            if(check.isAfter(minStartTime) || check.isBefore(maxStartTime)){
+                throw new AuctionTimeDuplicateException("auction time is overlapped with auction hash " + auc.getHash(), ErrorCode.AUCTION_TIME_DUPLICATION);
+            }
+        }
         auctionRepository.save(auction);
 
         // 방금 저장한 경매 seq 뽑아서 product, auctionimage에 넣어야 함
@@ -65,7 +80,7 @@ public class AuctionServiceImpl implements AuctionService {
         }
 
         // 옥션 이미지 없을 시 기본이미지 넣기
-        if (multipartFileList == null || multipartFileList.size() == 0) {
+        if (auctionImageList == null || auctionImageList.size() == 0) {
             auctionImageRepository.save(AuctionImage.builder()
                     .auctionSeq(auction.getSeq())
                     .imageUrl("/product/basic1.png")
@@ -73,7 +88,7 @@ public class AuctionServiceImpl implements AuctionService {
         } else {
             // S3 버킷에 물품 이미지 저장 후 db에 imageUrl 저장
             try {
-                List<String> imageUrlList = s3FileService.uploadProductIamge(multipartFileList, auction.getHash());
+                List<String> imageUrlList = s3FileService.uploadProductIamge(auctionImageList, auction.getHash());
                 for (String imageUrl : imageUrlList) {
                     AuctionImage auctionImage = AuctionImage.builder()
                             .auctionSeq(auction.getSeq())
@@ -91,12 +106,18 @@ public class AuctionServiceImpl implements AuctionService {
     @Override
     public Auction getAuctionByHash(String hash) {
         Auction auction = auctionRepository.findByHash(hash).get();
+        if(auction == null){
+            throw new AuctionNotFoundException("auction with hash " + hash + " not found", ErrorCode.AUCTION_NOT_FOUND);
+        }
         return auction;
     }
 
     @Override
     public Auction getAuctionBySeq(Long auctionSeq) {
         Auction auction = auctionRepository.findBySeq(auctionSeq).get();
+        if(auction == null){
+            throw new AuctionNotFoundException("auction with seq " + auctionSeq + " not found", ErrorCode.AUCTION_NOT_FOUND);
+        }
         return auction;
     }
 
@@ -181,12 +202,12 @@ public class AuctionServiceImpl implements AuctionService {
     }
 
     @Override
-    public void deleteAuction(Long memberSeq, Long auctionSeq) {
+    public void deleteAuction(Long auctionSeq) {
         Auction auction = auctionRepository.findBySeq(auctionSeq).orElse(null);
-        if (auction != null && auction.getMemberSeq() == memberSeq) {
-            auctionRepository.delete(auction);
+        if(auction == null){
+            throw new AuctionNotFoundException("auction with seq " + auctionSeq + " not found", ErrorCode.AUCTION_NOT_FOUND);
         } else {
-            // 예외처리
+            auctionRepository.delete(auction);
         }
     }
 }

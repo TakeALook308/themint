@@ -29,7 +29,7 @@ public class AuctionImageServiceImpl implements AuctionImageService{
     public void updateAuctionImageList(Long auctionSeq, List<AuctionImage> auctionImageList) {
         auctionImageRepository.deleteAllByAuctionSeq(auctionSeq);
         for(AuctionImage auctionImage : auctionImageList){
-            if(auctionImage.getSeq() != 0){
+            if(auctionImage.getSeq() != null || auctionImage.getSeq() != 0){
                 auctionImageRepository.save(auctionImage);
             } else{
                 AuctionImage newAuctionImage = AuctionImage.builder()

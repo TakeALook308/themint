@@ -16,4 +16,5 @@ public class ProductDeliveryUpdatePatchReq {
     String phone;
     String address;
     String addressDetail;
+    String zipCode;
 }
