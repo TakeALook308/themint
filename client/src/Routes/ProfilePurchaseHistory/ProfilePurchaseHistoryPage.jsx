@@ -12,9 +12,12 @@ function ProfilePurchaseHistoryPage({ params }) {
   // 사용자랑 프로필 일치여부 확인
   const myInformation = useRecoilValue(myInformationState);
   const strMemberSeq = `${myInformation.memberSeq}`;
+  useEffect(() => {
+    instance.get(`/api/history/purchase/inprogress?page=0&size=9`);
+  }, []);
   // 구매내역 API 요청
   const getPurchaseUrl = (paramsnum, size) => {
-    return (page) => `/api/history/purchase/${active}?${paramsnum}?page=${page}&size=${size}`;
+    return (page) => `/api/history/purchase/${active}?page=${page}&size=${size}`;
   };
 
   // 버튼클릭으로 구매중 구매완료 구분

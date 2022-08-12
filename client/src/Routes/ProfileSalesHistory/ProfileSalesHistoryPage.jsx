@@ -24,6 +24,10 @@ function ProfileSalesHistoryPage({ params }) {
   const [salesDetail, setSalesDetail] = useState([]); // 판매내역 상세 내용 저장
   const [isModal, setIsModal] = useState(false);
 
+  useEffect(() => {
+    instance.get(`/api/history/sales/inprogress/${params}?page=0&size=9`);
+  }, []);
+
   const getUrl = (paramsnum, size) => {
     console.log(active);
     return (page) => `/api/history/sales/${active}/${paramsnum}?page=${page}&size=${size}`;
