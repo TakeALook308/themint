@@ -210,19 +210,17 @@ public class AuctionServiceImpl implements AuctionService {
     }
 
     @Override
-    public void updateAuction(Long memberSeq, AuctionUpdatePatchReq auctionUpdatePatchReq) {
-        Auction auction = Auction.builder()
-                .seq(auctionUpdatePatchReq.getSeq())
-                .hash(auctionUpdatePatchReq.getHash())
-                .memberSeq(memberSeq)
-                .title(auctionUpdatePatchReq.getTitle())
-                .content(auctionUpdatePatchReq.getContent())
-                .categorySeq(auctionUpdatePatchReq.getCategorySeq())
-                .startTime(auctionUpdatePatchReq.getStartTime())
-                .status(auctionUpdatePatchReq.getStatus())
-                .interest(auctionUpdatePatchReq.getInterest())
-                .build();
+    public Auction updateAuction(Long memberSeq, AuctionUpdatePatchReq auctionUpdatePatchReq) {
+        Auction auction = auctionRepository.findBySeqAndMemberSeq(auctionUpdatePatchReq.getSeq(), memberSeq);
+        if (auction == null) {
+            throw new AuctionNotFoundException("auction with seq " + auctionUpdatePatchReq.getSeq() + " not found", ErrorCode.AUCTION_NOT_FOUND);
+        }
+        auction.setTitle(auctionUpdatePatchReq.getTitle());
+        auction.setContent(auctionUpdatePatchReq.getContent());
+        auction.setCategorySeq(auctionUpdatePatchReq.getCategorySeq());
+        auction.setStartTime(auctionUpdatePatchReq.getStartTime());
         auctionRepository.save(auction);
+        return auction;
     }
 
     @Override

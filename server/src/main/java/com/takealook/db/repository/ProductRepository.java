@@ -4,6 +4,7 @@ import com.takealook.db.entity.Member;
 import com.takealook.db.entity.Product;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -25,6 +26,7 @@ public interface ProductRepository  extends JpaRepository<Product, Long> {
     List<Product> findAllByProductNameContainsAndStartTimeAfterOrderByInterest(String word, String currentTime, Pageable pageable);
     @Query(value = "SELECT * FROM product p LEFT JOIN (SELECT a.seq, a.start_time, m.score FROM auction a JOIN member m ON a.member_seq = m.seq) j ON p.auction_seq = j.seq WHERE p.product_name LIKE CONCAT('%', :word, '%') AND j.start_time > :currentTime ORDER BY j.score DESC", nativeQuery = true)
     List<Product> findAllByProductNameContainsAndStartTimeAfterOrderByScore(String word, String currentTime, Pageable pageable);
-    @Transactional
+    @Transactional // update, delete 필수
+    @Modifying(clearAutomatically = true) // 영속성 컨텍스트 초기화
     void deleteAllByAuctionSeq(Long auctionSeq);
 }

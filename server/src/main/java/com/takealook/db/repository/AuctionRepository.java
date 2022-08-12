@@ -15,6 +15,8 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
     Optional<Auction> findByHash(String hash);
     Optional<Auction> findBySeq(Long auctionSeq);
     Auction findFirstByMemberSeqOrderBySeqDesc(Long memberSeq);
+
+    Auction findBySeqAndMemberSeq(Long Seq, Long memberSeq);
     List<Auction> findAllByMemberSeq(Long memberSeq);
     List<Auction> findAllByStatus(int status);
     List<Auction> findAllByStartTimeAfterAndStartTimeBeforeOrderByStartTimeAsc(String currentTime, String tomorrowTime, Pageable pageable);

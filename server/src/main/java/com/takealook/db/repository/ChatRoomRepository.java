@@ -3,6 +3,7 @@ package com.takealook.db.repository;
 import com.takealook.api.response.ChatRoomsInterface;
 import com.takealook.db.entity.ChatRoom;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -11,7 +12,8 @@ import java.util.List;
 
 @Repository
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
-    @Transactional
+    @Transactional // update, delete 필수
+    @Modifying(clearAutomatically = true) // 영속성 컨텍스트 초기화
     void deleteChatRoomByRoomId(String roomId);
 
     ChatRoom getChatRoomByRoomId(String roomId);
