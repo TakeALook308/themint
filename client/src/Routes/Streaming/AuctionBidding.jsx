@@ -9,15 +9,16 @@ function AuctionBidding({ products, sendPrice, price }) {
   const [nowPrice, setNowPrice] = useState(0);
   const [myPrice, setMyPrice] = useState(0);
   const [resetTime, setResetTime] = useState(moment());
-  const [second, setSecond] = useState(5);
+  const [second, setSecond] = useState(30);
   const startAuction = () => {
-    setNowProduct(nowProduct + 1);
+    // setNowProduct(nowProduct + 1);
     setNowPrice(products[nowProduct + 1].startPrice);
     setMyPrice(products[nowProduct + 1].startPrice + 1000);
     // getData(auctionApis.AUCTION_DATE_API).then((res) => setResetTime(new Date(res.data)));
     setSecond(29);
+    sendPrice(-1);
   };
-  let timer;
+  // useInterval()
 
   // useEffect(() => {
   //   const a = setInterval(() => {
@@ -27,6 +28,7 @@ function AuctionBidding({ products, sendPrice, price }) {
   //     } else clearInterval(a);
   //   }, 1000);
   // }, [resetTime]);
+  let timer;
 
   // const countDownTimer = (sec) => {
   //   function show() {
@@ -44,13 +46,16 @@ function AuctionBidding({ products, sendPrice, price }) {
   //       console.log(e);
   //     }
   //   }
-  //   timer = setInterval(show, 1000);
+  //   timer = setInterval(show, 100);
   //   return () => clearInterval(timer);
   // };
 
   useEffect(() => {
     if (price.length > 0) {
-      setNowPrice(price[price.length - 1].price);
+      if (price.length === 1 && price[0].price === -1) {
+        // setNowProduct(nowProduct + 1);
+        console.log('조건성립');
+      } else setNowPrice(price[price.length - 1].price);
     }
   });
 
@@ -68,11 +73,15 @@ function AuctionBidding({ products, sendPrice, price }) {
           {/* <Timer></Timer> */}
         </AuctionInfo>
         <PriceList>
-          {price.map((item, i) => (
-            <p key={i}>
-              {item.nickname}님 <b>{item.price}원</b> 입찰
-            </p>
-          ))}
+          {price.map((item, i) => {
+            if (i !== 0) {
+              return (
+                <p key={i}>
+                  {item.nickname}님 <b>{item.price}원</b> 입찰
+                </p>
+              );
+            }
+          })}
         </PriceList>
         <Bidding>
           <div>
@@ -94,6 +103,7 @@ function AuctionBidding({ products, sendPrice, price }) {
           <button
             onClick={() => {
               sendPrice(myPrice);
+              setMyPrice(myPrice + 1000);
             }}>
             응찰
           </button>
