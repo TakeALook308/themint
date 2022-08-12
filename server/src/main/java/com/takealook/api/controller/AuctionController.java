@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Nullable;
@@ -53,10 +54,10 @@ public class AuctionController {
     InterestCategoryService interestCategoryService;
 
     @PostMapping
-    public ResponseEntity<BaseResponseBody> registerAuction(@RequestBody AuctionRegisterPostReq auctionRegisterPostReq, @ApiIgnore Authentication authentication) {
+    public ResponseEntity<BaseResponseBody> registerAuction(@RequestPart("auctionInfo")AuctionRegisterPostReq auctionRegisterPostReq, @RequestPart List<MultipartFile> multipartFileList, @ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
-        Auction auction = auctionService.createAuction(memberSeq, auctionRegisterPostReq);
+        Auction auction = auctionService.createAuction(memberSeq, auctionRegisterPostReq, multipartFileList);
         List<Product> productList = productService.getProductListByAuctionSeq(auction.getSeq());
         List<AuctionImage> auctionImageList = auctionImageService.getAuctionImageListByAuctionSeq(auction.getSeq());
         historyService.registerSalesHistory(memberSeq, productList, auctionImageList);
