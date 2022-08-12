@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import YouTubeIcon from '@mui/icons-material/YouTube';
-import InstagramIcon from '@mui/icons-material/Instagram';
-import ChatIcon from '@mui/icons-material/Chat';
+import { AiOutlineYoutube, AiOutlineInstagram } from 'react-icons/ai';
+import { BsChatLeftDots } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
 
 function Footer(props) {
@@ -34,13 +33,13 @@ function Footer(props) {
         </FooterText>
         <FooterItem>
           <Link to="/">
-            <YouTubeIcon />
+            <AiOutlineYoutube size={25} />
           </Link>
           <Link to="/">
-            <InstagramIcon />
+            <AiOutlineInstagram size={25} />
           </Link>
           <Link to="/">
-            <ChatIcon />
+            <BsChatLeftDots size={20} />
           </Link>
         </FooterItem>
       </FooterBody>
