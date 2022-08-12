@@ -17,7 +17,7 @@ function ProfilePurchaseHistoryPage({ params }) {
       const response = await instance.get(url);
       return response;
     };
-    const res = getSalesAuction(`/api/history/sales/${params}?page${1}=&size=${9}`);
+    const res = getSalesAuction(`/api/history/purchase/${params}?page${1}=&size=${9}`);
     res.then((items) => {
       console.log(items.data.resultList);
       setBuyItems(items.data.resultList);
@@ -57,12 +57,12 @@ function ProfilePurchaseHistoryPage({ params }) {
         <IsUserSame>
           {numActive === 1 && (
             <IsBuyingContainer>
-              {buyStatus < 3 && <IsPurchasingCardList params={params} auctionItems={buyItems} />}
+              {buyStatus < 3 && <IsPurchasingCardList params={params} buyItems={buyItems} />}
             </IsBuyingContainer>
           )}
           {numActive === 2 && (
             <IsBuyingContainer>
-              {buyStatus >= 3 && <IsPurchasingCardList params={params} auctionItems={buyItems} />}
+              {buyStatus >= 3 && <IsPurchasingCardList params={params} buyItems={buyItems} />}
             </IsBuyingContainer>
           )}
         </IsUserSame>

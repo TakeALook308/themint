@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-function IsPurchasingCard({ ModalHandler, auctionitem }) {
+function IsPurchasingCard({ ModalHandler, buyItem, auctionitem }) {
   // TODO: 데이터 교체하기
   const [statusNum, setStatusNum] = useState(0);
   useEffect(() => {
@@ -20,7 +20,7 @@ function IsPurchasingCard({ ModalHandler, auctionitem }) {
             <picture>
               <img
                 src={auctionitem.auctionImage.imageUrl}
-                alt="닌텐도 스위치"
+                alt="판매내역 이미지"
                 width="400"
                 height="300"
               />

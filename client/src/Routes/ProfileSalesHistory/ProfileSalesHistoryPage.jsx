@@ -17,6 +17,7 @@ function ProfileSalesHistoryPage({ params }) {
       setSellingItem(items.data.resultList);
       setSellingStatus(items.data.resultList.status);
     });
+    console.log(sellingItem);
   }, []);
   // 버튼 클릭으로 판매중 판매완료 구분
   const [active, setActive] = useState('1');
@@ -45,7 +46,7 @@ function ProfileSalesHistoryPage({ params }) {
           판매완료
         </StyledBtn>
       </ButtonNav>
-      {/* {numActive === 1 && (
+      {numActive === 1 && (
         <IsSellingContainer>
           {sellingStatus < 3 && <IsSellingCardList sellingItem={sellingItem} />}
         </IsSellingContainer>
@@ -54,8 +55,7 @@ function ProfileSalesHistoryPage({ params }) {
         <IsSellingContainer>
           {sellingStatus >= 3 && <IsSellingCardList sellingItem={sellingItem} />}
         </IsSellingContainer>
-      )} */}
-      <IsSellingCardList sellingItem={sellingItem} />
+      )}
     </Container>
   );
 }

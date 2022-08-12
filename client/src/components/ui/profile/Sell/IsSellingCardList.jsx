@@ -6,55 +6,31 @@ import IsSellingCard from './IsSellingCard';
 import Modal from '../../../common/Modal';
 
 function IsSellingCardList({ sellingItem }) {
-  // API 확인후 삭제
-  const auctionitem = {
-    historyseq: 11,
-    memberSeq: 1,
-    productSeq: 11,
-    productName: '닌텐도 스위치',
-    startTime: 'Thu Jul 28 2022',
-    startPrice: 1000,
-    finalPrice: 2000,
-    status: 5, // 0: 판매중, 1:입금대기, 2:입금완료, 3: 판매완료, 4: 유찰, 5: 거래취소
-    auctionImage: {
-      seq: 1,
-      imageUrl: 'https://images.gnwcdn.com/2022/articles/2022-07-01-15-35/hero_top_sp.jpg',
-    },
-    profileUrl:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiiGVRNg8egZNHf7d7-jeEA3JKgNTkStDZPQ&usqp=CAU',
-  };
-
-  const auctionDetail = {
-    nickname: '미노',
-    remitName: '민호', // 입금자명
-    name: '민호',
-    phone: '01012345678',
-    address: '서울시 역삼동',
-    addressDetail: '11층',
-    trackingNo: '',
-    profileUrl:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiiGVRNg8egZNHf7d7-jeEA3JKgNTkStDZPQ&usqp=CAU',
-  };
   // Modal 연결
-  const [historySeq, setHistorySeq] = useState(0); // 판매내역 상세 요청 seq값 저장
+  const [historySeq, setHistorySeq] = useState(1); // 판매내역 상세 요청 seq값 저장
   const [salesDetail, setSalesDetail] = useState([]); // 판매내역 상세 내용 저장
   const [isModal, setIsModal] = useState(false);
   const ModalHandler = () => {
     setIsModal((prev) => !prev);
-    setHistorySeq(auctionitem.historyseq); // 모달 버튼 누르면 그 옥션의 historyseq를 historySeq에 저장
+    setHistorySeq(sellingItem.historyseq); // 모달 버튼 누르면 그 옥션의 historyseq를 historySeq에 저장
+
     // 판매내역 상세보기 API 요청 -> 상세내역
+  };
+  useEffect(() => {
     const getSalesDetail = async (url) => {
       const response = await instance.get(url);
       return response;
     };
-    const res = getSalesDetail(`/api/history/sales/detail/${historySeq}`);
+    const res = getSalesDetail(`/api/history/sales/detail/${historySeq}`); // 테스트는 32넣어서 확인
+    console.log(historySeq);
     res.then((itemDetail) => {
-      setSalesDetail(itemDetail.data); // 상세보기 내용을 salesDetail에 저장 (API연결 500뜸)!!
+      setSalesDetail(itemDetail.data); // 상세보기 내용을 salesDetail에 저장
     });
-  };
+  }, [historySeq]);
+  console.log(salesDetail);
   // 송장번호 입력& PATCH 요청을 위한 getTrackingNo
   const [getTrackingNo, setGetTrackingNo] = useState({
-    productSeq: `${auctionitem.productSeq}`,
+    productSeq: `${sellingItem.productSeq}`,
     parcelCompanyCode: '',
     trackingNo: '',
   });
@@ -73,14 +49,14 @@ function IsSellingCardList({ sellingItem }) {
     });
   }, []);
   // 송장번호 입력, 택배사 코드 저장하기
-  const { parcelCompanyCode, trackingNo } = getTrackingNo; // productSeq만 가져오면 해결!
+  const { parcelCompanyCode, trackingNo } = getTrackingNo;
   const onChange = ({ target: { name, value } }) => {
     setGetTrackingNo({
       ...getTrackingNo,
       [name]: value,
     });
   };
-  console.log(getTrackingNo);
+  console.log(sellingItem);
 
   // 버튼 클릭하면 송장번호를 patch
   const onClick = () => {
@@ -95,24 +71,22 @@ function IsSellingCardList({ sellingItem }) {
   return (
     <Container>
       <CardContainer>
-        {/* <IsSellingCard sellingItem={sellingItem} ModalHandler={ModalHandler}></IsSellingCard> */}
         <IsSellingCard
-          auctionitem={auctionitem}
+          sellingItem={sellingItem}
           ModalHandler={ModalHandler}
           onChange={onChange}></IsSellingCard>
       </CardContainer>
       <Modal open={isModal} close={ModalHandler} title="상품 관리">
-        {/* auctionDetail -> salesDetail로 변경 */}
         <ModalProfile>
-          <img src={auctionDetail.profileUrl} alt="프로필이미지" />
-          <p>{auctionDetail.nickname}</p>
+          <img src={salesDetail.profileUrl} alt="프로필이미지" />
+          <p>{salesDetail.nickname}</p>
         </ModalProfile>
         <ModalMain>
-          <p>입금자명 : {auctionDetail.remitName}</p>
-          <p>입금자 전화번호: {auctionDetail.phone}</p>
+          <p>입금자명 : {salesDetail.remitName}</p>
+          <p>입금자 전화번호: {salesDetail.phone}</p>
           <p>
-            구매자 배송지: {auctionDetail.address}
-            <span>{auctionDetail.addressDetail}</span>
+            구매자 배송지: {salesDetail.address}
+            <span>{salesDetail.addressDetail}</span>
           </p>
           <select onChange={onChange} name="parcelCompanyCode" value={parcelCompanyCode}>
             {companyList.map((companyList) => (
@@ -121,6 +95,7 @@ function IsSellingCardList({ sellingItem }) {
               </option>
             ))}
           </select>
+          <br />
           <input
             placeholder="송장번호 입력"
             onChange={onChange}
@@ -168,8 +143,21 @@ const ModalProfile = styled.div`
 
 const ModalMain = styled.main`
   width: 100%;
-  height: 140px;
+  height: 200px;
   > p {
     margin-bottom: 15px;
+  }
+  > select {
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 10px;
+  }
+  > input {
+    padding: 5px 30px 5px 10px;
+    border-radius: 5px;
+    margin-right: 5px;
+  }
+  > button {
+    padding: 5px;
   }
 `;

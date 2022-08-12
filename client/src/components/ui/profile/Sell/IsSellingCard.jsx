@@ -7,9 +7,9 @@ function IsSellingCard({ ModalHandler, sellingItem, auctionitem }) {
 
   const [statusName, setStatusName] = useState(0);
   useEffect(() => {
-    console.log(auctionitem.status);
-    setStatusName(auctionitem.status);
+    setStatusName(sellingItem.status);
   }, []);
+  console.log();
 
   const auctionstr = ['판매중', '입금대기', '입금완료', '판매완료', '유찰', '거래취소'];
   // API 연결후 acutionitem 전부 sellingItem으로 변경
@@ -20,21 +20,21 @@ function IsSellingCard({ ModalHandler, sellingItem, auctionitem }) {
           <div>
             <picture>
               <img
-                src={auctionitem.auctionImage.imageUrl}
-                alt="닌텐도 스위치"
+                // src={sellingItem.auctionImage.imageUrl}
+                alt="옥션이미지"
                 width="400"
                 height="300"
               />
             </picture>
             <AuctionInfoContainer>
               <div>
-                <h4>{auctionitem.productName}</h4>
-                {4 > statusName > 0 && <p>{auctionitem.finalPrice}</p>}
-                {statusName >= 4 && <p>{auctionitem.startPrice}</p>}
-                {statusName === 0 && <p>{auctionitem.startPrice}</p>}
-                <AcutionTime>{auctionitem.startTime}</AcutionTime>
-                <AuctionStatus auctionstrkey={auctionitem.status}>
-                  {auctionstr[auctionitem.status]}
+                <h4>{sellingItem.productName}</h4>
+                {4 > statusName > 0 && <p>{sellingItem.finalPrice}</p>}
+                {statusName >= 4 && <p>{sellingItem.startPrice}</p>}
+                {statusName === 0 && <p>{sellingItem.startPrice}</p>}
+                <AcutionTime>{sellingItem.startTime}</AcutionTime>
+                <AuctionStatus auctionstrkey={sellingItem.status}>
+                  {auctionstr[sellingItem.status]}
                 </AuctionStatus>
               </div>
             </AuctionInfoContainer>
@@ -43,7 +43,7 @@ function IsSellingCard({ ModalHandler, sellingItem, auctionitem }) {
         <Link to="/">
           <div>
             <picture>
-              <img src={auctionitem.profileUrl} alt="유저 프로필" width="50" height="50" />
+              <img src={sellingItem.profileUrl} alt="유저 프로필" width="50" height="50" />
             </picture>
           </div>
         </Link>
