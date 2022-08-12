@@ -1,72 +1,122 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
+import { auctionApis } from '../../utils/apis/auctionApis';
+import { getData } from '../../utils/apis/api';
+import moment from 'moment';
+import { useInterval } from './useInterval';
+function AuctionBidding({ products, sendPrice, price }) {
+  const [nowProduct, setNowProduct] = useState(-1);
+  const [nowPrice, setNowPrice] = useState(0);
+  const [myPrice, setMyPrice] = useState(0);
+  const [resetTime, setResetTime] = useState(moment());
+  const [second, setSecond] = useState(30);
+  const startAuction = () => {
+    // setNowProduct(nowProduct + 1);
+    setNowPrice(products[nowProduct + 1].startPrice);
+    setMyPrice(products[nowProduct + 1].startPrice + 1000);
+    // getData(auctionApis.AUCTION_DATE_API).then((res) => setResetTime(new Date(res.data)));
+    setSecond(29);
+    sendPrice(-1);
+  };
+  // useInterval()
 
-function AuctionBidding({ product, sendPrice, price, lastPrice, userInfo }) {
-  const nickname = userInfo.nickname;
-  const [seconds, setSeconds] = useState(30);
-  const [myPrice, setMyPrice] = useState(Number(lastPrice) + 1000);
+  // useEffect(() => {
+  //   const a = setInterval(() => {
+  //     if (second > 0) {
+  //       setSecond(second - 1);
+  //       console.log('hi');
+  //     } else clearInterval(a);
+  //   }, 1000);
+  // }, [resetTime]);
+  let timer;
+
+  // const countDownTimer = (sec) => {
+  //   function show() {
+  //     try {
+  //       const nowTime = moment();
+  //       let showtime = sec + (resetTime - nowTime) / 1000;
+  //       if (showtime < 0) {
+  //         clearInterval(timer);
+  //         document.getElementById('timer').innerHTML = 0;
+  //         return;
+  //       } else {
+  //         document.getElementById('timer').innerHTML = showtime.toFixed(1);
+  //       }
+  //     } catch (e) {
+  //       console.log(e);
+  //     }
+  //   }
+  //   timer = setInterval(show, 100);
+  //   return () => clearInterval(timer);
+  // };
 
   useEffect(() => {
-    const countdown = setInterval(() => {
-      if (parseInt(seconds) > 0) {
-        setSeconds(parseInt(seconds) - 1);
-      } else if (parseInt(seconds) === 0) {
-        clearInterval(countdown);
-      }
-    }, 1000);
-    return () => clearInterval(countdown);
-  }, [seconds]);
+    if (price.length > 0) {
+      if (price.length === 1 && price[0].price === -1) {
+        // setNowProduct(nowProduct + 1);
+        console.log('조건성립');
+      } else setNowPrice(price[price.length - 1].price);
+    }
+  });
 
-  return (
-    <Article>
-      <AuctionInfo>
-        <div>
-          <p>{product.productName}</p>
-          <span>시작가: {product.startPrice} </span>
-          <span>현재가: {lastPrice}</span>
-        </div>
-        <div>{seconds < 10 ? `0${seconds}` : seconds}초</div>
-      </AuctionInfo>
-      <PriceList>
-        {price.map((item, i) => (
-          <p key={i}>
-            {item.nickname}님 <b>{item.price}원</b> 입찰
-          </p>
-        ))}
-      </PriceList>
-      <Bidding>
-        <div>
+  if (products[nowProduct])
+    return (
+      <Article>
+        <AuctionInfo>
+          <div>
+            <p>{products[nowProduct].productName}</p>
+            <span>시작가: {products[nowProduct].startPrice} </span>
+            <span>현재가: {nowPrice}</span>
+          </div>
+          {/* <div id="timer">{countDownTimer(30)}</div> */}
+          {/* <div>{second < 10 ? `0${second}` : second}초</div> */}
+          {/* <Timer></Timer> */}
+        </AuctionInfo>
+        <PriceList>
+          {price.map((item, i) => {
+            if (i !== 0) {
+              return (
+                <p key={i}>
+                  {item.nickname}님 <b>{item.price}원</b> 입찰
+                </p>
+              );
+            }
+          })}
+        </PriceList>
+        <Bidding>
+          <div>
+            <button
+              onClick={() => {
+                if (myPrice - 1000 > nowPrice) setMyPrice(myPrice - 1000);
+                else alert('안돼');
+              }}>
+              -
+            </button>
+            <p>{myPrice}원</p>
+            <button
+              onClick={() => {
+                setMyPrice(myPrice + 1000);
+              }}>
+              +
+            </button>
+          </div>
           <button
             onClick={() => {
-              if (myPrice - 1000 > lastPrice) setMyPrice(myPrice - 1000);
-              else alert('안돼');
-            }}>
-            -
-          </button>
-          <p>{myPrice}원</p>
-          <button
-            onClick={() => {
-              setMyPrice(myPrice + 1000);
-            }}>
-            +
-          </button>
-        </div>
-        <button
-          onClick={() => {
-            if (myPrice > lastPrice && seconds !== 0) {
               sendPrice(myPrice);
               setMyPrice(myPrice + 1000);
-              // setPriceList([...priceList, { nickname: price.nickname, price: price.price }]);
-              // setProductPrice(myPrice);
-              // setProductPrice(price[-1].price);
-              setSeconds(30);
-            } else alert('안돼');
-          }}>
-          응찰
-        </button>
-      </Bidding>
-    </Article>
-  );
+            }}>
+            응찰
+          </button>
+        </Bidding>
+        <button onClick={startAuction}>경매시작</button>
+      </Article>
+    );
+  else
+    return (
+      <p>
+        경매 시작 전입니다. <button onClick={startAuction}>경매시작</button>
+      </p>
+    );
 }
 
 const Article = styled.article`
