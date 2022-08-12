@@ -3,7 +3,7 @@ import { instance } from '../../utils/apis/api';
 import styled from 'styled-components';
 import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
 import SkeletonAuctionCard from '../../components/CardList/SkeletonAuctionCard';
-import IsSellingCard from '../../components/ui/profile/Sell/IsSellingCard';
+import IsSellingCard from './IsSellingCard';
 import axios from 'axios';
 import Modal from '../../components/common/Modal';
 
@@ -21,7 +21,6 @@ function ProfileSalesHistoryPage({ params }) {
       setSellingItem(items.data.resultList);
       setSellingStatus(items.data.resultList.status);
     });
-    console.log(sellingItem);
   }, []);
   const getSalesUrl = (paramsnum, size) => {
     return (page) => `/api/history/sales/${paramsnum}?page=${page}&size=${size}`;
@@ -37,28 +36,24 @@ function ProfileSalesHistoryPage({ params }) {
   };
 
   // Modal 연결
-  const [historySeq, setHistorySeq] = useState(1); // 판매내역 상세 요청 seq값 저장
   const [salesDetail, setSalesDetail] = useState([]); // 판매내역 상세 내용 저장
   const [isModal, setIsModal] = useState(false);
   const ModalHandler = (number) => {
-    setIsModal((prev) => !prev);
-    setHistorySeq(number); // 모달 버튼 누르면 그 옥션의 historyseq를 historySeq에 저장
-  };
-  useEffect(() => {
     const getSalesDetail = async (url) => {
       const response = await instance.get(url);
       return response;
     };
-    const res = getSalesDetail(`/api/history/sales/detail/${historySeq}`);
-    console.log(historySeq);
+    const res = getSalesDetail(`/api/history/sales/detail/${number}`);
     res.then((itemDetail) => {
       setSalesDetail(itemDetail.data); // 상세보기 내용을 salesDetail에 저장
     });
-  }, [historySeq]);
-  console.log(salesDetail.productSeq);
+    setIsModal((prev) => !prev);
+    setSalesDetail([]);
+  };
+
   // 송장번호 입력& PATCH 요청을 위한 getTrackingNo
   const [getTrackingNo, setGetTrackingNo] = useState({
-    productSeq: 1,
+    productSeq: `${sellingItem.productSeq}`,
     parcelCompanyCode: '',
     trackingNo: '',
   });
@@ -77,22 +72,16 @@ function ProfileSalesHistoryPage({ params }) {
     });
   }, []);
   // 송장번호 입력, 택배사 코드 저장하기
-  const { productSeq, parcelCompanyCode, trackingNo } = getTrackingNo;
+  const { parcelCompanyCode, trackingNo } = getTrackingNo;
   const onChange = ({ target: { name, value } }) => {
     setGetTrackingNo({
       ...getTrackingNo,
       [name]: value,
     });
-    setGetTrackingNo({
-      ...getTrackingNo,
-      [productSeq]: salesDetail.productSeq,
-    });
   };
-  console.log(sellingItem);
 
   // 버튼 클릭하면 송장번호를 patch
   const onClick = () => {
-    console.log(salesDetail.productSeq);
     console.log(getTrackingNo);
     const patchTrackingNo = async (url) => {
       const response = await instance.patch(url);
@@ -101,6 +90,7 @@ function ProfileSalesHistoryPage({ params }) {
     const res = patchTrackingNo(`/api/delivery/trackingno`, getTrackingNo);
     res.then(() => {});
   };
+  console.log(salesDetail);
   return (
     <Container>
       <ButtonNav>
@@ -145,10 +135,8 @@ function ProfileSalesHistoryPage({ params }) {
         <ModalMain>
           <p>입금자명 : {salesDetail.remitName}</p>
           <p>입금자 전화번호: {salesDetail.phone}</p>
-          <p>
-            구매자 배송지: {salesDetail.address}
-            <span>{salesDetail.addressDetail}</span>
-          </p>
+          <p>구매자 배송지: {salesDetail.address}</p>
+          <p>상세 배송지: {salesDetail.addressDetail}</p>
           <select onChange={onChange} name="parcelCompanyCode" value={parcelCompanyCode}>
             {companyList.map((companyList) => (
               <option value={companyList.Code} key={companyList.Code}>

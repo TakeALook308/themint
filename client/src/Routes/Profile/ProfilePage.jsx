@@ -10,7 +10,6 @@ import ProfileInterestsPage from '../ProfileInterests/ProfileInterestsPage';
 
 function ProfilePage(props) {
   const params = useParams();
-  console.log(params.userId);
   useEffect(() => {
     const getProfile = async (url) => {
       const response = await instance.get(url);

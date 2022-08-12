@@ -7,6 +7,7 @@ function IsSellingCard({ auction, func }) {
   useEffect(() => {
     setStatusName(auction.status);
   }, []);
+  console.log();
 
   const auctionstr = ['판매중', '입금대기', '입금완료', '판매완료', '유찰', '거래취소'];
   return (
@@ -49,13 +50,15 @@ function IsSellingCard({ auction, func }) {
           </div>
         </Link>
       </div>
-      <Plus
-        type="button"
-        onClick={() => {
-          func(auction.historySeq, auction.productSeq);
-        }}>
-        판매 상세
-      </Plus>
+      {auction.status > 0 && auction.status <= 3 ? (
+        <Plus
+          type="button"
+          onClick={() => {
+            func(auction.historySeq);
+          }}>
+          판매 상세
+        </Plus>
+      ) : null}
     </CardContainer>
   );
 }
