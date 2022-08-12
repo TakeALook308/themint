@@ -11,6 +11,7 @@ import { userApis } from '../../utils/apis/userApis';
 import EmaiInput from './EmaiInput';
 import AddressInput from './AddressInput';
 import { bankList } from '../../utils/constants/bankList';
+import AccountInput from './AccountInput';
 
 function InformationEdit({ userAllInfo, setUserAllInfo }) {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ function InformationEdit({ userAllInfo, setUserAllInfo }) {
         icon={<AiFillDollarCircle aria-label="계좌번호" />}
         // textList={[userAllInfo.backCode, userAllInfo.accountNo]}
         textList={[2, '01032359083']}
-        Component={EmaiInput}
+        Component={AccountInput}
         setUserAllInfo={setUserAllInfo}
         userAllInfo={userAllInfo}
         type={'account'}
@@ -78,7 +79,7 @@ const Information = ({ icon, textList, onClick, Component, setUserAllInfo, userA
       <p>{icon}</p>
       {!editMode ? (
         <NotEditMode>
-          <TextConatiners>
+          <TextConatiners type={type}>
             {textList?.map((text, i) => (
               <p key={i}>{text}</p>
             ))}
@@ -113,6 +114,7 @@ const Container = styled.article`
 
 const TextConatiners = styled.div`
   width: 80%;
+  display: ${(props) => props.type === 'account' && 'flex'};
   > p {
     &:not(:first-child) {
       line-height: 2;

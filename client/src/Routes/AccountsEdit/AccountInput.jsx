@@ -6,6 +6,7 @@ import { MessageWrapper } from '../../style/common';
 import { ActiveInput } from '../../style/style';
 import { fetchData } from '../../utils/apis/api';
 import { userApis } from '../../utils/apis/userApis';
+import { bankList } from '../../utils/constants/bankList';
 import { REGEX, REGISTER_MESSAGE, STANDARD } from '../../utils/constants/constant';
 import debounce from '../../utils/functions/debounce';
 import { ButtonContainer, FormContainer, InputContainer } from './NicknameInput';
@@ -50,7 +51,7 @@ function AccountInput({ text, setEditMode, changeInformation }) {
   };
 
   const registers = {
-    ...register('email', {
+    ...register('account', {
       required: REGISTER_MESSAGE.REQUIRED_EMAIL,
       pattern: {
         value: REGEX.EMAIL,
@@ -63,17 +64,32 @@ function AccountInput({ text, setEditMode, changeInformation }) {
   return (
     <FormContainer onSubmit={handleSubmit(onValid)}>
       <InputContainer>
+        <select {...register('bankCode')}>
+          {bankList.map((bank) => (
+            <option value={bank.bankCode} key={bank.bankCode}>
+              {bank.bankName}
+            </option>
+          ))}
+        </select>
+        <MessageWrapper>
+          <ValidationMessage text={errors?.email?.message} state={'fail'} />
+          {watch().email && !errors?.email && (
+            <ValidationMessage text={REGISTER_MESSAGE.VALIDATED_EMAIL} state={'pass'} />
+          )}
+        </MessageWrapper>
+      </InputContainer>
+      <InputContainer>
         <ActiveInput active={true}>
           <input
-            name="email"
-            id="email"
-            type="email"
+            name="account"
+            id="account"
+            type="text"
             autoComplete="off"
             placeholder=" "
             required
             {...registers}
           />
-          <label htmlFor="email">email</label>
+          <label htmlFor="account">계좌번호</label>
         </ActiveInput>
         <MessageWrapper>
           <ValidationMessage text={errors?.email?.message} state={'fail'} />

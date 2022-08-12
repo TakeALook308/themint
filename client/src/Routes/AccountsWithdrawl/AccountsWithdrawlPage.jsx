@@ -40,12 +40,13 @@ function AccountsWithdrawlPage(props) {
     <Container>
       <DescriptionContainer>
         <H3>더민트(TheMint) 계정 탈퇴 전 꼭 확인해 주세요!</H3>
-        더민트 계정을 탈퇴하면
+        더민트 계정을 탈퇴하면 &nbsp;
         <HighLight>계정 정보 및 서비스 이용기록을 포함한 모든 정보가 삭제</HighLight>
         됩니다. <br />
         탈퇴한 후에는 더 이상 더 민트 계정으로 로그인할 수 없으므로, 더민트 계정을 사용한 사이트
         이용 및 서비스 이용을 할 수 없게 됩니다. <br />
-        더민트 계정을 탈퇴하기 전 ‘프로필’메뉴에서 현재 사용 중인 서비스를 확인해 주세요. 탈퇴된
+        더민트 계정을 탈퇴하기 전 ‘프로필’ 메뉴에서 현재 사용 중인 서비스를 확인해 주세요. 탈퇴된
+        &nbsp;
         <HighLight>
           더민트 계정 정보와 서비스 이용기록 등은 복구할 수 없으니 신중하게 선택
         </HighLight>
@@ -102,7 +103,8 @@ const Container = styled.article`
 
 const H3 = styled.h3`
   font-size: ${(props) => props.theme.fontSizes.h5};
-  line-height: 2;
+  line-height: 1;
+  margin-bottom: 0.5rem;
 `;
 
 const HighLight = styled.span`
@@ -114,6 +116,7 @@ const DescriptionContainer = styled.div`
   color: ${(props) => props.theme.colors.mainBlack};
   padding: 1rem 0.5rem;
   line-height: 1.5;
+  border-radius: 2px;
 `;
 
 const ButtonContainer = styled.div`
