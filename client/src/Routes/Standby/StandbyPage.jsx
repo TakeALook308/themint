@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 import { myInformationState } from '../../atoms';
@@ -8,12 +8,16 @@ import UserVideoComponent from '../../components/webRTC/UserVideoComponent';
 import { BsFillCameraVideoFill, BsFillCameraVideoOffFill, BsFillMicFill } from 'react-icons/bs';
 import { IoExit } from 'react-icons/io5';
 import { useNavigate, useParams } from 'react-router-dom';
+import { getData } from '../../utils/apis/api';
+import { auctionApis } from '../../utils/apis/auctionApis';
 
 const OPENVIDU_SERVER_URL = 'https://i7a308.p.ssafy.io:8443';
 const OPENVIDU_SERVER_SECRET = 'themint';
 
 function StandbyPage() {
-  const memberId = 'mint308';
+  // const memberId = 'mint308';
+
+  let [memberSeq, setMemberSeq] = useState('');
   const navigate = useNavigate();
   const { auctionId } = useParams();
   const userInfo = useRecoilValue(myInformationState);
@@ -21,7 +25,14 @@ function StandbyPage() {
   const [video, setVideo] = useState(0); // 1 ON, 0 OFF
   const [publisher, setPublisher] = useState('');
 
+  useEffect(() => {
+    getData(auctionApis.AUCTION_DETAIL_API(auctionId)).then((res) =>
+      setMemberSeq(res.data.memberSeq),
+    );
+  }, []);
+  console.log('99999999999 멤버시퀀스000000000000', auctionId);
   const OV = new OpenVidu();
+  OV.enableProdMode();
   const testSession = OV.initSession();
 
   const getToken = async (curSessionId) => {
@@ -30,6 +41,7 @@ function StandbyPage() {
   };
 
   const standbyJoin = (standbySession, nickName) => {
+    // let standbySessionId = `${nickName}tests`;
     let standbySessionId = `${nickName}tests`;
     console.log('스탠바이 세션 입장 ', standbySessionId);
     getToken(standbySessionId).then((token) => {
@@ -106,7 +118,7 @@ function StandbyPage() {
   const createToken = (sessionId) => {
     return new Promise((resolve, reject) => {
       var data = {};
-      if (userInfo.memberId === memberId) data.role = 'MODERATOR';
+      if (userInfo.memberSeq === memberSeq) data.role = 'MODERATOR';
       else data.role = 'SUBSCRIBER';
       axios
         .post(OPENVIDU_SERVER_URL + '/openvidu/api/sessions/' + sessionId + '/connection', data, {
@@ -136,8 +148,10 @@ function StandbyPage() {
   });
 
   useEffect(() => {
-    standbyJoin(testSession, userInfo.nickname);
-  }, []);
+    if (memberSeq) {
+      standbyJoin(testSession, userInfo.nickname);
+    }
+  }, [memberSeq]);
 
   useEffect(() => {
     if (publisher?.stream?.videoActive) {
