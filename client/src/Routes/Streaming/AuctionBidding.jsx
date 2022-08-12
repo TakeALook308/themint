@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
-function AuctionBidding({ product, sendPrice, price, lastPrice }) {
-  const my = '민트강';
+function AuctionBidding({ product, sendPrice, price, lastPrice, userInfo }) {
+  const nickname = userInfo.nickname;
   const [seconds, setSeconds] = useState(30);
-  // let productPrice = lastPrice.price ? lastPrice.price
-  // const [productPrice, setProductPrice] = useState(product.startPrice);
   const [myPrice, setMyPrice] = useState(Number(lastPrice) + 1000);
-  // const [priceList, setPriceList] = useState([]);
+
   useEffect(() => {
     const countdown = setInterval(() => {
       if (parseInt(seconds) > 0) {

@@ -6,7 +6,7 @@ import ActiveInputBox from '../../components/common/ActiveInputBox';
 import ProductTable from './ProductTable';
 import Modal from '../../components/common/Modal';
 import { useDropzone } from 'react-dropzone';
-import { auctionApis } from '../../utils/apis/auctionApi';
+import { auctionApis } from '../../utils/apis/auctionApis';
 import { postData } from '../../utils/apis/api';
 import { useNavigate } from 'react-router-dom';
 
