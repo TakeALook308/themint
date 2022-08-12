@@ -26,9 +26,11 @@ function IsSellingCard({ auction, func }) {
             <AuctionInfoContainer>
               <div>
                 <h4>{auction.productName}</h4>
-                {4 > statusName > 0 && <p>{auction.finalPrice}</p>}
-                {statusName >= 4 && <p>{auction.startPrice}</p>}
-                {statusName === 0 && <p>{auction.startPrice}</p>}
+                {auction.status === 1 && <p>{auction.finalPrice}</p>}
+                {auction.status === 2 && <p>{auction.finalPrice}</p>}
+                {auction.status === 3 && <p>{auction.finalPrice}</p>}
+                {auction.status === 0 && <p>{auction.startPrice}</p>}
+                {auction.status >= 4 && <p>{auction.startPrice}</p>}
                 <AcutionTime>{auction.startTime}</AcutionTime>
                 <AuctionStatus auctionstrkey={auction.status}>
                   {auctionstr[auction.status]}

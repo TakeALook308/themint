@@ -53,7 +53,7 @@ function ProfileSalesHistoryPage({ params }) {
 
   // 송장번호 입력& PATCH 요청을 위한 getTrackingNo
   const [getTrackingNo, setGetTrackingNo] = useState({
-    productSeq: `${sellingItem.productSeq}`,
+    productSeq: salesDetail.productSeq,
     parcelCompanyCode: '',
     trackingNo: '',
   });
