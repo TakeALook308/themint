@@ -35,6 +35,7 @@ function CateCardList({ getCategorySeq, categoryName, key }) {
   const categoriesList = categories.map((categories) => (
     <CateCard categoryName={categories.name} categoryKey={categories.seq} key={categories.seq} />
   ));
+
   return (
     <Container>
       <ListHeader>
