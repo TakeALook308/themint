@@ -6,7 +6,7 @@ import MintButton from '../../components/ButtonList/MintButton';
 import { MessageWrapper } from '../../style/common';
 import { ActiveInput } from '../../style/style';
 import { userApis } from '../../utils/apis/userApis';
-import { getData, postData } from '../../utils/apis/api';
+import { fetchData } from '../../utils/apis/api';
 import { REGEX, REGISTER_MESSAGE, STANDARD } from '../../utils/constants/constant';
 import debounce from '../../utils/functions/debounce';
 import StepSignal from './StepSignal';
@@ -27,7 +27,7 @@ function Register2({ setUserInfo, setStep }) {
   } = useForm({
     defaultValues: {
       memberName: '',
-      nickname: '',
+      email: '',
       phone: '',
     },
     mode: 'onChange',
@@ -46,7 +46,7 @@ function Register2({ setUserInfo, setStep }) {
   const checkMemberInfo = async (value, url, setState, key, errorMessage) => {
     if (!value || errors[key]) return;
     try {
-      const response = await getData(url);
+      const response = await fetchData.get(url);
       if (response.status === 200) {
         setState(false);
       }
@@ -68,7 +68,7 @@ function Register2({ setUserInfo, setStep }) {
   const certificatePhoneNumber = async (event) => {
     event.preventDefault();
     if (errors.phone) return;
-    const response = await postData(userApis.PHONE_CERTIFICATE_API, {
+    const response = await fetchData.post(userApis.PHONE_CERTIFICATE_API, {
       phone: watch().phone,
     });
     setCertificatedNumber(String(response.data));

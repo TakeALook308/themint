@@ -46,6 +46,7 @@ instance.interceptors.response.use(
   },
   async (err) => {
     const originalConfig = err.config;
+    console.log('originalConfig', originalConfig);
     if (err.response) {
       if (err.response.status === 401 && !originalConfig._retry) {
         originalConfig._retry = true;
@@ -63,13 +64,23 @@ instance.interceptors.response.use(
         }
       }
       if (err.response.status === 403 && err.esponse.data) {
-        return Promise.reject(err.respojse.data);
+        return Promise.reject(err.response.data);
       }
     }
     return Promise.reject(err);
   },
 );
 
-export const getData = async (url) => await instance.get(url);
-export const postData = async (url, body) => await instance.post(url, body);
-export const patchData = async (url, body) => await instance.patch(url, body);
+export const fetchData = {
+  get: async (url, option) => await instance.get(url, option),
+  post: async (url, body, option) => await instance.post(url, body, option),
+  put: async (url, body, option) => await instance.put(url, body, option),
+  patch: async (url, body, option) => await instance.patch(url, body, option),
+  delete: async (url, body, option) => await instance.delete(url, body, option),
+};
+
+export const getData = async (url, option) => await instance.get(url, option);
+export const postData = async (url, body, option) => await instance.post(url, body, option);
+export const patchData = async (url, body, option) => await instance.patch(url, body, option);
+export const putData = async (url, body, option) => await instance.put(url, body, option);
+export const deleteData = async (url, body, option) => await instance.delete(url, body, option);

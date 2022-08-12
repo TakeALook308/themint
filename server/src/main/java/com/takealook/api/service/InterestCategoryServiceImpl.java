@@ -1,5 +1,7 @@
 package com.takealook.api.service;
 
+import com.takealook.common.exception.code.ErrorCode;
+import com.takealook.common.exception.interest.InterestDuplicateException;
 import com.takealook.db.entity.InterestCategory;
 import com.takealook.db.repository.InterestCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,17 +16,16 @@ public class InterestCategoryServiceImpl implements InterestCategoryService{
     InterestCategoryRepository interestCategoryRepository;
 
     @Override
-    public InterestCategory createInterestCategory(Long memberSeq, Long categorySeq) {
+    public void createInterestCategory(Long memberSeq, Long categorySeq) {
         InterestCategory check = interestCategoryRepository.findByMemberSeqAndCategorySeq(memberSeq, categorySeq);
         if(check != null){
-            return check;
+            throw new InterestDuplicateException("interest category duplicated", ErrorCode.INTEREST_DUPLICATION);
         }
         InterestCategory interestCategory = InterestCategory.builder()
                 .memberSeq(memberSeq)
                 .categorySeq(categorySeq)
                 .build();
         interestCategoryRepository.save(interestCategory);
-        return interestCategory;
     }
 
     @Override
@@ -38,8 +39,7 @@ public class InterestCategoryServiceImpl implements InterestCategoryService{
     }
 
     @Override
-    public int deleteCategory(Long memberSeq, Long categorySeq) {
-        int result = interestCategoryRepository.deleteByMemberSeqAndCategorySeq(memberSeq, categorySeq);
-        return result;
+    public void deleteCategory(Long memberSeq, Long categorySeq) {
+        interestCategoryRepository.deleteByMemberSeqAndCategorySeq(memberSeq, categorySeq);
     }
 }

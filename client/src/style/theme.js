@@ -2,7 +2,7 @@ const colors = {
   mainMint: '#2CDCB2',
   subMint: '#99E8E8',
   mainPurple: '#893CD6',
-  white: '#FFFFFF',
+  white: '#F5F5F5',
   mainBlack: '#0D0C0F',
   subBlack: '#191919',
   pointRed: '#F58181',
@@ -13,6 +13,7 @@ const colors = {
   disabledGray: '#414040',
   textGray: '#C0C0C0',
   gradientMintToPurple: `linear-gradient(103.87deg, #2CDCB2 4.21%, #893CD6 100%)`,
+  gradientMainMintToSubMint: `linear-gradient(103.87deg, #2CDCB2 4.21%, #99E8E8 100%)`,
 };
 
 const pixelToRem = (size) => `${size / 16}rem`;
@@ -25,6 +26,7 @@ const fontSizes = {
   h5: pixelToRem(20),
   p: pixelToRem(16),
   small: pixelToRem(10),
+  page: pixelToRem(30),
 };
 
 export const theme = {

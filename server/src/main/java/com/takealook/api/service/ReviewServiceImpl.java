@@ -17,7 +17,7 @@ public class ReviewServiceImpl implements ReviewService{
     ReviewRepository reviewRepository;
 
     @Override
-    public int registerReview(Long writerSeq, ReviewRegisterPostReq reviewRegisterPostReq) {
+    public void registerReview(Long writerSeq, ReviewRegisterPostReq reviewRegisterPostReq) {
         reviewRepository.save(Review.builder()
                 .receiverSeq(reviewRegisterPostReq.getReceiverSeq())
                 .writerSeq(writerSeq)
@@ -25,7 +25,6 @@ public class ReviewServiceImpl implements ReviewService{
                 .score(reviewRegisterPostReq.getScore())
                 .date(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .build());
-        return 1;
     }
 
     @Override

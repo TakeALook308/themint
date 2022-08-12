@@ -14,7 +14,7 @@ function InterestingList() {
       <hr></hr>
       <ListHeader>
         {myInformation?.nickname ? (
-          <h3>{myInformation.nickname}님의 관심 카테고리 경매</h3>
+          <h2>{myInformation.nickname}님의 관심 카테고리 경매</h2>
         ) : (
           <h3>추천 경매 목록</h3>
         )}
