@@ -44,13 +44,31 @@ public class HistoryController {
     @Autowired
     ProductDeliveryService productDeliveryService;
 
-    @GetMapping("/sales/{memberSeq}")
-    public ResponseEntity<HistoryListRes> getSalesHistory(@PathVariable("memberSeq") Long memberSeq, @RequestParam("page") int page, @RequestParam("size") int size) {
+    @GetMapping("/sales/inprogress/{memberSeq}")
+    public ResponseEntity<HistoryListRes> getSalesHistoryInprogress(@PathVariable("memberSeq") Long memberSeq, @RequestParam("page") int page, @RequestParam("size") int size) {
         List<HistoryListEntityRes> historyListEntityResList = new ArrayList<>();
         Boolean hasMore = false;
         Pageable pageable = PageRequest.of(page, size);
-        List<History> historyList = historyService.getHistoryListByMemberSeq(memberSeq, pageable, 0); // 0: sales, 1: purchase
-        List<History> hasMoreList = historyService.getHistoryListByMemberSeq(memberSeq, PageRequest.of(page + 1, size), 0);
+        List<History> historyList = historyService.getHistoryListByMemberSeq(memberSeq, pageable, 0, 0); // 0: sales, 1: purchase
+        List<History> hasMoreList = historyService.getHistoryListByMemberSeq(memberSeq, PageRequest.of(page + 1, size), 0, 0);
+        if(hasMoreList.size() != 0) hasMore = true;
+        for (History history : historyList) {
+            Product product = productService.getProductBySeq(history.getProductSeq());
+            Auction auction = auctionService.getAuctionBySeq(product.getAuctionSeq());
+            Member member = memberService.getMemberByMemberSeq(history.getMemberSeq());
+            List<AuctionImage> auctionImageList = auctionImageService.getAuctionImageListByAuctionSeq(auction.getSeq());
+            historyListEntityResList.add(HistoryListEntityRes.of(history, product, auction, member, auctionImageList.get(0)));
+        }
+        return ResponseEntity.status(200).body(HistoryListRes.of(hasMore, historyListEntityResList));
+    }
+
+    @GetMapping("/sales/complete/{memberSeq}")
+    public ResponseEntity<HistoryListRes> getSalesHistoryComplete(@PathVariable("memberSeq") Long memberSeq, @RequestParam("page") int page, @RequestParam("size") int size) {
+        List<HistoryListEntityRes> historyListEntityResList = new ArrayList<>();
+        Boolean hasMore = false;
+        Pageable pageable = PageRequest.of(page, size);
+        List<History> historyList = historyService.getHistoryListByMemberSeq(memberSeq, pageable, 0, 1); // 0: sales, 1: purchase
+        List<History> hasMoreList = historyService.getHistoryListByMemberSeq(memberSeq, PageRequest.of(page + 1, size), 0, 1);
         if(hasMoreList.size() != 0) hasMore = true;
         for (History history : historyList) {
             Product product = productService.getProductBySeq(history.getProductSeq());
@@ -73,15 +91,35 @@ public class HistoryController {
         return ResponseEntity.status(200).body(SalesDetailRes.of(history, product, member, productDelivery));
     }
 
-    @GetMapping("/purchase")
-    public ResponseEntity<HistoryListRes> getPurchaseHistory(@RequestParam("page") int page, @RequestParam("size") int size, @ApiIgnore Authentication authentication) {
+    @GetMapping("/purchase/inprogress")
+    public ResponseEntity<HistoryListRes> getPurchaseHistoryInprogress(@RequestParam("page") int page, @RequestParam("size") int size, @ApiIgnore Authentication authentication) {
         List<HistoryListEntityRes> historyListEntityResList = new ArrayList<>();
         Boolean hasMore = false;
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
         Pageable pageable = PageRequest.of(page, size);
-        List<History> historyList = historyService.getHistoryListByMemberSeq(memberSeq, pageable, 1); // 0: sales, 1: purchase
-        List<History> hasMoreList = historyService.getHistoryListByMemberSeq(memberSeq, PageRequest.of(page + 1, size), 1);
+        List<History> historyList = historyService.getHistoryListByMemberSeq(memberSeq, pageable, 1, 0); // 0: sales, 1: purchase
+        List<History> hasMoreList = historyService.getHistoryListByMemberSeq(memberSeq, PageRequest.of(page + 1, size), 1, 0);
+        if(hasMoreList.size() != 0) hasMore = true;
+        for (History history : historyList) {
+            Product product = productService.getProductBySeq(history.getProductSeq());
+            Auction auction = auctionService.getAuctionBySeq(product.getAuctionSeq());
+            Member member = memberService.getMemberByMemberSeq(history.getMemberSeq());
+            List<AuctionImage> auctionImageList = auctionImageService.getAuctionImageListByAuctionSeq(auction.getSeq());
+            historyListEntityResList.add(HistoryListEntityRes.of(history, product, auction, member, auctionImageList.get(0)));
+        }
+        return ResponseEntity.status(200).body(HistoryListRes.of(hasMore, historyListEntityResList));
+    }
+
+    @GetMapping("/purchase/complete")
+    public ResponseEntity<HistoryListRes> getPurchaseHistoryComplete(@RequestParam("page") int page, @RequestParam("size") int size, @ApiIgnore Authentication authentication) {
+        List<HistoryListEntityRes> historyListEntityResList = new ArrayList<>();
+        Boolean hasMore = false;
+        MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
+        Long memberSeq = memberDetails.getMemberSeq();
+        Pageable pageable = PageRequest.of(page, size);
+        List<History> historyList = historyService.getHistoryListByMemberSeq(memberSeq, pageable, 1, 1); // 0: sales, 1: purchase
+        List<History> hasMoreList = historyService.getHistoryListByMemberSeq(memberSeq, PageRequest.of(page + 1, size), 1, 1);
         if(hasMoreList.size() != 0) hasMore = true;
         for (History history : historyList) {
             Product product = productService.getProductBySeq(history.getProductSeq());

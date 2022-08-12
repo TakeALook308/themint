@@ -22,12 +22,20 @@ public class HistoryServiceImpl implements HistoryService {
     HistoryRepository historyRepository;
 
     @Override
-    public List<History> getHistoryListByMemberSeq(Long memberSeq, Pageable pageable, int salesPurchase) {
+    public List<History> getHistoryListByMemberSeq(Long memberSeq, Pageable pageable, int salesPurchase, int isSold) {
         List<History> historyList = null;
         if (salesPurchase == 0) { // 판매 내역
-            historyList = historyRepository.findSalesByMemberSeqOrderByStartTime(memberSeq, pageable);
+            if(isSold == 0) { // product status : 0, 1, 2
+                historyList = historyRepository.findSalesByMemberSeqAndStatusSmallerOrderByStartTime(memberSeq, 2, pageable);
+            } else{
+                historyList = historyRepository.findSalesByMemberSeqAndStatusBiggerOrderByStartTime(memberSeq, 3, pageable);
+            }
         } else { // 구매 내역
-            historyList = historyRepository.findPurchaseByMemberSeqOrderBySeq(memberSeq, pageable);
+            if(isSold == 0){ // product status : 0, 1, 2
+                historyList = historyRepository.findPurchaseByMemberSeqAndStatusSmallerOrderBySeq(memberSeq, 2, pageable);
+            } else {
+                historyList = historyRepository.findPurchaseByMemberSeqAndStatusBiggerOrderBySeq(memberSeq, 3, pageable);
+            }
         }
         return historyList;
     }

@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface HistoryService {
-    List<History> getHistoryListByMemberSeq(Long memberSeq, Pageable pageable, int salesPurchase);
+    List<History> getHistoryListByMemberSeq(Long memberSeq, Pageable pageable, int salesPurchase, int isSold);
     History getHistoryBySeq(Long historySeq);
     History getPurchaseByProductSeq(Long productSeq);
     History getSalesByProductSeq(Long productSeq);
