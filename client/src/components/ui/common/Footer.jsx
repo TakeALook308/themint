@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { AiOutlineYoutube, AiOutlineInstagram } from 'react-icons/ai';
 import { BsChatLeftDots } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
-
 function Footer(props) {
   if (
     window.location.pathname.startsWith('/streamings') ||

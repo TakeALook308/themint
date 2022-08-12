@@ -9,7 +9,9 @@ const Dropdown = ({ getSortKey }) => {
     { value: 'interest', name: '인기순' },
     { value: 'score', name: '판매자신뢰도순' },
   ];
+
   const [sortName, setSortName] = useState('경매임박순');
+
   const [isActive, setIsActive] = useState(false);
   const [value, setValue] = useState('startTime');
   const onActiveToggle = useCallback(() => {
@@ -21,6 +23,7 @@ const Dropdown = ({ getSortKey }) => {
     console.log(e.target.innerText);
     setValue(e.target);
     setSortName(e.target.innerText);
+
     setIsActive((prev) => !prev);
     getSortKey(e.target.id);
   };
@@ -63,7 +66,6 @@ const Wrapper = styled.div`
 
 export const DropdownContainer = styled.main`
   width: 12%;
-
   &:hover {
     cursor: pointer;
   }
