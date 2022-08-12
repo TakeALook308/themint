@@ -25,6 +25,16 @@ function CategoryPage({ categoryName }) {
   const getSortKey = (value) => {
     setSortKey(value);
   };
+
+  const getUrl = (category, size, sort) =>
+    auctionListApis.CATEGORY_AUCTION_LIST(category, size, sort);
+
+  // console.log(categorySeq, sortKey);
+
+  // useEffect(() => {
+  //   setUrl(() => getUrl(categorySeq, 9, sortKey));
+  // }, [sortKey, categorySeq]);
+
   return (
     <Container>
       <CateListContainer>
