@@ -109,7 +109,7 @@ const Container = styled.article`
   padding: 2rem;
   display: flex;
   flex-direction: column;
-  min-height: 72px;
+  margin-bottom: 2rem;
 `;
 
 const TextConatiners = styled.div`
