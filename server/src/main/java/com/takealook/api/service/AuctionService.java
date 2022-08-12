@@ -21,6 +21,6 @@ public interface AuctionService {
     List<Auction> getAuctionListByCategorySeq(Long categorySeq, Pageable pageable);
     List<Auction> getAuctionListByStartTimeAndStatus(int status);
     void updateAuctionStatus(Long auctionSeq, int status);
-    void updateAuction(Long memberSeq, AuctionUpdatePatchReq auctionUpdatePostReq);
+    Auction updateAuction(Long memberSeq, AuctionUpdatePatchReq auctionUpdatePostReq);
     void deleteAuction(Long auctionSeq);
 }
