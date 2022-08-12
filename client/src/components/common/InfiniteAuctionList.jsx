@@ -5,7 +5,14 @@ import { fetchData } from '../../utils/apis/api';
 import useObserver from '../../utils/hooks/useObserver';
 import Modal from './Modal';
 
-function InfiniteAuctionList({ getUrl, queryKey, CardComponent, SkeltonCardComponent, text }) {
+function InfiniteAuctionList({
+  getUrl,
+  queryKey,
+  CardComponent,
+  SkeltonCardComponent,
+  text,
+  func,
+}) {
   const [hasError, setHasError] = useState(false);
   const [isMore, SetIsMore] = useState(true);
   const bottom = useRef(null);
@@ -67,7 +74,7 @@ function InfiniteAuctionList({ getUrl, queryKey, CardComponent, SkeltonCardCompo
         data.pages.map((group, index) => (
           <GridContainer key={index}>
             {group?.data?.resultList?.map((auction, idx) => (
-              <CardComponent auction={auction} key={idx} ModalHandler={Modal} />
+              <CardComponent auction={auction} key={idx} func={func} />
             ))}
           </GridContainer>
         ))}
