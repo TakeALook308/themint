@@ -1,6 +1,5 @@
 package com.takealook.common.util;
 
-import ch.qos.logback.core.util.FixedDelay;
 import com.takealook.api.service.AuctionService;
 import com.takealook.api.service.HistoryService;
 import com.takealook.api.service.MemberService;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -40,6 +38,18 @@ public class Scheduler {
                 productService.updateStatus(product.getSeq(), 4); // 물품들은 유찰 상태로 변경
             }
             memberService.updateMemberScore(auction.getMemberSeq(), -3);
+        }
+    }
+
+    @Scheduled(fixedDelay = 30000)
+    public void checkNotRemittedPurchase(){
+        List<History> historyList = historyService.getHistoryByDateAndSalesPurchase(); // 구매한지 일주일 지난 목록 가져옴
+        for (History history : historyList){
+            Product product = productService.getProductBySeq(history.getProductSeq());
+            if(product.getStatus() == 1) { // 입금대기 중이면
+                productService.updateStatus(product.getSeq(), 5);
+                memberService.updateMemberScore(history.getMemberSeq(), -5);
+            }
         }
     }
 }
