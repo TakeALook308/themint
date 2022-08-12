@@ -1,29 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import IsPurchasingCardList from '../../components/ui/profile/Purchase/IsPurchaingCardList';
+import IsPurchasingCard from './IsPurchasingCard';
+import SkeletonAuctionCard from '../../components/CardList/SkeletonAuctionCard';
 import { myInformationState } from '../../atoms';
 import { useRecoilValue } from 'recoil';
 import { instance } from '../../utils/apis/api';
+import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
+import Modal from '../../components/common/Modal';
 
 function ProfilePurchaseHistoryPage({ params }) {
-  const [buyItems, setBuyItems] = useState([]);
-  const [buyStatus, setBuyStatus] = useState(0);
   // 사용자랑 프로필 일치여부 확인
   const myInformation = useRecoilValue(myInformationState);
   const strMemberSeq = `${myInformation.memberSeq}`;
   // 구매내역 API 요청
-  useEffect(() => {
-    const getSalesAuction = async (url) => {
-      const response = await instance.get(url);
-      return response;
-    };
-    const res = getSalesAuction(`/api/history/purchase/${params}?page${1}=&size=${9}`);
-    res.then((items) => {
-      console.log(items.data.resultList);
-      setBuyItems(items.data.resultList);
-      setBuyStatus(items.data.resultList.status);
-    });
-  }, [params]);
+  const getPurchaseUrl = (paramsnum, size) => {
+    return (page) => `/api/history/purchase/inprogress?${paramsnum}?page=${page}&size=${size}`;
+  };
 
   // 버튼클릭으로 구매중 구매완료 구분
   const [active, setActive] = useState('1');
@@ -34,7 +26,23 @@ function ProfilePurchaseHistoryPage({ params }) {
   const onSold = async () => {
     setActive('2');
   };
-  console.log(active);
+  // Modal 연결
+  const [purchaseDetail, setPurchaseDetail] = useState([]); // 판매내역 상세 내용 저장
+  const [isModal, setIsModal] = useState(false);
+
+  const ModalHandler = (auction) => {
+    const getPurchaseDetail = async (url) => {
+      const response = await instance.get(url);
+      return response;
+    };
+    const res = getPurchaseDetail(`/api/history/sales/detail/${auction.historySeq}`);
+    res.then((itemDetail) => {
+      setPurchaseDetail(itemDetail.data); // 상세보기 내용을 salesDetail에 저장
+    });
+    setIsModal((prev) => !prev);
+    setPurchaseDetail([]);
+  };
+
   return (
     <Container>
       <ButtonNav>
@@ -55,18 +63,43 @@ function ProfilePurchaseHistoryPage({ params }) {
       </ButtonNav>
       {params === strMemberSeq && (
         <IsUserSame>
-          {numActive === 1 && (
-            <IsBuyingContainer>
-              {buyStatus < 3 && <IsPurchasingCardList params={params} buyItems={buyItems} />}
-            </IsBuyingContainer>
-          )}
-          {numActive === 2 && (
-            <IsBuyingContainer>
-              {buyStatus >= 3 && <IsPurchasingCardList params={params} buyItems={buyItems} />}
-            </IsBuyingContainer>
-          )}
+          <InfiniteAuctionList
+            getUrl={getPurchaseUrl(params, 9)}
+            queryKey={['imminentAuctionList']}
+            CardComponent={IsPurchasingCard}
+            SkeltonCardComponent={SkeletonAuctionCard}
+            text={'실시간 임박 경매가 없습니다.'}
+            func={ModalHandler}
+            numActive={numActive}
+          />
         </IsUserSame>
       )}
+      <Modal open={isModal} close={ModalHandler} title="구매 내역 관리">
+        <ModalMain>
+          <p>입금 완료 후, 배송지를 입력해주세요!!!</p>
+          <p>
+            판매자 계좌: 은행-{purchaseDetail.bankCode} 계좌번호-{purchaseDetail.accountNo}
+            계좌소유주-{purchaseDetail.name}
+          </p>
+          <button>내 정보 불러오기</button>
+          <p>입금자명:</p>
+          {/* <input placeholder="입금자 명을 입력해 주세요" name="remitName" value={remitName}></input> */}
+          <p>배송정보 입력:</p>
+          <input
+            placeholder="상세 주소를 입력해 주세요"
+            name="addressDetail"
+            // value={paddressDetail}
+          ></input>
+          <button>배송정보 저장</button>
+          {purchaseDetail.status < 4 && (
+            <ModalMain>
+              <p>배송정보</p>
+              <p>배송조회</p>
+              <p>리뷰작성</p>
+            </ModalMain>
+          )}
+        </ModalMain>
+      </Modal>
     </Container>
   );
 }
@@ -115,10 +148,15 @@ const StyledBtn = styled.div`
   }
 `;
 
-const IsBuyingContainer = styled.div`
+const IsUserSame = styled.div`
   width: 100%;
 `;
 
-const IsUserSame = styled.div`
+const ModalMain = styled.main`
   width: 100%;
+  height: 300px;
+  border-radius: 10px;
+  > p {
+    margin-bottom: 15px;
+  }
 `;

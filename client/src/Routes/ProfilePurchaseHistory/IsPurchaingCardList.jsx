@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useForm } from 'react';
 import axios from 'axios';
-import { instance } from '../../../../utils/apis/api';
+import { instance } from '../../utils/apis/api';
 import styled from 'styled-components';
 import IsPurchasingCard from './IsPurchasingCard';
-import Modal from '../../../common/Modal';
+import Modal from '../../components/common/Modal';
 // 주소등록
-import { ActiveInput } from '../../../../style/style';
-import { InputContainer } from '../../../../Routes/Register/Register2';
-import PopupPostCode from '../../../../Routes/Register/PopupPostCode';
-import { REGISTER_MESSAGE } from '../../../../utils/constants/constant';
-import MintButton from '../../../ButtonList/MintButton';
-import PopupDom from '../../../../Routes/Register/PopupDom';
-import { MessageWrapper } from '../../../../style/common';
-import ValidationMessage from '../../../common/ValidationMessage';
+import { ActiveInput } from '../../style/style';
+import { InputContainer } from '../Register/Register2';
+import PopupPostCode from '../Register/PopupPostCode';
+import { REGISTER_MESSAGE } from '../../utils/constants/constant';
+import MintButton from '../../components/ButtonList/MintButton';
+import PopupDom from '../Register/PopupDom';
+import { MessageWrapper } from '../../style/common';
+import ValidationMessage from '../../components/common/ValidationMessage';
 
 function IsPurchasingCardList({ buyItems }) {
   // API 확인후 삭제

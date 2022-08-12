@@ -11,6 +11,7 @@ function InfiniteAuctionList({
   SkeltonCardComponent,
   text,
   func,
+  active,
 }) {
   const [hasError, setHasError] = useState(false);
   const [isMore, SetIsMore] = useState(true);
@@ -57,7 +58,6 @@ function InfiniteAuctionList({
       data?.pageParams?.length > 1 ? Boolean(data?.pageParams[data?.pageParams?.length - 1]) : true,
     hasError,
   });
-
   return (
     <div>
       {data?.pages[0]?.data?.resultList.length < 1 && <p>{text}</p>}
@@ -96,3 +96,5 @@ const GridContainer = styled.div`
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 1rem;
 `;
+
+const ActiveContainer = styled.div``;

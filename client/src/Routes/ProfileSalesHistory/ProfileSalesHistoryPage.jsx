@@ -7,53 +7,49 @@ import IsSellingCard from './IsSellingCard';
 import axios from 'axios';
 import Modal from '../../components/common/Modal';
 
+// 판매중. 판매완료 구분 미해결
 function ProfileSalesHistoryPage({ params }) {
-  const [sellingItem, setSellingItem] = useState([]);
-  const [sellingStatus, setSellingStatus] = useState(0);
-  //판매내역 API 요청
-  useEffect(() => {
-    const getSales = async (url) => {
-      const response = await instance.get(url);
-      return response;
-    };
-    const res = getSales(`/api/history/sales/${params}?page=${0}&size=${100}`);
-    res.then((items) => {
-      setSellingItem(items.data.resultList);
-      setSellingStatus(items.data.resultList.status);
-    });
-  }, []);
-  const getSalesUrl = (paramsnum, size) => {
-    return (page) => `/api/history/sales/${paramsnum}?page=${page}&size=${size}`;
+  // 판매내역 전체 요청 API
+
+  const getUrl = (paramsnum, size, active) => {
+    console.log(active);
+    return (page) => `/api/history/sales/inprogress/${paramsnum}?page=${page}&size=${size}`;
   };
+  const getUrlCompleted = (paramsnum, size, active) => {
+    console.log(active);
+    return (page) => `/api/history/sales/complete/${paramsnum}?page=${page}&size=${size}`;
+  };
+
   // 버튼 클릭으로 판매중 판매완료 구분
-  const [active, setActive] = useState('1');
-  const numActive = active * 1;
+  const [active, setActive] = useState('inprogress');
   const onSelling = () => {
-    setActive('1');
+    setActive('inprogress');
   };
-  const onSold = async () => {
-    setActive('2');
+  const onSold = () => {
+    setActive('completed');
   };
 
   // Modal 연결
   const [salesDetail, setSalesDetail] = useState([]); // 판매내역 상세 내용 저장
   const [isModal, setIsModal] = useState(false);
-  const ModalHandler = (number) => {
+
+  const ModalHandler = (auction) => {
     const getSalesDetail = async (url) => {
       const response = await instance.get(url);
       return response;
     };
-    const res = getSalesDetail(`/api/history/sales/detail/${number}`);
+    const res = getSalesDetail(`/api/history/sales/detail/${auction.historySeq}`);
     res.then((itemDetail) => {
       setSalesDetail(itemDetail.data); // 상세보기 내용을 salesDetail에 저장
     });
     setIsModal((prev) => !prev);
     setSalesDetail([]);
+    onChange({ target: { name: 'productSeq', value: auction.productSeq } });
   };
 
   // 송장번호 입력& PATCH 요청을 위한 getTrackingNo
   const [getTrackingNo, setGetTrackingNo] = useState({
-    productSeq: salesDetail.productSeq,
+    productSeq: 1,
     parcelCompanyCode: '',
     trackingNo: '',
   });
@@ -82,50 +78,50 @@ function ProfileSalesHistoryPage({ params }) {
 
   // 버튼 클릭하면 송장번호를 patch
   const onClick = () => {
-    console.log(getTrackingNo);
-    const patchTrackingNo = async (url) => {
-      const response = await instance.patch(url);
+    const patchTrackingNo = async (url, data) => {
+      const response = await instance.patch(url, data);
       return response;
     };
+    console.log(getTrackingNo);
     const res = patchTrackingNo(`/api/delivery/trackingno`, getTrackingNo);
     res.then(() => {});
+    console.log(getTrackingNo);
   };
-  console.log(salesDetail);
   return (
     <Container>
       <ButtonNav>
         <StyledBtn
           key={1}
-          className={active === '1' ? 'active' : undefined}
+          className={active === 'inprogress' ? 'active' : undefined}
           id={'1'}
           onClick={onSelling}>
           판매중
         </StyledBtn>
         <StyledBtn
           key={2}
-          className={active === '2' ? 'active' : undefined}
+          className={active === 'completed' ? 'active' : undefined}
           id={'2'}
           onClick={onSold}>
           판매완료
         </StyledBtn>
       </ButtonNav>
-      {/* {numActive === 1 && (
-        <IsSellingContainer>
-          {sellingStatus < 3 && <IsSellingCardList sellingItem={sellingItem} />}
-        </IsSellingContainer>
-      )}
-      {numActive === 2 && (
-        <IsSellingContainer>
-          {sellingStatus >= 3 && <IsSellingCardList sellingItem={sellingItem} />}
-        </IsSellingContainer>
-      )} */}
       <InfiniteAuctionList
-        getUrl={getSalesUrl(params, 9)}
+        getUrl={getUrl(params, 9)}
         queryKey={['imminentAuctionList']}
         CardComponent={IsSellingCard}
         SkeltonCardComponent={SkeletonAuctionCard}
         text={'실시간 임박 경매가 없습니다.'}
         func={ModalHandler}
+        active={active}
+      />
+      <InfiniteAuctionList
+        getUrl={getUrlCompleted(params, 9)}
+        queryKey={['imminentAuctionList']}
+        CardComponent={IsSellingCard}
+        SkeltonCardComponent={SkeletonAuctionCard}
+        text={'실시간 임박 경매가 없습니다.'}
+        func={ModalHandler}
+        active={active}
       />
       <Modal open={isModal} close={ModalHandler} title="상품 관리">
         <ModalProfile>
@@ -138,6 +134,9 @@ function ProfileSalesHistoryPage({ params }) {
           <p>구매자 배송지: {salesDetail.address}</p>
           <p>상세 배송지: {salesDetail.addressDetail}</p>
           <select onChange={onChange} name="parcelCompanyCode" value={parcelCompanyCode}>
+            <option value="none" hidden>
+              택배 회사 선택
+            </option>
             {companyList.map((companyList) => (
               <option value={companyList.Code} key={companyList.Code}>
                 {companyList.Name}
@@ -243,3 +242,5 @@ const ModalMain = styled.main`
     padding: 5px;
   }
 `;
+
+const IsSellingContainer = styled.div``;

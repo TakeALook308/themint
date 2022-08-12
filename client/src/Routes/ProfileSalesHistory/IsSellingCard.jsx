@@ -2,13 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-function IsSellingCard({ auction, func }) {
-  const [statusName, setStatusName] = useState(0);
-  useEffect(() => {
-    setStatusName(auction.status);
-  }, []);
-  console.log();
-
+function IsSellingCard({ auction, func, numActive }) {
   const auctionstr = ['판매중', '입금대기', '입금완료', '판매완료', '유찰', '거래취소'];
   return (
     <CardContainer>
@@ -39,7 +33,7 @@ function IsSellingCard({ auction, func }) {
             </AuctionInfoContainer>
           </div>
         </Link>
-        <Link to="/">
+        <Link to={`/profile/${auction?.memberSeq}`}>
           <div>
             <picture>
               <img
@@ -56,7 +50,7 @@ function IsSellingCard({ auction, func }) {
         <Plus
           type="button"
           onClick={() => {
-            func(auction.historySeq);
+            func(auction);
           }}>
           판매 상세
         </Plus>

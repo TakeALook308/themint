@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-function IsPurchasingCard({ ModalHandler, buyItem, auctionitem }) {
+function IsPurchasingCard({ auction, func }) {
   // TODO: 데이터 교체하기
   const [statusNum, setStatusNum] = useState(0);
   useEffect(() => {
-    console.log(auctionitem.status);
-    setStatusNum(auctionitem.status);
+    console.log(auction.status);
+    setStatusNum(auction.status);
   });
 
   const auctionstr = ['판매중', '입금대기', '발송대기', '구매완료', '', '거래취소'];
@@ -19,7 +19,7 @@ function IsPurchasingCard({ ModalHandler, buyItem, auctionitem }) {
           <div>
             <picture>
               <img
-                src={auctionitem.auctionImage.imageUrl}
+                src={process.env.REACT_APP_IMAGE_URL + auction.auctionImage.imageUrl}
                 alt="판매내역 이미지"
                 width="400"
                 height="300"
@@ -27,11 +27,11 @@ function IsPurchasingCard({ ModalHandler, buyItem, auctionitem }) {
             </picture>
             <AuctionInfoContainer>
               <div>
-                <h4>{auctionitem.productName}</h4>
-                <p>{auctionitem.finalPrice}</p>
-                <AcutionTime>{auctionitem.startTime}</AcutionTime>
-                <AuctionStatus auctionstrkey={auctionitem.status}>
-                  {auctionstr[auctionitem.status]}
+                <h4>{auction.productName}</h4>
+                <p>{auction.finalPrice}</p>
+                <AcutionTime>{auction.startTime}</AcutionTime>
+                <AuctionStatus auctionstrkey={auction.status}>
+                  {auctionstr[auction.status]}
                 </AuctionStatus>
               </div>
             </AuctionInfoContainer>
@@ -40,21 +40,25 @@ function IsPurchasingCard({ ModalHandler, buyItem, auctionitem }) {
         <Link to="/">
           <div>
             <picture>
-              <img src={auctionitem.profileUrl} alt="유저 프로필" width="50" height="50" />
+              <img
+                src={process.env.REACT_APP_IMAGE_URL + auction.profileUrl}
+                alt="유저 프로필"
+                width="50"
+                height="50"
+              />
             </picture>
           </div>
         </Link>
       </div>
-      {statusNum > 3 && (
-        <Plus type="button" onClick={ModalHandler}>
-          구매 정보 입력
+      {auction.status > 0 && auction.status <= 3 ? (
+        <Plus
+          type="button"
+          onClick={() => {
+            func(auction);
+          }}>
+          판매 상세
         </Plus>
-      )}
-      {4 > statusNum && (
-        <Plus type="button" onClick={ModalHandler}>
-          배송 확인 리뷰
-        </Plus>
-      )}
+      ) : null}
     </CardContainer>
   );
 }
