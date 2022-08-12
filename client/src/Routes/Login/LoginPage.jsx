@@ -8,11 +8,11 @@ import ThemintLogin from './ThemintLogin';
 import { LOGIN_MESSAGE, PAGES } from '../../utils/constants/constant';
 import { SocialLoginContainer } from '../Register/RegisterPage';
 import { setCookie } from '../../utils/functions/cookies';
-import { postData } from '../../utils/apis/api';
+import { fetchData } from '../../utils/apis/api';
 import { userApis } from '../../utils/apis/userApis';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
+import { successToast } from '../../lib/toast';
 function LoginPage() {
   const setUserInfo = useSetRecoilState(myInformationState);
   const setLogged = useSetRecoilState(loggedinState);
@@ -22,20 +22,11 @@ function LoginPage() {
   };
 
   const login = async (userInfo) => {
-    return await postData(userApis.LOGIN, userInfo);
+    return await fetchData.post(userApis.LOGIN, userInfo);
   };
 
   const moveToMain = (nickname) => {
-    toast.success(`${nickname}${LOGIN_MESSAGE.SUCCESS_LOGIN[makeRandomNumber()]}`, {
-      position: 'top-center',
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: 'colored',
-    });
+    successToast(`${nickname}${LOGIN_MESSAGE.SUCCESS_LOGIN[makeRandomNumber()]}`);
     navigate('/main');
   };
 

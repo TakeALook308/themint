@@ -10,6 +10,7 @@ function ActiveInputBox({
   required,
   onChange,
   disabled = false,
+  register,
 }) {
   return (
     <ActiveInput active={text ? true : false}>
@@ -22,6 +23,7 @@ function ActiveInputBox({
         required={required}
         onChange={onChange}
         disabled={disabled}
+        {...register}
       />
       {text ? <label htmlFor={name}>{text}</label> : null}
     </ActiveInput>

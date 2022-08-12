@@ -8,11 +8,11 @@ import 'swiper/css/effect-coverflow';
 import './SwiperCSS.css';
 import { Navigation, EffectCoverflow } from 'swiper';
 import { useQuery } from 'react-query';
-import { getData } from '../../utils/apis/api';
+import { fetchData } from '../../utils/apis/api';
 import { auctionListApis } from '../../utils/apis/auctionApis';
 function StreamList(props) {
   const getLiveAuctionList = async () => {
-    const response = await getData(auctionListApis.LIVE_AUCTION_LIST);
+    const response = await fetchData.get(auctionListApis.LIVE_AUCTION_LIST);
     return response?.data;
   };
   const { isLoading, isError, data, error } = useQuery(['liveAuctionList'], getLiveAuctionList, {
@@ -23,12 +23,11 @@ function StreamList(props) {
       console.log(e.message);
     },
   });
-  console.log(data, 'main');
 
   return (
     <Wrapper>
       <ListHeader>
-        <h3>실시간 경매 ON</h3>
+        <h2>실시간 경매 ON</h2>
       </ListHeader>
       {isLoading && <span>Loading...</span>}
       {!isLoading && !data?.length && <p>실시간 진행중인 경매가 없습니다.</p>}
@@ -74,6 +73,10 @@ const Wrapper = styled.article`
 
 const SwipeContainer = styled.div`
   border-radius: 5px;
+`;
+
+const SwiperSlideContainer = styled(SwiperSlide)`
+  background-color: ${(props) => props.theme.colors.mainBlack};
 `;
 
 const ListHeader = styled.div`

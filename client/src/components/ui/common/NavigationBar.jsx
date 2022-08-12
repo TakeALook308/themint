@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { loggedinState, myInformationState } from '../../../atoms';
 import Logo from '../../common/Logo';
+import SubMenu from './SubMenu';
 import { HiSearch, HiOutlineChat, HiOutlineBell } from 'react-icons/hi';
 import { AiOutlineUser } from 'react-icons/ai';
 
@@ -65,9 +66,12 @@ function NavigationBar({ url, keyword, categoryName }) {
                 <Link to="/">
                   <HiOutlineBell size={25} />
                 </Link>
-                <Link to={`profile/${myInformation.memberId}`}>
+                <SubContainer to={`profile/${myInformation.memberSeq}`}>
                   <AiOutlineUser size={25} />
-                </Link>
+                  <NavbarDropdownContent>
+                    <SubMenu />
+                  </NavbarDropdownContent>
+                </SubContainer>
               </>
             )}
             {!loggedin && (
@@ -120,17 +124,6 @@ const NavList = styled.div`
   display: flex;
 `;
 
-const NavLogo = styled.div`
-  font-family: 'PyeongChangPeace-Bold';
-  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-02@1.0/PyeongChangPeace-Bold.woff2')
-    format('woff2');
-  font-weight: 700;
-  font-style: normal;
-  font-size: 40px;
-  color: ${(props) => props.theme.colors.mainMint};
-  width: 112px;
-`;
-
 const NavSearch = styled.div`
   display: flex;
   background-color: ${(props) => props.theme.colors.pointBlack};
@@ -170,4 +163,60 @@ const NavItemIcon = styled.div`
   margin-left: auto;
 `;
 
-// 아이콘 오류 해결 https://stackoverflow.com/questions/69708504/module-not-found-cant-resolve-mui-icons-material-filedownload
+const fadeIn = keyframes`
+   0% {
+        display: none;
+        opacity: 0;
+    }
+
+    1% {
+        display: block;
+        opacity: 0;
+    }
+
+    100% {
+        display: block;
+        opacity: 1;
+    }
+`;
+
+const NavbarDropdownContent = styled.ul`
+  position: absolute;
+  min-width: 120px;
+  height: fit-content;
+  padding: 0.5rem;
+  z-index: 1;
+  background-color: ${(props) => props.theme.colors.pointBlack};
+  right: 0;
+  border-radius: 5px;
+  transition: all 1s ease-in;
+  li {
+    margin-bottom: 0.5rem;
+  }
+  li:last-child {
+    margin-bottom: 0;
+  }
+`;
+
+const SubContainer = styled.div`
+  cursor: pointer;
+  position: relative;
+  transition: all 5s ease-out;
+  & ${NavbarDropdownContent} {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s linear;
+    li {
+      visibility: hidden;
+      opacity: 0;
+    }
+  }
+  &:hover ${NavbarDropdownContent} {
+    visibility: visible;
+    opacity: 1;
+    li {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+`;
