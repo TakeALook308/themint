@@ -66,7 +66,6 @@ function AccountsPhoneNumberPage() {
         setState(false);
       }
     } catch (err) {
-      console.log(err);
       setError(key, { message: errorMessage }, { shouldFocus: true });
       setState(true);
     }
@@ -109,21 +108,21 @@ function AccountsPhoneNumberPage() {
 
   const onValid = async (data) => {
     const body = { phone: data.phone };
-    try {
-      const response = await fetchData.patch(userApis.PHONE_CHANGE, body);
-      if (response.status === 200) {
-        successToast('전화번호 변경에 성공하였습니다.');
-        setValue('phone', '');
-        setValue('authNumber', '');
-      }
-    } catch (err) {
-      if (err.response.status === 409) {
+    setTimeout(async () => {
+      try {
+        const response = await fetchData.patch(userApis.PHONE_CHANGE, body);
+        if (response.status === 200) {
+          successToast('전화번호 변경에 성공하였습니다.');
+          setValue('phone', '');
+          setValue('authNumber', '');
+        }
+      } catch (err) {
         errorToast('전화번호 변경에 실패하였습니다.');
       }
-    }
+    }, 1000);
   };
 
-  const onInValid = (data) => {
+  const onInValid = () => {
     if (errors?.authNumber?.message) {
       errorToast(errors?.authNumber?.message);
     }

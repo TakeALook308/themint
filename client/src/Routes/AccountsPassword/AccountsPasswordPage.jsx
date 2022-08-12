@@ -15,7 +15,6 @@ function AccountsPasswordPage() {
   const {
     register,
     watch,
-    setError,
     handleSubmit,
     setValue,
     formState: { errors },
@@ -68,8 +67,8 @@ function AccountsPasswordPage() {
         setValue('pwdCheck', '');
       }
     } catch (err) {
-      if (err.response.data.message) {
-        errorToast('비밀번호 변경에 실패하였습니다.');
+      if (err.response.status === 409 && err.response?.data?.message) {
+        errorToast(err.response.data.message);
       }
     }
   };
