@@ -66,6 +66,7 @@ public class HistoryController {
     public ResponseEntity<SalesDetailRes> getSalesDetail(@PathVariable("historySeq") Long historySeq){
         History history = historyService.getHistoryBySeq(historySeq);
         Product product = productService.getProductBySeq(history.getProductSeq());
+        System.out.println(product.getSeq());
         Long memberseq = historyService.getPurchaseByProductSeq(product.getSeq()).getMemberSeq();
         Member member = memberService.getMemberByMemberSeq(memberseq);
         ProductDelivery productDelivery = productDeliveryService.getProductDeliveryByProductSeq(product.getSeq());
@@ -103,7 +104,7 @@ public class HistoryController {
         if (result == 1) {
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
         }
-        return ResponseEntity.status(409).body(BaseResponseBody.of(409, "fail"));
+        return ResponseEntity.status(409).body(BaseResponseBody.of(409, "상품 구매에 실패하였습니다."));
     }
 
     @GetMapping("/purchase/detail/{historySeq}")

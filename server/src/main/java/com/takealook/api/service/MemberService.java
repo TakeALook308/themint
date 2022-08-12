@@ -22,7 +22,7 @@ public interface MemberService {
     Member getMemberByMemberSeq(Long seq);
 
     // 회원 정보 수정
-    void updateMember(Long memberSeq, MemberUpdatePostReq memberUpdatePostReq);
+    void updateMember(Long memberSeq, MemberUpdatePatchReq memberUpdatePostReq);
 
     // 비밀번호 변경
     void updateMemberPassword(Long seq, String pwd);
