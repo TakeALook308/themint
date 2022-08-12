@@ -35,6 +35,7 @@ function CateCardList({ getCategorySeq, categoryName, key }) {
   const categoriesList = categories.map((categories) => (
     <CateCard categoryName={categories.name} categoryKey={categories.seq} key={categories.seq} />
   ));
+
   return (
     <Container>
       <ListHeader>
@@ -70,7 +71,7 @@ const ListHeader = styled.header`
   align-items: baseline;
   margin-bottom: 20px;
 
-  > h3 {
+  > h2 {
     font-size: 30px;
     font-weight: bold;
     height: 30px;

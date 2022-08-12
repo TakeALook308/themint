@@ -1,6 +1,5 @@
 import AuctionCard from '../../components/CardList/AuctionCard';
 import styled from 'styled-components';
-import InterestingAuctionList from '../../components/InterestingAuctionList';
 import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
 import { auctionListApis } from '../../utils/apis/auctionApis';
 import SkeletonAuctionCard from '../../components/CardList/SkeletonAuctionCard';
@@ -10,7 +9,7 @@ function PostList() {
     <Wrapper>
       <hr></hr>
       <ListHeader>
-        <h3>실시간 임박 경매</h3>
+        <h2>실시간 임박 경매</h2>
       </ListHeader>
       <InfiniteAuctionList
         getUrl={auctionListApis.AUCTION_LIST('', 9, 'main')}

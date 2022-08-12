@@ -6,13 +6,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import Session from './utils/functions/storage';
 import { ReactQueryDevtools } from 'react-query/devtools';
+import { HelmetProvider } from 'react-helmet-async';
 
 export const session = new Session();
 function App(props) {
   const [queryClient] = useState(() => new QueryClient());
 
   return (
-    <>
+    <HelmetProvider>
       <Container>
         <ToastContainer
           position="top-center"
@@ -30,7 +31,7 @@ function App(props) {
           <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
       </Container>
-    </>
+    </HelmetProvider>
   );
 }
 

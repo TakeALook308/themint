@@ -16,10 +16,15 @@ import {
   PasswordReset,
   PurchaseHistoryDetail,
   Profile,
+  ProfileReviews,
+  ProfileSalesHistory,
+  ProfilePurchaseHistory,
+  ProfileInterest,
   Register,
   StandBy,
   Streaming,
   Talks,
+  Accounts,
 } from './Routes/index';
 import { useRecoilValue } from 'recoil';
 import { loggedinState } from './atoms';
@@ -37,11 +42,18 @@ function Router() {
           <Route path="help/password" element={<PasswordReset />} />
         </Route>
         <Route element={<ProtectedRoute loggedin={loggedin} />}>
-          <Route path="profile/:userId" element={<Profile />} />
-          <Route path="accounts/edit" element={<AccountsEdit />} />
-          <Route path="accounts/password" element={<AccountsPassword />} />
-          <Route path="accounts/phone-number" element={<AccountsPhoneNumber />} />
-          <Route path="accounts/withdrawl" element={<AccountsWithdrawl />} />
+          <Route path="profile/:userId/*" element={<Profile />}>
+            <Route path="" element={<ProfileReviews />} />
+            <Route path="profile/:userId/saleshistory" element={<ProfileSalesHistory />} />
+            <Route path="profile/:userId/purchasehistory" element={<ProfilePurchaseHistory />} />
+            <Route path="profile/:userId/interest" element={<ProfileInterest />} />
+          </Route>
+          <Route path="accounts" element={<Accounts />}>
+            <Route path="edit" element={<AccountsEdit />} />
+            <Route path="password" element={<AccountsPassword />} />
+            <Route path="phone-number" element={<AccountsPhoneNumber />} />
+            <Route path="withdrawl" element={<AccountsWithdrawl />} />
+          </Route>
           <Route path="talks" element={<Talks />} />
           <Route path="puchase-history/:purchaseId" element={<PurchaseHistoryDetail />} />
           <Route path="standby/:auctionId" element={<StandBy />} />
