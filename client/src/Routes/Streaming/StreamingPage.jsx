@@ -18,7 +18,7 @@ let client;
 function StreamingPage(props) {
   const userInfo = useRecoilValue(myInformationState);
   const { auctionId } = useParams();
-
+  const [auctionInfo, setAuctionInfo] = useState({});
   const [auctionData, setAuctionData] = useState({});
   const [nowProduct, setNowProduct] = useState(-1);
   // const [products, setProducts] = useState([]);
@@ -31,17 +31,19 @@ function StreamingPage(props) {
   ]);
   useEffect(() => {
     getData(auctionApis.AUCTION_DETAIL_API(auctionId)).then((res) => {
+      setAuctionInfo(res.data);
       setAuctionData({ memberSeq: res.data.memberSeq });
       setProducts(res.data.productList);
     });
   }, []);
-  console.log(auctionData);
+
   let nickname = userInfo.nickname;
   let memberSeq = userInfo.memberSeq;
   let roomId = 'test'; //저장하는 api 룸 만들고 보내줘도 돼?
   const [chat, setChat] = useState([]);
   const [priceList, setPriceList] = useState([]);
   const [newTime, setNewTime] = useState(moment());
+
   //처음 접속했을 때
   useEffect(() => {
     sock = new SockJS('https://i7a308.p.ssafy.io/api/ws-stomp');
@@ -102,7 +104,7 @@ function StreamingPage(props) {
   return (
     <Stream>
       <Header>
-        <StreamingHeader />
+        <StreamingHeader auctionInfo={auctionInfo} />
       </Header>
       <Main>
         <Section>
@@ -117,7 +119,7 @@ function StreamingPage(props) {
             newTime={newTime}
           />
 
-          <StreamChat sendMessage={sendMessage} chat={chat} />
+          <StreamChat sendMessage={sendMessage} chat={chat} userInfo={userInfo} />
         </Aside>
       </Main>
     </Stream>
