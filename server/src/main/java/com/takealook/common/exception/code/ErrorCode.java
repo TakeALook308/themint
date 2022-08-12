@@ -1,0 +1,30 @@
+package com.takealook.common.exception.code;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
+public enum ErrorCode {
+    NOT_FOUND(404, "COMMON_ERR_404", "PAGE NOT FOUND"),
+    INTER_SERVER_ERROR(500, "COMMON_ERR_500", "INTER SERVER ERROR"),
+    // 관심 경매/카테고리/키워드
+    INTEREST_DUPLICATION(409, "INTEREST_ERR_409", "INTEREST DUPLICATED"),
+    // 경매
+    AUCTION_NOT_FOUND(404, "AUCTION_ERR_404", "AUCTION NOT FOUND"),
+    AUCTION_TIME_DUPLICATION(409, "AUCTION_ERR_409", "AUCTION TIME DUPLICATED"),
+    // 물품
+    PRODUCT_NOT_FOUND(404, "PRODUCT_ERR_404", "PRODUCT NOT FOUND"),
+    // 멤버
+    MEMBER_NOT_FOUND(404, "MEMBER_ERR_404", "MEMBER NOT FOUND"),
+    MEMBERID_DUPLICATION(409, "MEMBER_ERR_409", "MEMBERID DUPLICATED"),
+    NICKNAME_DUPLICATION(409, "MEMBER_ERR_409", "NICKNAME DUPLICATED"),
+    EMAIL_DUPLICATION(409, "MEMBER_ERR_409", "EMAIL DUPLICATED"),
+    PHONE_DUPLICATION(409, "MEMBER_ERR_409", "PHONE DUPLICATED"),
+
+    ;
+
+    private int status;
+    private String errorCode;
+    private String message;
+}

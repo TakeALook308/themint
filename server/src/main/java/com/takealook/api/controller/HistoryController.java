@@ -2,6 +2,7 @@ package com.takealook.api.controller;
 
 import com.takealook.api.request.PurchaseRegisterPostReq;
 import com.takealook.api.response.HistoryListEntityRes;
+import com.takealook.api.response.HistoryListRes;
 import com.takealook.api.response.PurchaseDetailRes;
 import com.takealook.api.response.SalesDetailRes;
 import com.takealook.api.service.*;
@@ -44,11 +45,13 @@ public class HistoryController {
     ProductDeliveryService productDeliveryService;
 
     @GetMapping("/sales/{memberSeq}")
-    public ResponseEntity<List<HistoryListEntityRes>> getSalesHistory(@PathVariable("memberSeq") Long memberSeq, @RequestParam("page") int page, @RequestParam("size") int size) {
+    public ResponseEntity<HistoryListRes> getSalesHistory(@PathVariable("memberSeq") Long memberSeq, @RequestParam("page") int page, @RequestParam("size") int size) {
         List<HistoryListEntityRes> historyListEntityResList = new ArrayList<>();
-        List<History> historyList = null;
+        Boolean hasMore = false;
         Pageable pageable = PageRequest.of(page, size);
-        historyList = historyService.getHistoryListByMemberSeq(memberSeq, pageable, 0); // 0: sales, 1: purchase
+        List<History> historyList = historyService.getHistoryListByMemberSeq(memberSeq, pageable, 0); // 0: sales, 1: purchase
+        List<History> hasMoreList = historyService.getHistoryListByMemberSeq(memberSeq, PageRequest.of(page + 1, size), 0);
+        if(hasMoreList.size() != 0) hasMore = true;
         for (History history : historyList) {
             Product product = productService.getProductBySeq(history.getProductSeq());
             Auction auction = auctionService.getAuctionBySeq(product.getAuctionSeq());
@@ -56,13 +59,14 @@ public class HistoryController {
             List<AuctionImage> auctionImageList = auctionImageService.getAuctionImageListByAuctionSeq(auction.getSeq());
             historyListEntityResList.add(HistoryListEntityRes.of(history, product, auction, member, auctionImageList.get(0)));
         }
-        return ResponseEntity.status(200).body(historyListEntityResList);
+        return ResponseEntity.status(200).body(HistoryListRes.of(hasMore, historyListEntityResList));
     }
 
     @GetMapping("/sales/detail/{historySeq}")
     public ResponseEntity<SalesDetailRes> getSalesDetail(@PathVariable("historySeq") Long historySeq){
         History history = historyService.getHistoryBySeq(historySeq);
         Product product = productService.getProductBySeq(history.getProductSeq());
+        System.out.println(product.getSeq());
         Long memberseq = historyService.getPurchaseByProductSeq(product.getSeq()).getMemberSeq();
         Member member = memberService.getMemberByMemberSeq(memberseq);
         ProductDelivery productDelivery = productDeliveryService.getProductDeliveryByProductSeq(product.getSeq());
@@ -70,14 +74,15 @@ public class HistoryController {
     }
 
     @GetMapping("/purchase")
-    public ResponseEntity<List<HistoryListEntityRes>> getPurchaseHistory(@RequestParam("page") int page, @RequestParam("size") int size, @ApiIgnore Authentication authentication) {
+    public ResponseEntity<HistoryListRes> getPurchaseHistory(@RequestParam("page") int page, @RequestParam("size") int size, @ApiIgnore Authentication authentication) {
         List<HistoryListEntityRes> historyListEntityResList = new ArrayList<>();
-        List<History> historyList = null;
-
+        Boolean hasMore = false;
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
         Pageable pageable = PageRequest.of(page, size);
-        historyList = historyService.getHistoryListByMemberSeq(memberSeq, pageable, 1); // 0: sales, 1: purchase
+        List<History> historyList = historyService.getHistoryListByMemberSeq(memberSeq, pageable, 1); // 0: sales, 1: purchase
+        List<History> hasMoreList = historyService.getHistoryListByMemberSeq(memberSeq, PageRequest.of(page + 1, size), 1);
+        if(hasMoreList.size() != 0) hasMore = true;
         for (History history : historyList) {
             Product product = productService.getProductBySeq(history.getProductSeq());
             Auction auction = auctionService.getAuctionBySeq(product.getAuctionSeq());
@@ -85,7 +90,7 @@ public class HistoryController {
             List<AuctionImage> auctionImageList = auctionImageService.getAuctionImageListByAuctionSeq(auction.getSeq());
             historyListEntityResList.add(HistoryListEntityRes.of(history, product, auction, member, auctionImageList.get(0)));
         }
-        return ResponseEntity.status(200).body(historyListEntityResList);
+        return ResponseEntity.status(200).body(HistoryListRes.of(hasMore, historyListEntityResList));
     }
 
     @PostMapping("/purchase")

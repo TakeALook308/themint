@@ -22,6 +22,7 @@ public class AuctionRes {
     Long auctionSeq;
     String hash;
     Long memberSeq;
+    String nickname;
     String title;
     String content;
     Long categorySeq;
@@ -37,6 +38,7 @@ public class AuctionRes {
                 .auctionSeq(auction.getSeq())
                 .hash(auction.getHash())
                 .memberSeq(auction.getMemberSeq())
+                .nickname(member.getNickname())
                 .title(auction.getTitle())
                 .content(auction.getContent())
                 .categorySeq(auction.getCategorySeq())

@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { errorToast, successToast } from '../../lib/toast';
 import { MessageWrapper } from '../../style/common';
 import { ActiveInput } from '../../style/style';
-import { patchData } from '../../utils/apis/api';
+import { fetchData } from '../../utils/apis/api';
 import { userApis } from '../../utils/apis/userApis';
 import { REGEX, REGISTER_MESSAGE, STANDARD } from '../../utils/constants/constant';
 import GradientButton from '../../components/ButtonList/GradientButton';
@@ -25,7 +25,7 @@ function NewPassword({ memberId }) {
   const onValid = async () => {
     const body = { memberId, pwd: password.current };
     try {
-      const response = await patchData(userApis.PASSWORD_CHANGE, body);
+      const response = await fetchData.patch(userApis.PASSWORD_CHANGE, body);
       if (response.status === 200) {
         successToast('비밀번호 재설정 성공');
         navigate('/login');

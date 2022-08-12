@@ -9,11 +9,12 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @ApiModel("MemberUpdatePostRequest")
-public class MemberUpdatePostReq {
+public class MemberUpdatePatchReq {
     String nickname;
     String email;
     String address;
     String addressDetail;
+    String zipCode;
     String phone;
     int bankCode;
     String accountNo;

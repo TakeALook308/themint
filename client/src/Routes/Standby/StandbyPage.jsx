@@ -18,6 +18,7 @@ function StandbyPage() {
   // const memberId = 'mint308';
 
   let [memberSeq, setMemberSeq] = useState('');
+
   const navigate = useNavigate();
   const { auctionId } = useParams();
   const userInfo = useRecoilValue(myInformationState);
