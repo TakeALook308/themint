@@ -1,6 +1,5 @@
 package com.takealook.db.repository;
 
-import com.takealook.api.request.MemberUpdatePostReq;
 import com.takealook.db.entity.Member;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
@@ -28,7 +26,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Transactional // update, delete 필수
     @Modifying(clearAutomatically = true) // 영속성 컨텍스트 초기화
-    @Query("UPDATE Member SET score = :score WHERE seq = :seq")
+    @Query("UPDATE Member SET score = score + :score WHERE seq = :seq")
     int updateMemberScore(Long seq, int score);
 
     @Transactional // update, delete 필수

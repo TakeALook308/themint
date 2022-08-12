@@ -11,13 +11,18 @@ public interface MemberService {
     // 회원 가입
     Member createMember(MemberRegisterPostReq memberRegisterPostReq);
 
+    // 카카오 로그인
+    String getAccessTokenKakao(String authorize_code) throws Exception;
+
+    Member getMemberKakao(String access_token) throws Exception;
+
     List<Member> getMemberListByWord(String word, Pageable pageable);
 
     // 회원 정보 보기
     Member getMemberByMemberSeq(Long seq);
 
     // 회원 정보 수정
-    void updateMember(Long memberSeq, MemberUpdatePostReq memberUpdatePostReq);
+    void updateMember(Long memberSeq, MemberUpdatePatchReq memberUpdatePostReq);
 
     // 비밀번호 변경
     void updateMemberPassword(Long seq, String pwd);
@@ -30,7 +35,7 @@ public interface MemberService {
     // 이메일 송신
     int sendEmail(int randNum, String email);
 
-    int setNewPassword(MemberSetNewPwdPatchReq memberSetNewPwdPatchReq);
+    void setNewPassword(MemberSetNewPwdPatchReq memberSetNewPwdPatchReq);
 
     // 회원 삭제
     void deleteMember(Long memberSeq);
@@ -42,10 +47,10 @@ public interface MemberService {
     Member getMemberByNickname(String nickname);
 
     // 아이디 찾기
-    String FindMemberId(MemberFindMemberIdReq memberFindMemberIdReq);
+    String findMemberId(MemberFindMemberIdReq memberFindMemberIdReq);
 
     // 신뢰도 수정
-    void updateMemberScore(MemberScoreUpdatePatchReq memberScoreUpdatePatchReq);
+    void updateMemberScore(Long memberSeq, int score);
 
     // 휴대폰 중복체크
     Member getMemberByPhone(String phone);

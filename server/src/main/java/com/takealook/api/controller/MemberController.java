@@ -7,6 +7,8 @@ import com.takealook.api.service.MemberService;
 import com.takealook.api.service.S3FileService;
 import com.takealook.api.service.SmsService;
 import com.takealook.common.auth.MemberDetails;
+import com.takealook.common.exception.code.ErrorCode;
+import com.takealook.common.exception.member.MemberNotFoundException;
 import com.takealook.common.util.JwtTokenUtil;
 import com.takealook.db.entity.Member;
 import io.swagger.annotations.Api;
@@ -56,7 +58,7 @@ public class MemberController {
         if (member != null) {
             return ResponseEntity.status(200).body(MemberLoginPostRes.of(JwtTokenUtil.getToken(member.getMemberId()), member.getSeq(), member.getMemberId(), member.getNickname()));
         }
-        return ResponseEntity.status(409).body("fail");
+        return ResponseEntity.status(409).body("signup fail");
     }
 
     // 로그인
@@ -64,7 +66,6 @@ public class MemberController {
     public ResponseEntity<?> login(@RequestBody MemberLoginPostReq memberLoginPostReq) {
         String memberId = memberLoginPostReq.getMemberId();
         String pwd = memberLoginPostReq.getPwd();
-
         Member member = memberService.getMemberByMemberId(memberId);
         // 로그인 요청한 유저의 패스워드와 같은 경우 (유효한 패스워드인지 확인)
         if (member != null && passwordEncoder.matches(pwd, member.getPwd())) {
@@ -73,6 +74,17 @@ public class MemberController {
         // 유효하지 않는 패스워드인 경우, 로그인 실패
         return ResponseEntity.status(409).body("fail");
     }
+
+//    @GetMapping("/klogin")
+//    public ResponseEntity<?> klogin(@RequestParam String authorize_code) throws Exception{
+//        System.out.println(authorize_code);
+//        String access_token = memberService.getAccessTokenKakao(authorize_code);
+//        System.out.println(access_token);
+//        Member member = memberService.getMemberKakao(access_token);
+//        Member findMember = memberService.getMemberByEmail(member.getEmail());
+//
+//        return ResponseEntity.status(200).body(MemberLoginPostRes.of(JwtTokenUtil.getToken(findMember.getMemberId()), member.getSeq(), member.getMemberId(), member.getNickname()));
+//    }
 
     // 회원 목록 검색
     @GetMapping
@@ -110,25 +122,31 @@ public class MemberController {
 
     // 회원 정보 수정
     @PatchMapping
-    public ResponseEntity<?> updateMyInfo(@RequestBody MemberUpdatePostReq memberUpdatePostReq, @ApiIgnore Authentication authentication) {
+    public ResponseEntity<?> updateMyInfo(@RequestBody MemberUpdatePatchReq memberUpdatePostReq, @ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
         Member member = memberService.getMemberByMemberSeq(memberSeq);
         if (member != null) {
+            if(member.getAccountNo() == null && memberUpdatePostReq.getAccountNo() != null){ // 계좌번호 원래 없었는데 입력하면 신뢰도 +3
+                memberService.updateMemberScore(memberSeq, 3);
+            }
             memberService.updateMember(memberSeq, memberUpdatePostReq);
             return ResponseEntity.status(200).body("success");
+        } else {
+            throw new MemberNotFoundException("member not found", ErrorCode.MEMBER_NOT_FOUND);
         }
-        return ResponseEntity.status(409).body("fail");
     }
 
     // 프로필 사진 변경
-    @PatchMapping("img")
-    public ResponseEntity<?> updateProfileImage(MultipartFile multipartFile, @ApiIgnore Authentication authentication) throws Exception {
+    @PostMapping("img")
+    public ResponseEntity<?> updateProfileImage(@RequestPart MultipartFile multipartFile, @ApiIgnore Authentication authentication) throws Exception {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
         Member member = memberService.getMemberByMemberSeq(memberSeq);
         if (member != null) {
-            return ResponseEntity.status(200).body(s3FileService.uploadProfileImage(multipartFile, memberSeq));
+            String result = s3FileService.uploadProfileImage(multipartFile, memberSeq);
+            if (result == "fail") ResponseEntity.status(409).body("fail");
+            return ResponseEntity.status(200).body(result);
         }
         return ResponseEntity.status(409).body("fail");
     }
@@ -140,6 +158,8 @@ public class MemberController {
         Long memberSeq = memberDetails.getMemberSeq();
         Member member = memberService.getMemberByMemberSeq(memberSeq);
         if (member != null) {
+            if (passwordEncoder.matches(pwdMap.get("pwd"), member.getPwd()))
+                return ResponseEntity.status(409).body("중복입니다.");
             memberService.updateMemberPassword(member.getSeq(), pwdMap.get("pwd"));
             return ResponseEntity.status(200).body("success");
         }
@@ -152,7 +172,6 @@ public class MemberController {
     public ResponseEntity<?> checkEmail(@RequestBody MemberSetNewPwdCheckPostReq memberSetNewPwdCheckPostReq) {
         // 아이디-이메일 체크
         Member member = memberService.getMemberByMemberIdAndEmail(memberSetNewPwdCheckPostReq);
-        if (member == null) return ResponseEntity.status(409).body("fail");
         // 메일로 인증번호 전송
         int randNum = ThreadLocalRandom.current().nextInt(100000, 1000000);
         int result = memberService.sendEmail(randNum, member.getEmail());
@@ -174,10 +193,8 @@ public class MemberController {
     // 3. 비밀번호 재설정
     @PatchMapping("password/change")
     public ResponseEntity<?> setNewPassword(@RequestBody MemberSetNewPwdPatchReq memberSetNewPwdPatchReq) {
-        int result = memberService.setNewPassword(memberSetNewPwdPatchReq);
-        if (result == 1)
-            return ResponseEntity.status(200).body("success");
-        return ResponseEntity.status(409).body("fail");
+        memberService.setNewPassword(memberSetNewPwdPatchReq);
+        return ResponseEntity.status(200).body("success");
     }
 
     /////////////////// 비밀번호 재설정 (비밀번호 찾기) end ////////////////////////
@@ -242,22 +259,24 @@ public class MemberController {
     // 아이디 찾기
     @PostMapping("/id")
     public ResponseEntity<?> findMemberId(@RequestBody MemberFindMemberIdReq memberFindMemberIdReq) {
-        String memberId = memberService.FindMemberId(memberFindMemberIdReq);
-        if (memberId == null) {
-            return ResponseEntity.status(409).body("fail");
-        }
+        String memberId = memberService.findMemberId(memberFindMemberIdReq);
         return ResponseEntity.status(200).body(MemberFindMemberIdRes.of(memberId));
     }
 
     // 신뢰도 수정
+    //1. 리뷰 달렸을 때 score 기준으로
+    // - 1, 2 점이면 다운, 3이면 유지, 4,5점이면 업
+    //2. 경매 게시글 하나 올리면 1점 업
+    //3. 경매 예약 시간 지났는데 status 0이면 -3점?
+    //4. 계좌번호 등 개인 정보 더 추가했을 때 3점씩 업
+    //5. 낙찰됐는데 일주일 내에 입금 안하면 -5점?
     @PatchMapping("/score")
     public ResponseEntity<?> updateScore(@RequestBody MemberScoreUpdatePatchReq memberScoreUpdatePatchReq) {
         Member member = memberService.getMemberByMemberSeq(memberScoreUpdatePatchReq.getSeq());
-        if (member == null) return ResponseEntity.status(409).body("fail");
-        memberService.updateMemberScore(memberScoreUpdatePatchReq);
+        if (member == null) throw new MemberNotFoundException("member not found", ErrorCode.MEMBER_NOT_FOUND);
+        memberService.updateMemberScore(memberScoreUpdatePatchReq.getSeq(), memberScoreUpdatePatchReq.getScore());
         return ResponseEntity.status(200).body("success");
     }
-
 
     // 문자 인증
     @PostMapping("/sms")

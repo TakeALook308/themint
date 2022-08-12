@@ -27,7 +27,6 @@ public class Auction {
     String content;
     Long categorySeq;
     String startTime;
-    String link;
     int interest; // 사용자가 관심 경매로 등록하면 1씩 증가
     int status; // 0 : 시작 안된거 . 1 : 시작 된거
 }
