@@ -27,6 +27,7 @@ public class Member{
     String email;
     String address;
     String addressDetail;
+    String zipCode;
     String phone;
     String profileUrl;
     int bankCode;

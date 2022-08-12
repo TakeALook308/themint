@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface AuctionImageRepository extends JpaRepository<AuctionImage, Long> {
+    AuctionImage findBySeq(Long auctionImageSeq);
     Optional<List<AuctionImage>> findByAuctionSeq(Long auctionSeq);
     @Transactional
     void deleteAllByAuctionSeq(Long auctionSeq);

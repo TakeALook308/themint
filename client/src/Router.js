@@ -58,7 +58,7 @@ function Router() {
           <Route path="streamings/:auctionId" element={<Streaming />} />
         </Route>
         <Route path="main" element={<Main />} />
-        <Route path="categories/:categoryName" element={<Category />} />
+        <Route path="categories/:categoryId" element={<Category />} />
         <Route path="auctions/:auctionId" element={<AuctionDetail />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

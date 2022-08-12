@@ -1,7 +1,7 @@
 package com.takealook.api.controller;
 
-import com.takealook.api.response.AuctionListEntityRes;
 import com.takealook.api.response.ProductListEntityRes;
+import com.takealook.api.response.ProductListRes;
 import com.takealook.api.service.AuctionImageService;
 import com.takealook.api.service.AuctionService;
 import com.takealook.api.service.MemberService;
@@ -15,7 +15,6 @@ import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,19 +42,25 @@ public class ProductController {
     AuctionImageService auctionImageService;
 
     @GetMapping
-    public ResponseEntity<List<ProductListEntityRes>> getProductList(@RequestParam(value = "word", required = false) String word, @RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort){
+    public ResponseEntity<ProductListRes> getProductList(@RequestParam(value = "word", required = false) String word, @RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort) {
         // [key] 경매임박순: startTime, 최신등록순: auctionSeq, 낮은가격순: startPrice, 인기순: interest, 판매자신뢰도순: score
         List<ProductListEntityRes> productListEntityResList = new ArrayList<>();
+        Boolean hasMore = false;
         List<Product> productList = null;
+        List<Product> hasMoreList = null;
         Pageable pageable = PageRequest.of(page, size);
-        if("score".equals(sort)){ //판매자 신뢰도순
+        if ("score".equals(sort)) { //판매자 신뢰도순
             productList = productService.getProductListOrderByScore(word, pageable);
-        } else if("startTime".equals(sort) || "startPrice".equals(sort)){ // 경매임박순, 낮은가격순
+            hasMoreList = productService.getProductListOrderByScore(word, PageRequest.of(page + 1, size));
+        } else if ("startTime".equals(sort) || "startPrice".equals(sort)) { // 경매임박순, 낮은가격순
             productList = productService.getProductList(word, pageable, sort);
+            hasMoreList = productService.getProductList(word, PageRequest.of(page + 1, size), sort);
         } else { // 최신등록순, 인기순
             productList = productService.getProductList(word, pageable, sort);
+            hasMoreList = productService.getProductList(word, PageRequest.of(page + 1, size), sort);
         }
-        for (Product product : productList){
+        if (hasMoreList.size() != 0) hasMore = true;
+        for (Product product : productList) {
             Long auctionSeq = product.getAuctionSeq();
             Auction auction = auctionService.getAuctionBySeq(auctionSeq);
             Long memberSeq = auction.getMemberSeq();
@@ -63,11 +68,11 @@ public class ProductController {
             List<AuctionImage> auctionImageList = auctionImageService.getAuctionImageListByAuctionSeq(auction.getSeq());
             productListEntityResList.add(ProductListEntityRes.of(product, auction, member, auctionImageList.get(0)));
         }
-        return ResponseEntity.status(200).body(productListEntityResList);
+        return ResponseEntity.status(200).body(ProductListRes.of(hasMore, productListEntityResList));
     }
 
     @PatchMapping("/remit/{productSeq}")
-    public ResponseEntity<? extends BaseResponseBody> remitCheck(@PathVariable("productSeq") Long productSeq){
+    public ResponseEntity<? extends BaseResponseBody> remitCheck(@PathVariable("productSeq") Long productSeq) {
         productService.updateStatus(productSeq, 2);
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
     }

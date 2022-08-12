@@ -1,5 +1,7 @@
 package com.takealook.api.service;
 
+import com.takealook.common.exception.code.ErrorCode;
+import com.takealook.common.exception.interest.InterestDuplicateException;
 import com.takealook.db.entity.InterestKeyword;
 import com.takealook.db.repository.InterestKeywordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +19,16 @@ public class InterestKeywordServiceImpl implements InterestKeywordService {
         관심 키워드 생성, 조회, 삭제
      */
     @Override
-    public InterestKeyword createInterestKeyword(Long memberSeq, String keywordName) {
+    public void createInterestKeyword(Long memberSeq, String keywordName) {
+        InterestKeyword check = interestKeywordRepository.findByMemberSeqAndKeywordName(memberSeq, keywordName);
+        if(check != null){
+            throw new InterestDuplicateException("interest keyword with name " + keywordName + " duplicated", ErrorCode.INTEREST_DUPLICATION);
+        }
         InterestKeyword interestKeyword = InterestKeyword.builder()
                 .memberSeq(memberSeq)
                 .keywordName(keywordName)
                 .build();
         interestKeywordRepository.save(interestKeyword);
-        return interestKeyword;
     }
 
     @Override

@@ -6,13 +6,12 @@ import com.takealook.api.request.MessagesReq;
 import com.takealook.api.request.SmsReq;
 import com.takealook.api.response.SendSmsRes;
 import lombok.*;
-//import org.apache.commons.codec.binary.Base64;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
+import org.springframework.beans.factory.annotation.Value;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
@@ -27,17 +26,16 @@ import java.util.List;
 @Getter
 @Setter
 @Service("smsService")
-@RequiredArgsConstructor
 public class SmsService {
 
-//    @Value("${accessKey}")
-    private final String accessAPIKey="4TWvIeOdT1SOpnalMmkf";
-//    @Value("${serviceKey}")
-    private final String serviceAPIKey="ncp:sms:kr:286510243663:themint";
-//    @Value("${secretKey}")
-    private final String secretAPIKey="DLKevX2acaTMVm7mw6LXibIg3uKDqPnLiNKvMuPZ";
-//    @Value("${fromNum}")
-    private final String fromNum="01074119612";
+    @Value("${sms.access-key}")
+    private String accessAPIKey;
+    @Value("${sms.service-key}")
+    private String serviceAPIKey;
+    @Value("${sms.secret-key}")
+    private String secretAPIKey;
+    @Value("${sms.from-num}")
+    private String fromNum;
 
 
     public SendSmsRes sendSms(String recipientPhoneNumber, String certNum) throws JsonProcessingException, UnsupportedEncodingException, InvalidKeyException, NoSuchAlgorithmException, URISyntaxException {
