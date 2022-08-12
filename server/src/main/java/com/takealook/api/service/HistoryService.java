@@ -14,6 +14,7 @@ public interface HistoryService {
     History getHistoryBySeq(Long historySeq);
     History getPurchaseByProductSeq(Long productSeq);
     History getSalesByProductSeq(Long productSeq);
+    List<History> getHistoryByDateAndSalesPurchase();
     void deleteSalesHistory(List<Product> productList);
     int registerPurchaseHistory(PurchaseRegisterPostReq purchaseRegisterPostReq);
     int registerSalesHistory(Long memberSeq, List<Product> productList, List<AuctionImage> auctionImageList);

@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -39,7 +41,7 @@ public class HistoryServiceImpl implements HistoryService {
     @Override
     public History getPurchaseByProductSeq(Long productSeq) {
         History history = historyRepository.findByProductSeqAndSalesPurchase(productSeq, 1);
-        if(history == null){
+        if (history == null) {
             throw new HistoryNotFoundException("purchase history not found", ErrorCode.HISTORY_NOT_FOUND);
         }
         return history;
@@ -48,15 +50,24 @@ public class HistoryServiceImpl implements HistoryService {
     @Override
     public History getSalesByProductSeq(Long productSeq) {
         History history = historyRepository.findByProductSeqAndSalesPurchase(productSeq, 0);
-        if(history == null){
+        if (history == null) {
             throw new HistoryNotFoundException("sales history not found", ErrorCode.HISTORY_NOT_FOUND);
         }
         return history;
     }
 
     @Override
+    public List<History> getHistoryByDateAndSalesPurchase() {
+        String minTime = LocalDateTime.now().minusDays(7).minusHours(2).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        String maxTime = LocalDateTime.now().minusDays(7).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+        List<History> historyList = historyRepository.findAllByDateAfterAndDateBeforeAndSalesPurchase(minTime, maxTime, 1);
+        return historyList;
+    }
+
+    @Override
     public void deleteSalesHistory(List<Product> productList) {
-        for (Product product : productList){
+        for (Product product : productList) {
             historyRepository.deleteByProductSeqAndSalesPurchase(product.getSeq(), 0);
         }
     }
@@ -70,12 +81,14 @@ public class HistoryServiceImpl implements HistoryService {
                     .memberSeq(purchaseRegisterPostReq.getMemberSeq())
                     .productSeq(purchaseRegisterPostReq.getProductSeq())
                     .salesPurchase(1)
+                    .date(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                     .build());
         } else {
             historyRepository.save(History.builder()
                     .memberSeq(purchaseRegisterPostReq.getMemberSeq())
                     .productSeq(purchaseRegisterPostReq.getProductSeq())
                     .salesPurchase(1)
+                    .date(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                     .build());
         }
         return 1;
@@ -83,11 +96,12 @@ public class HistoryServiceImpl implements HistoryService {
 
     @Override
     public int registerSalesHistory(Long memberSeq, List<Product> productList, List<AuctionImage> auctionImageList) {
-        for (Product product : productList){
+        for (Product product : productList) {
             historyRepository.save(History.builder()
                     .memberSeq(memberSeq)
                     .productSeq(product.getSeq())
                     .salesPurchase(0)
+                    .date(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                     .build());
         }
         return 1;
