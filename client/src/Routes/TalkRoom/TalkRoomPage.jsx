@@ -168,6 +168,18 @@ const Container = styled.div`
 const ChatContainer = styled.article`
   height: 90%;
   overflow-y: scroll;
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar,
+  &::-webkit-scrollbar-thumb {
+    overflow: visible;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(206, 206, 206, 0.7);
+  }
 `;
 
 const ChatScroll = styled.div`

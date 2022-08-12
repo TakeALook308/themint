@@ -106,6 +106,19 @@ const Modal = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar,
+  &::-webkit-scrollbar-thumb {
+    overflow: visible;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(206, 206, 206, 0.7);
+    /* background-color: red; */
+  }
 `;
 
 const NotificationCard = styled.div`
