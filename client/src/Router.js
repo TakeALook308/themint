@@ -29,12 +29,10 @@ import {
   SearchAuction,
   SearchProduct,
   SearchProfile,
-  Logout,
   TalkRoom,
 } from './Routes/index';
 import { useRecoilValue } from 'recoil';
 import { loggedinState } from './atoms';
-import { useState } from 'react';
 
 function Router({ toggleNotification, setToggleNotifiaction }) {
   const loggedin = useRecoilValue(loggedinState);

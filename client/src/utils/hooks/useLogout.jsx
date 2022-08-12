@@ -10,9 +10,6 @@ function useLogout() {
   const [myInformation, setMyinformation] = useRecoilState(myInformationState);
   const setLoggedin = useSetRecoilState(loggedinState);
   const navigate = useNavigate();
-  useEffect(() => {
-    navigate('/main');
-  }, []);
 
   return ({ type }) => {
     if (type === 'withdrawl') {
@@ -24,6 +21,7 @@ function useLogout() {
     setMyinformation({ memberId: '', memberSeq: null, nickname: '' });
     removeCookie('accessToken');
     removeRefreshToken();
+    navigate('/main');
   };
 }
 
