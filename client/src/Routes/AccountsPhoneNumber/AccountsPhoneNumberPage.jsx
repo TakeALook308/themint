@@ -5,6 +5,7 @@ import GradientButton from '../../components/ButtonList/GradientButton';
 import MintButton from '../../components/ButtonList/MintButton';
 import ActiveInputBox from '../../components/common/ActiveInputBox';
 import ValidationMessage from '../../components/common/ValidationMessage';
+import { errorToast, successToast } from '../../lib/toast';
 import { MessageWrapper } from '../../style/common';
 import { fetchData } from '../../utils/apis/api';
 import { userApis } from '../../utils/apis/userApis';
@@ -48,7 +49,7 @@ function AccountsPhoneNumberPage() {
     watch,
     setError,
     handleSubmit,
-    trigger,
+    setValue,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -106,11 +107,27 @@ function AccountsPhoneNumberPage() {
     }),
   };
 
-  const onValid = (data) => {
-    console.log(data);
+  const onValid = async (data) => {
+    const body = { phone: data.phone };
+    try {
+      const response = await fetchData.patch(userApis.PHONE_CHANGE, body);
+      if (response.status === 200) {
+        successToast('전화번호 변경에 성공하였습니다.');
+        setValue('phone', '');
+        setValue('authNumber', '');
+      }
+    } catch (err) {
+      if (err.response.status === 409) {
+        errorToast('전화번호 변경에 실패하였습니다.');
+      }
+    }
   };
 
-  const onInValid = (data) => {};
+  const onInValid = (data) => {
+    if (errors?.authNumber?.message) {
+      errorToast(errors?.authNumber?.message);
+    }
+  };
 
   const phone = useRef({});
   phone.current = watch('phone', '');
