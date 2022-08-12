@@ -19,13 +19,15 @@ public interface MemberService {
     List<Member> getMemberListByWord(String word, Pageable pageable);
 
     // 회원 정보 보기
-    Member getMemberByMemberSeq(Long seq);
+    Member getMemberByMemberSeq(Long memberSeq);
 
     // 회원 정보 수정
     void updateMember(Long memberSeq, MemberUpdatePatchReq memberUpdatePostReq);
 
     // 비밀번호 변경
-    void updateMemberPassword(Long seq, String pwd);
+    void updateMemberPassword(Long memberSeq, String pwd);
+
+    void updateMemberPhone(Long memberSeq, String phone);
 
     // 이메일 체크
     Member getMemberByEmail(String email);
