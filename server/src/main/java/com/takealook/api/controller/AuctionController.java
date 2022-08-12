@@ -56,13 +56,13 @@ public class AuctionController {
     InterestCategoryService interestCategoryService;
 
     @PostMapping
-    public ResponseEntity<BaseResponseBody> registerAuction(@RequestPart("auctionInfo") AuctionRegisterPostReq auctionRegisterPostReq, @RequestPart List<MultipartFile> multipartFileList, @ApiIgnore Authentication authentication) {
+    public ResponseEntity<BaseResponseBody> registerAuction(@RequestPart("auctionInfo")AuctionRegisterPostReq auctionRegisterPostReq, @RequestPart(required = false) List<MultipartFile> auctionImageList, @ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
-        Auction auction = auctionService.createAuction(memberSeq, auctionRegisterPostReq, multipartFileList);
+        Auction auction = auctionService.createAuction(memberSeq, auctionRegisterPostReq, auctionImageList);
         List<Product> productList = productService.getProductListByAuctionSeq(auction.getSeq());
-        List<AuctionImage> auctionImageList = auctionImageService.getAuctionImageListByAuctionSeq(auction.getSeq());
-        historyService.registerSalesHistory(memberSeq, productList, auctionImageList);
+        List<AuctionImage> auctionImagePathList = auctionImageService.getAuctionImageListByAuctionSeq(auction.getSeq());
+        historyService.registerSalesHistory(memberSeq, productList, auctionImagePathList);
         memberService.updateMemberScore(memberSeq, 1);
         if (auction == null) {
             return ResponseEntity.status(409).body(BaseResponseBody.of(409, "경매 생성에 실패하였습니다."));

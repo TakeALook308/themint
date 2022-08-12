@@ -39,9 +39,9 @@ public class AuctionServiceImpl implements AuctionService {
     @Autowired
     S3FileService s3FileService;
 
-//    @Transactional
+    @Transactional
     @Override
-    public Auction createAuction(Long memberSeq, AuctionRegisterPostReq auctionRegisterPostReq, List<MultipartFile> auctionImageList) {
+    public Auction createAuction(Long memberSeq, AuctionRegisterPostReq auctionRegisterPostReq, List<MultipartFile> multipartFileList) {
         String hash = HashUtil.MD5(LocalDateTime.now().toString() + memberSeq);
         Auction auction = Auction.builder()
                 .hash(hash)
@@ -80,7 +80,7 @@ public class AuctionServiceImpl implements AuctionService {
         }
 
         // 옥션 이미지 없을 시 기본이미지 넣기
-        if (auctionImageList == null || auctionImageList.size() == 0) {
+        if (multipartFileList.get(0).isEmpty()) {
             auctionImageRepository.save(AuctionImage.builder()
                     .auctionSeq(auction.getSeq())
                     .imageUrl("/product/basic1.png")
@@ -88,7 +88,7 @@ public class AuctionServiceImpl implements AuctionService {
         } else {
             // S3 버킷에 물품 이미지 저장 후 db에 imageUrl 저장
             try {
-                List<String> imageUrlList = s3FileService.uploadProductIamge(auctionImageList, auction.getHash());
+                List<String> imageUrlList = s3FileService.uploadProductIamge(multipartFileList, auction.getHash());
                 for (String imageUrl : imageUrlList) {
                     AuctionImage auctionImage = AuctionImage.builder()
                             .auctionSeq(auction.getSeq())
