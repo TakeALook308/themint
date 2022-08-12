@@ -29,7 +29,7 @@ export const categories = [
   },
   {
     seq: 8,
-    name: '가전/디지철',
+    name: '가전/디지털',
   },
   {
     seq: 9,

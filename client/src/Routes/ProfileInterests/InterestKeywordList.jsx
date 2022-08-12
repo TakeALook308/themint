@@ -82,12 +82,7 @@ function InterestKeywordList() {
 
       <CardContainer>
         {showKeyword.map((keyword, i) => (
-          <InterestKeyWordCard
-            keyword={keyword}
-            key={i}
-            getData={getData}
-            deleteword={deleteword}
-          />
+          <InterestKeyWordCard keyword={keyword} key={i} getData={getData} />
         ))}
       </CardContainer>
     </Container>

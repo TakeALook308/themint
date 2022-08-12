@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { ImCross } from 'react-icons/im';
-import { instance } from '../../utils/apis/api';
 
-function InterestKeyWordCard({ keyword, getData, deleteword }) {
+function InterestKeyWordCard({ keyword, getData }) {
   // 관심 키워드 삭제
   const onClick = () => {
     getData(keyword);

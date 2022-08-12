@@ -1,26 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { ImCross } from 'react-icons/im';
-import { instance } from '../../utils/apis/api';
 
-function InterestCateCard({ keyword }) {
+function InterestCateCard({ keyword, getData }) {
   // 관심 카테고리 삭제
-  const [keywordName, setKeywordName] = useState('');
-  console.log(keyword);
   const onClick = () => {
-    setKeywordName(keyword);
-    console.log(keyword);
-    const keyword_name = keywordName;
-    const deleteInterest = async (url) => {
-      const response = await instance.delete(url);
-      return response;
-    };
-    const res = deleteInterest(`/api/interest/category/${keyword_name}`);
-    res.then(() => {
-      console.log(keyword_name);
-    });
+    getData(keyword);
   };
-
   //숫자값을 카테고리명으로 변경
   const categoriesToName = [
     '',
