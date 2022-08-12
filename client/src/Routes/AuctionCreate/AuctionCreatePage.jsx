@@ -88,13 +88,13 @@ function AuctionCreatePage(props) {
           const formData = new FormData();
           // auctionImageList.map((file) => formData.append('files', file));
           for (let i = 0; i < auctionImageList.length; i++) {
-            formData.append('file', auctionImageList[i]);
+            formData.append('auctionImageList', auctionImageList[i]);
           }
           formData.append(
-            'key',
+            'auctionInfo',
             new Blob([JSON.stringify(inputAuction)], { type: 'application/json' }),
           );
-          console.log(formData.get('file'), formData.get('key'));
+          // console.log(formData.get('file'), formData.get('key'));
           postData(auctionApis.AUCTION_CREATE_API, formData, {
             headers: {
               'Content-Type': `multipart/form-data`,
