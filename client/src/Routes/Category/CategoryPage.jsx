@@ -5,7 +5,6 @@ import AuctionCard from '../../components/CardList/AuctionCard';
 import SkeletonAuctionCard from '../../components/CardList/SkeletonAuctionCard';
 import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
 import CateCardList from '../../components/ui/category/CateCardList';
-import CateList from '../../components/ui/category/CateList';
 import Dropdown from '../../components/ui/category/SelectBox';
 import { Container } from '../../style/common';
 import { auctionListApis } from '../../utils/apis/auctionApis';
@@ -13,8 +12,6 @@ import { auctionListApis } from '../../utils/apis/auctionApis';
 function CategoryPage({ categoryName }) {
   const [categorySeq, setCategorySeq] = useState('0');
   const [sortKey, setSortKey] = useState('startTime');
-  const [auctions, setAuctions] = useState(null);
-  const [url, setUrl] = useState('');
 
   const { categoryId } = useParams();
   useEffect(() => {
@@ -44,7 +41,6 @@ function CategoryPage({ categoryName }) {
         <CateCardList categoryName={categoryName} getCategorySeq={getCategorySeq} />
       </CateListContainer>
       <Dropdown getSortKey={getSortKey} />
-      {/* {auctions && <CateList auctions={auctions} />} */}
       <InfiniteAuctionList
         getUrl={auctionListApis.CATEGORY_AUCTION_LIST(categorySeq, 12, sortKey)}
         queryKey={[categorySeq + sortKey]}

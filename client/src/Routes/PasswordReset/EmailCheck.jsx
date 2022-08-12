@@ -1,10 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
 import styled, { css, keyframes } from 'styled-components';
 import { MessageWrapper } from '../../style/common';
 import { ActiveInput } from '../../style/style';
-import { getData, postData } from '../../utils/apis/api';
+import { fetchData } from '../../utils/apis/api';
 import { userApis } from '../../utils/apis/userApis';
 import { REGEX, REGISTER_MESSAGE } from '../../utils/constants/constant';
 import GradientButton from '../../components/ButtonList/GradientButton';
@@ -50,7 +49,7 @@ function EmailCheck({ memberId, setMemberId, setIsPassed }) {
       return;
     }
     try {
-      const response = await postData(userApis.AUTH_EMAIL, {
+      const response = await fetchData.post(userApis.AUTH_EMAIL, {
         memberId: id.current,
         email: auth.current,
       });

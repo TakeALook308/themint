@@ -4,7 +4,7 @@ import GradientButton from '../../components/ButtonList/GradientButton';
 import { MessageWrapper } from '../../style/common';
 import { ActiveInput } from '../../style/style';
 import { userApis } from '../../utils/apis/userApis';
-import { getData } from '../../utils/apis/api';
+import { fetchData } from '../../utils/apis/api';
 import { REGEX, REGISTER_MESSAGE, STANDARD } from '../../utils/constants/constant';
 import debounce from '../../utils/functions/debounce';
 import ValidationMessage from '../../components/common/ValidationMessage';
@@ -41,7 +41,7 @@ function Register1({ setUserInfo, setStep }) {
   const checkMemberId = async (value) => {
     if (!value || value.length < STANDARD.ID_MIN_LENGTH || errors.memberId) return;
     try {
-      const response = await getData(userApis.ID_DUPLICATE_CHECK_API(value || value));
+      const response = await fetchData.get(userApis.ID_DUPLICATE_CHECK_API(value || value));
       if (response.status === 200) {
         setDuplicatedID(false);
       }

@@ -1,9 +1,9 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 
-function GradientButton({ text, type, onClick }) {
+function GradientButton({ text, type, onClick, size }) {
   return (
-    <Button type={type} onClick={onClick}>
+    <Button type={type} onClick={onClick} size={size}>
       {text}
     </Button>
   );
@@ -24,7 +24,7 @@ const shine = keyframes`
 `;
 
 export const Button = styled.button`
-  width: 100%;
+  width: ${(props) => (props.size ? props.size : '100%')};
   height: 40px;
   background: ${(props) => props.theme.colors.gradientMintToPurple};
   border-radius: 5px;

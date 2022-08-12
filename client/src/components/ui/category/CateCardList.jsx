@@ -71,7 +71,7 @@ const ListHeader = styled.header`
   align-items: baseline;
   margin-bottom: 20px;
 
-  > h3 {
+  > h2 {
     font-size: 30px;
     font-weight: bold;
     height: 30px;
