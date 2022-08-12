@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { instance } from '../../../../utils/apis/api';
+import { instance } from '../../utils/apis/api';
 import InterestCateCard from './InterestCateCard';
-import { categories } from '../../../../utils/constants/constant';
-import GradientButton from '../../../ButtonList/GradientButton';
+import { categories } from '../../utils/constants/constant';
+import GradientButton from '../../components/ButtonList/GradientButton';
 
 function InterestCateList() {
   // 관심 카테고리 조회 API

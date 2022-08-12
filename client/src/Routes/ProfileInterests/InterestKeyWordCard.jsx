@@ -1,25 +1,14 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { ImCross } from 'react-icons/im';
-import { instance } from '../../../../utils/apis/api';
+import { instance } from '../../utils/apis/api';
 
-function InterestKeyWordCard({ keyword }) {
-  const [keywordName, setKeywordName] = useState('');
+function InterestKeyWordCard({ keyword, getData, deleteword }) {
   // 관심 키워드 삭제
   const onClick = () => {
-    console.log(keyword);
-    setKeywordName(keyword);
-    const keyword_name = keywordName;
-    console.log(keyword_name);
-    const deleteInterest = async (url) => {
-      const response = await instance.delete(url);
-      return response;
-    };
-    const res = deleteInterest(`/api/interest/keyword/${keyword_name}`);
-    res.then(() => {
-      console.log(keyword_name);
-    });
+    getData(keyword);
   };
+
   return (
     <Container>
       {keyword}

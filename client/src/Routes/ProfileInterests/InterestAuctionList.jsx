@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { instance } from '../../../../utils/apis/api';
+import { instance } from '../../utils/apis/api';
 
 function InterestAuctionList() {
   const [showAuctionList, setShowAuctionList] = useState([]);

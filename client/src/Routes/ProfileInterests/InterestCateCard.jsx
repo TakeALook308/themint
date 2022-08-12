@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { ImCross } from 'react-icons/im';
-import { instance } from '../../../../utils/apis/api';
+import { instance } from '../../utils/apis/api';
 
 function InterestCateCard({ keyword }) {
   // 관심 카테고리 삭제

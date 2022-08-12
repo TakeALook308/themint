@@ -24,13 +24,13 @@ function ProfileSalesHistoryPage({ params }) {
   const [salesDetail, setSalesDetail] = useState([]); // 판매내역 상세 내용 저장
   const [isModal, setIsModal] = useState(false);
 
+  useEffect(() => {
+    instance.get(`/api/history/sales/inprogress/${params}?page=0&size=9`);
+  }, []);
+
   const getUrl = (paramsnum, size) => {
     console.log(active);
     return (page) => `/api/history/sales/${active}/${paramsnum}?page=${page}&size=${size}`;
-  };
-  const getUrlCompleted = (paramsnum, size, active) => {
-    console.log(active);
-    return (page) => `/api/history/sales/complete/${paramsnum}?page=${page}&size=${size}`;
   };
 
   const ModalHandler = (auction) => {
@@ -110,19 +110,10 @@ function ProfileSalesHistoryPage({ params }) {
         queryKey={[`${params}${active}`]}
         CardComponent={IsSellingCard}
         SkeltonCardComponent={SkeletonAuctionCard}
-        text={'실시간 임박 경매가 없습니다.'}
+        text={'판매 내역이 없습니다'}
         func={ModalHandler}
         active={active}
       />
-      {/* <InfiniteAuctionList
-        getUrl={getUrlCompleted(params, 9)}
-        queryKey={['imminentAuctionList']}
-        CardComponent={IsSellingCard}
-        SkeltonCardComponent={SkeletonAuctionCard}
-        text={'실시간 임박 경매가 없습니다.'}
-        func={ModalHandler}
-        active={active}
-      /> */}
       <Modal open={isModal} close={ModalHandler} title="상품 관리">
         <ModalProfile>
           <img src={process.env.REACT_APP_IMAGE_URL + salesDetail.profileUrl} alt="프로필이미지" />
