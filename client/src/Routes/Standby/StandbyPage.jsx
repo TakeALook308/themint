@@ -152,6 +152,7 @@ function StandbyPage() {
     if (memberSeq) {
       standbyJoin(testSession, userInfo.nickname);
     }
+    return () => leaveSession();
   }, [memberSeq]);
 
   useEffect(() => {
