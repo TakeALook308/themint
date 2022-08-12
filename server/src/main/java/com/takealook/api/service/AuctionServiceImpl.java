@@ -59,7 +59,7 @@ public class AuctionServiceImpl implements AuctionService {
         List<Auction> auctionList = auctionRepository.findAllByMemberSeq(memberSeq);
         for (Auction auc : auctionList){
             LocalDateTime check = LocalDateTime.parse(auc.getStartTime(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            if(check.isAfter(minStartTime) || check.isBefore(maxStartTime)){
+            if(check.isAfter(minStartTime) && check.isBefore(maxStartTime)){
                 throw new AuctionTimeDuplicateException("auction time is overlapped with auction hash " + auc.getHash(), ErrorCode.AUCTION_TIME_DUPLICATION);
             }
         }

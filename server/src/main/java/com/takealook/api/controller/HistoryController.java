@@ -66,6 +66,7 @@ public class HistoryController {
     public ResponseEntity<SalesDetailRes> getSalesDetail(@PathVariable("historySeq") Long historySeq){
         History history = historyService.getHistoryBySeq(historySeq);
         Product product = productService.getProductBySeq(history.getProductSeq());
+        System.out.println(product.getSeq());
         Long memberseq = historyService.getPurchaseByProductSeq(product.getSeq()).getMemberSeq();
         Member member = memberService.getMemberByMemberSeq(memberseq);
         ProductDelivery productDelivery = productDeliveryService.getProductDeliveryByProductSeq(product.getSeq());
