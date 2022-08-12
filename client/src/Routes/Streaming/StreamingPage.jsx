@@ -9,18 +9,40 @@ import { useRecoilValue } from 'recoil';
 import { myInformationState } from '../../atoms';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
+import { useParams } from 'react-router-dom';
+import { getData } from '../../utils/apis/api';
+import { auctionApis } from '../../utils/apis/auctionApis';
+import moment from 'moment';
 let sock;
 let client;
 function StreamingPage(props) {
   const userInfo = useRecoilValue(myInformationState);
-  const auctionData = { memberId: 'themint' };
+  const { auctionId } = useParams();
+  const [auctionInfo, setAuctionInfo] = useState({});
+  const [auctionData, setAuctionData] = useState({});
+  const [nowProduct, setNowProduct] = useState(-1);
+  // const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState([
+    {
+      productName: 'error',
+      startPrice: -1,
+      status: -1,
+    },
+  ]);
+  useEffect(() => {
+    getData(auctionApis.AUCTION_DETAIL_API(auctionId)).then((res) => {
+      setAuctionInfo(res.data);
+      setAuctionData({ memberSeq: res.data.memberSeq });
+      setProducts(res.data.productList);
+    });
+  }, []);
 
-  // const [nickname, memberSeq] = userInfo;
   let nickname = userInfo.nickname;
   let memberSeq = userInfo.memberSeq;
-  let roomId = 'test';
+  let roomId = 'test'; //저장하는 api 룸 만들고 보내줘도 돼?
   const [chat, setChat] = useState([]);
   const [priceList, setPriceList] = useState([]);
+  const [newTime, setNewTime] = useState(moment());
 
   //처음 접속했을 때
   useEffect(() => {
@@ -33,9 +55,9 @@ function StreamingPage(props) {
         '/sub/chat/room/' + roomId,
         function (message) {
           const messagedto = JSON.parse(message.body);
-          if (Object.keys(messagedto).includes('price'))
+          if (Object.keys(messagedto).includes('price')) {
             setPriceList((prev) => [...prev, messagedto]);
-          else setChat((prev) => [...prev, messagedto]);
+          } else setChat((prev) => [...prev, messagedto]);
         },
         (err) => {},
       );
@@ -64,7 +86,6 @@ function StreamingPage(props) {
       }),
     );
   };
-
   const sendPrice = (msg) => {
     client.send(
       '/pub/product/message',
@@ -77,45 +98,28 @@ function StreamingPage(props) {
         memberSeq: 1,
       }),
     );
+    setNewTime(moment());
   };
-
-  const [nowProduct, setNowProduct] = useState(0);
-  const [products, setProducts] = useState([
-    {
-      productName: '닌텐도 스위치',
-      startPrice: 180000,
-      status: 0,
-    },
-    {
-      productName: '아이패드',
-      startPrice: 520000,
-      status: 0,
-    },
-  ]);
 
   return (
     <Stream>
       <Header>
-        <StreamingHeader />
+        <StreamingHeader auctionInfo={auctionInfo} />
       </Header>
       <Main>
         <Section>
           <AuctionList products={products} />
-
-          <StreamingComponent userInfo={userInfo} auctionData={auctionData} />
+          <StreamingComponent userInfo={userInfo} auctionData={auctionData} auctionId={auctionId} />
         </Section>
         <Aside>
           <AuctionBidding
-            product={products[nowProduct]}
+            products={products}
             sendPrice={sendPrice}
             price={priceList}
-            lastPrice={
-              priceList.length !== 0
-                ? priceList[priceList.length - 1].price
-                : products[nowProduct].startPrice
-            }
+            newTime={newTime}
           />
-          <StreamChat sendMessage={sendMessage} chat={chat} />
+
+          <StreamChat sendMessage={sendMessage} chat={chat} userInfo={userInfo} />
         </Aside>
       </Main>
     </Stream>
