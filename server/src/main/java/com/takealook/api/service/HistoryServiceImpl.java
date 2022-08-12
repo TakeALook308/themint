@@ -103,7 +103,7 @@ public class HistoryServiceImpl implements HistoryService {
     }
 
     @Override
-    public int registerSalesHistory(Long memberSeq, List<Product> productList, List<AuctionImage> auctionImageList) {
+    public int registerSalesHistory(Long memberSeq, List<Product> productList) {
         for (Product product : productList) {
             historyRepository.save(History.builder()
                     .memberSeq(memberSeq)

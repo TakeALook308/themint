@@ -103,18 +103,18 @@ public class ProductServiceImpl implements ProductService {
     public void updateProductList(Long auctionSeq, List<Product> productList) {
         productRepository.deleteAllByAuctionSeq(auctionSeq);
         for (Product product : productList) {
-            if (product.getSeq() != null || product.getSeq() != 0) {
-                productRepository.save(product);
-            } else {
+//            if (product.getSeq() != null || product.getSeq() != 0) {
+//                productRepository.save(product);
+//            } else {
                 Product newProduct = Product.builder()
-                        .auctionSeq(product.getAuctionSeq())
+                        .auctionSeq(auctionSeq)
                         .productName(product.getProductName())
                         .startPrice(product.getStartPrice())
                         .finalPrice(product.getFinalPrice())
                         .status(0)
                         .build();
                 productRepository.save(newProduct);
-            }
+//            }
         }
     }
 

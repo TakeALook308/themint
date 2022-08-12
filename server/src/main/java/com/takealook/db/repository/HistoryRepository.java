@@ -3,9 +3,11 @@ package com.takealook.db.repository;
 import com.takealook.db.entity.History;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
@@ -23,5 +25,7 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
     List<History> findPurchaseByMemberSeqAndStatusBiggerOrderBySeq(Long memberSeq, int status, Pageable pageable);
     History findBySeq(Long historySeq);
     History findByProductSeqAndSalesPurchase(Long productSeq, int salesPurchase);
+    @Transactional // update, delete 필수
+    @Modifying(clearAutomatically = true) // 영속성 컨텍스트 초기화
     void deleteByProductSeqAndSalesPurchase(Long productSeq, int salesPurchase);
 }

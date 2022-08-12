@@ -25,6 +25,4 @@ public class AuctionRegisterPostReq {
     String startTime;
     @ApiModelProperty(name = "", example = "")
     List<ProductRegisterPostReq> productList;
-//    @ApiModelProperty(name = "", example = "")
-//    MultipartFile[] auctionImageList;
 }
