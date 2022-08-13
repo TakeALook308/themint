@@ -5,6 +5,8 @@ import SkeletonAuctionCard from '../../components/CardList/SkeletonAuctionCard';
 import { instance } from '../../utils/apis/api';
 import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
 import Modal from '../../components/common/Modal';
+import GradientButton from '../../components/ButtonList/GradientButton';
+import ActiveInputBox from '../../components/common/ActiveInputBox';
 
 // 별점기능
 import { FaStar } from 'react-icons/fa';
@@ -32,15 +34,22 @@ function ProfilePurchaseHistoryPage({ params }) {
       const response = await instance.get(url);
       return response;
     };
-    const res = getPurchaseDetail(`/api/history/sales/detail/${auction.historySeq}`);
+    const res = getPurchaseDetail(`/api/history/purchase/detail/${auction.historySeq}`);
     res.then((itemDetail) => {
       setPurchaseDetail(itemDetail.data); // 상세보기 내용을 salesDetail에 저장
+      console.log(itemDetail.data);
+      onChange({
+        target: { name: 'productDeliverySeq', value: itemDetail.data.productDeliverySeq },
+      });
+      onChange({ target: { name: 'name', value: itemDetail.data.name } });
+      onChange({ target: { name: 'phone', value: itemDetail.data.phone } });
+      onChange({ target: { name: 'name', value: auction.name } });
+      onChange({ target: { name: 'phone', value: auction.phone } });
     });
-    setIsModal((prev) => !prev);
-    setPurchaseDetail([]);
-    onChange({ target: { name: 'productDeliverySeq', value: auction.productDeliverySeq } });
     onChange({ target: { name: 'name', value: auction.name } });
     onChange({ target: { name: 'phone', value: auction.phone } });
+    setIsModal((prev) => !prev);
+    setPurchaseDetail([]);
   };
 
   // 배송정보 수정
@@ -86,12 +95,14 @@ function ProfilePurchaseHistoryPage({ params }) {
   };
   // 버튼 클릭하면 배송정보를 patch
   const postReview = () => {
-    const postReviewData = async (url, data) => {
-      const response = await instance.post(url, data);
-      return response;
-    };
-    const res = postReviewData(`/api/delivery`, reviewData);
-    res.then(() => {});
+    console.log(purchaseDetail);
+    console.log(reviewData);
+    // const postReviewData = async (url, data) => {
+    //   const response = await instance.post(url, data);
+    //   return response;
+    // };
+    // const res = postReviewData(`/api/delivery`, reviewData);
+    // res.then(() => {});
   };
 
   // 별점기능
@@ -111,9 +122,10 @@ function ProfilePurchaseHistoryPage({ params }) {
   const sendReview = () => {
     let score = clicked.filter(Boolean).length;
     onChange2({ target: { name: 'score', value: score } });
+    console.log(purchaseDetail);
+    onChange2({ target: { name: 'receiverSeq', value: purchaseDetail.receiverSeq } });
   };
   console.log(reviewData);
-
   return (
     <Container>
       <ButtonNav>
@@ -151,27 +163,32 @@ function ProfilePurchaseHistoryPage({ params }) {
                 계좌소유주-{purchaseDetail.name}
               </p>
               <p>입금자명:</p>
-              <input
+              <StyledInput
                 placeholder="입금자 명을 입력해 주세요"
                 name="remitName"
                 value={remitName}
-                onChange={onChange}></input>
+                onChange={onChange}
+              />
               <p>배송정보 입력:</p>
-              <input
+              <StyledInput
                 placeholder="우편번호를 입력해 주세요"
                 name="zipCode"
                 value={zipCode}
-                onChange={onChange}></input>
-              <input
-                placeholder="상세 주소를 입력해 주세요"
+                onChange={onChange}
+                size="30%"
+              />
+              <StyledInput
+                placeholder="주소를 입력해 주세요"
                 name="address"
                 value={address}
-                onChange={onChange}></input>
-              <input
+                onChange={onChange}
+              />
+              <StyledInput
                 placeholder="상세 주소를 입력해 주세요"
                 name="addressDetail"
                 value={addressDetail}
-                onChange={onChange}></input>
+                onChange={onChange}
+              />
               <button onClick={patchDelivery}>배송정보 저장</button>
             </Purchasing>
           )}
@@ -182,6 +199,7 @@ function ProfilePurchaseHistoryPage({ params }) {
 
               <p>배송조회</p>
               <p>리뷰 작성</p>
+              <input type="text" onChange={onChange2} name="content" value={content}></input>
               <p>별점을 작성해 주세요!</p>
               <Stars>
                 {ARRAY.map((el, idx) => {
@@ -195,6 +213,7 @@ function ProfilePurchaseHistoryPage({ params }) {
                   );
                 })}
               </Stars>
+              <GradientButton onClick={postReview} text="리뷰작성" size="20%"></GradientButton>
             </Purchased>
           )}
         </ModalMain>
@@ -254,21 +273,36 @@ const ModalMain = styled.main`
   > p {
     margin-bottom: 15px;
   }
+  > ActiveInputBox {
+    margin-bottom: 10px;
+  }
 `;
 
 const Purchasing = styled.div`
   width: 100%;
+  > p {
+    margin-bottom: 10px;
+  }
+  > input {
+    margin-bottom: 10px;
+  }
 `;
 
 const Purchased = styled.div`
   width: 100%;
+  > p {
+    margin-bottom: 10px;
+  }
+  > input {
+    margin-bottom: 10px;
+  }
 `;
 
 // 별점기능
 const Stars = styled.div`
   display: flex;
   padding-top: 5px;
-
+  margin-bottom: 10px;
   & svg {
     color: gray;
     cursor: pointer;
@@ -285,4 +319,15 @@ const Stars = styled.div`
   .yellowStar {
     color: #fcc419;
   }
+`;
+
+const StyledInput = styled.input`
+  background-color: ${(props) => props.theme.colors.pointBlack};
+  height: 40px;
+  border: none;
+  border-radius: 5px;
+  padding: ${(props) => (props.active ? '20px 10px 10px' : '10px')};
+  color: ${(props) => props.theme.colors.white};
+  width: 100%;
+  outline: none;
 `;
