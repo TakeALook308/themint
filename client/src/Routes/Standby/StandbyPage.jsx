@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 import { myInformationState } from '../../atoms';
@@ -9,8 +9,9 @@ import { BsFillCameraVideoFill, BsFillCameraVideoOffFill, BsFillMicFill } from '
 import { IoExit } from 'react-icons/io5';
 import { useNavigate, useParams } from 'react-router-dom';
 import { fetchData } from '../../utils/apis/api';
-import { streamingApis } from '../../utils/apis/streamingApis';
-import { errorToast } from '../../lib/toast';
+import { errorToast, successToast } from '../../lib/toast';
+import { auctionApis } from '../../utils/apis/auctionApis';
+import { categories } from '../../utils/constants/constant';
 
 const OPENVIDU_SERVER_URL = 'https://i7a308.p.ssafy.io:8443';
 const OPENVIDU_SERVER_SECRET = 'themint';
@@ -23,8 +24,9 @@ function StandbyPage() {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [video, setVideo] = useState(0); // 1 ON, 0 OFF
   const [publisher, setPublisher] = useState('');
+  const [audioEnabled, setAudioEnabled] = useState(true);
   useEffect(() => {
-    fetchData.get(streamingApis.STANDBY(auctionId)).then((res) => setStanByInfo(res.data));
+    fetchData.get(auctionApis.AUCTION_DETAIL_API(auctionId)).then((res) => setStanByInfo(res.data));
   }, []);
 
   const OV = new OpenVidu();
@@ -144,8 +146,19 @@ function StandbyPage() {
   });
 
   useEffect(() => {
-    if (standByInfo) {
+    if (standByInfo.memberSeq) {
       standbyJoin(testSession, userInfo.nickname);
+    }
+    if (standByInfo.memberSeq === userInfo.memberSeq) {
+      successToast(
+        <div>
+          <strong>경매 입장 준비장입니다.</strong> <br />
+          <br />
+          경매장에 입장하기 전 카메라와 마이크 등 테스트를 마친 후 입장해주세요.
+        </div>,
+        'light',
+        3000,
+      );
     }
     return () => leaveSession();
   }, [standByInfo]);
@@ -160,6 +173,11 @@ function StandbyPage() {
     setVideo(num);
     publisher.publishVideo(!publisher.stream.videoActive);
   };
+  useEffect(() => {
+    if (publisher?.publishAudio) {
+      publisher.publishAudio(audioEnabled);
+    }
+  }, [audioEnabled]);
 
   const movoToStreaming = () => {
     leaveSession();
@@ -168,13 +186,16 @@ function StandbyPage() {
 
   if (standByInfo?.memberSeq && userInfo.memberSeq !== standByInfo?.memberSeq) {
     navigate(-1);
-    errorToast('접근 권한이 없습니다.');
+    errorToast('⚠️접근 권한이 없습니다.', 3000);
     return;
   }
 
   return (
     <Container>
-      <Header>{standByInfo.title}</Header>
+      <Header>
+        <p>{categories[standByInfo?.categorySeq - 1]?.name}</p>
+        <h2>{standByInfo.title}</h2>
+      </Header>
       <AuctionCreatorVideoContainer>
         <VideoWrapper>{publisher && <UserVideoComponent streamManager={publisher} />}</VideoWrapper>
       </AuctionCreatorVideoContainer>
@@ -184,7 +205,7 @@ function StandbyPage() {
             <div>
               <IconWrapper
                 as="button"
-                active={true}
+                color={'mainMint'}
                 onClick={() => {
                   videoControll(0);
                 }}>
@@ -205,16 +226,37 @@ function StandbyPage() {
             </div>
           )}
           <SettingIcons>
-            {isSpeaking ? (
+            {!audioEnabled ? (
               <div>
-                <IconWrapper active={true}>
+                <IconWrapper
+                  color={'pointRed'}
+                  as="button"
+                  onClick={() => {
+                    setAudioEnabled(true);
+                  }}>
+                  <BsFillMicFill />
+                </IconWrapper>
+                <ContentText>음성 켜기</ContentText>
+              </div>
+            ) : isSpeaking ? (
+              <div>
+                <IconWrapper
+                  color={'mainMint'}
+                  as="button"
+                  onClick={() => {
+                    setAudioEnabled(false);
+                  }}>
                   <BsFillMicFill />
                 </IconWrapper>
                 <ContentText>음성 인식중</ContentText>
               </div>
             ) : (
               <div>
-                <IconWrapper>
+                <IconWrapper
+                  as="button"
+                  onClick={() => {
+                    setAudioEnabled(false);
+                  }}>
                   <BsFillMicFill />
                 </IconWrapper>
                 <ContentText>마이크 체크</ContentText>
@@ -248,7 +290,23 @@ const Container = styled.main`
   justify-content: center;
 `;
 
-const Header = styled.div``;
+const Header = styled.div`
+  min-height: 10%;
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  background-color: ${(props) => props.theme.colors.subBlack};
+  margin-bottom: 1rem;
+  padding: 0.125rem 1rem;
+  border-radius: 10px;
+  line-height: 1.5;
+  > p {
+    color: ${(props) => props.theme.colors.textGray};
+  }
+  > h2 {
+    font-size: ${(props) => props.theme.fontSizes.h4};
+  }
+`;
 
 const VideoWrapper = styled.div`
   position: absolute;
@@ -261,7 +319,7 @@ const VideoWrapper = styled.div`
 
 const AuctionCreatorVideoContainer = styled.div`
   position: relative;
-  border-radius: 25px;
+  border-radius: 10px;
   overflow: hidden;
   width: 80%;
   padding-top: 60%;
@@ -272,6 +330,11 @@ const AuctionCreatorVideoContainer = styled.div`
 
 const SettingIcons = styled.div`
   cursor: pointer;
+  background-color: transparent;
+  outline: none;
+  width: 100px;
+  margin: 0 auto;
+  text-align: center;
 `;
 
 const SettingWrapper = styled.div`
@@ -291,7 +354,7 @@ const IconWrapper = styled.div`
   width: 4rem;
   height: 4rem;
   background-color: ${(props) =>
-    props.active ? props.theme.colors.mainMint : props.theme.colors.white};
+    props.color ? props.theme.colors[props.color] : props.theme.colors.white};
   border-radius: 50%;
   display: flex;
   align-items: center;
