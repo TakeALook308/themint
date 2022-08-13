@@ -5,6 +5,7 @@ import { getData } from '../../utils/apis/api';
 import moment from 'moment';
 // import { useInterval } from './useInterval.jsx';
 import Timer from './Timer';
+import { errorToast } from '../../lib/toast';
 function AuctionBidding({ products, sendPrice, price, producter }) {
   const [nowProduct, setNowProduct] = useState(-1);
   const [nowPrice, setNowPrice] = useState(0);
@@ -139,7 +140,7 @@ function AuctionBidding({ products, sendPrice, price, producter }) {
               <button
                 onClick={() => {
                   if (Number(myPrice) - 1000 > nowPrice) setMyPrice(Number(myPrice) - 1000);
-                  else alert('안돼');
+                  else errorToast('현재 입찰가 보다 낮은 금액입니다.');
                 }}>
                 -
               </button>
@@ -164,7 +165,7 @@ function AuctionBidding({ products, sendPrice, price, producter }) {
                 if (myPrice > nowPrice) {
                   sendPrice(myPrice);
                   setMyPrice(Number(myPrice) + 1000);
-                } else alert('안돼');
+                } else errorToast('현재 입찰가 보다 낮은 금액입니다.');
               }}>
               응찰
             </button>
