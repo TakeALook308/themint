@@ -19,7 +19,7 @@ function AuctionCreatePage(props) {
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
-  const [auctionImageList, setAuctionImageList] = useState(null);
+  const [auctionImageList, setAuctionImageList] = useState([]);
   const [inputAuction, setInputAuction] = useState({
     categorySeq: 1,
     title: '',
@@ -78,6 +78,11 @@ function AuctionCreatePage(props) {
   const ModalHandler = () => {
     setIsModal((prev) => !prev);
   };
+
+  const reader = new FileReader();
+  reader.onload = () =>
+    (document.querySelector('.img_box').style.backgrondImage = `url(${reader.result})`);
+  reader.readAsDataURL(auctionImageList[0]);
   return (
     <Container>
       <Title>경매 생성</Title>
@@ -127,17 +132,12 @@ function AuctionCreatePage(props) {
           <FileUpload>
             <div {...getRootProps()}>
               <input {...getInputProps()} />
-              {isDragActive ? (
-                <p>Drop the files here ...</p>
-              ) : auctionImageList === null ? (
-                <div>파일을 추가해주세요</div>
-              ) : (
-                <div>
-                  {auctionImageList.map((item, i) => (
-                    <p key={i}>{item.path}</p>
-                  ))}
-                </div>
-              )}
+              {isDragActive ? <p>Drop the files here ...</p> : <div>파일을 추가해주세요</div>}
+              <div className="img_box">
+                {/* {auctionImageList.map((item, i) => {
+                  console.log(item);
+                })} */}
+              </div>
             </div>
           </FileUpload>
         </Div>
