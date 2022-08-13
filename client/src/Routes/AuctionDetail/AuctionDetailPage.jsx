@@ -8,11 +8,12 @@ import { categories } from '../../utils/constants/constant';
 import GradientButton from '../../components/ButtonList/GradientButton';
 import { myInformationState } from '../../atoms';
 import { useRecoilValue } from 'recoil';
+import { CgAlarm } from 'react-icons/cg';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay, Navigation } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/pagination';
-
+import './swiper.css';
 function AuctionDetailPage(props) {
   const userInfo = useRecoilValue(myInformationState);
   const navigate = useNavigate();
@@ -64,20 +65,27 @@ function AuctionDetailPage(props) {
                 <p className="title">{auctionInfo.title}</p>
               </AuctionTitleLeft>
               <AuctionTitleRight>
-                <div>알림</div>
+                <div>
+                  <CgAlarm size={25}></CgAlarm>
+                  <span>{auctionInfo.interest}</span>
+                </div>
               </AuctionTitleRight>
             </div>
-            <div
-              className="profile"
-              onClick={() => {
-                navigate(`/profile/${auctionInfo.memberSeq}`);
-              }}>
+            <div className="profile">
               <img
                 src={`https://s3.ap-northeast-2.amazonaws.com/s3-themint${auctionInfo.profileUrl}`}
                 alt="프로필 이미지"
                 width="30px"
+                onClick={() => {
+                  navigate(`/profile/${auctionInfo.memberSeq}`);
+                }}
               />
-              <span>{auctionInfo.nickname}</span>
+              <span
+                onClick={() => {
+                  navigate(`/profile/${auctionInfo.memberSeq}`);
+                }}>
+                {auctionInfo.nickname}
+              </span>
             </div>
             <div className="date">
               <p>{auctionInfo.startTime.slice(0, -3)} 예정</p>
@@ -99,14 +107,16 @@ function AuctionDetailPage(props) {
         </AuctionMainInfo>
         <AuctionList>
           {auctionInfo.productList.map((item, i) => (
-            <div key={i}>
+            <ProductListCard key={i}>
               <p>{item.productName}</p>
-              <span>{item.startPrice}</span>
-            </div>
+              <span>{item.startPrice.toLocaleString()}원~</span>
+              {/* <span>{item.status}</span> */}
+            </ProductListCard>
           ))}
         </AuctionList>
         <AuctionContent>
-          <p>{auctionInfo.content}</p>
+          <p>상품 설명</p>
+          <div>{auctionInfo.content}</div>
         </AuctionContent>
       </Container>
     );
@@ -119,14 +129,20 @@ const AuctionMainInfo = styled.div`
   @media screen and (max-width: 768px) {
     flex-direction: column;
     height: auto;
+    padding: 10px;
   }
 `;
 const AuctionImage = styled.div`
   width: 55%;
-  padding: 10px;
+  padding: 10px 10px 10px 0;
+  background-color: ${(props) => props.theme.colors.mainBlack};
+  img {
+    border-radius: 10px;
+  }
   @media screen and (max-width: 768px) {
     width: 100%;
     height: 350px;
+    padding: 10px;
   }
 `;
 
@@ -134,7 +150,7 @@ const AuctionInfoBox = styled.div`
   display: flex;
   flex-direction: column;
   width: 45%;
-  padding: 20px 10px;
+  padding: 20px 0 20px 10px;
   gap: 10px;
   justify-content: space-between;
   & > .auction_info_first {
@@ -144,13 +160,14 @@ const AuctionInfoBox = styled.div`
   .profile {
     display: flex;
     align-items: center;
-    cursor: pointer;
     img {
+      cursor: pointer;
       border-radius: 15px;
     }
     span {
       display: inline-block;
       padding-left: 10px;
+      cursor: pointer;
     }
   }
   .date {
@@ -171,6 +188,7 @@ const AuctionInfoBox = styled.div`
   }
   @media screen and (max-width: 768px) {
     width: 100%;
+    padding: 10px;
   }
 `;
 
@@ -191,12 +209,59 @@ const AuctionTitleRight = styled.div`
   justify-content: center;
   align-items: center;
   padding: 10px;
+  & > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    span {
+      font-size: 12px;
+      padding-top: 5px;
+    }
+  }
 `;
 
 const AuctionList = styled.div`
   display: flex;
   width: 100%;
+  height: 140px;
+  padding: 10px;
+  gap: 10px;
+  align-items: center;
+  background-color: ${(props) => props.theme.colors.subBlack};
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    padding: 10px;
+  }
 `;
 
-const AuctionContent = styled.div``;
+const AuctionContent = styled.div`
+  padding: 10px 0;
+  p {
+    font-size: 24px;
+    font-weight: 700;
+    padding: 10px 0;
+  }
+  div {
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+`;
+
+const ProductListCard = styled.div`
+  display: flex;
+
+  flex-direction: column;
+  justify-content: center;
+  width: 150px;
+  background-color: ${(props) => props.theme.colors.pointBlack};
+  height: 100px;
+  border-radius: 10px;
+  padding: 10px;
+  p {
+    font-size: 18px;
+    font-weight: 600;
+    padding-bottom: 10px;
+  }
+`;
 export default AuctionDetailPage;
