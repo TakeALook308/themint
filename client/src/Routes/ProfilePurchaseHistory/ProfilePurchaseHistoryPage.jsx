@@ -2,19 +2,14 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import IsPurchasingCard from './IsPurchasingCard';
 import SkeletonAuctionCard from '../../components/CardList/SkeletonAuctionCard';
-import { myInformationState } from '../../atoms';
-import { useRecoilValue } from 'recoil';
 import { instance } from '../../utils/apis/api';
 import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
 import Modal from '../../components/common/Modal';
 
+// 별점기능
+import { FaStar } from 'react-icons/fa';
+
 function ProfilePurchaseHistoryPage({ params }) {
-  // 사용자랑 프로필 일치여부 확인
-  const myInformation = useRecoilValue(myInformationState);
-  const strMemberSeq = `${myInformation.memberSeq}`;
-  useEffect(() => {
-    instance.get(`/api/history/purchase/inprogress?page=0&size=9`);
-  }, []);
   // 구매내역 API 요청
   const getPurchaseUrl = (paramsnum, size) => {
     return (page) => `/api/history/purchase/${active}?page=${page}&size=${size}`;
@@ -43,62 +38,162 @@ function ProfilePurchaseHistoryPage({ params }) {
     });
     setIsModal((prev) => !prev);
     setPurchaseDetail([]);
+    onChange({ target: { name: 'productDeliverySeq', value: auction.productDeliverySeq } });
+    onChange({ target: { name: 'name', value: auction.name } });
+    onChange({ target: { name: 'phone', value: auction.phone } });
   };
+
+  // 배송정보 수정
+  const [deliveryData, setDeliveryData] = useState({
+    productDeliverySeq: 1,
+    name: '',
+    remitName: '',
+    phone: '',
+    address: '',
+    addressDetail: '',
+    zipCode: '',
+  });
+  const { remitName, address, addressDetail, zipCode } = deliveryData;
+  const onChange = ({ target: { name, value } }) => {
+    setDeliveryData({
+      ...deliveryData,
+      [name]: value,
+    });
+  };
+  // 버튼 클릭하면 배송정보를 patch
+  const patchDelivery = () => {
+    console.log(deliveryData);
+    const patchDeliveryData = async (url, data) => {
+      const response = await instance.patch(url, data);
+      return response;
+    };
+    const res = patchDeliveryData(`/api/delivery`, deliveryData);
+    res.then(() => {});
+  };
+
+  // 리뷰 작성
+  const [reviewData, setReviewData] = useState({
+    receiverSeq: 1,
+    content: '',
+    score: 1,
+  });
+  const { content, score } = reviewData;
+  const onChange2 = ({ target: { name, value } }) => {
+    setReviewData({
+      ...reviewData,
+      [name]: value,
+    });
+  };
+  // 버튼 클릭하면 배송정보를 patch
+  const postReview = () => {
+    const postReviewData = async (url, data) => {
+      const response = await instance.post(url, data);
+      return response;
+    };
+    const res = postReviewData(`/api/delivery`, reviewData);
+    res.then(() => {});
+  };
+
+  // 별점기능
+  const ARRAY = [0, 1, 2, 3, 4];
+  const [clicked, setClicked] = useState([false, false, false, false, false]);
+  const handleStarClick = (index) => {
+    let clickStates = [...clicked];
+    for (let i = 0; i < 5; i++) {
+      clickStates[i] = i <= index ? true : false;
+    }
+    setClicked(clickStates);
+  };
+  useEffect(() => {
+    sendReview();
+  }, [clicked]); //컨디마 컨디업
+
+  const sendReview = () => {
+    let score = clicked.filter(Boolean).length;
+    onChange2({ target: { name: 'score', value: score } });
+  };
+  console.log(reviewData);
 
   return (
     <Container>
       <ButtonNav>
         <StyledBtn
           key={1}
-          className={active === '1' ? 'active' : undefined}
-          id={'1'}
+          className={active === 'inprogress' ? 'active' : undefined}
+          id={'inprogress'}
           onClick={onSelling}>
           진행중
         </StyledBtn>
         <StyledBtn
           key={2}
-          className={active === '2' ? 'active' : undefined}
-          id={'2'}
+          className={active === 'complete' ? 'active' : undefined}
+          id={'complete'}
           onClick={onSold}>
           구매완료
         </StyledBtn>
       </ButtonNav>
-      {params === strMemberSeq && (
-        <IsUserSame>
-          <InfiniteAuctionList
-            getUrl={getPurchaseUrl(params, 9)}
-            queryKey={[`${params}${active}`]}
-            CardComponent={IsPurchasingCard}
-            SkeltonCardComponent={SkeletonAuctionCard}
-            text={'판매 내역이 없습니다'}
-            func={ModalHandler}
-            active={active}
-          />
-        </IsUserSame>
-      )}
+      <InfiniteAuctionList
+        getUrl={getPurchaseUrl(params, 9)}
+        queryKey={[`${params}${active}`]}
+        CardComponent={IsPurchasingCard}
+        SkeltonCardComponent={SkeletonAuctionCard}
+        text={'구매 내역이 없습니다'}
+        func={ModalHandler}
+        active={active}
+      />
       <Modal open={isModal} close={ModalHandler} title="구매 내역 관리">
         <ModalMain>
-          <p>입금 완료 후, 배송지를 입력해주세요!!!</p>
-          <p>
-            판매자 계좌: 은행-{purchaseDetail.bankCode} 계좌번호-{purchaseDetail.accountNo}
-            계좌소유주-{purchaseDetail.name}
-          </p>
-          <button>내 정보 불러오기</button>
-          <p>입금자명:</p>
-          {/* <input placeholder="입금자 명을 입력해 주세요" name="remitName" value={remitName}></input> */}
-          <p>배송정보 입력:</p>
-          <input
-            placeholder="상세 주소를 입력해 주세요"
-            name="addressDetail"
-            // value={paddressDetail}
-          ></input>
-          <button>배송정보 저장</button>
-          {purchaseDetail.status < 4 && (
-            <ModalMain>
-              <p>배송정보</p>
+          {active === 'inprogress' && (
+            <Purchasing>
+              <p>입금 완료 후, 배송지를 입력해주세요!!!</p>
+              <p>
+                판매자 계좌: 은행-{purchaseDetail.bankCode} 계좌번호-{purchaseDetail.accountNo}
+                계좌소유주-{purchaseDetail.name}
+              </p>
+              <p>입금자명:</p>
+              <input
+                placeholder="입금자 명을 입력해 주세요"
+                name="remitName"
+                value={remitName}
+                onChange={onChange}></input>
+              <p>배송정보 입력:</p>
+              <input
+                placeholder="우편번호를 입력해 주세요"
+                name="zipCode"
+                value={zipCode}
+                onChange={onChange}></input>
+              <input
+                placeholder="상세 주소를 입력해 주세요"
+                name="address"
+                value={address}
+                onChange={onChange}></input>
+              <input
+                placeholder="상세 주소를 입력해 주세요"
+                name="addressDetail"
+                value={addressDetail}
+                onChange={onChange}></input>
+              <button onClick={patchDelivery}>배송정보 저장</button>
+            </Purchasing>
+          )}
+          {active === 'complete' && (
+            <Purchased>
+              <p>배송정보 : </p>
               <p>배송조회</p>
-              <p>리뷰작성</p>
-            </ModalMain>
+              <p>리뷰 작성</p>
+              <p>별점을 작성해 주세요!</p>
+              <Stars>
+                {ARRAY.map((el, idx) => {
+                  return (
+                    <FaStar
+                      key={idx}
+                      size="25"
+                      onClick={() => handleStarClick(el)}
+                      className={clicked[el] && 'yellowStar'}
+                    />
+                  );
+                })}
+              </Stars>
+            </Purchased>
           )}
         </ModalMain>
       </Modal>
@@ -150,15 +245,42 @@ const StyledBtn = styled.div`
   }
 `;
 
-const IsUserSame = styled.div`
-  width: 100%;
-`;
-
 const ModalMain = styled.main`
   width: 100%;
   height: 300px;
   border-radius: 10px;
   > p {
     margin-bottom: 15px;
+  }
+`;
+
+const Purchasing = styled.div`
+  width: 100%;
+`;
+
+const Purchased = styled.div`
+  width: 100%;
+`;
+
+// 별점기능
+const Stars = styled.div`
+  display: flex;
+  padding-top: 5px;
+
+  & svg {
+    color: gray;
+    cursor: pointer;
+  }
+
+  :hover svg {
+    color: #fcc419;
+  }
+
+  & svg:hover ~ svg {
+    color: gray;
+  }
+
+  .yellowStar {
+    color: #fcc419;
   }
 `;

@@ -49,22 +49,22 @@ function IsPurchasingCard({ auction, func }) {
           </div>
         </Link>
       </div>
-      {auction.status > 0 && auction.status <= 3 ? (
+      {auction.status === 0 && auction.status <= 3 ? (
         <Plus
           type="button"
           onClick={() => {
             func(auction);
           }}>
-          판매 상세
+          구매 정보 입력
         </Plus>
       ) : null}
-      {auction.status > 0 && auction.status <= 3 ? (
+      {auction.status > 3 ? (
         <Plus
           type="button"
           onClick={() => {
             func(auction);
           }}>
-          판매 상세
+          배송 확인/리뷰
         </Plus>
       ) : null}
     </CardContainer>
