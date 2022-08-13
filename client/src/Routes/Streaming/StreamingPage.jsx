@@ -38,7 +38,7 @@ function StreamingPage(props) {
 
   let nickname = userInfo.nickname;
   let memberSeq = userInfo.memberSeq;
-  let roomId = 'test'; //저장하는 api 룸 만들고 보내줘도 돼?
+  let roomId = auctionId; //저장하는 api 룸 만들고 보내줘도 돼?
   const [chat, setChat] = useState([]);
   const [priceList, setPriceList] = useState([]);
   const [newTime, setNewTime] = useState(moment());
