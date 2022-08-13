@@ -10,7 +10,6 @@ function AccountText({ textList }) {
     const bankInfo = bankList[bankIndex];
     setBank(bankInfo);
   }, []);
-  console.log(textList);
   return (
     <Container>
       <p>{bank?.bankName}</p>
