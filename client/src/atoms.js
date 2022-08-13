@@ -19,3 +19,8 @@ export const myInformationState = atom({
     memberSeq: session.get('profile') ? session.get('profile').memberSeq : '',
   },
 });
+
+export const timeState = atom({
+  key: 'timeState',
+  default: 0,
+});

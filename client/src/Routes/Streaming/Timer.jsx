@@ -1,5 +1,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
+import { timeState } from '../../atoms';
 
 function useInterval(callback, delay) {
   const savedCallback = useRef(); // 최근에 들어온 callback을 저장할 ref를 하나 만든다.
@@ -28,6 +30,7 @@ const Timer = forwardRef((props, ref) => {
   const [isPlay, setIsPlay] = useState(false);
   const [second, setSecond] = useState(0);
   const [timerInterval, setTimerInterval] = useState(0);
+  const setTime = useSetRecoilState(timeState);
 
   const tick = () => {
     if (second > 0) {
@@ -50,6 +53,9 @@ const Timer = forwardRef((props, ref) => {
     isPlay ? 1000 : null,
   );
 
+  useEffect(() => {
+    setTime(second);
+  }, [second]);
   useEffect(() => {
     getTime();
   }, []);

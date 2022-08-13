@@ -6,13 +6,14 @@ import StreamChat from './StreamChat';
 import AuctionBidding from './AuctionBidding';
 import AuctionList from './AuctionList';
 import { useRecoilValue } from 'recoil';
-import { myInformationState } from '../../atoms';
+import { myInformationState, timeState } from '../../atoms';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { useParams } from 'react-router-dom';
 import { getData } from '../../utils/apis/api';
 import { auctionApis } from '../../utils/apis/auctionApis';
 import moment from 'moment';
+import TimeBar from './TimeBar';
 let sock;
 let client;
 function StreamingPage(props) {
@@ -28,6 +29,8 @@ function StreamingPage(props) {
       status: -1,
     },
   ]);
+
+  const auctionTime = useRecoilValue(timeState);
   useEffect(() => {
     getData(auctionApis.AUCTION_DETAIL_API(auctionId)).then((res) => {
       setAuctionInfo(res.data);
@@ -110,6 +113,7 @@ function StreamingPage(props) {
       <Main>
         <Section>
           <AuctionList products={products} />
+          <TimeBar />
           <StreamingComponent userInfo={userInfo} auctionData={auctionData} auctionId={auctionId} />
         </Section>
         <Aside>
@@ -118,7 +122,7 @@ function StreamingPage(props) {
             sendPrice={sendPrice}
             price={priceList}
             newTime={newTime}
-            producter={userInfo.memberSeq == auctionInfo.memberSeq ? true : false}
+            producter={userInfo.memberSeq === auctionInfo.memberSeq ? true : false}
           />
 
           <StreamChat sendMessage={sendMessage} chat={chat} userInfo={userInfo} />
