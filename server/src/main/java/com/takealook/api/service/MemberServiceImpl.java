@@ -194,9 +194,8 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
-    public void deleteMember(Long memberSeq) {
-        // 토큰으로 회원 정보 확인 후, pwd 같은지 확인
-        memberRepository.deleteMemberBySeq(memberSeq);
+    public void updateMemberStatus(Long memberSeq) {
+        memberRepository.updateMemberStatus(memberSeq);
     }
 
     @Override
