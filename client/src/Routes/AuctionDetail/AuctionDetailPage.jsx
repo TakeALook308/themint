@@ -58,7 +58,7 @@ function AuctionDetailPage(props) {
             </Swiper>
           </AuctionImage>
           <AuctionInfoBox>
-            <div>
+            <div className="auction_info_first">
               <AuctionTitleLeft>
                 <p className="category">{categories[auctionInfo.categorySeq - 1].name}</p>
                 <p className="title">{auctionInfo.title}</p>
@@ -137,7 +137,7 @@ const AuctionInfoBox = styled.div`
   padding: 20px 10px;
   gap: 10px;
   justify-content: space-between;
-  & > div {
+  & > .auction_info_first {
     display: flex;
     justify-content: space-between;
   }
@@ -186,7 +186,12 @@ const AuctionTitleLeft = styled.div`
   }
 `;
 
-const AuctionTitleRight = styled.div``;
+const AuctionTitleRight = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+`;
 
 const AuctionList = styled.div`
   display: flex;
