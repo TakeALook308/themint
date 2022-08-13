@@ -7,7 +7,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import { fetchData } from '../../utils/apis/api';
 import { userApis } from '../../utils/apis/userApis';
 
-function AccountsWithdrawlPage(props) {
+function AccountsWithdrawlPage() {
   const [withdrawn, setWithdrawn] = useState('false');
 
   const onChangeWithdrawl = (e) => {
@@ -17,7 +17,7 @@ function AccountsWithdrawlPage(props) {
   const logout = useLogout();
 
   const withdraw = async () => {
-    await fetchData.delete(userApis.DELETE_USER);
+    await fetchData.patch(userApis.DELETE_USER);
     logout({ type: 'withdrawl' });
   };
 

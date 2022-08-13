@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { NavLink, Route, Routes } from 'react-router-dom';
 import styled from 'styled-components';
 import { AccountsEdit, AccountsPassword, AccountsPhoneNumber, AccountsWithdrawl } from '..';
@@ -17,12 +17,14 @@ function AccountsPage() {
         <NavStyle to="withdrawl">회원 탈퇴</NavStyle>
       </article>
       <article>
-        <Routes>
-          <Route path="edit" element={<AccountsEdit />} />
-          <Route path="password" element={<AccountsPassword />} />
-          <Route path="phone-number" element={<AccountsPhoneNumber />} />
-          <Route path="withdrawl" element={<AccountsWithdrawl />} />
-        </Routes>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Routes>
+            <Route path="edit" element={<AccountsEdit />} />
+            <Route path="password" element={<AccountsPassword />} />
+            <Route path="phone-number" element={<AccountsPhoneNumber />} />
+            <Route path="withdrawl" element={<AccountsWithdrawl />} />
+          </Routes>
+        </Suspense>
       </article>
     </GridContainer>
   );

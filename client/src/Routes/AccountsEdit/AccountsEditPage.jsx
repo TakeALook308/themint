@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import styled from 'styled-components';
-import { myInformationState } from '../../atoms';
+import { getUserSelector, myInformationState } from '../../atoms';
 import { fetchData } from '../../utils/apis/api';
 import { userApis } from '../../utils/apis/userApis';
 import InformationEdit from './InformationEdit';
@@ -22,20 +22,21 @@ function AccountsEditPage(props) {
     noticeEmail: '',
     score: '',
   });
-  console.log(userAllInfo);
-  const getUserData = async () => {
-    const response = await fetchData.get(userApis.USER_INFORMATION(myInformation.memberSeq));
-    return response?.data;
-  };
 
   const myInformation = useRecoilValue(myInformationState);
+  // const [user, setUser] = useRecoilState(getUserSelector(myInformation.memberId));
+  // console.log(user);
+  // const getUserData = async () => {
+  //   const response = await fetchData.get(userApis.USER_INFORMATION(myInformation.memberSeq));
+  //   return response?.data;
+  // };
 
-  useEffect(() => {
-    (async () => {
-      const response = await getUserData();
-      setUserAllInfo(response);
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     const response = await getUserData();
+  //     setUserAllInfo(response);
+  //   })();
+  // }, [myInformation]);
 
   return (
     <>

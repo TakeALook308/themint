@@ -12,7 +12,7 @@ export const userApis = {
   PHONE_CHANGE: '/api/member/phone',
   FIND_ID: '/api/member/id',
   SCORE_CHANGE: '/api/member/score',
-  DELETE_USER: '/api/member',
+  DELETE_USER: '/api/member/delete',
   USER_INFORMATION: (memberSeq) => `/api/member/${memberSeq}`,
   PROFILE_IMAGE_CHANGE: '/api/member/img',
   MY_BASIC_INFORMATION: '/api/member/info',
