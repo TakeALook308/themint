@@ -5,7 +5,7 @@ import StreamingHeader from './StreamingHeader';
 import StreamChat from './StreamChat';
 import AuctionBidding from './AuctionBidding';
 import AuctionList from './AuctionList';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { myInformationState, timeState } from '../../atoms';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
@@ -25,12 +25,11 @@ function StreamingPage(props) {
   const [products, setProducts] = useState([
     {
       productName: 'error',
-      startPrice: -1,
-      status: -1,
+      startPrice: 1000,
+      status: 1000,
     },
   ]);
 
-  const auctionTime = useRecoilValue(timeState);
   useEffect(() => {
     getData(auctionApis.AUCTION_DETAIL_API(auctionId)).then((res) => {
       setAuctionInfo(res.data);
@@ -45,6 +44,7 @@ function StreamingPage(props) {
   const [chat, setChat] = useState([]);
   const [priceList, setPriceList] = useState([]);
   const [newTime, setNewTime] = useState(moment());
+  const setAuctionTime = useSetRecoilState(timeState);
 
   //처음 접속했을 때
   useEffect(() => {
@@ -73,7 +73,10 @@ function StreamingPage(props) {
       );
     });
     //종료
-    return () => client.disconnect();
+    return () => {
+      setAuctionTime(0);
+      client.disconnect();
+    };
   }, []);
 
   const sendMessage = (msg) => {
