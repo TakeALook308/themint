@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import ReviewCard from './ReviewCard';
 
 function ProfileReviewsPage({ params }) {
-  console.log(params);
   const [reviews, setReviews] = useState([]);
   useEffect(() => {
     const getReview = async (url) => {
@@ -14,7 +13,6 @@ function ProfileReviewsPage({ params }) {
     const res = getReview(`/api/review/${params}`);
     res.then((reviews) => {
       setReviews(reviews.data);
-      console.log(reviews.data);
     });
   }, []);
 

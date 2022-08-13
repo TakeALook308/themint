@@ -1,22 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { instance } from '../../utils/apis/api';
+import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
+import AuctionCard from '../../components/CardList/AuctionCard';
+import SkeletonAuctionCard from '../../components/CardList/SkeletonAuctionCard';
 
-function InterestAuctionList() {
-  const [showAuctionList, setShowAuctionList] = useState([]);
-  useEffect(() => {
-    const getCateList = async (url) => {
-      const response = await instance.get(url);
-      return response;
-    };
-    const res = getCateList(`/api/interest/auction`);
-    res.then((auctionlist) => {
-      setShowAuctionList(auctionlist);
-    });
-  }, []);
+function InterestAuctionList({ params }) {
+  const getUrl = (size) => {
+    return (page) => `/api/interest/auction?page=0&size=${size}`;
+  };
 
-  console.log(showAuctionList);
-  return <Container>관심경매!</Container>;
+  return (
+    <Container>
+      <InfiniteAuctionList
+        getUrl={getUrl(9)}
+        queryKey={['interestAuctions']}
+        CardComponent={AuctionCard}
+        SkeltonCardComponent={SkeletonAuctionCard}
+        text={'판매 내역이 없습니다'}
+      />
+    </Container>
+  );
 }
 export default InterestAuctionList;
 

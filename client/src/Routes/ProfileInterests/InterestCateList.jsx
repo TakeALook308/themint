@@ -21,42 +21,84 @@ function InterestCateList() {
   // 관심 카테고리 추가
   const [cateSeq, setCateSeq] = useState(1);
   const onChange = (e) => {
-    setCateSeq(e.target.childElement.id);
-    console.log(e.target.childElement.id);
+    setCateSeq(e.target.value);
   };
-  console.log(cateSeq);
+
   const onClick = () => {
-    const category_seq = '';
-    console.log(category_seq);
     const addInterestCategory = async (url) => {
       const response = await instance.post(url);
       return response;
     };
-    const res = addInterestCategory(`/api/interest/category/${category_seq}`);
+    const res = addInterestCategory(`/api/interest/category/${cateSeq}`);
     res.then(() => {
-      console.log(category_seq);
+      const getCateList = async (url) => {
+        const response = await instance.get(url);
+        return response;
+      };
+      const res = getCateList(`/api/interest/category`);
+      res.then((catelist) => {
+        setShowCateList(catelist.data.interestCategoryList);
+      });
+    });
+  };
+  // 관심 카테고리 삭제
+  const [deletecate, setDeletecate] = useState('');
+  const getData = (cate) => {
+    setDeletecate(cate);
+    const deleteInterest = async (url) => {
+      const response = await instance.delete(url);
+      return response;
+    };
+    const res = deleteInterest(`/api/interest/category/${cate}`);
+    res.then(() => {
+      const getKeyword = (url) => {
+        const response = instance.get(url);
+        return response;
+      };
+      const res = getKeyword(`/api/interest/category`);
+      res.then((catelist) => {
+        setShowCateList(catelist.data.interestCategoryList);
+      });
     });
   };
 
   return (
     <Container>
-      <select onChange={onChange}>
-        {categories.map((categories) => (
-          <option id={categories.seq} key={categories.seq}>
-            {categories.name}
-          </option>
+      <SelectContainer>
+        <select onChange={onChange}>
+          {categories.map((categories) => (
+            <option key={categories.seq} value={categories.seq}>
+              {categories.name}
+            </option>
+          ))}
+        </select>
+        <GradientButton text={'카테고리 추가'} onClick={onClick} />
+      </SelectContainer>
+      <CardContainer>
+        {showCateList.map((keyword, i) => (
+          <InterestCateCard keyword={keyword} key={i} getData={getData} />
         ))}
-      </select>
-      <GradientButton text={'키워드 추가'} onClick={onClick} />
-      {showCateList.map((keyword, i) => (
-        <InterestCateCard keyword={keyword} key={i} />
-      ))}
+      </CardContainer>
     </Container>
   );
 }
 export default InterestCateList;
 
 const Container = styled.div`
+  width: 100%;
+`;
+
+const SelectContainer = styled.div`
+  display: flex;
+  width: 80%;
+  margin-bottom: 30px;
+  > select {
+    margin-right: 10px;
+    width: 100%;
+  }
+`;
+
+const CardContainer = styled.main`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 3rem;

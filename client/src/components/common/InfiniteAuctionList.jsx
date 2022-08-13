@@ -11,7 +11,6 @@ function InfiniteAuctionList({
   SkeltonCardComponent,
   text,
   func,
-  active,
 }) {
   const [hasError, setHasError] = useState(false);
   const [isMore, SetIsMore] = useState(true);
