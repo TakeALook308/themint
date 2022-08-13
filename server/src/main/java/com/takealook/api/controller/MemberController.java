@@ -157,7 +157,7 @@ public class MemberController {
         if (member != null) {
             String result = s3FileService.uploadProfileImage(multipartFile, memberSeq);
             if (result == "fail") ResponseEntity.status(409).body(BaseResponseBody.of(409, "프로필 사진 변경에 실패하였습니다."));
-            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
+            return ResponseEntity.status(200).body(BaseResponseBody.of(200, result));
         }
         throw new MemberNotFoundException("member not found", ErrorCode.MEMBER_NOT_FOUND);
     }
