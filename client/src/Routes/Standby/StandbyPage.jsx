@@ -8,30 +8,25 @@ import UserVideoComponent from '../../components/webRTC/UserVideoComponent';
 import { BsFillCameraVideoFill, BsFillCameraVideoOffFill, BsFillMicFill } from 'react-icons/bs';
 import { IoExit } from 'react-icons/io5';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getData } from '../../utils/apis/api';
-import { auctionApis } from '../../utils/apis/auctionApis';
+import { fetchData } from '../../utils/apis/api';
+import { streamingApis } from '../../utils/apis/streamingApis';
+import { errorToast } from '../../lib/toast';
 
 const OPENVIDU_SERVER_URL = 'https://i7a308.p.ssafy.io:8443';
 const OPENVIDU_SERVER_SECRET = 'themint';
 
 function StandbyPage() {
-  // const memberId = 'mint308';
-
-  let [memberSeq, setMemberSeq] = useState('');
-
+  const [standByInfo, setStanByInfo] = useState('');
   const navigate = useNavigate();
   const { auctionId } = useParams();
   const userInfo = useRecoilValue(myInformationState);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [video, setVideo] = useState(0); // 1 ON, 0 OFF
   const [publisher, setPublisher] = useState('');
-
   useEffect(() => {
-    getData(auctionApis.AUCTION_DETAIL_API(auctionId)).then((res) =>
-      setMemberSeq(res.data.memberSeq),
-    );
+    fetchData.get(streamingApis.STANDBY(auctionId)).then((res) => setStanByInfo(res.data));
   }, []);
-  console.log('99999999999 멤버시퀀스000000000000', auctionId);
+
   const OV = new OpenVidu();
   OV.enableProdMode();
   const testSession = OV.initSession();
@@ -119,7 +114,7 @@ function StandbyPage() {
   const createToken = (sessionId) => {
     return new Promise((resolve, reject) => {
       var data = {};
-      if (userInfo.memberSeq === memberSeq) data.role = 'MODERATOR';
+      if (userInfo.memberSeq === standByInfo.memberSeq) data.role = 'MODERATOR';
       else data.role = 'SUBSCRIBER';
       axios
         .post(OPENVIDU_SERVER_URL + '/openvidu/api/sessions/' + sessionId + '/connection', data, {
@@ -129,7 +124,7 @@ function StandbyPage() {
           },
         })
         .then((response) => {
-          console.log('TOKEN', response);
+          // console.log('TOKEN', response);
           resolve(response.data.token);
         })
         .catch((error) => reject(error));
@@ -149,11 +144,11 @@ function StandbyPage() {
   });
 
   useEffect(() => {
-    if (memberSeq) {
+    if (standByInfo) {
       standbyJoin(testSession, userInfo.nickname);
     }
     return () => leaveSession();
-  }, [memberSeq]);
+  }, [standByInfo]);
 
   useEffect(() => {
     if (publisher?.stream?.videoActive) {
@@ -171,8 +166,15 @@ function StandbyPage() {
     navigate(`/streamings/${auctionId}`);
   };
 
+  if (standByInfo?.memberSeq && userInfo.memberSeq !== standByInfo?.memberSeq) {
+    navigate(-1);
+    errorToast('접근 권한이 없습니다.');
+    return;
+  }
+
   return (
     <Container>
+      <Header>{standByInfo.title}</Header>
       <AuctionCreatorVideoContainer>
         <VideoWrapper>{publisher && <UserVideoComponent streamManager={publisher} />}</VideoWrapper>
       </AuctionCreatorVideoContainer>
@@ -238,13 +240,15 @@ const Container = styled.main`
   margin-left: auto;
   margin-right: auto;
   position: relative;
-  padding-top: 68px;
+  padding-top: 80px;
   min-height: calc(100vh - 259px);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 `;
+
+const Header = styled.div``;
 
 const VideoWrapper = styled.div`
   position: absolute;
