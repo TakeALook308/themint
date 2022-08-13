@@ -9,14 +9,13 @@ import { useRecoilValue } from 'recoil';
 import { myInformationState } from '../../atoms';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { getData } from '../../utils/apis/api';
 import { auctionApis } from '../../utils/apis/auctionApis';
 import moment from 'moment';
 let sock;
 let client;
 function StreamingPage(props) {
-  const navigate = useNavigate();
   const userInfo = useRecoilValue(myInformationState);
   const { auctionId } = useParams();
   const [auctionInfo, setAuctionInfo] = useState({});
@@ -83,7 +82,7 @@ function StreamingPage(props) {
         roomId: roomId,
         nickname: nickname,
         message: msg,
-        memberSeq: 1,
+        memberSeq: memberSeq,
       }),
     );
   };
@@ -96,7 +95,7 @@ function StreamingPage(props) {
         nickname: nickname,
         productSeq: 1,
         price: msg,
-        memberSeq: 1,
+        memberSeq: memberSeq,
         index: index,
       }),
     );
@@ -107,10 +106,6 @@ function StreamingPage(props) {
     <Stream>
       <Header>
         <StreamingHeader auctionInfo={auctionInfo} />
-        <button
-          onClick={() => {
-            navigate('/main');
-          }}></button>
       </Header>
       <Main>
         <Section>

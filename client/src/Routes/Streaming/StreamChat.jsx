@@ -4,7 +4,6 @@ import styled from 'styled-components';
 
 function StreamChat({ sendMessage, chat, userInfo }) {
   const [chatMessage, setChatMessage] = useState('');
-
   return (
     <Article>
       <ul>

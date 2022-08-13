@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { categories } from '../../utils/constants/constant';
 import { doCopy } from './TextCopy';
 function StreamingHeader({ auctionInfo, countSub }) {
+  const navigate = useNavigate();
   const url = useLocation().pathname;
-
   if (auctionInfo) {
     return (
       <Head>
@@ -21,11 +21,18 @@ function StreamingHeader({ auctionInfo, countSub }) {
         <HeadButtonSet>
           <ul>
             <li>
-              <button onClick={() => doCopy(url)}>복사</button>
+              <button onClick={() => doCopy(process.env.REACT_APP_API_URL + url)}>복사</button>
             </li>
             <li>알림</li>
             <li>경매정보</li>
-            <li>나가기</li>
+            <li>
+              <button
+                onClick={() => {
+                  navigate('/main');
+                }}>
+                나가기
+              </button>
+            </li>
           </ul>
         </HeadButtonSet>
       </Head>

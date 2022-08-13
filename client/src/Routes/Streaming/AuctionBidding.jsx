@@ -1,25 +1,29 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import styled from 'styled-components';
 import { auctionApis } from '../../utils/apis/auctionApis';
 import { getData } from '../../utils/apis/api';
 import moment from 'moment';
-import { useInterval } from './useInterval';
+// import { useInterval } from './useInterval.jsx';
+import Timer from './Timer';
 function AuctionBidding({ products, sendPrice, price, producter }) {
   const [nowProduct, setNowProduct] = useState(-1);
   const [nowPrice, setNowPrice] = useState(0);
   const [myPrice, setMyPrice] = useState(0);
   const [resetTime, setResetTime] = useState(moment());
-  const [second, setSecond] = useState(30);
+  const [second, setSecond] = useState(0);
   const [start, setStart] = useState(false);
+
+  const [test, setTest] = useState(2);
+  const [prev, setPrev] = useState(-1);
+
   const startAuction = () => {
     // setNowProduct(nowProduct + 1);
     setNowPrice(products[nowProduct + 1].startPrice);
     setMyPrice(products[nowProduct + 1].startPrice + 1000);
     // getData(auctionApis.AUCTION_DATE_API).then((res) => setResetTime(new Date(res.data)));
-    setSecond(29);
+    setSecond(30);
     sendPrice(-1, nowProduct + 1);
   };
-  // useInterval()
 
   // useEffect(() => {
   //   const a = setInterval(() => {
@@ -60,13 +64,45 @@ function AuctionBidding({ products, sendPrice, price, producter }) {
     if (price.length > 0) {
       if (price.length === 1 && price[0].price === -1) {
         setNowPrice(products[nowProduct + 1].startPrice);
+        if (test === 0) {
+          startClick();
+          setTest(1);
+        }
         // setMyPrice(products[nowProduct + 1].startPrice);
       } else {
         setNowPrice(price[price.length - 1].price);
       }
     }
+
+    if (test === 0) {
+      setTest(1);
+      console.log('0 -> 1');
+    } else if (test === 2 && prev < price.length) {
+      setPrev(price.length);
+      setTest(0);
+      console.log('2 -> 0');
+    }
   });
-  console.log(price[0]);
+  const myRef = useRef(null);
+
+  useEffect(() => {
+    if (test === 1) {
+      if (myRef.current) {
+        resetClick();
+      }
+      console.log(myRef);
+      setTest(2);
+      console.log('1 -> 2');
+    }
+  }, [test]);
+
+  function startClick() {
+    myRef.current.handlePlayClick();
+  }
+  function resetClick() {
+    myRef.current.handleResetClick();
+  }
+
   if (price[0])
     return (
       <Article>
@@ -76,6 +112,7 @@ function AuctionBidding({ products, sendPrice, price, producter }) {
             <span>시작가: {products[Number(price[0].index)].startPrice} </span>
             <span>현재가: {nowPrice}</span>
           </div>
+          <Timer delay="30" ref={myRef}></Timer>
           {/* <div id="timer">{countDownTimer(30)}</div> */}
           {/* <div>{second < 10 ? `0${second}` : second}초</div> */}
           {/* <Timer></Timer> */}
