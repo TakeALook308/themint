@@ -4,18 +4,16 @@ import styled from 'styled-components';
 import Router from './Router';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
-import Session from './utils/functions/storage';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { HelmetProvider } from 'react-helmet-async';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { myInformationState } from './atoms';
 import { getCookie } from './utils/functions/cookies';
 import { fetchData } from './utils/apis/api';
 import { userApis } from './utils/apis/userApis';
 
-export const session = new Session();
-function App(props) {
-  const [myInformation, setMyInformation] = useRecoilState(myInformationState);
+function App() {
+  const setMyInformation = useSetRecoilState(myInformationState);
   const [queryClient] = useState(() => new QueryClient());
   const token = getCookie('accessToken');
   useEffect(() => {
@@ -26,7 +24,6 @@ function App(props) {
       }
     })();
   }, []);
-  console.log(myInformation);
 
   return (
     <HelmetProvider>

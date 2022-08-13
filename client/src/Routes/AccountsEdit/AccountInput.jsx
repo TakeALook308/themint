@@ -1,5 +1,6 @@
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
+import styled from 'styled-components';
 import DefaultButton from '../../components/common/DefaultButton';
 import ValidationMessage from '../../components/common/ValidationMessage';
 import { MessageWrapper } from '../../style/common';
@@ -7,97 +8,63 @@ import { ActiveInput } from '../../style/style';
 import { fetchData } from '../../utils/apis/api';
 import { userApis } from '../../utils/apis/userApis';
 import { bankList } from '../../utils/constants/bankList';
-import { REGEX, REGISTER_MESSAGE, STANDARD } from '../../utils/constants/constant';
-import debounce from '../../utils/functions/debounce';
+import { REGEX, REGISTER_MESSAGE } from '../../utils/constants/constant';
 import { ButtonContainer, FormContainer, InputContainer } from './NicknameInput';
 
 function AccountInput({ text, setEditMode, changeInformation }) {
-  const [isDuplicatedEmail, setIsDuplicatedEmail] = useState(false);
   const {
     register,
-    setError,
-    watch,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm({ defaultValues: { email: text[0] }, mode: 'onChange' });
-
-  const checkEmail = async (value) => {
-    if (errors?.email?.type === 'pattern' || !value || value.length < STANDARD.NAME_MIN_LENGTH)
-      return;
-    try {
-      const response = await fetchData.get(userApis.EMAIL_DUPLICATE_CHECK_API(value));
-      if (response.status === 200) {
-        setIsDuplicatedEmail(false);
-        return true;
-      }
-    } catch {
-      setError('email', { message: REGISTER_MESSAGE.DUPLICATED_ID }, { shouldFocus: true });
-      setIsDuplicatedEmail(true);
-      return false;
-    }
-  };
-
-  const debounceCheckEmail = useMemo(
-    () => debounce(async (value) => await checkEmail(value), 700),
-    [],
-  );
+  } = useForm({ defaultValues: { bankCode: text[0], accountNo: text[1] }, mode: 'onChange' });
 
   const onValid = async (data) => {
-    if (isDuplicatedEmail) {
-      setError('email', { message: REGISTER_MESSAGE.DUPLICATED_EMAIL }, { shouldFocus: true });
-      return;
-    }
-    setTimeout(() => changeInformation(data), 1000);
+    changeInformation(data);
   };
 
   const registers = {
-    ...register('account', {
-      required: REGISTER_MESSAGE.REQUIRED_EMAIL,
+    ...register('accountNo', {
+      required: REGISTER_MESSAGE.REQUIRED_ACCOUNT,
       pattern: {
-        value: REGEX.EMAIL,
-        message: REGISTER_MESSAGE.EMAIL_STANDARD,
+        value: REGEX.ACCOUNT,
+        message: REGISTER_MESSAGE.ACCOUNT_STANDARD,
       },
-      validate: debounceCheckEmail,
     }),
   };
 
   return (
     <FormContainer onSubmit={handleSubmit(onValid)}>
-      <InputContainer>
-        <select {...register('bankCode')}>
-          {bankList.map((bank) => (
-            <option value={bank.bankCode} key={bank.bankCode}>
-              {bank.bankName}
-            </option>
-          ))}
-        </select>
-        <MessageWrapper>
-          <ValidationMessage text={errors?.email?.message} state={'fail'} />
-          {watch().email && !errors?.email && (
-            <ValidationMessage text={REGISTER_MESSAGE.VALIDATED_EMAIL} state={'pass'} />
-          )}
-        </MessageWrapper>
-      </InputContainer>
-      <InputContainer>
-        <ActiveInput active={true}>
-          <input
-            name="account"
-            id="account"
-            type="text"
-            autoComplete="off"
-            placeholder=" "
-            required
-            {...registers}
-          />
-          <label htmlFor="account">계좌번호</label>
-        </ActiveInput>
-        <MessageWrapper>
-          <ValidationMessage text={errors?.email?.message} state={'fail'} />
-          {watch().email && !errors?.email && (
-            <ValidationMessage text={REGISTER_MESSAGE.VALIDATED_EMAIL} state={'pass'} />
-          )}
-        </MessageWrapper>
-      </InputContainer>
+      <BankInfoWrapper>
+        <InputContainer>
+          <Select {...register('bankCode', { required: REGISTER_MESSAGE.REQUIRED_BANKCODE })}>
+            {bankList.map((bank) => (
+              <option value={bank.bankCode} key={bank.bankCode}>
+                {bank.bankName}
+              </option>
+            ))}
+          </Select>
+          <MessageWrapper>
+            <ValidationMessage text={errors?.email?.message} state={'fail'} />
+          </MessageWrapper>
+        </InputContainer>
+        <InputContainer>
+          <ActiveInput active={true}>
+            <input
+              name="accountNo"
+              id="accountNo"
+              type="text"
+              autoComplete="off"
+              placeholder=" "
+              required
+              {...registers}
+            />
+            <label htmlFor="accountNo">계좌번호</label>
+          </ActiveInput>
+          <MessageWrapper>
+            <ValidationMessage text={errors?.accountNo?.message} state={'fail'} />
+          </MessageWrapper>
+        </InputContainer>
+      </BankInfoWrapper>
       <ButtonContainer>
         <DefaultButton
           title={'취소'}
@@ -112,3 +79,19 @@ function AccountInput({ text, setEditMode, changeInformation }) {
 }
 
 export default AccountInput;
+
+const Select = styled.select`
+  width: 150px;
+  height: 40px;
+  background-color: ${(props) => props.theme.colors.pointBlack};
+  outline: none;
+  border: none;
+  color: ${(props) => props.theme.colors.white};
+  padding: 0 0.5rem;
+`;
+
+const BankInfoWrapper = styled.div`
+  display: flex;
+  gap: 1rem;
+  width: 60%;
+`;

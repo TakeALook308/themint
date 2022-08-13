@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { useQueryClient } from 'react-query';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 import { getUserSelector, myInformationState } from '../../atoms';
@@ -9,34 +10,9 @@ import InformationEdit from './InformationEdit';
 import ProfileImage from './ProfileImage';
 
 function AccountsEditPage(props) {
-  const [userAllInfo, setUserAllInfo] = useState({
-    memberId: '',
-    memberName: '',
-    nickname: '',
-    email: '',
-    address: '',
-    phone: '',
-    profileUrl: '',
-    account: '',
-    noticeKakao: '',
-    noticeEmail: '',
-    score: '',
-  });
+  const queryClient = useQueryClient();
 
-  const myInformation = useRecoilValue(myInformationState);
-  // const [user, setUser] = useRecoilState(getUserSelector(myInformation.memberId));
-  // console.log(user);
-  // const getUserData = async () => {
-  //   const response = await fetchData.get(userApis.USER_INFORMATION(myInformation.memberSeq));
-  //   return response?.data;
-  // };
-
-  // useEffect(() => {
-  //   (async () => {
-  //     const response = await getUserData();
-  //     setUserAllInfo(response);
-  //   })();
-  // }, [myInformation]);
+  const userAllInfo = queryClient.getQueryData(['userInformation']);
 
   return (
     <>
@@ -44,8 +20,8 @@ function AccountsEditPage(props) {
         <title>회원 정보 수정 | 더민트</title>
       </Helmet>
       <Container>
-        <ProfileImage userAllInfo={userAllInfo} setUserAllInfo={setUserAllInfo} />
-        <InformationEdit userAllInfo={userAllInfo} setUserAllInfo={setUserAllInfo} />
+        <ProfileImage userAllInfo={userAllInfo} />
+        <InformationEdit userAllInfo={userAllInfo} />
       </Container>
     </>
   );
