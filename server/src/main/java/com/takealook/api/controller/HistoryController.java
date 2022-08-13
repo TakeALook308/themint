@@ -146,12 +146,12 @@ public class HistoryController {
     }
 
     @GetMapping("/purchase/detail/{historySeq}")
-    public ResponseEntity<PurchaseDetailRes> getPurchaseDetail(@PathVariable("historySeq") Long historySeq) {
+    public ResponseEntity<PurchaseDetailRes> getPurchaseDetail(@PathVariable("historySeq") Long historySeq, @ApiIgnore Authentication authentication) {
         History history = historyService.getHistoryBySeq(historySeq);
         Product product = productService.getProductBySeq(history.getProductSeq());
-        Long memberseq = historyService.getSalesByProductSeq(product.getSeq()).getMemberSeq();
-        Member member = memberService.getMemberByMemberSeq(memberseq);
+        Long sellerMemberSeq = historyService.getSalesByProductSeq(product.getSeq()).getMemberSeq();
+        Member seller = memberService.getMemberByMemberSeq(sellerMemberSeq);
         ProductDelivery productDelivery = productDeliveryService.getProductDeliveryByProductSeq(product.getSeq());
-        return ResponseEntity.status(200).body(PurchaseDetailRes.of(history, product, productDelivery, member));
+        return ResponseEntity.status(200).body(PurchaseDetailRes.of(history, product, productDelivery, seller));
     }
 }
