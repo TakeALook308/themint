@@ -16,6 +16,10 @@ import {
   PasswordReset,
   PurchaseHistoryDetail,
   Profile,
+  ProfileReviews,
+  ProfileSalesHistory,
+  ProfilePurchaseHistory,
+  ProfileInterest,
   Register,
   StandBy,
   Streaming,
@@ -38,7 +42,12 @@ function Router() {
           <Route path="help/password" element={<PasswordReset />} />
         </Route>
         <Route element={<ProtectedRoute loggedin={loggedin} />}>
-          <Route path="profile/:userId" element={<Profile />} />
+          <Route path="profile/:userId/*" element={<Profile />}>
+            <Route path="" element={<ProfileReviews />} />
+            <Route path="profile/:userId/saleshistory" element={<ProfileSalesHistory />} />
+            <Route path="profile/:userId/purchasehistory" element={<ProfilePurchaseHistory />} />
+            <Route path="profile/:userId/interest" element={<ProfileInterest />} />
+          </Route>
           <Route path="accounts" element={<Accounts />}>
             <Route path="edit" element={<AccountsEdit />} />
             <Route path="password" element={<AccountsPassword />} />
