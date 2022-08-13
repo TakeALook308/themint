@@ -65,6 +65,7 @@ public class ProductDeliveryServiceImpl implements ProductDeliveryService {
                     .phone(productDeliveryUpdatePatchReq.getPhone())
                     .address(productDeliveryUpdatePatchReq.getAddress())
                     .addressDetail(productDeliveryUpdatePatchReq.getAddressDetail())
+                    .zipCode(productDeliveryUpdatePatchReq.getZipCode())
                     .remitName(productDeliveryUpdatePatchReq.getRemitName())
                     .parcelCompanyCode(productDelivery.getParcelCompanyCode())
                     .trackingNo(productDelivery.getTrackingNo())
