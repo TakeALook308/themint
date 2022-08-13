@@ -63,12 +63,12 @@ function ProfilePurchaseHistoryPage({ params }) {
   // 버튼 클릭하면 배송정보를 patch
   const patchDelivery = () => {
     console.log(deliveryData);
-    const patchDeliveryData = async (url, data) => {
-      const response = await instance.patch(url, data);
-      return response;
-    };
-    const res = patchDeliveryData(`/api/delivery`, deliveryData);
-    res.then(() => {});
+    // const patchDeliveryData = async (url, data) => {
+    //   const response = await instance.patch(url, data);
+    //   return response;
+    // };
+    // const res = patchDeliveryData(`/api/delivery`, deliveryData);
+    // res.then(() => {});
   };
 
   // 리뷰 작성
@@ -177,7 +177,9 @@ function ProfilePurchaseHistoryPage({ params }) {
           )}
           {active === 'complete' && (
             <Purchased>
-              <p>배송정보 : </p>
+              <p>배송주소: {purchaseDetail.address}</p>
+              <p>상세 배송주소: {purchaseDetail.addressDetail}</p>
+
               <p>배송조회</p>
               <p>리뷰 작성</p>
               <p>별점을 작성해 주세요!</p>

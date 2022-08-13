@@ -49,7 +49,7 @@ function IsPurchasingCard({ auction, func }) {
           </div>
         </Link>
       </div>
-      {auction.status === 0 && auction.status <= 3 ? (
+      {auction.status <= 3 ? (
         <Plus
           type="button"
           onClick={() => {
