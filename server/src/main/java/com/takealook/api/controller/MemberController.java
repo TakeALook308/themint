@@ -224,7 +224,7 @@ public class MemberController {
     /////////////////// 비밀번호 재설정 (비밀번호 찾기) end ////////////////////////
 
     // 회원 탈퇴
-    @PatchMapping
+    @PatchMapping("/delete")
     public ResponseEntity<?> deleteMember(@ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
