@@ -79,10 +79,10 @@ function AuctionCreatePage(props) {
     setIsModal((prev) => !prev);
   };
 
-  const reader = new FileReader();
-  reader.onload = () =>
-    (document.querySelector('.img_box').style.backgrondImage = `url(${reader.result})`);
-  reader.readAsDataURL(auctionImageList[0]);
+  // const reader = new FileReader();
+  // reader.onload = () =>
+  //   (document.querySelector('.img_box').style.backgrondImage = `url(${reader.result})`);
+  // reader.readAsDataURL(auctionImageList[0]);
   return (
     <Container>
       <Title>경매 생성</Title>
@@ -133,12 +133,10 @@ function AuctionCreatePage(props) {
             <div {...getRootProps()}>
               <input {...getInputProps()} />
               {isDragActive ? <p>Drop the files here ...</p> : <div>파일을 추가해주세요</div>}
-              <div className="img_box">
-                {/* {auctionImageList.map((item, i) => {
-                  console.log(item);
-                })} */}
-              </div>
             </div>
+            {auctionImageList.map((item, i) => (
+              <div key={i}>{item.path}</div>
+            ))}
           </FileUpload>
         </Div>
 
@@ -300,6 +298,20 @@ const FileUpload = styled.div`
   height: 200px;
   border-radius: 5px;
   background-color: ${(props) => props.theme.colors.pointBlack};
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  place-items: center;
+  div {
+    width: 150px;
+    height: 100px;
+    white-space: normal;
+    word-break: break-all;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 `;
 const Textarea = styled.textarea`
   width: 100%;
