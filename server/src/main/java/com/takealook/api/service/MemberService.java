@@ -40,7 +40,7 @@ public interface MemberService {
     void setNewPassword(MemberSetNewPwdPatchReq memberSetNewPwdPatchReq);
 
     // 회원 삭제
-    void deleteMember(Long memberSeq);
+    void updateMemberStatus(Long memberSeq);
 
     // 아이디로 회원 찾기
     Member getMemberByMemberId(String memberId);
