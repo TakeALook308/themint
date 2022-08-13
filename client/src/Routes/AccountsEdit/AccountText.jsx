@@ -6,10 +6,13 @@ import { bankList } from '../../utils/constants/bankList';
 function AccountText({ textList }) {
   const [bank, setBank] = useState({ bankName: '', bankCode: null });
   useEffect(() => {
+    console.log(textList[0]);
     const bankIndex = bankList.findIndex((bank) => bank?.bankCode === textList[0]);
+    console.log('bankIndex', bankIndex);
     const bankInfo = bankList[bankIndex];
     setBank(bankInfo);
-  }, []);
+  }, [textList]);
+
   return (
     <Container>
       <p>{bank?.bankName}</p>

@@ -185,24 +185,15 @@ function AccountsPhoneNumberPage() {
           </InputMessageContainer>
         </InputContainer>
         <InputContainer>
-          <label htmlFor="newPassword">인증코드</label>
+          <label htmlFor="authNumber">인증코드</label>
           <InputMessageContainer>
             <ActiveInputBox
-              type="password"
-              id="newPassword"
-              name="newPassword"
+              type="text"
+              id="authNumber"
+              name="authNumber"
               placeholder={'문자로 통해 받은 인증코드를 입력하세요.'}
               register={authRegister}
             />
-            <MessageWrapper>
-              {/* <ValidationMessage text={errors?.authNumber?.message} state={'fail'} /> */}
-              {/* {watch().authNumber && !errors?.authNumber && (
-                <ValidationMessage
-                  text={REGISTER_MESSAGE.VALIDATED_CERTICATION_NUMBER}
-                  state={'pass'}
-                />
-              )} */}
-            </MessageWrapper>
           </InputMessageContainer>
         </InputContainer>
         <MessageWrapper />

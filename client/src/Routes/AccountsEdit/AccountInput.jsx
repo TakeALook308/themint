@@ -86,6 +86,7 @@ const Select = styled.select`
   background-color: ${(props) => props.theme.colors.pointBlack};
   outline: none;
   border: none;
+  border-radius: 5px;
   color: ${(props) => props.theme.colors.white};
   padding: 0 0.5rem;
 `;

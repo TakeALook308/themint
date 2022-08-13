@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import GradientButton from '../../components/ButtonList/GradientButton';
 import useLogout from '../../utils/hooks/useLogout';
-import { confirmAlert } from 'react-confirm-alert';
-import 'react-confirm-alert/src/react-confirm-alert.css';
 import { fetchData } from '../../utils/apis/api';
 import { userApis } from '../../utils/apis/userApis';
 
@@ -22,19 +20,9 @@ function AccountsWithdrawlPage() {
   };
 
   const onSubmit = () => {
-    confirmAlert({
-      title: '회원탈퇴',
-      message: '회원탈퇴를 계속해서 진행하시겠습니까?',
-      buttons: [
-        {
-          label: '탈퇴하기',
-          onClick: () => withdraw(),
-        },
-        {
-          label: '돌아가기',
-        },
-      ],
-    });
+    if (window.confirm('정말 탈퇴하시겠습니까?')) {
+      withdraw();
+    }
   };
   return (
     <Container>

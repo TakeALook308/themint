@@ -15,6 +15,7 @@ import { userApis } from './utils/apis/userApis';
 function App() {
   const setMyInformation = useSetRecoilState(myInformationState);
   const [queryClient] = useState(() => new QueryClient());
+  const [loading, setLoading] = useState(false);
   const token = getCookie('accessToken');
   useEffect(() => {
     (async () => {
@@ -22,28 +23,33 @@ function App() {
         const response = await fetchData.get(userApis.MY_BASIC_INFORMATION);
         setMyInformation(response.data);
       }
+      setLoading(true);
     })();
   }, []);
 
   return (
     <HelmetProvider>
-      <Container>
-        <ToastContainer
-          position="top-center"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
-        <QueryClientProvider client={queryClient}>
-          <Router />
-          <ReactQueryDevtools initialIsOpen={false} />
-        </QueryClientProvider>
-      </Container>
+      <Suspense fullback={<h1>Loading...</h1>}>
+        <Container>
+          <ToastContainer
+            position="top-center"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
+          {loading && (
+            <QueryClientProvider client={queryClient}>
+              <Router />
+              <ReactQueryDevtools initialIsOpen={false} />
+            </QueryClientProvider>
+          )}
+        </Container>
+      </Suspense>
     </HelmetProvider>
   );
 }

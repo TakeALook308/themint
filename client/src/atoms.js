@@ -15,9 +15,9 @@ export const loggedinState = atom({
 export const myInformationState = atom({
   key: `myInformation/${v1()}`,
   default: {
-    memberId: session.get('profile') ? session.get('profile')?.memberId : '',
-    nickname: session.get('profile') ? session.get('profile')?.nickname : '',
-    memberSeq: session.get('profile') ? session.get('profile')?.memberSeq : '',
+    memberId: '',
+    nickname: '',
+    memberSeq: '',
   },
 });
 

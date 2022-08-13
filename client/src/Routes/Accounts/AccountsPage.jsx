@@ -12,7 +12,7 @@ import { userApis } from '../../utils/apis/userApis';
 function AccountsPage() {
   const myInformation = useRecoilValue(myInformationState);
   const getUserInfo = async () => {
-    const response = await fetchData.get(userApis.USER_INFORMATION(myInformation.memberSeq));
+    const response = await fetchData.get(userApis.USER_INFORMATION(myInformation?.memberSeq));
     return response?.data;
   };
 
