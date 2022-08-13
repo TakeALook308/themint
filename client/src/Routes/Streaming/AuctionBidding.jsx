@@ -19,11 +19,13 @@ function AuctionBidding({ products, sendPrice, price, producter }) {
 
   const startAuction = () => {
     // setNowProduct(nowProduct + 1);
-    setNowPrice(products[nowProduct + 1].startPrice);
-    setMyPrice(products[nowProduct + 1].startPrice + 1000);
+    // setNowPrice(products[nowProduct + 1].startPrice);
+    // setMyPrice(products[nowProduct + 1].startPrice + 1000);
     // getData(auctionApis.AUCTION_DATE_API).then((res) => setResetTime(new Date(res.data)));
-    setSecond(30);
-    sendPrice(-1, nowProduct + 1);
+    // setSecond(30);
+    if (nowProduct < products.length - 1) {
+      sendPrice(-1, nowProduct + 1);
+    } else alert('경매 끝남');
   };
 
   // useEffect(() => {
@@ -63,10 +65,12 @@ function AuctionBidding({ products, sendPrice, price, producter }) {
   // }, [start]);
   useEffect(() => {
     if (price.length > 0) {
-      if (price.length === 1 && price[0].price === -1) {
-        setNowPrice(products[nowProduct + 1].startPrice);
+      if (price.length === 1 && price[0].price === -1 && products) {
+        setNowProduct(price[0].index);
+        setNowPrice(products[price[0].index].startPrice);
+        resetClick();
+        startClick();
         if (test === 0) {
-          startClick();
           setTest(1);
         }
         // setMyPrice(products[nowProduct + 1].startPrice);
@@ -91,7 +95,6 @@ function AuctionBidding({ products, sendPrice, price, producter }) {
       if (myRef.current) {
         resetClick();
       }
-      console.log(myRef);
       setTest(2);
       console.log('1 -> 2');
     }
@@ -113,7 +116,7 @@ function AuctionBidding({ products, sendPrice, price, producter }) {
             <span>시작가: {products[Number(price[0].index)].startPrice} </span>
             <span>현재가: {nowPrice}</span>
           </div>
-          <Timer delay="30" ref={myRef}></Timer>
+          <Timer delay="5" ref={myRef}></Timer>
           {/* <div id="timer">{countDownTimer(30)}</div> */}
           {/* <div>{second < 10 ? `0${second}` : second}초</div> */}
           {/* <Timer></Timer> */}

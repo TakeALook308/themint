@@ -39,6 +39,7 @@ const Timer = forwardRef((props, ref) => {
 
     if (second === 0) {
       setIsPlay(false);
+      // handleResetClick();
     }
   };
 
@@ -97,6 +98,20 @@ const Timer = forwardRef((props, ref) => {
   return (
     <>
       <TimerBox>{second < 10 ? `0${second}` : second}초</TimerBox>
+      <Controls>
+        <ul>
+          <li>
+            <button onClick={handleResetClick}>초기화</button>
+          </li>
+          <li className="on">
+            {!isPlay ? (
+              <button onClick={handlePlayClick}>재생</button>
+            ) : (
+              <button onClick={handlePauseClick}>일시정지</button>
+            )}
+          </li>
+        </ul>
+      </Controls>
     </>
   );
 });
