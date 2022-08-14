@@ -92,7 +92,7 @@ public class MemberController {
 //    }
 
     // 회원 목록 검색
-    @GetMapping
+    @GetMapping("/search")
     public ResponseEntity<MemberListRes> getMemberList(@RequestParam(value = "word", required = false) String word, @RequestParam("page") int page, @RequestParam("size") int size) {
         List<MemberListEntityRes> memberListEntityResList = new ArrayList<>();
         Boolean hasMore = false;
