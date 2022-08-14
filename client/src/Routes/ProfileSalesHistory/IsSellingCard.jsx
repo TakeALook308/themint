@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-function IsSellingCard({ auction, func, numActive }) {
+function IsSellingCard({ auction, func }) {
   const auctionstr = ['판매중', '입금대기', '입금완료', '판매완료', '유찰', '거래취소'];
   return (
     <CardContainer>
       <div>
-        <Link to="/auctions/:auctionId">
+        <Link to={`/auctions/${auction?.hash}`}>
           <div>
             <picture>
               <img

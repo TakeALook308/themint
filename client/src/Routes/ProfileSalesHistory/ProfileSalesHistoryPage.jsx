@@ -8,31 +8,12 @@ import axios from 'axios';
 import Modal from '../../components/common/Modal';
 import { useLocation } from 'react-router-dom';
 
-// let currentPath = '';
 function ProfileSalesHistoryPage({ params }) {
-  // // 새로고침
-  // let location = useLocation();
-  // useEffect(() => {
-  //   if (currentPath === location.pathname) window.location.reload();
-
-  //   currentPath = location.pathname;
-  // }, [location]);
-  // 판매내역 전체 요청 API
-
+  // 구매내역과 판매내역 차이 구분
+  const [isSales, setIsSales] = useState('sales');
   useEffect(() => {
-    const getReview = async (url) => {
-      const response = await instance.get(url);
-      return response;
-    };
-    const res = getReview(`/api/history/sales/${active}/${params}?page=${0}&size=${9}`);
-    res.then((reviews) => {
-      console.log('페이지가 나타날때 내용을 불러온다');
-    });
-    return () => {
-      console.log('이전 내용이 사라진다?');
-    };
-  }, []);
-
+    setIsSales('sales');
+  });
   // 버튼 클릭으로 판매중 판매완료 구분
   const [active, setActive] = useState('inprogress');
   const onSelling = () => {
@@ -47,7 +28,7 @@ function ProfileSalesHistoryPage({ params }) {
   const [isModal, setIsModal] = useState(false);
 
   const getUrl = (paramsnum, size) => {
-    return (page) => `/api/history/sales/${active}/${paramsnum}?page=${page}&size=${size}`;
+    return (page) => `/api/history/${isSales}/${active}/${paramsnum}?page=${page}&size=${size}`;
   };
 
   const ModalHandler = (auction) => {
@@ -99,7 +80,6 @@ function ProfileSalesHistoryPage({ params }) {
       const response = await instance.patch(url, data);
       return response;
     };
-    console.log(getTrackingNo);
     // const res = patchTrackingNo(`/api/delivery/trackingno`, getTrackingNo);
     // res.then(() => {});
   };
@@ -123,7 +103,7 @@ function ProfileSalesHistoryPage({ params }) {
       </ButtonNav>
       <InfiniteAuctionList
         getUrl={getUrl(params, 9)}
-        queryKey={[`${params}${active}`]}
+        queryKey={[`${params}${active}${isSales}`]}
         CardComponent={IsSellingCard}
         SkeltonCardComponent={SkeletonAuctionCard}
         text={'판매 내역이 없습니다'}

@@ -6,30 +6,19 @@ import { instance } from '../../utils/apis/api';
 import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
 import Modal from '../../components/common/Modal';
 import GradientButton from '../../components/ButtonList/GradientButton';
-import PopupDom from '../Register/PopupDom';
-import PopupPostCode from '../Register/PopupPostCode';
-import { InputContainer } from '../Register/Register2';
-import { ActiveInput } from '../../style/style';
-import MintButton from '../../components/ButtonList/MintButton';
-import { REGISTER_MESSAGE } from '../../utils/constants/constant';
-import { useForm } from 'react-hook-form';
 
 // 별점기능
 import { FaStar } from 'react-icons/fa';
-// let currentPath = '';
 function ProfilePurchaseHistoryPage({ params }) {
-  // 새로고침?
-  // let location = useLocation();
-  // useEffect(() => {
-  //   if (currentPath === location.pathname) window.location.reload();
-
-  //   currentPath = location.pathname;
-  // }, [location]);
   // 구매내역 API 요청
-  const getPurchaseUrl = (paramsnum, size) => {
-    return (page) => `/api/history/purchase/${active}?page=${page}&size=${size}`;
+  // 구매내역과 판매내역 차이 구분
+  const [isPurchase, setIsPurchase] = useState('purchase');
+  useEffect(() => {
+    setIsPurchase('purchase');
+  });
+  const getPurchaseUrl = (size) => {
+    return (page) => `/api/history/${isPurchase}/${active}?page=${page}&size=${size}`;
   };
-
   // 버튼클릭으로 구매중 구매완료 구분
   const [active, setActive] = useState('inprogress');
   const onSelling = async () => {
@@ -50,18 +39,12 @@ function ProfilePurchaseHistoryPage({ params }) {
     const res = getPurchaseDetail(`/api/history/purchase/detail/${auction.historySeq}`);
     res.then((itemDetail) => {
       setPurchaseDetail(itemDetail.data); // 상세보기 내용을 salesDetail에 저장
-      console.log(itemDetail.data);
-      onChange({
-        target: { name: 'productDeliverySeq', value: itemDetail.data.productDeliverySeq },
-      });
-      onChange({ target: { name: 'name', value: itemDetail.data.name } });
-      onChange({ target: { name: 'phone', value: itemDetail.data.phone } });
+      console.log(itemDetail.data.sellerMemberSeq);
+      onChange2({ target: { name: 'receiverSeq', value: itemDetail.data.sellerMemberSeq } });
     });
-    onChange({ target: { name: 'name', value: auction.name } });
-    onChange({ target: { name: 'phone', value: auction.phone } });
-
     setIsModal((prev) => !prev);
     setPurchaseDetail([]);
+    setReviewData([]);
   };
   // 입금완료
   const patchRemit = () => {
@@ -139,29 +122,16 @@ function ProfilePurchaseHistoryPage({ params }) {
   };
   // 주소입력 API 활용
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  // const [ address, setAddress] = useState('');
   const openPostCode = () => {
     setIsPopupOpen(!isPopupOpen);
   };
   const closePostCode = () => {
     setIsPopupOpen(false);
   };
-  const {
-    register,
-    setError,
-    watch,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm({
-    defaultValues: {
-      nickname: '',
-      address: '',
-    },
-    mode: 'onChange',
-  });
+
   // 버튼 클릭하면 배송정보를 patch
   const patchDelivery = () => {
-    console.log(deliveryData);
     // const patchDeliveryData = async (url, data) => {
     //   const response = await instance.patch(url, data);
     //   return response;
@@ -172,8 +142,8 @@ function ProfilePurchaseHistoryPage({ params }) {
 
   // 리뷰 작성
   const [reviewData, setReviewData] = useState({
-    receiverSeq: 1,
     content: '',
+    receiverSeq: 1,
     score: 1,
   });
   const { content, score } = reviewData;
@@ -183,16 +153,15 @@ function ProfilePurchaseHistoryPage({ params }) {
       [name]: value,
     });
   };
-  // 버튼 클릭하면 배송정보를 patch
+  // 버튼 클릭하면 리뷰 정보를 post
   const postReview = () => {
-    console.log(purchaseDetail);
     console.log(reviewData);
-    // const postReviewData = async (url, data) => {
-    //   const response = await instance.post(url, data);
-    //   return response;
-    // };
-    // const res = postReviewData(`/api/delivery`, reviewData);
-    // res.then(() => {});
+    const postReviewData = async (url, data) => {
+      const response = await instance.post(url, data);
+      return response;
+    };
+    const res = postReviewData(`/api/review`, reviewData);
+    res.then(() => {});
   };
 
   // 별점기능
@@ -212,10 +181,8 @@ function ProfilePurchaseHistoryPage({ params }) {
   const sendReview = () => {
     let score = clicked.filter(Boolean).length;
     onChange2({ target: { name: 'score', value: score } });
-    console.log(purchaseDetail);
-    onChange2({ target: { name: 'receiverSeq', value: purchaseDetail.receiverSeq } });
   };
-  console.log(reviewData);
+
   return (
     <Container>
       <ButtonNav>
@@ -236,7 +203,7 @@ function ProfilePurchaseHistoryPage({ params }) {
       </ButtonNav>
       <InfiniteAuctionList
         getUrl={getPurchaseUrl(params, 9)}
-        queryKey={[`${params}${active}`]}
+        queryKey={[`${params}${active}${isPurchase}`]}
         CardComponent={IsPurchasingCard}
         SkeltonCardComponent={SkeletonAuctionCard}
         text={'구매 내역이 없습니다'}
@@ -249,7 +216,7 @@ function ProfilePurchaseHistoryPage({ params }) {
             <Purchasing>
               <button onClick={patchRemit}>입금완료!</button>
               <p>입금 완료 후, 배송지를 입력해주세요!!!</p>
-              <p>판매자 계좌: </p>
+              <p>판매자 계좌 정보</p>
               <p>은행-{bankList[purchaseDetail.bankCode]}</p>
               <p>계좌번호-{purchaseDetail.accountNo}</p>
               <p>계좌소유주-{purchaseDetail.name}</p>
@@ -261,87 +228,6 @@ function ProfilePurchaseHistoryPage({ params }) {
                 onChange={onChange}
               />
               <p>배송정보 입력:</p>
-              {/* <StyledInput
-                placeholder="우편번호를 입력해 주세요"
-                name="zipCode"
-                value={zipCode}
-                onChange={onChange}
-                size="30%"
-              />
-              <StyledInput
-                placeholder="주소를 입력해 주세요"
-                name="address"
-                value={address}
-                onChange={onChange}
-              />
-              <StyledInput
-                placeholder="상세 주소를 입력해 주세요"
-                name="addressDetail"
-                value={addressDetail}
-                onChange={onChange}
-              /> */}
-              <InputContainer>
-                <ActiveInput active={true}>
-                  <input
-                    name="zipCode"
-                    id="zipCode"
-                    type="text"
-                    {...register('zipCode', {
-                      required: REGISTER_MESSAGE.REQUIRED_ADDRESS,
-                      disabled: true,
-                    })}
-                    disabled
-                    placeholder=" "
-                    required
-                  />
-                  <label htmlFor="zipCode">우편번호</label>
-                </ActiveInput>
-                <MintButton text={'조회'} type={'button'} onClick={openPostCode} />
-              </InputContainer>
-              <div id="popupDom">
-                {isPopupOpen && (
-                  <PopupDom>
-                    <PopupPostCode onClose={closePostCode} setAddress={setValue} />
-                  </PopupDom>
-                )}
-              </div>
-              <AddressContainer>
-                <ActiveInput active={true}>
-                  <input
-                    name="address"
-                    id="address"
-                    type="text"
-                    {...register('address', {
-                      disabled: true,
-                    })}
-                    placeholder=" "
-                  />
-                  <label htmlFor="address">주소</label>
-                </ActiveInput>
-                <ActiveInput active={true}>
-                  <input
-                    name="addressDetail"
-                    id="addressDetail"
-                    type="text"
-                    {...register('addressDetail')}
-                    disabled
-                    placeholder=" "
-                  />
-                  <label htmlFor="addressDetail">상세주소</label>
-                </ActiveInput>
-              </AddressContainer>
-              {/* <div>
-                <button type="button" onClick={openPostCode}>
-                  우편번호 검색
-                </button>
-                <div id="popupDom">
-                  {isPopupOpen && (
-                    <PopupDom>
-                      <PopupPostCode onClose={closePostCode} />
-                    </PopupDom>
-                  )}
-                </div>
-              </div> */}
               <button onClick={patchDelivery}>배송정보 저장</button>
             </Purchasing>
           )}

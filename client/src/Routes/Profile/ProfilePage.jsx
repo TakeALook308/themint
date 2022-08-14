@@ -10,15 +10,7 @@ import ProfileInterestsPage from '../ProfileInterests/ProfileInterestsPage';
 import { myInformationState } from '../../atoms';
 import { useRecoilValue } from 'recoil';
 
-// let currentPath = '';
 function ProfilePage(props) {
-  // 링크로 이동시 새로고침
-  // let location = useLocation();
-  // useEffect(() => {
-  //   if (currentPath === location.pathname) window.location.reload();
-
-  //   currentPath = location.pathname;
-  // }, [location]);
   // 사용자와 프로필페이지 일치여부 확인
   const myInformation = useRecoilValue(myInformationState);
   const strMemberSeq = `${myInformation.memberSeq}`;
@@ -30,12 +22,11 @@ function ProfilePage(props) {
       const response = await instance.get(url);
       return response;
     };
-
     const res = getProfile(`/api/member/${params.userId}`);
     res.then((member) => {
       setMember(member.data);
     });
-  }, []);
+  }, [params]);
 
   return (
     <Container>

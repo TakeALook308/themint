@@ -8,13 +8,12 @@ function IsPurchasingCard({ auction, func }) {
   useEffect(() => {
     setStatusNum(auction.status);
   });
-  console.log(auction);
   const auctionstr = ['판매중', '입금대기', '발송대기', '구매완료', '', '거래취소'];
 
   return (
     <CardContainer>
       <div>
-        <Link to="/auctions/:auctionId">
+        <Link to={`/auctions/${auction?.hash}`}>
           <div>
             <picture>
               <img

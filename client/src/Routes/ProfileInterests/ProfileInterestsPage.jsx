@@ -8,10 +8,6 @@ import InterestCateList from './InterestCateList';
 
 function ProfileInterestsPage({ params }) {
   const [active, setActive] = useState(1);
-  // 사용자와 프로필페이지 일치여부 확인
-  const myInformation = useRecoilValue(myInformationState);
-  const strMemberSeq = `${myInformation.memberSeq}`;
-
   const onKeyword = () => {
     setActive(1);
   };
@@ -48,13 +44,11 @@ function ProfileInterestsPage({ params }) {
           경매
         </StyledBtn>
       </ButtonNav>
-      {params === strMemberSeq && (
-        <InterestContainer>
-          {active === 1 && <InterestKeywordList />}
-          {active === 2 && <InterestCateList />}
-          {active === 3 && <InterestAuctionList />}
-        </InterestContainer>
-      )}
+      <InterestContainer>
+        {active === 1 && <InterestKeywordList />}
+        {active === 2 && <InterestCateList />}
+        {active === 3 && <InterestAuctionList />}
+      </InterestContainer>
     </Container>
   );
 }
