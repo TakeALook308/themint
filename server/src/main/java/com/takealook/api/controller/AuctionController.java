@@ -61,6 +61,9 @@ public class AuctionController {
     @Autowired
     InterestAuctionService interestAuctionService;
 
+    @Autowired
+    ProductDeliveryService productDeliveryService;
+
     @PostMapping
     public ResponseEntity<?> registerAuction(@RequestPart("auctionInfo")AuctionRegisterPostReq auctionRegisterPostReq, @RequestPart(required = false) List<MultipartFile> auctionImageList, @ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
@@ -123,6 +126,9 @@ public class AuctionController {
         }
         Long auctionSeq = auction.getSeq();
         List<Product> productList = productService.getProductListByAuctionSeq(auctionSeq);
+        for (Product product : productList){
+            productDeliveryService.deleteByProductSeq(product.getSeq());
+        }
         historyService.deleteSalesHistory(productList);
         productService.deleteProductList(auctionSeq);
         auctionImageService.deleteAuctionImageList(auctionSeq);

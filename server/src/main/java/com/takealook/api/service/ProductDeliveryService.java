@@ -10,4 +10,5 @@ public interface ProductDeliveryService {
     void setMemberInfo(Member member, Long productSeq);
     int updateTrackingno(TrackingNoRegisterPostReq trackingnoRegisterPostReq);
     int updateProductDelivery(ProductDeliveryUpdatePatchReq productDeliveryUpdatePatchReq);
+    void deleteByProductSeq(Long productSeq);
 }
