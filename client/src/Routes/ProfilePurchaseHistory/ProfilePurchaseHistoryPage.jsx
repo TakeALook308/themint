@@ -6,7 +6,6 @@ import { instance } from '../../utils/apis/api';
 import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
 import Modal from '../../components/common/Modal';
 import GradientButton from '../../components/ButtonList/GradientButton';
-import ActiveInputBox from '../../components/common/ActiveInputBox';
 
 // 별점기능
 import { FaStar } from 'react-icons/fa';
@@ -50,6 +49,52 @@ function ProfilePurchaseHistoryPage({ params }) {
     onChange({ target: { name: 'phone', value: auction.phone } });
     setIsModal((prev) => !prev);
     setPurchaseDetail([]);
+  };
+  // 은행 이름으로 변경
+  const bankList = {
+    0: '테스트용은행',
+    2: 'KDB산업은행',
+    3: 'IBK기업은행',
+    4: 'KB국민은행',
+    7: '수협은행',
+    11: 'NH농협은행',
+    12: '농협중앙회(단위농축협)',
+    20: '우리은행',
+    23: 'SC제일은행',
+    27: '한국씨티은행',
+    31: '대구은행',
+    32: '부산은행',
+    34: '광주은행',
+    35: '제주은행',
+    37: '전북은행',
+    39: '경남은행',
+    45: '새마을금고중앙회',
+    48: '신협중앙회',
+    50: '저축은행중앙회',
+    64: '산림조합중앙회',
+    71: '우체국',
+    81: '하나은행',
+    88: '신한은행',
+    89: '케이뱅크',
+    90: '카카오뱅크',
+    92: '토스뱅크',
+    218: 'KB증권',
+    238: '미래에셋대우',
+    240: '삼성증권',
+    243: '한국투자증권',
+    247: 'NH투자증권',
+    261: '교보증권',
+    262: '하이투자증권',
+    263: '현대차증권',
+    264: '키움증권',
+    265: '이베스트투자증권',
+    266: 'SK증권',
+    267: '대신증권',
+    269: '한화투자증권',
+    278: '신한금융투자',
+    279: 'DB금융투자',
+    280: '유진투자증권',
+    287: '메리츠증권',
   };
 
   // 배송정보 수정
@@ -158,10 +203,10 @@ function ProfilePurchaseHistoryPage({ params }) {
           {active === 'inprogress' && (
             <Purchasing>
               <p>입금 완료 후, 배송지를 입력해주세요!!!</p>
-              <p>
-                판매자 계좌: 은행-{purchaseDetail.bankCode} 계좌번호-{purchaseDetail.accountNo}
-                계좌소유주-{purchaseDetail.name}
-              </p>
+              <p>판매자 계좌: </p>
+              <p>은행-{bankList[purchaseDetail.bankCode]}</p>
+              <p>계좌번호-{purchaseDetail.accountNo}</p>
+              <p>계좌소유주-{purchaseDetail.name}</p>
               <p>입금자명:</p>
               <StyledInput
                 placeholder="입금자 명을 입력해 주세요"
@@ -268,7 +313,6 @@ const StyledBtn = styled.div`
 
 const ModalMain = styled.main`
   width: 100%;
-  height: 300px;
   border-radius: 10px;
   > p {
     margin-bottom: 15px;

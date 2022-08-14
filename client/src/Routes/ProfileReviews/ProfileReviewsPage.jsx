@@ -14,6 +14,9 @@ function ProfileReviewsPage({ params }) {
     res.then((reviews) => {
       setReviews(reviews.data);
     });
+    return () => {
+      setReviews([]);
+    };
   }, []);
 
   return (

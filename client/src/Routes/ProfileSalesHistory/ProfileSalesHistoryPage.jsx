@@ -7,9 +7,22 @@ import IsSellingCard from './IsSellingCard';
 import axios from 'axios';
 import Modal from '../../components/common/Modal';
 
-// 판매중. 판매완료 구분 미해결
 function ProfileSalesHistoryPage({ params }) {
   // 판매내역 전체 요청 API
+
+  useEffect(() => {
+    const getReview = async (url) => {
+      const response = await instance.get(url);
+      return response;
+    };
+    const res = getReview(`/api/history/sales/${active}/${params}?page=${0}&size=${9}`);
+    res.then((reviews) => {
+      console.log('페이지가 나타날때 내용을 불러온다');
+    });
+    return () => {
+      console.log('이전 내용이 사라진다?');
+    };
+  }, []);
 
   // 버튼 클릭으로 판매중 판매완료 구분
   const [active, setActive] = useState('inprogress');
@@ -227,5 +240,3 @@ const ModalMain = styled.main`
     padding: 5px;
   }
 `;
-
-const IsSellingContainer = styled.div``;
