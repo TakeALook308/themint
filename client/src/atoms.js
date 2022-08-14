@@ -21,23 +21,10 @@ export const myInformationState = atom({
   },
 });
 
-export const userState = atom({
-  key: 'userState',
-  default: {},
-});
-
-export const getUserSelector = selectorFamily({
-  key: 'user/get',
-  get: async (memberId) => {
-    // const user = get(myInformationState);
-    try {
-      const { data } = await fetchData.get(userApis.USER_INFORMATION(memberId));
-      return data;
-    } catch (err) {
-      throw err;
-    }
-  },
-  set: ({ set }, newValue) => {
-    set(userState, newValue);
+export const keywordState = atom({
+  key: `keyword/${v1()}`,
+  default: {
+    keyword: '',
+    type: 'auction',
   },
 });

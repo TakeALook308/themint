@@ -10,6 +10,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class ReviewListEntityRes {
+    Long writerSeq;
     String writerNickname;
     String writerProfileUrl;
     String content;
@@ -18,6 +19,7 @@ public class ReviewListEntityRes {
 
     public static ReviewListEntityRes of(Member member, Review review){
         ReviewListEntityRes res = ReviewListEntityRes.builder()
+                .writerSeq(member.getSeq())
                 .writerNickname(member.getNickname())
                 .writerProfileUrl(member.getProfileUrl())
                 .content(review.getContent())

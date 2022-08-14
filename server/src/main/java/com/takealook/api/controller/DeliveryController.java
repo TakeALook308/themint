@@ -33,7 +33,7 @@ public class DeliveryController {
         if(result == 1) {
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
         } else{
-            return ResponseEntity.status(409).body(BaseResponseBody.of(409, "fail"));
+            return ResponseEntity.status(409).body(BaseResponseBody.of(409, "운송장번호 등록에 실패하였습니다."));
         }
     }
 
@@ -43,7 +43,7 @@ public class DeliveryController {
         if(result == 1) {
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
         } else{
-            return ResponseEntity.status(409).body(BaseResponseBody.of(409, "fail"));
+            return ResponseEntity.status(409).body(BaseResponseBody.of(409, "배송정보 입력에 실패하였습니다."));
         }
     }
 }

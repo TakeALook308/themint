@@ -3,10 +3,18 @@ import { useInfiniteQuery } from 'react-query';
 import styled from 'styled-components';
 import { fetchData } from '../../utils/apis/api';
 import useObserver from '../../utils/hooks/useObserver';
+import Loading from './Loading';
 
-function InfiniteAuctionList({ getUrl, queryKey, CardComponent, SkeltonCardComponent, text }) {
+function InfiniteAuctionList({
+  getUrl,
+  queryKey,
+  CardComponent,
+  SkeltonCardComponent,
+  text,
+  func,
+  type,
+}) {
   const [hasError, setHasError] = useState(false);
-  const [isMore, SetIsMore] = useState(true);
   const bottom = useRef(null);
 
   const getTargetAuctionList = async ({ pageParam = 0 }) => {
@@ -50,23 +58,16 @@ function InfiniteAuctionList({ getUrl, queryKey, CardComponent, SkeltonCardCompo
       data?.pageParams?.length > 1 ? Boolean(data?.pageParams[data?.pageParams?.length - 1]) : true,
     hasError,
   });
-
   return (
-    <div>
+    <Container>
       {data?.pages[0]?.data?.resultList.length < 1 && <p>{text}</p>}
-      {isLoading && (
-        <GridContainer>
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <SkeltonCardComponent key={i} />
-          ))}
-        </GridContainer>
-      )}
+      {isLoading && <Loading />}
       {status === 'error' && <p>{error.message}</p>}
       {status === 'success' &&
         data.pages.map((group, index) => (
-          <GridContainer key={index}>
+          <GridContainer key={index} type={type}>
             {group?.data?.resultList?.map((auction, idx) => (
-              <CardComponent auction={auction} key={idx} />
+              <CardComponent auction={auction} key={idx} func={func} />
             ))}
           </GridContainer>
         ))}
@@ -78,7 +79,7 @@ function InfiniteAuctionList({ getUrl, queryKey, CardComponent, SkeltonCardCompo
           ))}
         </GridContainer>
       )}
-    </div>
+    </Container>
   );
 }
 
@@ -86,6 +87,18 @@ export default InfiniteAuctionList;
 
 const GridContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: ${(props) =>
+    props.type === '프로필' ? 'repeat(4, 1fr)' : 'repeat(3, 1fr)'};
   grid-gap: 1rem;
+  @media screen and (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media screen and (max-width: 576px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const Container = styled.div`
+  width: 100%;
+  height: 100%;
 `;

@@ -8,7 +8,8 @@ import com.takealook.api.service.S3FileService;
 import com.takealook.api.service.SmsService;
 import com.takealook.common.auth.MemberDetails;
 import com.takealook.common.exception.code.ErrorCode;
-import com.takealook.common.exception.member.MemberNotFoundException;
+import com.takealook.common.exception.member.*;
+import com.takealook.common.model.response.BaseResponseBody;
 import com.takealook.common.util.JwtTokenUtil;
 import com.takealook.db.entity.Member;
 import io.swagger.annotations.Api;
@@ -58,7 +59,7 @@ public class MemberController {
         if (member != null) {
             return ResponseEntity.status(200).body(MemberLoginPostRes.of(JwtTokenUtil.getToken(member.getMemberId()), member.getSeq(), member.getMemberId(), member.getNickname()));
         }
-        return ResponseEntity.status(409).body("signup fail");
+        return ResponseEntity.status(409).body(BaseResponseBody.of(409, "회원가입에 실패하였습니다."));
     }
 
     // 로그인
@@ -72,7 +73,7 @@ public class MemberController {
             return ResponseEntity.status(200).body(MemberLoginPostRes.of(JwtTokenUtil.getToken(memberId), member.getSeq(), member.getMemberId(), member.getNickname()));
         }
         // 유효하지 않는 패스워드인 경우, 로그인 실패
-        return ResponseEntity.status(409).body("fail");
+        return ResponseEntity.status(409).body(BaseResponseBody.of(409, "로그인에 실패하였습니다. 아이디 또는 비밀번호를 확인해주세요."));
     }
 
 //    @GetMapping("/klogin")
@@ -131,24 +132,37 @@ public class MemberController {
                 memberService.updateMemberScore(memberSeq, 3);
             }
             memberService.updateMember(memberSeq, memberUpdatePostReq);
-            return ResponseEntity.status(200).body("success");
+            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
         } else {
             throw new MemberNotFoundException("member not found", ErrorCode.MEMBER_NOT_FOUND);
         }
     }
 
     // 프로필 사진 변경
-    @PostMapping("img")
+    @PostMapping("/img")
     public ResponseEntity<?> updateProfileImage(@RequestPart MultipartFile multipartFile, @ApiIgnore Authentication authentication) throws Exception {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
         Member member = memberService.getMemberByMemberSeq(memberSeq);
         if (member != null) {
             String result = s3FileService.uploadProfileImage(multipartFile, memberSeq);
-            if (result == "fail") ResponseEntity.status(409).body("fail");
-            return ResponseEntity.status(200).body(result);
+            if (result == "fail") ResponseEntity.status(409).body(BaseResponseBody.of(409, "프로필 사진 변경에 실패하였습니다."));
+            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
         }
-        return ResponseEntity.status(409).body("fail");
+        throw new MemberNotFoundException("member not found", ErrorCode.MEMBER_NOT_FOUND);
+    }
+
+    // 휴대폰 번호 수정
+    @PatchMapping("/phone")
+    public ResponseEntity<?> updatePhone(@RequestBody Map<String, String> phoneMap, @ApiIgnore Authentication authentication) {
+        MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
+        Long memberSeq = memberDetails.getMemberSeq();
+        Member member = memberService.getMemberByMemberSeq(memberSeq);
+        if (member != null) {
+           memberService.updateMemberPhone(memberSeq, phoneMap.get("phone"));
+            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
+        }
+        throw new MemberNotFoundException("member not found", ErrorCode.MEMBER_NOT_FOUND);
     }
 
     // 비밀번호 변경
@@ -159,11 +173,11 @@ public class MemberController {
         Member member = memberService.getMemberByMemberSeq(memberSeq);
         if (member != null) {
             if (passwordEncoder.matches(pwdMap.get("pwd"), member.getPwd()))
-                return ResponseEntity.status(409).body("중복입니다.");
+                return ResponseEntity.status(409).body(BaseResponseBody.of(409, "직전의 비밀번호와 같은 비밀번호는 사용하실 수 없습니다."));
             memberService.updateMemberPassword(member.getSeq(), pwdMap.get("pwd"));
-            return ResponseEntity.status(200).body("success");
+            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
         }
-        return ResponseEntity.status(409).body("fail");
+        return ResponseEntity.status(409).body(BaseResponseBody.of(409, "비밀번호 변경에 실패하였습니다."));
     }
 
     /////////////////// 비밀번호 재설정 (비밀번호 찾기) start ////////////////////////
@@ -176,7 +190,7 @@ public class MemberController {
         int randNum = ThreadLocalRandom.current().nextInt(100000, 1000000);
         int result = memberService.sendEmail(randNum, member.getEmail());
         // 메일 전송 실패 시
-        if (result == 0) return ResponseEntity.status(409).body("fail");
+        if (result == 0) return ResponseEntity.status(409).body(BaseResponseBody.of(409, "메일 전송에 실패하였습니다."));
         return ResponseEntity.status(200).body(MemberRandomNumberRes.of(randNum));
     }
 
@@ -194,7 +208,7 @@ public class MemberController {
     @PatchMapping("password/change")
     public ResponseEntity<?> setNewPassword(@RequestBody MemberSetNewPwdPatchReq memberSetNewPwdPatchReq) {
         memberService.setNewPassword(memberSetNewPwdPatchReq);
-        return ResponseEntity.status(200).body("success");
+        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
     }
 
     /////////////////// 비밀번호 재설정 (비밀번호 찾기) end ////////////////////////
@@ -207,9 +221,9 @@ public class MemberController {
         Member member = memberService.getMemberByMemberSeq(memberSeq);
         if (member != null) {
             memberService.deleteMember(member.getSeq());
-            return ResponseEntity.status(200).body("success");
+            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
         }
-        return ResponseEntity.status(409).body("fail");
+        return ResponseEntity.status(409).body(BaseResponseBody.of(409, "회원 탈퇴에 실패하였습니다."));
     }
 
 
@@ -219,9 +233,9 @@ public class MemberController {
         Member member = memberService.getMemberByMemberId(memberId);
         // 검색 결과가 없으면 (중복된 아이디가 없다면) success
         if (member == null) {
-            return ResponseEntity.status(200).body("success");
+            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
         }
-        return ResponseEntity.status(409).body("fail");
+        throw new MemberIdDuplicateException("memberid duplicated", ErrorCode.MEMBERID_DUPLICATION);
     }
 
     // 닉네임 중복 검사
@@ -230,9 +244,9 @@ public class MemberController {
         Member member = memberService.getMemberByNickname(nickname);
         // 검색 결과가 없으면 (중복된 닉네임이 없다면) success
         if (member == null) {
-            return ResponseEntity.status(200).body("success");
+            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
         }
-        return ResponseEntity.status(409).body("fail");
+        throw new NicknameDuplicateException("nickname duplicated", ErrorCode.NICKNAME_DUPLICATION);
     }
 
     // 아이디 중복 검사
@@ -241,9 +255,9 @@ public class MemberController {
         Member member = memberService.getMemberByEmail(email);
         // 검색 결과가 없으면 (중복된 이메일이 없다면) success
         if (member == null) {
-            return ResponseEntity.status(200).body("success");
+            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
         }
-        return ResponseEntity.status(409).body("fail");
+        throw new EmailDuplicateException("email duplicated", ErrorCode.EMAIL_DUPLICATION);
     }
 
     // 휴대폰 번호 중복 검사
@@ -251,9 +265,9 @@ public class MemberController {
     public ResponseEntity<?> phoneDuplicateCheck(@PathVariable("phone") String phone) {
         Member member = memberService.getMemberByPhone(phone);
         if (member == null) {
-            return ResponseEntity.status(200).body("success");
+            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
         }
-        return ResponseEntity.status(409).body("fail");
+        throw new PhoneDuplicateException("phone duplicated", ErrorCode.PHONE_DUPLICATION);
     }
 
     // 아이디 찾기
@@ -275,7 +289,7 @@ public class MemberController {
         Member member = memberService.getMemberByMemberSeq(memberScoreUpdatePatchReq.getSeq());
         if (member == null) throw new MemberNotFoundException("member not found", ErrorCode.MEMBER_NOT_FOUND);
         memberService.updateMemberScore(memberScoreUpdatePatchReq.getSeq(), memberScoreUpdatePatchReq.getScore());
-        return ResponseEntity.status(200).body("success");
+        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
     }
 
     // 문자 인증
@@ -285,7 +299,7 @@ public class MemberController {
 
         SendSmsRes sendSmsRes = smsService.sendSms(phoneMap.get("phone"), String.valueOf(randNum));
         if (sendSmsRes.getStatusName().equals("fail"))
-            return ResponseEntity.status(409).body("fail");
+            return ResponseEntity.status(409).body(BaseResponseBody.of(409, "인증번호 전송에 실패하였습니다."));
         return ResponseEntity.status(200).body(randNum);
     }
 
@@ -298,6 +312,6 @@ public class MemberController {
         if (member != null) {
             return ResponseEntity.status(200).body(MemberLoginMemberInfoRes.of(member.getSeq(), member.getMemberId(), member.getNickname()));
         }
-        return ResponseEntity.status(409).body("fail");
+        return ResponseEntity.status(409).body(BaseResponseBody.of(409, "로그인 정보를 불러오는 데에 실패하였습니다."));
     }
 }

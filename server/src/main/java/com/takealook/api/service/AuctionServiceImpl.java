@@ -57,9 +57,9 @@ public class AuctionServiceImpl implements AuctionService {
 
         // 멤버 본인이 올린 다른 경매와 시간 겹치는지 체크
         List<Auction> auctionList = auctionRepository.findAllByMemberSeq(memberSeq);
-        for (Auction auc : auctionList){
+        for (Auction auc : auctionList) {
             LocalDateTime check = LocalDateTime.parse(auc.getStartTime(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            if(check.isAfter(minStartTime) && check.isBefore(maxStartTime)){
+            if (check.isAfter(minStartTime) && check.isBefore(maxStartTime)) {
                 throw new AuctionTimeDuplicateException("auction time is overlapped with auction hash " + auc.getHash(), ErrorCode.AUCTION_TIME_DUPLICATION);
             }
         }
@@ -80,7 +80,7 @@ public class AuctionServiceImpl implements AuctionService {
         }
 
         // 옥션 이미지 없을 시 기본이미지 넣기
-        if (multipartFileList == null || multipartFileList.size() == 0) {
+        if (multipartFileList.get(0).isEmpty()) {
             auctionImageRepository.save(AuctionImage.builder()
                     .auctionSeq(auction.getSeq())
                     .imageUrl("/product/basic1.png")
@@ -106,7 +106,7 @@ public class AuctionServiceImpl implements AuctionService {
     @Override
     public Auction getAuctionByHash(String hash) {
         Auction auction = auctionRepository.findByHash(hash).get();
-        if(auction == null){
+        if (auction == null) {
             throw new AuctionNotFoundException("auction with hash " + hash + " not found", ErrorCode.AUCTION_NOT_FOUND);
         }
         return auction;
@@ -115,7 +115,7 @@ public class AuctionServiceImpl implements AuctionService {
     @Override
     public Auction getAuctionBySeq(Long auctionSeq) {
         Auction auction = auctionRepository.findBySeq(auctionSeq).get();
-        if(auction == null){
+        if (auction == null) {
             throw new AuctionNotFoundException("auction with seq " + auctionSeq + " not found", ErrorCode.AUCTION_NOT_FOUND);
         }
         return auction;
@@ -186,25 +186,47 @@ public class AuctionServiceImpl implements AuctionService {
     }
 
     @Override
-    public void updateAuction(Long memberSeq, AuctionUpdatePatchReq auctionUpdatePatchReq) {
-        Auction auction = Auction.builder()
-                .seq(auctionUpdatePatchReq.getSeq())
-                .hash(auctionUpdatePatchReq.getHash())
-                .memberSeq(memberSeq)
-                .title(auctionUpdatePatchReq.getTitle())
-                .content(auctionUpdatePatchReq.getContent())
-                .categorySeq(auctionUpdatePatchReq.getCategorySeq())
-                .startTime(auctionUpdatePatchReq.getStartTime())
-                .status(auctionUpdatePatchReq.getStatus())
-                .interest(auctionUpdatePatchReq.getInterest())
+    public List<Auction> getAuctionListByStartTimeAndStatus(int status) {
+        String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        List<Auction> auctionList = auctionRepository.findAllByStartTimeBeforeAndStatus(currentTime, status);
+        return auctionList;
+    }
+
+    @Override
+    public void updateAuctionStatus(Long auctionSeq, int status) {
+        Auction auction = auctionRepository.findBySeq(auctionSeq).get();
+        Auction update = Auction.builder()
+                .seq(auctionSeq)
+                .memberSeq(auction.getMemberSeq())
+                .title(auction.getTitle())
+                .content(auction.getContent())
+                .categorySeq(auction.getCategorySeq())
+                .startTime(auction.getStartTime())
+                .hash(auction.getHash())
+                .interest(auction.getInterest())
+                .status(status)
                 .build();
+        auctionRepository.save(update);
+    }
+
+    @Override
+    public Auction updateAuction(Long memberSeq, AuctionUpdatePatchReq auctionUpdatePatchReq) {
+        Auction auction = auctionRepository.findBySeqAndMemberSeq(auctionUpdatePatchReq.getSeq(), memberSeq);
+        if (auction == null) {
+            throw new AuctionNotFoundException("auction with seq " + auctionUpdatePatchReq.getSeq() + " not found", ErrorCode.AUCTION_NOT_FOUND);
+        }
+        auction.setTitle(auctionUpdatePatchReq.getTitle());
+        auction.setContent(auctionUpdatePatchReq.getContent());
+        auction.setCategorySeq(auctionUpdatePatchReq.getCategorySeq());
+        auction.setStartTime(auctionUpdatePatchReq.getStartTime());
         auctionRepository.save(auction);
+        return auction;
     }
 
     @Override
     public void deleteAuction(Long auctionSeq) {
         Auction auction = auctionRepository.findBySeq(auctionSeq).orElse(null);
-        if(auction == null){
+        if (auction == null) {
             throw new AuctionNotFoundException("auction with seq " + auctionSeq + " not found", ErrorCode.AUCTION_NOT_FOUND);
         } else {
             auctionRepository.delete(auction);
