@@ -21,7 +21,7 @@ function NavigationBar({ url, keyword, categoryName }) {
   const onClick = () => {
     navigate({
       pathname: '/search',
-      search: `?type=auctions&keyword=${search}`,
+      search: `?type=auction&keyword=${search}`,
     });
   };
 
