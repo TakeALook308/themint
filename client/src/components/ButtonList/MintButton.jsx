@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
-function MintButton({ text, type, onClick, size }) {
+function MintButton({ text, type, onClick, size, disabled }) {
   return (
-    <Button type={type} onClick={onClick} size={size}>
+    <Button type={type} onClick={onClick} size={size} disabled={disabled}>
       {text}
     </Button>
   );

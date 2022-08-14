@@ -1,10 +1,23 @@
-import React from 'react';
+import React, { Suspense } from 'react';
+import { useQuery } from 'react-query';
 import { NavLink, Route, Routes } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 import { AccountsEdit, AccountsPassword, AccountsPhoneNumber, AccountsWithdrawl } from '..';
+import { myInformationState } from '../../atoms';
 import { Container } from '../../style/common';
+import { fetchData } from '../../utils/apis/api';
+import { userApis } from '../../utils/apis/userApis';
 
 function AccountsPage() {
+  const myInformation = useRecoilValue(myInformationState);
+  const getUserInfo = async () => {
+    const response = await fetchData.get(userApis.USER_INFORMATION(myInformation?.memberSeq));
+    return response?.data;
+  };
+
+  const { isLoading, error, data, isFetching } = useQuery(['userInformation'], getUserInfo);
+
   return (
     <GridContainer>
       <article>
@@ -17,12 +30,14 @@ function AccountsPage() {
         <NavStyle to="withdrawl">회원 탈퇴</NavStyle>
       </article>
       <article>
-        <Routes>
-          <Route path="edit" element={<AccountsEdit />} />
-          <Route path="password" element={<AccountsPassword />} />
-          <Route path="phone-number" element={<AccountsPhoneNumber />} />
-          <Route path="withdrawl" element={<AccountsWithdrawl />} />
-        </Routes>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Routes>
+            <Route path="edit" element={<AccountsEdit />} />
+            <Route path="password" element={<AccountsPassword />} />
+            <Route path="phone-number" element={<AccountsPhoneNumber />} />
+            <Route path="withdrawl" element={<AccountsWithdrawl />} />
+          </Routes>
+        </Suspense>
       </article>
     </GridContainer>
   );
