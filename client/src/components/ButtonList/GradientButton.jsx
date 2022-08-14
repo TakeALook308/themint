@@ -1,9 +1,9 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 
-function GradientButton({ text, type, onClick, size }) {
+function GradientButton({ text, type, onClick, size, disabled }) {
   return (
-    <Button type={type} onClick={onClick} size={size}>
+    <Button type={type} onClick={onClick} size={size} disabled={disabled}>
       {text}
     </Button>
   );
@@ -39,5 +39,10 @@ export const Button = styled.button`
   transition: all 0.4s ease;
   &:hover {
     animation: ${shine} 3s infinite linear;
+  }
+  &:disabled {
+    background: ${(props) => props.theme.colors.disabledGray};
+    color: ${(props) => props.theme.colors.pointGray};
+    cursor: not-allowed;
   }
 `;

@@ -26,7 +26,6 @@ function EmaiInput({ text, setEditMode, changeInformation }) {
       return;
     try {
       const response = await fetchData.get(userApis.EMAIL_DUPLICATE_CHECK_API(value));
-      console.log(response);
       if (response.status === 200) {
         setIsDuplicatedEmail(false);
         return true;
