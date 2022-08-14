@@ -3,16 +3,17 @@ import { Link } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { useNavigate, createSearchParams } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
-import { loggedinState, myInformationState } from '../../../atoms';
+import { keywordState, loggedinState, myInformationState } from '../../../atoms';
 import Logo from '../../common/Logo';
 import SubMenu from './SubMenu';
 import { HiSearch, HiOutlineChat, HiOutlineBell } from 'react-icons/hi';
 import { AiOutlineUser } from 'react-icons/ai';
 
-function NavigationBar({ url, keyword, categoryName }) {
+function NavigationBar() {
   const loggedin = useRecoilValue(loggedinState);
   const myInformation = useRecoilValue(myInformationState);
   const [search, setSearch] = useState('');
+  const keyword = useRecoilValue(keywordState);
   const onChangeSearch = (e) => {
     e.preventDefault();
     setSearch(e.target.value);
@@ -50,7 +51,7 @@ function NavigationBar({ url, keyword, categoryName }) {
             <HiSearch type="submit" aria-label="search" onClick={onClick} />
             <SearchBox
               type="text"
-              value={search}
+              value={search || keyword}
               placeholder="검색하기"
               inputProps={{ 'aria-label': '검색하기' }}
               onChange={onChangeSearch}

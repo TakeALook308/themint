@@ -8,15 +8,17 @@ import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
 import AuctionCard from '../../components/CardList/AuctionCard';
 import ProductCard from './ProductCard';
 import ProfileSearchCard from './ProfileSearchCard';
+import { useSetRecoilState } from 'recoil';
+import { keywordState } from '../../atoms';
 
 function SearchPage(props) {
   const [sortKey, setSortKey] = useState('startTime');
   const [pageTitle, setPageTitle] = useState('경매 검색');
   const [searchParams] = useSearchParams();
+  const setKeyword = useSetRecoilState(keywordState);
   const key = searchParams.get('keyword');
   const type = searchParams.get('type');
   const navigate = useNavigate();
-  console.log(key, type);
   const auctionSortKeys = [
     { value: 'startTime', name: '경매임박순' },
     { value: 'seq', name: '최신등록순' },
@@ -30,6 +32,9 @@ function SearchPage(props) {
     { value: 'startPrice', name: '낮은가격순' },
     { value: 'score', name: '판매자신뢰도순' },
   ];
+  useEffect(() => {
+    setKeyword(key);
+  }, []);
 
   const onChange = ({ target: { value } }) => {
     setSortKey(value);
@@ -86,11 +91,31 @@ function SearchPage(props) {
           </SearchTabButton>
         </HeaderContainer>
 
-        {(type === 'auction' || type === 'product') && (
+        {type === 'auction' && (
           <>
             <SelectContaier>
               <Select value={sortKey} onChange={onChange}>
                 {auctionSortKeys.map((item, i) => (
+                  <option key={i} value={item.value}>
+                    {item.name}
+                  </option>
+                ))}
+              </Select>
+            </SelectContaier>
+            <InfiniteAuctionList
+              getUrl={getSearchUrl(key, 9)}
+              queryKey={[type + key + sortKey]}
+              CardComponent={AuctionCard}
+              SkeltonCardComponent={SkeletonAuctionCard}
+              text={'경매 검색 결과가 없습니다.'}
+            />
+          </>
+        )}
+        {type === 'product' && (
+          <>
+            <SelectContaier>
+              <Select value={sortKey} onChange={onChange}>
+                {productSortKeys.map((item, i) => (
                   <option key={i} value={item.value}>
                     {item.name}
                   </option>
@@ -208,5 +233,6 @@ const SelectContaier = styled.div`
 `;
 
 const CardSection = styled.div`
-  margin-top: 4rem;
+  margin-top: 4.5rem;
+  height: 100%;
 `;
