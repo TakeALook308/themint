@@ -34,14 +34,14 @@ function StandbyPage() {
   const testSession = OV.initSession();
 
   const getToken = async (curSessionId) => {
-    // console.log('===== 세션 연결 중 : ', curSessionId);
+    console.log('===== 세션 연결 중 : ', curSessionId);
     return await createSession(curSessionId).then((sessionId) => createToken(sessionId));
   };
 
-  const standbyJoin = (standbySession, nickName) => {
-    // let standbySessionId = `${nickName}tests`;
-    let standbySessionId = `${nickName}tests`;
-    // console.log('스탠바이 세션 입장 ', standbySessionId);
+  const standbyJoin = (standbySession, auctionId) => {
+    // let standbySessionId = `${auctionId}tests`;
+    let standbySessionId = `${auctionId}tests`;
+    console.log('스탠바이 세션 입장 ', standbySessionId);
     getToken(standbySessionId).then((token) => {
       standbySession
         .connect(token, {})
@@ -56,7 +56,7 @@ function StandbyPage() {
             insertMode: 'APPEND',
             mirror: false,
           });
-          // console.log('video active', pub.stream.videoActive);
+          console.log('video active', pub.stream.videoActive);
           standbySession.publish(pub);
           setPublisher(pub);
         })
@@ -85,7 +85,7 @@ function StandbyPage() {
           },
         })
         .then((response) => {
-          // console.log('CREATE SESION', response);
+          console.log('CREATE SESION', response);
           resolve(response.data.id);
         })
         .catch((response) => {
@@ -117,7 +117,6 @@ function StandbyPage() {
     return new Promise((resolve, reject) => {
       var data = {};
       if (userInfo.memberSeq === standByInfo.memberSeq) data.role = 'MODERATOR';
-      else data.role = 'SUBSCRIBER';
       axios
         .post(OPENVIDU_SERVER_URL + '/openvidu/api/sessions/' + sessionId + '/connection', data, {
           headers: {
@@ -147,7 +146,7 @@ function StandbyPage() {
 
   useEffect(() => {
     if (standByInfo.memberSeq) {
-      standbyJoin(testSession, userInfo.nickname);
+      standbyJoin(testSession, auctionId);
     }
     if (standByInfo.memberSeq === userInfo.memberSeq) {
       successToast(
