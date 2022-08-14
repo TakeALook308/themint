@@ -222,6 +222,7 @@ public class AuctionServiceImpl implements AuctionService {
         return auction;
     }
 
+    @Transactional
     @Override
     public void deleteAuction(Long auctionSeq) {
         Auction auction = auctionRepository.findBySeq(auctionSeq).orElse(null);

@@ -8,6 +8,8 @@ import com.takealook.db.repository.ProductDeliveryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 public class ProductDeliveryServiceImpl implements ProductDeliveryService {
 
@@ -74,5 +76,11 @@ public class ProductDeliveryServiceImpl implements ProductDeliveryService {
             return 1;
         }
         return 0;
+    }
+
+    @Transactional
+    @Override
+    public void deleteByProductSeq(Long productSeq) {
+        productDeliveryRepository.deleteByProductSeq(productSeq);
     }
 }

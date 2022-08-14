@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -64,6 +65,7 @@ public class AuctionImageServiceImpl implements AuctionImageService{
         }
     }
 
+    @Transactional
     @Override
     public void deleteAuctionImageList(Long auctionSeq) {
         auctionImageRepository.deleteAllByAuctionSeq(auctionSeq);
