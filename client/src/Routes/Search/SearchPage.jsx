@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import styled from 'styled-components';
-import { NavLink, Route, Routes, useParams } from 'react-router-dom';
+import { NavLink, Route, Routes, useParams, useSearchParams } from 'react-router-dom';
 import { instance } from '../../utils/apis/api';
 import { Container } from '../../style/style';
 import SearchAuctionPage from '../SearchAuction/SearchAuctionPage';
@@ -13,7 +13,12 @@ function SearchPage(props) {
   const [searchType, setSearchType] = useState(params.get('type'));
   const [searchWord, setSearchWord] = useState(params.get('keyword'));
   const [pageTitle, setPageTitle] = useState('경매 검색');
-
+  const [searchParams] = useSearchParams();
+  // console.log(params);
+  // console.log(searchWord);
+  // console.log(searchWord);
+  const key = searchParams.get('keyword');
+  console.log(key);
   return (
     <>
       <Helmet>
@@ -37,9 +42,9 @@ function SearchPage(props) {
         </HeaderContainer>
         <StyledMain>
           <Routes>
-            <Route path="" element={<SearchAuctionPage params={searchWord} />} />
-            <Route path="searchProduct" element={<SearchProductPage params={searchWord} />} />
-            <Route path="searchProfile" element={<SearchProfilePage params={searchWord} />} />
+            <Route path="" element={<SearchAuctionPage params={key} />} />
+            <Route path="searchProduct" element={<SearchProductPage params={key} />} />
+            <Route path="searchProfile" element={<SearchProfilePage params={key} />} />
           </Routes>
         </StyledMain>
       </Container>

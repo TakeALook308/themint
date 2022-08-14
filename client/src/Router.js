@@ -67,7 +67,7 @@ function Router() {
         <Route path="main" element={<Main />} />
         <Route path="categories/:categoryId" element={<Category />} />
         <Route path="auctions/:auctionId" element={<AuctionDetail />} />
-        <Route path="search/*" element={<Search />} />
+        <Route path="search" element={<Search />} />
         {/* <Route path="" element={<SearchAuction />} />
           <Route path="search" element={<SearchAuction />} />
           <Route path="" element={<SearchAuction />} />

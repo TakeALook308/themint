@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, createSearchParams } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { loggedinState, myInformationState } from '../../../atoms';
 import Logo from '../../common/Logo';
@@ -16,21 +16,21 @@ function NavigationBar({ url, keyword, categoryName }) {
   const onChangeSearch = (e) => {
     e.preventDefault();
     setSearch(e.target.value);
-    console.log(e.target.value);
   };
   const navigate = useNavigate();
   const onClick = () => {
-    navigate(`/search?type=auctions&keyword=${search}`);
+    navigate({
+      pathname: '/search',
+      search: `?type=auctions&keyword=${search}`,
+    });
   };
 
-  const onKeyPress = (e) => {
-    if (e.key == 'Enter') {
-      onClick();
-    }
-  };
-
-  const onSubmit = () => {
-    navigate(`${url}&keyword=${keyword}`);
+  const onSubmit = (e) => {
+    e.preventDefault();
+    navigate({
+      pathname: '/search',
+      search: `?type=auctions&keyword=${search}`,
+    });
   };
 
   if (
@@ -54,7 +54,6 @@ function NavigationBar({ url, keyword, categoryName }) {
               placeholder="검색하기"
               inputProps={{ 'aria-label': '검색하기' }}
               onChange={onChangeSearch}
-              onKeyPress={onKeyPress}
             />
           </NavSearch>
           <NavItemText>
@@ -132,7 +131,7 @@ const NavList = styled.div`
   display: flex;
 `;
 
-const NavSearch = styled.div`
+const NavSearch = styled.form`
   display: flex;
   background-color: ${(props) => props.theme.colors.pointBlack};
   border: none;
