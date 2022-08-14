@@ -1,5 +1,6 @@
 package com.takealook.api.controller;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.takealook.api.request.AuctionRegisterPostReq;
 import com.takealook.api.request.AuctionUpdatePatchReq;
 import com.takealook.api.response.AuctionListEntityRes;
@@ -57,6 +58,9 @@ public class AuctionController {
     @Autowired
     InterestCategoryService interestCategoryService;
 
+    @Autowired
+    InterestAuctionService interestAuctionService;
+
     @PostMapping
     public ResponseEntity<?> registerAuction(@RequestPart("auctionInfo")AuctionRegisterPostReq auctionRegisterPostReq, @RequestPart(required = false) List<MultipartFile> auctionImageList, @ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
@@ -72,14 +76,20 @@ public class AuctionController {
     }
 
     @GetMapping("/{auctionHash}")
-    public ResponseEntity<AuctionRes> getAuctionDetail(@PathVariable String auctionHash) {
+    public ResponseEntity<AuctionRes> getAuctionDetail(@PathVariable String auctionHash, @ApiIgnore @Nullable Authentication authentication) {
+        Boolean isMemberInterest = false;
+        if(authentication != null){
+            MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
+            Long memberSeq = memberDetails.getMemberSeq();
+            isMemberInterest = interestAuctionService.checkInterestByMemberSeq(memberSeq, auctionHash);
+        }
         Auction auction = auctionService.getAuctionByHash(auctionHash);
         Long auctionSeq = auction.getSeq();
         List<Product> productList = productService.getProductListByAuctionSeq(auctionSeq);
         List<AuctionImage> auctionImageList = auctionImageService.getAuctionImageListByAuctionSeq(auctionSeq);
-        Member member = memberService.getMemberByMemberSeq(auction.getMemberSeq());
+        Member member = memberService.getMemberByMemberSeq(auction.getMemberSeq()); // 판매자
 
-        return ResponseEntity.status(200).body(AuctionRes.of(auction, productList, auctionImageList, member));
+        return ResponseEntity.status(200).body(AuctionRes.of(auction, productList, auctionImageList, member, isMemberInterest));
     }
 
     @PatchMapping

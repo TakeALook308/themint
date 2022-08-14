@@ -90,4 +90,14 @@ public class InterestAuctionServiceImpl implements InterestAuctionService {
         }
         interestAuctionRepository.deleteByMemberSeqAndHash(memberSeq, hash);
     }
+
+    @Override
+    public Boolean checkInterestByMemberSeq(Long memberSeq, String auctionHash) {
+        InterestAuction interestAuction = interestAuctionRepository.findByMemberSeqAndHash(memberSeq, auctionHash);
+        if(interestAuction == null){
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
