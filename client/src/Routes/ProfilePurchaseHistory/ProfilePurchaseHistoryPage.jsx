@@ -17,6 +17,7 @@ import { userApis } from '../../utils/apis/userApis';
 import { myInformationState } from '../../atoms';
 import { useQuery } from 'react-query';
 import { ActiveInput } from '../../style/style';
+import MintButton from '../../components/ButtonList/MintButton';
 
 function ProfilePurchaseHistoryPage({ params }) {
   // 구매내역과 판매내역 차이 구분
@@ -166,14 +167,12 @@ function ProfilePurchaseHistoryPage({ params }) {
     });
     console.log(deliveryData);
     // 버튼 클릭하면 배송정보를 patch
-    const patchDelivery = () => {
-      const patchDeliveryData = async (url, data) => {
-        const response = await instance.patch(url, data);
-        return response;
-      };
-      const res = patchDeliveryData(`/api/delivery`, deliveryData);
-      res.then(() => {});
+    const patchDeliveryData = async (url, data) => {
+      const response = await instance.patch(url, data);
+      return response;
     };
+    const res = patchDeliveryData(`/api/delivery`, deliveryData);
+    res.then(() => {});
   };
 
   // 리뷰 작성
@@ -253,7 +252,7 @@ function ProfilePurchaseHistoryPage({ params }) {
           {active === 'inprogress' && (
             <Purchasing>
               <p>입금을 완료 하셨나요??</p>
-              <button onClick={patchRemit}>입금완료</button>
+              <MintButton onClick={patchRemit} text="입금완료" size="30%" />
               <p>꼭! 입금 완료 후, 배송지를 입력해주세요!!!</p>
               <p>판매자 계좌 정보</p>
               <SellerInfo>
@@ -279,7 +278,16 @@ function ProfilePurchaseHistoryPage({ params }) {
                 Component={AddressInput}
                 userAllInfo={userAllInfo}
               />
-              <button onClick={onClick}>배송지 입력!</button>
+              {purchaseDetail.status >= 2 && (
+                <GradientButton onClick={onClick} text="배송지 입력" size="30%"></GradientButton>
+              )}
+              {purchaseDetail.status < 2 && (
+                <GradientButton
+                  onClick={onClick}
+                  text="배송지 입력"
+                  size="30%"
+                  disabled={true}></GradientButton>
+              )}
             </Purchasing>
           )}
           {active === 'complete' && (
@@ -381,6 +389,9 @@ const Purchasing = styled.div`
   > button {
     margin-bottom: 10px;
   }
+  > div {
+    margin-bottom: 15px;
+  }
 `;
 
 const Purchased = styled.div`
@@ -421,17 +432,6 @@ const Stars = styled.div`
   }
 `;
 
-const StyledInput = styled.input`
-  background-color: ${(props) => props.theme.colors.pointBlack};
-  height: 40px;
-  border: none;
-  border-radius: 5px;
-  padding: ${(props) => (props.active ? '20px 10px 10px' : '10px')};
-  color: ${(props) => props.theme.colors.white};
-  width: 100%;
-  outline: none;
-`;
-
 const SellerInfo = styled.article`
   background-color: ${(props) => props.theme.colors.pointBlack};
   border-radius: 10px;
@@ -441,10 +441,4 @@ const SellerInfo = styled.article`
   > p {
     padding: 5px 10px 5px 10px;
   }
-`;
-
-const AddressContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
 `;
