@@ -7,15 +7,18 @@ import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
 import Modal from '../../components/common/Modal';
 import GradientButton from '../../components/ButtonList/GradientButton';
 import { FaStar } from 'react-icons/fa';
-import PopupDom from '../Register/PopupDom';
-import PopupPostCode from '../Register/PopupPostCode';
-import { useForm } from 'react-hook-form';
+import { MemoizedInformation } from '../AccountsEdit/Information';
+import { useQueryClient } from 'react-query';
+import { BsHouseFill } from 'react-icons/bs';
+import AddressInput from '../AccountsEdit/AddressInput';
+import { useRecoilValue } from 'recoil';
+import { fetchData } from '../../utils/apis/api';
+import { userApis } from '../../utils/apis/userApis';
+import { myInformationState } from '../../atoms';
+import { useQuery } from 'react-query';
 import { ActiveInput } from '../../style/style';
-import { InputContainer } from '../Register/Register2';
-import MintButton from '../../components/ButtonList/MintButton';
 
 function ProfilePurchaseHistoryPage({ params }) {
-  // 구매내역 API 요청
   // 구매내역과 판매내역 차이 구분
   const [isPurchase, setIsPurchase] = useState('purchase');
   useEffect(() => {
@@ -47,8 +50,23 @@ function ProfilePurchaseHistoryPage({ params }) {
       console.log(itemDetail.data);
       setAuctionProductSeq(itemDetail.data.productSeq);
       onChange2({ target: { name: 'receiverSeq', value: itemDetail.data.sellerMemberSeq } });
-      onChange({
-        target: { name: 'productDeliverySeq', value: itemDetail.data.productDeliverySeq },
+      setDeliveryData((prevState) => {
+        return { ...prevState, productDeliverySeq: itemDetail.data.productDeliverySeq };
+      });
+      setDeliveryData((prevState) => {
+        return { ...prevState, name: userAllInfo.memberName };
+      });
+      setDeliveryData((prevState) => {
+        return { ...prevState, phone: userAllInfo.phone };
+      });
+      setDeliveryData((prevState) => {
+        return { ...prevState, address: userAllInfo.address };
+      });
+      setDeliveryData((prevState) => {
+        return { ...prevState, addressDetail: userAllInfo.addressDetail };
+      });
+      setDeliveryData((prevState) => {
+        return { ...prevState, zipCode: userAllInfo.zipCode };
       });
     });
 
@@ -117,6 +135,14 @@ function ProfilePurchaseHistoryPage({ params }) {
   };
 
   // 배송정보 수정
+  const myInformation = useRecoilValue(myInformationState);
+  const getUserInfo = async () => {
+    const response = await fetchData.get(userApis.USER_INFORMATION(myInformation?.memberSeq));
+    return response?.data;
+  };
+  const { isLoading, error, data, isFetching } = useQuery(['userInformation'], getUserInfo);
+  const queryClient = useQueryClient();
+  const userAllInfo = queryClient.getQueryData(['userInformation']);
   const [deliveryData, setDeliveryData] = useState({
     productDeliverySeq: 1,
     name: '',
@@ -126,49 +152,28 @@ function ProfilePurchaseHistoryPage({ params }) {
     addressDetail: '',
     zipCode: '',
   });
-  const { remitName, addressDetail, address, zipCode } = deliveryData;
-  const onChange = ({ target: { name, value } }) => {
+  const onChange = (e) => {
+    setDeliveryData((prevState) => {
+      console.log(e.target.value);
+      return { ...prevState, remitName: e.target.value };
+    });
+  };
+  const onClick = () => {
+    const { value, name } = deliveryData;
     setDeliveryData({
       ...deliveryData,
       [name]: value,
     });
-  };
-  // 주소입력 API 활용
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
-  // const [address, setAddress] = useState();
-
-  // const handleInput = (e) => {
-  //   setAddress(e.target.value);
-  // };
-
-  const togglePostCode = () => {
-    setIsPopupOpen(!isPopupOpen);
-  };
-
-  const closePostCode = () => {
-    console.log(address);
-    setIsPopupOpen(false);
-  };
-
-  const { register, setValue } = useForm({
-    defaultValues: {
-      nickname: '',
-      address: '',
-    },
-
-    mode: 'onChange',
-  });
-  console.log(address);
-
-  // 버튼 클릭하면 배송정보를 patch
-  const patchDelivery = () => {
     console.log(deliveryData);
-    // const patchDeliveryData = async (url, data) => {
-    //   const response = await instance.patch(url, data);
-    //   return response;
-    // };
-    // const res = patchDeliveryData(`/api/delivery`, deliveryData);
-    // res.then(() => {});
+    // 버튼 클릭하면 배송정보를 patch
+    const patchDelivery = () => {
+      const patchDeliveryData = async (url, data) => {
+        const response = await instance.patch(url, data);
+        return response;
+      };
+      const res = patchDeliveryData(`/api/delivery`, deliveryData);
+      res.then(() => {});
+    };
   };
 
   // 리뷰 작성
@@ -257,66 +262,30 @@ function ProfilePurchaseHistoryPage({ params }) {
                 <p>계좌소유주:{purchaseDetail.name}</p>
               </SellerInfo>
               <p>입금자명:</p>
-              <StyledInput
-                placeholder="입금자 명을 입력해 주세요"
-                name="remitName"
-                value={remitName}
-                onChange={onChange}
+              <ActiveInput active={true}>
+                <input
+                  name="remitName"
+                  id="remitName"
+                  type="text"
+                  autoComplete="off"
+                  required
+                  onChange={onChange}
+                />
+                <label htmlFor="nickname">입금자명</label>
+              </ActiveInput>
+              <MemoizedInformation
+                icon={<BsHouseFill aria-label="주소" />}
+                textList={[userAllInfo?.zipCode, userAllInfo?.address, userAllInfo?.addressDetail]}
+                Component={AddressInput}
+                userAllInfo={userAllInfo}
               />
-              <p>배송정보 입력:</p>
-              <InputContainer>
-                <ActiveInput active={true}>
-                  <input
-                    name="zipCode"
-                    id="zipCode"
-                    type="text"
-                    {...register('zipCode', {})}
-                    placeholder=" "
-                    onChange={onChange}
-                  />
-                  <label htmlFor="zipCode">우편번호</label>
-                </ActiveInput>
-                <MintButton text={'조회'} type={'button'} onClick={togglePostCode} />
-              </InputContainer>
-              <AddressContainer>
-                <ActiveInput active={true}>
-                  <input
-                    name="address"
-                    id="address"
-                    type="text"
-                    {...register('address', {})}
-                    placeholder=""
-                    onChange={onChange}
-                  />
-                  <label htmlFor="address">주소</label>
-                </ActiveInput>
-                <ActiveInput active={true}>
-                  <input
-                    name="addressDetail"
-                    id="addressDetail"
-                    type="text"
-                    placeholder=""
-                    onChange={onChange}
-                    value={addressDetail}
-                  />
-                  <label htmlFor="addressDetail">상세주소</label>
-                </ActiveInput>
-              </AddressContainer>
-              <div id="popupDom">
-                {isPopupOpen && (
-                  <PopupDom>
-                    <PopupPostCode onClose={closePostCode} setAddress={setValue} />
-                  </PopupDom>
-                )}
-              </div>
-              <button onClick={patchDelivery}>배송정보 저장</button>
+              <button onClick={onClick}>배송지 입력!</button>
             </Purchasing>
           )}
           {active === 'complete' && (
             <Purchased>
               <p>배송주소: {purchaseDetail.address}</p>
               <p>상세 배송주소: {purchaseDetail.addressDetail}</p>
-
               <p>배송조회</p>
               <p>리뷰 작성</p>
               <p>별점을 선택해 주세요!</p>
