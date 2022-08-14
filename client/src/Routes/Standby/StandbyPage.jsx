@@ -12,7 +12,7 @@ import { fetchData } from '../../utils/apis/api';
 import { errorToast, successToast } from '../../lib/toast';
 import { auctionApis } from '../../utils/apis/auctionApis';
 import { categories } from '../../utils/constants/constant';
-import { socketApis } from '../../utils/apis/\bsocketApis';
+import { socketApis } from '../../utils/apis/socketApis';
 import { Helmet } from 'react-helmet-async';
 
 const OPENVIDU_SERVER_URL = 'https://i7a308.p.ssafy.io:8443';
