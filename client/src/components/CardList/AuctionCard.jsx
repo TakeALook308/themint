@@ -4,19 +4,6 @@ import { Link } from 'react-router-dom';
 
 function AuctionCard({ auction }) {
   const [auctionTime, setAuctionTime] = useState({ moreThenOneDay: false, time: '' });
-  // TODO: 데이터 교체하기
-  // const auctions = {
-  //   seq: 1,
-  //   memberSeq: 1,
-  //   title: '닌텐도 스위치 이것만 있으면 그냥 인생은 끝장난거 입니다.',
-  //   startTime: 'Thu Jul 28 2022 09:00:00 GMT+0900 ',
-  //   auctionImage: {
-  //     seq: 1,
-  //     imageUrl: 'https://images.gnwcdn.com/2022/articles/2022-07-01-15-35/hero_top_sp.jpg',
-  //   },
-  // };
-  // const profileUrl =
-  //   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiiGVRNg8egZNHf7d7-jeEA3JKgNTkStDZPQ&usqp=CAU';
 
   const CalculateTime = () => {
     const auctionStartTime = new Date(auction?.startTime);
@@ -65,7 +52,7 @@ function AuctionCard({ auction }) {
             </picture>
             <AuctionInfoContainer>
               <div>
-                <p>{auction?.title}</p>
+                <p>{auction?.title || auction?.productName}</p>
                 <AuctionTimeMessage time={auctionTime.moreThenOneDay}>
                   경매시작: {auctionTime.time}
                 </AuctionTimeMessage>

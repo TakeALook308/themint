@@ -1,28 +1,31 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
-import { useNavigate, createSearchParams } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
+import { useNavigate } from 'react-router-dom';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { keywordState, loggedinState, myInformationState } from '../../../atoms';
 import Logo from '../../common/Logo';
 import SubMenu from './SubMenu';
 import { HiSearch, HiOutlineChat, HiOutlineBell } from 'react-icons/hi';
 import { AiOutlineUser } from 'react-icons/ai';
+import { useState } from 'react';
 
 function NavigationBar() {
   const loggedin = useRecoilValue(loggedinState);
   const myInformation = useRecoilValue(myInformationState);
+  const [keyword, setKeyword] = useRecoilState(keywordState);
   const [search, setSearch] = useState('');
-  const keyword = useRecoilValue(keywordState);
+  const location = useLocation();
   const onChangeSearch = (e) => {
     e.preventDefault();
-    setSearch(e.target.value);
+    setKeyword({ ...keyword, keyword: e.target.value });
   };
+
   const navigate = useNavigate();
   const onClick = () => {
     navigate({
       pathname: '/search',
-      search: `?type=auction&keyword=${search}`,
+      search: `?type=${keyword.type}&keyword=${keyword.keyword}`,
     });
   };
 
@@ -30,15 +33,15 @@ function NavigationBar() {
     e.preventDefault();
     navigate({
       pathname: '/search',
-      search: `?type=auction&keyword=${search}`,
+      search: `?type=${keyword.type}&keyword=${keyword.keyword}`,
     });
   };
 
   if (
-    window.location.pathname.startsWith('/streamings') ||
-    window.location.pathname.startsWith('/register') ||
-    window.location.pathname.startsWith('/login') ||
-    window.location.pathname.startsWith('/help')
+    location.pathname.startsWith('/streamings') ||
+    location.pathname.startsWith('/register') ||
+    location.pathname.startsWith('/login') ||
+    location.pathname.startsWith('/help')
   )
     return null;
 
@@ -51,7 +54,7 @@ function NavigationBar() {
             <HiSearch type="submit" aria-label="search" onClick={onClick} />
             <SearchBox
               type="text"
-              value={search || keyword}
+              value={keyword.keyword}
               placeholder="검색하기"
               inputProps={{ 'aria-label': '검색하기' }}
               onChange={onChangeSearch}

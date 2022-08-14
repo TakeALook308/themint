@@ -8,14 +8,14 @@ import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
 import AuctionCard from '../../components/CardList/AuctionCard';
 import ProductCard from './ProductCard';
 import ProfileSearchCard from './ProfileSearchCard';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { keywordState } from '../../atoms';
 
 function SearchPage(props) {
   const [sortKey, setSortKey] = useState('startTime');
   const [pageTitle, setPageTitle] = useState('경매 검색');
   const [searchParams] = useSearchParams();
-  const setKeyword = useSetRecoilState(keywordState);
+  const [keyword, setKeyword] = useRecoilState(keywordState);
   const key = searchParams.get('keyword');
   const type = searchParams.get('type');
   const navigate = useNavigate();
@@ -33,7 +33,15 @@ function SearchPage(props) {
     { value: 'score', name: '판매자신뢰도순' },
   ];
   useEffect(() => {
-    setKeyword(key);
+    setKeyword({
+      keyword: key,
+      type: 'auction',
+    });
+    return () =>
+      setKeyword({
+        keyword: '',
+        type: 'auction',
+      });
   }, []);
 
   const onChange = ({ target: { value } }) => {
@@ -54,6 +62,10 @@ function SearchPage(props) {
       pathname: '/search',
       search: `?type=auction&keyword=${key}`,
     });
+    setKeyword({
+      ...keyword,
+      type: 'auction',
+    });
   };
 
   const onClickProduct = () => {
@@ -62,6 +74,10 @@ function SearchPage(props) {
       pathname: '/search',
       search: `?type=product&keyword=${key}`,
     });
+    setKeyword({
+      ...keyword,
+      type: 'product',
+    });
   };
 
   const onClickProfile = () => {
@@ -69,6 +85,10 @@ function SearchPage(props) {
     navigate({
       pathname: '/search',
       search: `?type=member&keyword=${key}`,
+    });
+    setKeyword({
+      ...keyword,
+      type: 'member',
     });
   };
 
@@ -79,6 +99,7 @@ function SearchPage(props) {
       </Helmet>
 
       <Container>
+        <KeywordContainer>'{key}' 검색 결과</KeywordContainer>
         <HeaderContainer>
           <SearchTabButton active={type === 'auction'} onClick={onClickAuction}>
             경매
@@ -151,7 +172,14 @@ export default SearchPage;
 
 const HeaderContainer = styled.div`
   display: flex;
-  margin-top: 50px;
+`;
+
+const KeywordContainer = styled.h2`
+  height: 5rem;
+  display: flex;
+  align-items: center;
+  font-size: ${(props) => props.theme.fontSizes.h4};
+  font-weight: bold;
 `;
 
 const SearchTabButton = styled.button`
