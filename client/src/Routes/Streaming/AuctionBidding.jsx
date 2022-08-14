@@ -17,52 +17,15 @@ function AuctionBidding({ products, sendPrice, price, producter }) {
   const [test, setTest] = useState(2);
   const [prev, setPrev] = useState(-1);
 
+  const [AuctionStart, setAuctionStart] = useState(true);
+
   const startAuction = () => {
-    // setNowProduct(nowProduct + 1);
-    // setNowPrice(products[nowProduct + 1].startPrice);
-    // setMyPrice(products[nowProduct + 1].startPrice + 1000);
-    // getData(auctionApis.AUCTION_DATE_API).then((res) => setResetTime(new Date(res.data)));
-    // setSecond(30);
     if (nowProduct < products.length - 1) {
       sendPrice(-1, nowProduct + 1);
+      setAuctionStart(false);
     } else alert('경매 끝남');
   };
 
-  // useEffect(() => {
-  //   const a = setInterval(() => {
-  //     if (second > 0) {
-  //       setSecond(second - 1);
-  //       console.log('hi');
-  //     } else clearInterval(a);
-  //   }, 1000);
-  // }, [resetTime]);
-  let timer;
-
-  // const countDownTimer = (sec) => {
-  //   function show() {
-  //     try {
-  //       const nowTime = moment();
-  //       let showtime = sec + (resetTime - nowTime) / 1000;
-  //       if (showtime < 0) {
-  //         clearInterval(timer);
-  //         document.getElementById('timer').innerHTML = 0;
-  //         return;
-  //       } else {
-  //         document.getElementById('timer').innerHTML = showtime.toFixed(1);
-  //       }
-  //     } catch (e) {
-  //       console.log(e);
-  //     }
-  //   }
-  //   timer = setInterval(show, 100);
-  //   return () => clearInterval(timer);
-  // };
-
-  // useEffect(() => {
-  //
-  //     setStart(true);
-  //   }
-  // }, [start]);
   useEffect(() => {
     if (price.length > 0) {
       if (price.length === 1 && price[0].price === -1 && products) {
