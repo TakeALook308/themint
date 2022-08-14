@@ -12,6 +12,7 @@ function InfiniteAuctionList({
   SkeltonCardComponent,
   text,
   func,
+  type,
 }) {
   const [hasError, setHasError] = useState(false);
   const bottom = useRef(null);
@@ -64,7 +65,7 @@ function InfiniteAuctionList({
       {status === 'error' && <p>{error.message}</p>}
       {status === 'success' &&
         data.pages.map((group, index) => (
-          <GridContainer key={index}>
+          <GridContainer key={index} type={type}>
             {group?.data?.resultList?.map((auction, idx) => (
               <CardComponent auction={auction} key={idx} func={func} />
             ))}
@@ -86,7 +87,8 @@ export default InfiniteAuctionList;
 
 const GridContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: ${(props) =>
+    props.type === '프로필' ? 'repeat(4, 1fr)' : 'repeat(3, 1fr)'};
   grid-gap: 1rem;
   @media screen and (max-width: 768px) {
     grid-template-columns: repeat(2, 1fr);

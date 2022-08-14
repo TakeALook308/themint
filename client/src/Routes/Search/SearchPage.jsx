@@ -160,6 +160,7 @@ function SearchPage(props) {
               CardComponent={ProfileSearchCard}
               SkeltonCardComponent={SkeletonAuctionCard}
               text={'프로필 검색 결과가 없습니다.'}
+              type={'프로필'}
             />
           </CardSection>
         )}
