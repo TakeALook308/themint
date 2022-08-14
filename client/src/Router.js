@@ -25,6 +25,10 @@ import {
   Streaming,
   Talks,
   Accounts,
+  Search,
+  SearchAuction,
+  SearchProduct,
+  SearchProfile,
 } from './Routes/index';
 import { useRecoilValue } from 'recoil';
 import { loggedinState } from './atoms';
@@ -63,6 +67,11 @@ function Router() {
         <Route path="main" element={<Main />} />
         <Route path="categories/:categoryId" element={<Category />} />
         <Route path="auctions/:auctionId" element={<AuctionDetail />} />
+        <Route path="search" element={<Search />} />
+        {/* <Route path="" element={<SearchAuction />} />
+          <Route path="search" element={<SearchAuction />} />
+          <Route path="" element={<SearchAuction />} />
+        </Route> */}
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />

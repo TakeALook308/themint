@@ -9,29 +9,26 @@ import { useDropzone } from 'react-dropzone';
 import { auctionApis } from '../../utils/apis/auctionApis';
 import { postData } from '../../utils/apis/api';
 import { useNavigate } from 'react-router-dom';
-
+import GradientButton from '../../components/ButtonList/GradientButton';
 function AuctionCreatePage(props) {
   const navigate = useNavigate();
   const onDrop = (acceptedFiles) => {
     let temp = [...productList];
     acceptedFiles.map((item) => temp.push(item));
-    onChange({
-      target: { name: 'auctionImageList', value: temp },
-    });
+    setAuctionImageList(temp);
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
-
+  const [auctionImageList, setAuctionImageList] = useState([]);
   const [inputAuction, setInputAuction] = useState({
     categorySeq: 1,
-    auctionImageList: [],
     title: '',
     content: '',
     startTime: '',
     productList: [],
   });
 
-  const { categorySeq, auctionImageList, title, content, productList } = inputAuction;
+  const { categorySeq, title, content, productList } = inputAuction;
   const startTime =
     inputAuction.startTime.substring(0, 10) + 'T' + inputAuction.startTime.substring(11, 16);
   const [reservation, setReservation] = useState(false);
@@ -81,23 +78,42 @@ function AuctionCreatePage(props) {
   const ModalHandler = () => {
     setIsModal((prev) => !prev);
   };
+
+  // const reader = new FileReader();
+  // reader.onload = () =>
+  //   (document.querySelector('.img_box').style.backgrondImage = `url(${reader.result})`);
+  // reader.readAsDataURL(auctionImageList[0]);
   return (
     <Container>
       <Title>경매 생성</Title>
-
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          postData(auctionApis.AUCTION_CREATE_API, inputAuction)
-            .then(() => {
-              console.log(inputAuction);
+          const formData = new FormData();
+          // auctionImageList.map((file) => formData.append('files', file));
+          if (auctionImageList) {
+            for (let i = 0; i < auctionImageList.length; i++) {
+              formData.append('auctionImageList', auctionImageList[i]);
+            }
+          } else formData.append('auctionImageList', []);
+          formData.append(
+            'auctionInfo',
+            new Blob([JSON.stringify(inputAuction)], { type: 'application/json' }),
+          );
+          // console.log(formData.get('file'), formData.get('key'));
+          postData(auctionApis.AUCTION_CREATE_API, formData, {
+            headers: {
+              'Content-Type': `multipart/form-data`,
+            },
+          })
+            .then((res) => {
+              // console.log(inputAuction);
               alert('성공');
-              // navigate(`/main`);
+              navigate(`/auctions/${res.data}`);
             })
             .catch(() => {
-              console.log(inputAuction);
+              // console.log(inputAuction);
               alert('실패');
-              // navigate(`/main`);
             });
         }}>
         <Div>
@@ -116,18 +132,11 @@ function AuctionCreatePage(props) {
           <FileUpload>
             <div {...getRootProps()}>
               <input {...getInputProps()} />
-              {isDragActive ? (
-                <p>Drop the files here ...</p>
-              ) : auctionImageList.length === 0 ? (
-                <div>파일을 추가해주세요</div>
-              ) : (
-                <div>
-                  {/* {auctionImageList.map((item, i) => (
-                    <p key={i}>{item.path}</p>
-                  ))} */}
-                </div>
-              )}
+              {isDragActive ? <p>Drop the files here ...</p> : <div>파일을 추가해주세요</div>}
             </div>
+            {auctionImageList.map((item, i) => (
+              <div key={i}>{item.path}</div>
+            ))}
           </FileUpload>
         </Div>
 
@@ -183,7 +192,7 @@ function AuctionCreatePage(props) {
           <ProductTable productList={productList} />
         </Div>
         <SubmitBox>
-          <button type="submit">생성</button>
+          <GradientButton type="submit" text="생성" />
         </SubmitBox>
       </form>
 
@@ -268,10 +277,11 @@ const Select = styled.select`
 `;
 
 const SubmitBox = styled.div`
-  width: 100%;
+  width: 120px;
   padding: 15px 0;
   display: flex;
   justify-content: center;
+  margin: 0 auto;
 
   button {
     display: inline-block;
@@ -288,6 +298,20 @@ const FileUpload = styled.div`
   height: 200px;
   border-radius: 5px;
   background-color: ${(props) => props.theme.colors.pointBlack};
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  place-items: center;
+  div {
+    width: 150px;
+    height: 100px;
+    white-space: normal;
+    word-break: break-all;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 `;
 const Textarea = styled.textarea`
   width: 100%;

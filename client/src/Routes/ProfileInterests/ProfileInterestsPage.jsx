@@ -1,60 +1,58 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import InterestKeywordList from '../../components/ui/profile/Interest/InterestKeywordList';
+import InterestKeywordList from './InterestKeywordList';
 import { myInformationState } from '../../atoms';
 import { useRecoilValue } from 'recoil';
-import InterestAuctionList from '../../components/ui/profile/Interest/InterestAuctionList';
-import InterestCateList from '../../components/ui/profile/Interest/InterestCateList';
+import InterestAuctionList from './InterestAuctionList';
+import InterestCateList from './InterestCateList';
 
 function ProfileInterestsPage({ params }) {
-  const [active, setActive] = useState('1');
+  const [active, setActive] = useState(1);
   // 사용자와 프로필페이지 일치여부 확인
   const myInformation = useRecoilValue(myInformationState);
   const strMemberSeq = `${myInformation.memberSeq}`;
-  const numActive = active * 1;
 
   const onKeyword = () => {
-    setActive('1');
+    setActive(1);
   };
 
   const onCategory = () => {
-    setActive('2');
+    setActive(2);
   };
 
   const onAuction = () => {
-    setActive('3');
+    setActive(3);
   };
-  console.log(typeof active);
   return (
     <Container>
       <ButtonNav>
         <StyledBtn
           key={1}
-          className={active === '1' ? 'active' : undefined}
-          id={'1'}
+          className={active === 1 ? 'active' : undefined}
+          id={1}
           onClick={onKeyword}>
           키워드
         </StyledBtn>
         <StyledBtn
           key={2}
-          className={active === '2' ? 'active' : undefined}
-          id={'2'}
+          className={active === 2 ? 'active' : undefined}
+          id={2}
           onClick={onCategory}>
           카테고리
         </StyledBtn>
         <StyledBtn
           key={3}
-          className={active === '3' ? 'active' : undefined}
-          id={'3'}
+          className={active === 3 ? 'active' : undefined}
+          id={3}
           onClick={onAuction}>
           경매
         </StyledBtn>
       </ButtonNav>
       {params === strMemberSeq && (
         <InterestContainer>
-          {numActive === 1 && <InterestKeywordList />}
-          {numActive === 2 && <InterestCateList />}
-          {numActive === 3 && <InterestAuctionList />}
+          {active === 1 && <InterestKeywordList />}
+          {active === 2 && <InterestCateList />}
+          {active === 3 && <InterestAuctionList />}
         </InterestContainer>
       )}
     </Container>

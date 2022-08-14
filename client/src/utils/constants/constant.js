@@ -29,7 +29,7 @@ export const categories = [
   },
   {
     seq: 8,
-    name: '가전/디지철',
+    name: '가전/디지털',
   },
   {
     seq: 9,
@@ -95,6 +95,9 @@ export const REGISTER_MESSAGE = {
   NICKNAME_STANDARD: '닉네임은 영어, 한글, 숫자로만 구성될 수 있습니다.',
   VALIDATED_NICKNAME: '사용 가능한 닉네임입니다.',
   REQUIRED_ADDRESS: '주소를 입력해주세요.',
+  REQUIRED_ACCOUNT: '계좌번호를 입력해주세요.',
+  REQUIRED_BANKCODE: '은행을 선택해주세요.',
+  ACCOUNT_STANDARD: '계좌번호는 "-"를 포함한 특수문자를 제외하고 숫자만 입력해주세요.',
 };
 
 export const LOGIN_MESSAGE = {
@@ -122,6 +125,7 @@ export const REGEX = {
   EMAIL: /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/,
   PHONE: /^01([0|1|6|7|8|9])([0-9]{3,4})([0-9]{4})$/,
   NICKNAME: /^[가-힣|a-z|A-Z|0-9|]+$/,
+  ACCOUNT: /^[0-9]+$/,
 };
 
 export const PAGES = {
