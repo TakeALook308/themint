@@ -16,6 +16,7 @@ public class PurchaseDetailRes {
     Long historySeq;
     Long productSeq;
     Long productDeliverySeq;
+    Long sellerMemberSeq;
     int bankCode;
     String accountNo;
     int status;
@@ -27,13 +28,14 @@ public class PurchaseDetailRes {
     String zipCode;
     String trackingNo;
 
-    public static PurchaseDetailRes of(History history, Product product, ProductDelivery productDelivery, Member member){
+    public static PurchaseDetailRes of(History history, Product product, ProductDelivery productDelivery, Member seller){
         PurchaseDetailRes res = PurchaseDetailRes.builder()
                 .historySeq(history.getSeq())
                 .productSeq(history.getProductSeq())
                 .productDeliverySeq(productDelivery.getSeq())
-                .bankCode(member.getBankCode())
-                .accountNo(member.getAccountNo())
+                .sellerMemberSeq(seller.getSeq())
+                .bankCode(seller.getBankCode())
+                .accountNo(seller.getAccountNo())
                 .status(product.getStatus())
                 .remitName(productDelivery.getRemitName())
                 .name(productDelivery.getName())
