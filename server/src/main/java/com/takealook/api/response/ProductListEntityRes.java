@@ -16,6 +16,7 @@ public class ProductListEntityRes {
     String productName;
     int startPrice;
     Long auctionSeq;
+    String hash;
     String startTime;
     Long memberSeq;
     String profileUrl;
@@ -27,6 +28,7 @@ public class ProductListEntityRes {
                 .productName(product.getProductName())
                 .startPrice(product.getStartPrice())
                 .auctionSeq(product.getAuctionSeq())
+                .hash(auction.getHash())
                 .startTime(auction.getStartTime())
                 .memberSeq(auction.getMemberSeq())
                 .profileUrl(member.getProfileUrl())

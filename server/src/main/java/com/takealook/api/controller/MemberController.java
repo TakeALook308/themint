@@ -68,12 +68,16 @@ public class MemberController {
         String memberId = memberLoginPostReq.getMemberId();
         String pwd = memberLoginPostReq.getPwd();
         Member member = memberService.getMemberByMemberId(memberId);
-        // 로그인 요청한 유저의 패스워드와 같은 경우 (유효한 패스워드인지 확인)
-        if (member != null && passwordEncoder.matches(pwd, member.getPwd())) {
-            return ResponseEntity.status(200).body(MemberLoginPostRes.of(JwtTokenUtil.getToken(memberId), member.getSeq(), member.getMemberId(), member.getNickname()));
-        }
-        // 유효하지 않는 패스워드인 경우, 로그인 실패
-        return ResponseEntity.status(409).body(BaseResponseBody.of(409, "로그인에 실패하였습니다. 아이디 또는 비밀번호를 확인해주세요."));
+        // 유효하지 않는 아이디 또는 패스워드인 경우, 로그인 실패
+        if (member == null || !passwordEncoder.matches(pwd, member.getPwd()))
+            return ResponseEntity.status(409).body(BaseResponseBody.of(409, "로그인에 실패하였습니다. 아이디 또는 비밀번호를 확인해주세요."));
+        // 탈퇴한 회원일 경우
+        if (member.getStatus() == 0)
+            throw new MemberNotFoundException("member not found", ErrorCode.MEMBER_NOT_FOUND);
+        // 로그인 성공
+        return ResponseEntity.status(200).body(MemberLoginPostRes.of(JwtTokenUtil.getToken(memberId), member.getSeq(), member.getMemberId(), member.getNickname()));
+
+
     }
 
 //    @GetMapping("/klogin")
@@ -88,7 +92,7 @@ public class MemberController {
 //    }
 
     // 회원 목록 검색
-    @GetMapping
+    @GetMapping("/search")
     public ResponseEntity<MemberListRes> getMemberList(@RequestParam(value = "word", required = false) String word, @RequestParam("page") int page, @RequestParam("size") int size) {
         List<MemberListEntityRes> memberListEntityResList = new ArrayList<>();
         Boolean hasMore = false;
@@ -97,7 +101,10 @@ public class MemberController {
         List<Member> hasMoreList = memberService.getMemberListByWord(word, PageRequest.of(page + 1, size, Sort.by("score").descending()));
         if (hasMoreList.size() != 0) hasMore = true;
         for (Member member : memberList) {
-            memberListEntityResList.add(MemberListEntityRes.of(member));
+            // 탈퇴한 회원이면 리스트에 추가 x
+            if (member.getStatus() != 0) {
+                memberListEntityResList.add(MemberListEntityRes.of(member));
+            }
         }
         return ResponseEntity.status(200).body(MemberListRes.of(memberListEntityResList, hasMore));
     }
@@ -118,6 +125,9 @@ public class MemberController {
     @GetMapping("/{seq}")
     public ResponseEntity<MemberInfoRes> getMemberInfo(@PathVariable("seq") Long seq) {
         Member member = memberService.getMemberByMemberSeq(seq);
+        // seq에 해당하는 멤버가 없거나, 이미 탈퇴한 회원
+        if (member == null || member.getStatus() == 0)
+            throw new MemberNotFoundException("member not found", ErrorCode.MEMBER_NOT_FOUND);
         return ResponseEntity.status(200).body(MemberInfoRes.of(member));
     }
 
@@ -128,7 +138,7 @@ public class MemberController {
         Long memberSeq = memberDetails.getMemberSeq();
         Member member = memberService.getMemberByMemberSeq(memberSeq);
         if (member != null) {
-            if(member.getAccountNo() == null && memberUpdatePostReq.getAccountNo() != null){ // 계좌번호 원래 없었는데 입력하면 신뢰도 +3
+            if (member.getAccountNo() == null && memberUpdatePostReq.getAccountNo() != null) { // 계좌번호 원래 없었는데 입력하면 신뢰도 +3
                 memberService.updateMemberScore(memberSeq, 3);
             }
             memberService.updateMember(memberSeq, memberUpdatePostReq);
@@ -147,7 +157,7 @@ public class MemberController {
         if (member != null) {
             String result = s3FileService.uploadProfileImage(multipartFile, memberSeq);
             if (result == "fail") ResponseEntity.status(409).body(BaseResponseBody.of(409, "프로필 사진 변경에 실패하였습니다."));
-            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
+            return ResponseEntity.status(200).body(BaseResponseBody.of(200, result));
         }
         throw new MemberNotFoundException("member not found", ErrorCode.MEMBER_NOT_FOUND);
     }
@@ -159,7 +169,7 @@ public class MemberController {
         Long memberSeq = memberDetails.getMemberSeq();
         Member member = memberService.getMemberByMemberSeq(memberSeq);
         if (member != null) {
-           memberService.updateMemberPhone(memberSeq, phoneMap.get("phone"));
+            memberService.updateMemberPhone(memberSeq, phoneMap.get("phone"));
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
         }
         throw new MemberNotFoundException("member not found", ErrorCode.MEMBER_NOT_FOUND);
@@ -214,13 +224,14 @@ public class MemberController {
     /////////////////// 비밀번호 재설정 (비밀번호 찾기) end ////////////////////////
 
     // 회원 탈퇴
-    @DeleteMapping
+    @PatchMapping("/delete")
     public ResponseEntity<?> deleteMember(@ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
         Member member = memberService.getMemberByMemberSeq(memberSeq);
         if (member != null) {
-            memberService.deleteMember(member.getSeq());
+            // status 0으로 변경
+            memberService.updateMemberStatus(member.getSeq());
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
         }
         return ResponseEntity.status(409).body(BaseResponseBody.of(409, "회원 탈퇴에 실패하였습니다."));
