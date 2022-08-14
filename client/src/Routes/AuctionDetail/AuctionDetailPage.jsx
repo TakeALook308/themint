@@ -2,40 +2,43 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Container } from '../../style/style';
-import { getData } from '../../utils/apis/api';
 import { auctionApis } from '../../utils/apis/auctionApis';
 import { categories } from '../../utils/constants/constant';
 import GradientButton from '../../components/ButtonList/GradientButton';
 import { myInformationState } from '../../atoms';
 import { useRecoilValue } from 'recoil';
-import { CgAlarm } from 'react-icons/cg';
+import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay, Navigation } from 'swiper';
+import { interestsApis } from '../../utils/apis/interestsApis';
+import { fetchData } from '../../utils/apis/api';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import './swiper.css';
 function AuctionDetailPage(props) {
   const userInfo = useRecoilValue(myInformationState);
   const navigate = useNavigate();
-  const params = useParams();
+  const { auctionId } = useParams();
   const [auctionInfo, setAuctionInfo] = useState(null);
-  const ff = async () => {
-    await getData(auctionApis.AUCTION_DETAIL_API(params.auctionId))
+  const [interestAuction, setInterestAuction] = useState(false);
+  const setData = async () => {
+    await fetchData
+      .get(auctionApis.AUCTION_DETAIL_API(auctionId))
       .then((res) => {
         setAuctionInfo(res.data);
       })
       .catch(() => {
         console.log('error');
       });
+    // await fetchData.get().then(() => {});
   };
   useEffect(() => {
-    ff();
-  }, []);
+    setData();
+  }, [interestAuction]);
 
   if (auctionInfo) {
     return (
       <Container>
-        {console.log(auctionInfo)}
         <AuctionMainInfo>
           <AuctionImage>
             <Swiper
@@ -66,7 +69,28 @@ function AuctionDetailPage(props) {
               </AuctionTitleLeft>
               <AuctionTitleRight>
                 <div>
-                  <CgAlarm size={25}></CgAlarm>
+                  {auctionInfo.isMemberInterest ? (
+                    <AiFillHeart
+                      size={25}
+                      color="#F58181"
+                      onClick={() => {
+                        fetchData
+                          .delete(interestsApis.AUCTION_INTEREST_PUSH_API(auctionId))
+                          .then(() => {
+                            setInterestAuction(!interestAuction);
+                          });
+                      }}></AiFillHeart>
+                  ) : (
+                    <AiOutlineHeart
+                      size={25}
+                      onClick={() => {
+                        fetchData
+                          .post(interestsApis.AUCTION_INTEREST_PUSH_API(auctionId))
+                          .then(() => {
+                            setInterestAuction(!interestAuction);
+                          });
+                      }}></AiOutlineHeart>
+                  )}
                   <span>{auctionInfo.interest}</span>
                 </div>
               </AuctionTitleRight>
@@ -92,16 +116,24 @@ function AuctionDetailPage(props) {
               {auctionInfo.memberSeq === userInfo.memberSeq ? (
                 <div>
                   <span>수정</span>
-                  <span>삭제</span>
+                  <span
+                    onClick={() => {
+                      if (window.confirm('정말 삭제하시겠습니까?')) {
+                        fetchData.delete(auctionApis.AUCTION_DELETE_API(auctionId)).then(() => {
+                          navigate('/main');
+                        });
+                      }
+                    }}>
+                    삭제
+                  </span>
                 </div>
               ) : null}
             </div>
             <GradientButton
               text="경매 참여"
               onClick={() => {
-                if (auctionInfo.memberSeq === userInfo.memberSeq)
-                  navigate(`/standby/${params.auctionId}`);
-                else navigate(`/streamings/${params.auctionId}`);
+                if (auctionInfo.memberSeq === userInfo.memberSeq) navigate(`/standby/${auctionId}`);
+                else navigate(`/streamings/${auctionId}`);
               }}></GradientButton>
           </AuctionInfoBox>
         </AuctionMainInfo>
@@ -214,6 +246,7 @@ const AuctionTitleRight = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
     span {
       font-size: 12px;
       padding-top: 5px;
