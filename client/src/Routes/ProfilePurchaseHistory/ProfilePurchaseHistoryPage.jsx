@@ -6,9 +6,14 @@ import { instance } from '../../utils/apis/api';
 import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
 import Modal from '../../components/common/Modal';
 import GradientButton from '../../components/ButtonList/GradientButton';
-
-// 별점기능
 import { FaStar } from 'react-icons/fa';
+import PopupDom from '../Register/PopupDom';
+import PopupPostCode from '../Register/PopupPostCode';
+import { useForm } from 'react-hook-form';
+import { ActiveInput } from '../../style/style';
+import { InputContainer } from '../Register/Register2';
+import MintButton from '../../components/ButtonList/MintButton';
+
 function ProfilePurchaseHistoryPage({ params }) {
   // 구매내역 API 요청
   // 구매내역과 판매내역 차이 구분
@@ -39,21 +44,29 @@ function ProfilePurchaseHistoryPage({ params }) {
     const res = getPurchaseDetail(`/api/history/purchase/detail/${auction.historySeq}`);
     res.then((itemDetail) => {
       setPurchaseDetail(itemDetail.data); // 상세보기 내용을 salesDetail에 저장
-      console.log(itemDetail.data.sellerMemberSeq);
+      console.log(itemDetail.data);
+      setAuctionProductSeq(itemDetail.data.productSeq);
       onChange2({ target: { name: 'receiverSeq', value: itemDetail.data.sellerMemberSeq } });
+      onChange({
+        target: { name: 'productDeliverySeq', value: itemDetail.data.productDeliverySeq },
+      });
     });
+
     setIsModal((prev) => !prev);
     setPurchaseDetail([]);
     setReviewData([]);
   };
   // 입금완료
+  const [auctionProductSeq, setAuctionProductSeq] = useState(0);
+
   const patchRemit = () => {
-    // const getPatchRemit = async (url) => {
-    //   const response = await instance.get(url);
-    //   return response;
-    // };
-    // const res = getPatchRemit(`/api/product/remit/${auction.productSeq}`);
-    // res.then(() => {});
+    console.log(auctionProductSeq);
+    const getPatchRemit = async (url) => {
+      const response = await instance.patch(url);
+      return response;
+    };
+    const res = getPatchRemit(`/api/product/remit/${auctionProductSeq}`);
+    res.then(() => {});
   };
 
   // 은행 이름으로 변경
@@ -113,7 +126,7 @@ function ProfilePurchaseHistoryPage({ params }) {
     addressDetail: '',
     zipCode: '',
   });
-  const { remitName, address, addressDetail, zipCode } = deliveryData;
+  const { remitName, addressDetail, address, zipCode } = deliveryData;
   const onChange = ({ target: { name, value } }) => {
     setDeliveryData({
       ...deliveryData,
@@ -122,16 +135,34 @@ function ProfilePurchaseHistoryPage({ params }) {
   };
   // 주소입력 API 활용
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  // const [ address, setAddress] = useState('');
-  const openPostCode = () => {
+  // const [address, setAddress] = useState();
+
+  // const handleInput = (e) => {
+  //   setAddress(e.target.value);
+  // };
+
+  const togglePostCode = () => {
     setIsPopupOpen(!isPopupOpen);
   };
+
   const closePostCode = () => {
+    console.log(address);
     setIsPopupOpen(false);
   };
 
+  const { register, setValue } = useForm({
+    defaultValues: {
+      nickname: '',
+      address: '',
+    },
+
+    mode: 'onChange',
+  });
+  console.log(address);
+
   // 버튼 클릭하면 배송정보를 patch
   const patchDelivery = () => {
+    console.log(deliveryData);
     // const patchDeliveryData = async (url, data) => {
     //   const response = await instance.patch(url, data);
     //   return response;
@@ -161,7 +192,9 @@ function ProfilePurchaseHistoryPage({ params }) {
       return response;
     };
     const res = postReviewData(`/api/review`, reviewData);
-    res.then(() => {});
+    res.then(() => {
+      setIsModal((prev) => !prev);
+    });
   };
 
   // 별점기능
@@ -214,12 +247,15 @@ function ProfilePurchaseHistoryPage({ params }) {
         <ModalMain>
           {active === 'inprogress' && (
             <Purchasing>
-              <button onClick={patchRemit}>입금완료!</button>
-              <p>입금 완료 후, 배송지를 입력해주세요!!!</p>
+              <p>입금을 완료 하셨나요??</p>
+              <button onClick={patchRemit}>입금완료</button>
+              <p>꼭! 입금 완료 후, 배송지를 입력해주세요!!!</p>
               <p>판매자 계좌 정보</p>
-              <p>은행-{bankList[purchaseDetail.bankCode]}</p>
-              <p>계좌번호-{purchaseDetail.accountNo}</p>
-              <p>계좌소유주-{purchaseDetail.name}</p>
+              <SellerInfo>
+                <p>은행명:{bankList[purchaseDetail.bankCode]}</p>
+                <p>계좌번호:{purchaseDetail.accountNo}</p>
+                <p>계좌소유주:{purchaseDetail.name}</p>
+              </SellerInfo>
               <p>입금자명:</p>
               <StyledInput
                 placeholder="입금자 명을 입력해 주세요"
@@ -228,6 +264,51 @@ function ProfilePurchaseHistoryPage({ params }) {
                 onChange={onChange}
               />
               <p>배송정보 입력:</p>
+              <InputContainer>
+                <ActiveInput active={true}>
+                  <input
+                    name="zipCode"
+                    id="zipCode"
+                    type="text"
+                    {...register('zipCode', {})}
+                    placeholder=" "
+                    onChange={onChange}
+                  />
+                  <label htmlFor="zipCode">우편번호</label>
+                </ActiveInput>
+                <MintButton text={'조회'} type={'button'} onClick={togglePostCode} />
+              </InputContainer>
+              <AddressContainer>
+                <ActiveInput active={true}>
+                  <input
+                    name="address"
+                    id="address"
+                    type="text"
+                    {...register('address', {})}
+                    placeholder=""
+                    onChange={onChange}
+                  />
+                  <label htmlFor="address">주소</label>
+                </ActiveInput>
+                <ActiveInput active={true}>
+                  <input
+                    name="addressDetail"
+                    id="addressDetail"
+                    type="text"
+                    placeholder=""
+                    onChange={onChange}
+                    value={addressDetail}
+                  />
+                  <label htmlFor="addressDetail">상세주소</label>
+                </ActiveInput>
+              </AddressContainer>
+              <div id="popupDom">
+                {isPopupOpen && (
+                  <PopupDom>
+                    <PopupPostCode onClose={closePostCode} setAddress={setValue} />
+                  </PopupDom>
+                )}
+              </div>
               <button onClick={patchDelivery}>배송정보 저장</button>
             </Purchasing>
           )}
@@ -238,8 +319,7 @@ function ProfilePurchaseHistoryPage({ params }) {
 
               <p>배송조회</p>
               <p>리뷰 작성</p>
-              <input type="text" onChange={onChange2} name="content" value={content}></input>
-              <p>별점을 작성해 주세요!</p>
+              <p>별점을 선택해 주세요!</p>
               <Stars>
                 {ARRAY.map((el, idx) => {
                   return (
@@ -252,6 +332,14 @@ function ProfilePurchaseHistoryPage({ params }) {
                   );
                 })}
               </Stars>
+              <textarea
+                type="text"
+                onChange={onChange2}
+                name="content"
+                value={content}
+                cols="70"
+                rows="4"
+                placeholder="리뷰를 작성해 주세요"></textarea>
               <GradientButton onClick={postReview} text="리뷰작성" size="20%"></GradientButton>
             </Purchased>
           )}
@@ -311,9 +399,6 @@ const ModalMain = styled.main`
   > p {
     margin-bottom: 15px;
   }
-  > ActiveInputBox {
-    margin-bottom: 10px;
-  }
 `;
 
 const Purchasing = styled.div`
@@ -324,22 +409,30 @@ const Purchasing = styled.div`
   > input {
     margin-bottom: 10px;
   }
+  > button {
+    margin-bottom: 10px;
+  }
 `;
 
 const Purchased = styled.div`
   width: 100%;
+  display: flex;
+  flex-direction: column;
   > p {
     margin-bottom: 10px;
   }
   > input {
     margin-bottom: 10px;
   }
+  > textarea {
+    margin-bottom: 10px;
+    padding: 10px;
+  }
 `;
 
 // 별점기능
 const Stars = styled.div`
   display: flex;
-  padding-top: 5px;
   margin-bottom: 10px;
   & svg {
     color: gray;
@@ -368,6 +461,17 @@ const StyledInput = styled.input`
   color: ${(props) => props.theme.colors.white};
   width: 100%;
   outline: none;
+`;
+
+const SellerInfo = styled.article`
+  background-color: ${(props) => props.theme.colors.pointBlack};
+  border-radius: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+  > p {
+    padding: 5px 10px 5px 10px;
+  }
 `;
 
 const AddressContainer = styled.div`
