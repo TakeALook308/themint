@@ -21,6 +21,7 @@ function StreamingPage(props) {
   const { auctionId } = useParams();
   const [auctionInfo, setAuctionInfo] = useState({});
   const [auctionData, setAuctionData] = useState({});
+  const [nextProduct, setNextProduct] = useState(-1);
   // const [products, setProducts] = useState([]);
   const [products, setProducts] = useState([
     {
@@ -36,14 +37,15 @@ function StreamingPage(props) {
       setAuctionData({ memberSeq: res.data.memberSeq });
       setProducts(res.data.productList);
     });
-  }, []);
-
+  }, [nextProduct]);
+  console.log(nextProduct);
   let nickname = userInfo.nickname;
   let memberSeq = userInfo.memberSeq;
   let roomId = auctionId; //저장하는 api 룸 만들고 보내줘도 돼?
   const [chat, setChat] = useState([]);
   const [priceList, setPriceList] = useState([]);
   const [newTime, setNewTime] = useState(moment());
+
   const setAuctionTime = useSetRecoilState(timeState);
 
   //처음 접속했을 때
@@ -78,7 +80,7 @@ function StreamingPage(props) {
       client.disconnect();
     };
   }, []);
-
+  console.log('부탁드립니다');
   const sendMessage = (msg) => {
     client.send(
       `/pub/chat/message`,
@@ -92,14 +94,14 @@ function StreamingPage(props) {
       }),
     );
   };
-  const sendPrice = (msg, index) => {
+  const sendPrice = (msg, index, productSeq) => {
     client.send(
       '/pub/product/message',
       {},
       JSON.stringify({
         roomId: roomId,
         nickname: nickname,
-        productSeq: 1,
+        productSeq: productSeq,
         price: msg,
         memberSeq: memberSeq,
         index: index,
@@ -107,7 +109,6 @@ function StreamingPage(props) {
     );
     setNewTime(moment());
   };
-
   return (
     <Stream>
       <Header>
@@ -126,6 +127,7 @@ function StreamingPage(props) {
             price={priceList}
             newTime={newTime}
             producter={userInfo.memberSeq === auctionInfo.memberSeq ? true : false}
+            setNextProduct={setNextProduct}
           />
 
           <StreamChat sendMessage={sendMessage} chat={chat} userInfo={userInfo} />

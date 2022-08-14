@@ -34,12 +34,14 @@ const Timer = forwardRef((props, ref) => {
 
   const tick = () => {
     if (second > 0) {
-      setSecond((sec) => sec - 1);
+      setSecond((sec) => sec - 0.1);
     }
 
-    if (second === 0) {
+    if (second < 0.1) {
       setIsPlay(false);
-      // handleResetClick();
+      setSecond(0);
+
+      props.finishAuction();
     }
   };
 
@@ -51,7 +53,7 @@ const Timer = forwardRef((props, ref) => {
     () => {
       tick();
     },
-    isPlay ? 1000 : null,
+    isPlay ? 100 : null,
   );
 
   useEffect(() => {
@@ -93,26 +95,11 @@ const Timer = forwardRef((props, ref) => {
   useImperativeHandle(ref, () => ({
     handleResetClick,
     handlePlayClick,
+    handlePauseClick,
   }));
 
   return (
-    <>
-      <TimerBox>{second < 10 ? `0${second}` : second}초</TimerBox>
-      <Controls>
-        <ul>
-          <li>
-            <button onClick={handleResetClick}>초기화</button>
-          </li>
-          <li className="on">
-            {!isPlay ? (
-              <button onClick={handlePlayClick}>재생</button>
-            ) : (
-              <button onClick={handlePauseClick}>일시정지</button>
-            )}
-          </li>
-        </ul>
-      </Controls>
-    </>
+    <>{/* <TimerBox>{second < 10 ? `0${second.toFixed(1)}` : second.toFixed(1)}초</TimerBox> */}</>
   );
 });
 

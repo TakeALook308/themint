@@ -3,40 +3,67 @@ import styled from 'styled-components';
 import { auctionApis } from '../../utils/apis/auctionApis';
 import { getData } from '../../utils/apis/api';
 import moment from 'moment';
-
 import Timer from './Timer';
 import { errorToast } from '../../lib/toast';
-function AuctionBidding({ products, sendPrice, price, producter }) {
+import { fetchData } from '../../utils/apis/api';
+import { productApis } from '../../utils/apis/productApis';
+import { useParams } from 'react-router-dom';
+function AuctionBidding({ products, sendPrice, price, producter, setNextProduct }) {
   const [nowProduct, setNowProduct] = useState(-1);
   const [nowPrice, setNowPrice] = useState(0);
   const [myPrice, setMyPrice] = useState(0);
   const [resetTime, setResetTime] = useState(moment());
   const [second, setSecond] = useState(0);
   const [start, setStart] = useState(false);
-
+  const { auctionId } = useParams();
   const [test, setTest] = useState(2);
   const [prev, setPrev] = useState(-1);
 
-  const [AuctionStart, setAuctionStart] = useState(true);
+  const [AuctionStart, setAuctionStart] = useState(false);
 
   const startAuction = () => {
     if (nowProduct < products.length - 1) {
-      sendPrice(-1, nowProduct + 1);
-      setAuctionStart(false);
+      sendPrice(-1, nowProduct + 1, products[nowProduct + 1].seq);
     } else alert('경매 끝남');
+  };
+
+  const finishAuction = () => {
+    console.log('감사합니다');
+    stopClick();
+    setAuctionStart(false);
+    if (producter)
+      fetchData
+        .post(productApis.PRODUCT_SUCCESS_API, {
+          memberSeq: price[price.length - 1].memberSeq,
+          productSeq: price[price.length - 1].productSeq,
+          finalPrice: price[price.length - 1].price,
+        })
+        .then((res) => {
+          // getData(auctionApis.AUCTION_DETAIL_API(auctionId)).then((res) => {
+          //   setProducts(res.data.productList);
+          // });
+        });
+    // if (producter)
+    //   console.log(
+    //     price[price.length - 1].memberSeq,
+    //     price[price.length - 1].productSeq,
+    //     price[price.length - 1].price,
+    //   );
   };
 
   useEffect(() => {
     if (price.length > 0) {
       if (price.length === 1 && price[0].price === -1 && products) {
+        //경매 시작 신호가 왔을 때
         setNowProduct(price[0].index);
         setNowPrice(products[price[0].index].startPrice);
-        resetClick();
-        startClick();
-        if (test === 0) {
-          setTest(1);
-        }
+        setAuctionStart(true);
         // setMyPrice(products[nowProduct + 1].startPrice);
+        if (test === 1) {
+          setNextProduct(nowProduct);
+          setMyPrice(products[price[0].index].startPrice);
+          console.log('살려주세요');
+        }
       } else {
         setNowPrice(price[price.length - 1].price);
       }
@@ -45,7 +72,7 @@ function AuctionBidding({ products, sendPrice, price, producter }) {
     if (test === 0) {
       setTest(1);
       console.log('0 -> 1');
-    } else if (test === 2 && prev < price.length) {
+    } else if (test === 2 && prev !== price.length) {
       setPrev(price.length);
       setTest(0);
       console.log('2 -> 0');
@@ -55,8 +82,10 @@ function AuctionBidding({ products, sendPrice, price, producter }) {
 
   useEffect(() => {
     if (test === 1) {
+      //props의 price 변화에 따라 한번만 실행
       if (myRef.current) {
         resetClick();
+        startClick();
       }
       setTest(2);
       console.log('1 -> 2');
@@ -69,6 +98,9 @@ function AuctionBidding({ products, sendPrice, price, producter }) {
   function resetClick() {
     myRef.current.handleResetClick();
   }
+  function stopClick() {
+    myRef.current.handlePauseClick();
+  }
 
   if (price[0])
     return (
@@ -79,7 +111,7 @@ function AuctionBidding({ products, sendPrice, price, producter }) {
             <span>시작가: {products[Number(price[0].index)].startPrice} </span>
             <span>현재가: {nowPrice}</span>
           </div>
-          <Timer delay="5" ref={myRef}></Timer>
+          <Timer delay="30" ref={myRef} finishAuction={finishAuction}></Timer>
           {/* <div id="timer">{countDownTimer(30)}</div> */}
           {/* <div>{second < 10 ? `0${second}` : second}초</div> */}
           {/* <Timer></Timer> */}
@@ -96,7 +128,9 @@ function AuctionBidding({ products, sendPrice, price, producter }) {
           })}
         </PriceList>
         {producter ? (
-          <button onClick={startAuction}>경매시작</button>
+          <button onClick={startAuction} disabled={AuctionStart}>
+            경매시작
+          </button>
         ) : (
           <Bidding>
             <div>
@@ -126,10 +160,14 @@ function AuctionBidding({ products, sendPrice, price, producter }) {
             <button
               onClick={() => {
                 if (myPrice > nowPrice) {
-                  sendPrice(myPrice);
+                  sendPrice(myPrice, nowProduct, products[nowProduct].seq);
+                  setMyPrice(Number(myPrice) + 1000);
+                } else if (myPrice === nowPrice && price.length === 1 && price[0].price === -1) {
+                  sendPrice(myPrice, nowProduct, products[nowProduct].seq);
                   setMyPrice(Number(myPrice) + 1000);
                 } else errorToast('현재 입찰가 보다 낮은 금액입니다.');
-              }}>
+              }}
+              disabled={!AuctionStart}>
               응찰
             </button>
           </Bidding>
