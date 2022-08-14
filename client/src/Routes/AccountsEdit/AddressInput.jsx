@@ -27,7 +27,6 @@ function AddressInput({ text, setEditMode, changeInformation }) {
   };
   const {
     register,
-    setError,
     watch,
     handleSubmit,
     setValue,

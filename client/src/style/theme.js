@@ -10,7 +10,7 @@ const colors = {
   pointBlue: '#1472FF',
   pointBlack: '#393838',
   pointGray: '#5C5C5C',
-  disabledGray: '#414040',
+  disabledGray: '#999999',
   textGray: '#C0C0C0',
   gradientMintToPurple: `linear-gradient(103.87deg, #2CDCB2 4.21%, #893CD6 100%)`,
   gradientMainMintToSubMint: `linear-gradient(103.87deg, #2CDCB2 4.21%, #99E8E8 100%)`,
