@@ -12,7 +12,6 @@ import { toast } from 'react-toastify';
 import { makeLoginMessageRandomNumber } from '../../utils/functions/util';
 import { useSetRecoilState } from 'recoil';
 import { loggedinState, myInformationState } from '../../atoms';
-import { session } from '../../App';
 import { Helmet } from 'react-helmet-async';
 
 function RegisterPage() {
@@ -49,7 +48,6 @@ function RegisterPage() {
         setToken({ accessToken });
         setLogged(true);
         moveToMain(nickname);
-        session.set('profile', { memberId, memberSeq, nickname });
       } catch (err) {
         if (err.response.status === 409) {
           return;

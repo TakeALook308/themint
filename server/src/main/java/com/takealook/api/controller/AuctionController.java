@@ -8,6 +8,9 @@ import com.takealook.api.response.AuctionRes;
 import com.takealook.api.response.AuctionStandByRes;
 import com.takealook.api.service.*;
 import com.takealook.common.auth.MemberDetails;
+import com.takealook.common.exception.auction.AuctionDeleteFailException;
+import com.takealook.common.exception.auction.AuctionUpdateFailException;
+import com.takealook.common.exception.code.ErrorCode;
 import com.takealook.common.model.response.BaseResponseBody;
 import com.takealook.db.entity.*;
 import io.swagger.annotations.Api;
@@ -24,6 +27,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Nullable;
 import javax.security.auth.login.LoginContext;
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -54,18 +58,17 @@ public class AuctionController {
     InterestCategoryService interestCategoryService;
 
     @PostMapping
-    public ResponseEntity<BaseResponseBody> registerAuction(@RequestPart("auctionInfo")AuctionRegisterPostReq auctionRegisterPostReq, @RequestPart(required = false) List<MultipartFile> auctionImageList, @ApiIgnore Authentication authentication) {
+    public ResponseEntity<?> registerAuction(@RequestPart("auctionInfo")AuctionRegisterPostReq auctionRegisterPostReq, @RequestPart(required = false) List<MultipartFile> auctionImageList, @ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
         Auction auction = auctionService.createAuction(memberSeq, auctionRegisterPostReq, auctionImageList);
         List<Product> productList = productService.getProductListByAuctionSeq(auction.getSeq());
-        List<AuctionImage> auctionImagePathList = auctionImageService.getAuctionImageListByAuctionSeq(auction.getSeq());
-        historyService.registerSalesHistory(memberSeq, productList, auctionImagePathList);
+        historyService.registerSalesHistory(memberSeq, productList);
         memberService.updateMemberScore(memberSeq, 1);
         if (auction == null) {
-            return ResponseEntity.status(409).body(BaseResponseBody.of(409, "fail"));
+            return ResponseEntity.status(409).body(BaseResponseBody.of(409, "경매 생성에 실패하였습니다."));
         }
-        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
+        return ResponseEntity.status(200).body(auction.getHash());
     }
 
     @GetMapping("/{auctionHash}")
@@ -80,12 +83,23 @@ public class AuctionController {
     }
 
     @PatchMapping
-    public ResponseEntity<? extends BaseResponseBody> modifyAuction(@RequestBody AuctionUpdatePatchReq auctionUpdatePatchReq, @ApiIgnore Authentication authentication) {
+    public ResponseEntity<? extends BaseResponseBody> modifyAuction(@RequestPart AuctionUpdatePatchReq auctionUpdatePatchReq,  @RequestPart(required = false) List<MultipartFile> auctionImageList,@ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
-        auctionService.updateAuction(memberSeq, auctionUpdatePatchReq);
-        productService.updateProductList(auctionUpdatePatchReq.getSeq(), auctionUpdatePatchReq.getProductList());
-        auctionImageService.updateAuctionImageList(auctionUpdatePatchReq.getSeq(), auctionUpdatePatchReq.getAuctionImageList());
+        if (LocalDateTime.parse(auctionUpdatePatchReq.getStartTime(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).isBefore(LocalDateTime.now())) {
+            throw new AuctionUpdateFailException("auction cannot be modified after its startTime", ErrorCode.AUCTION_UPDATE_FAIL);
+        }
+        // 1. 옥션 정보 수정
+        Auction auction = auctionService.updateAuction(memberSeq, auctionUpdatePatchReq);
+        // 2. 옥션 이미지 수정
+        auctionImageService.updateAuctionImageList(auction.getSeq(), auction.getHash(), auctionImageList);
+        // 3. 물건 삭제, 등록
+        productService.updateProductList(memberSeq, auctionUpdatePatchReq.getProductList());
+        // 4. 물건 내역 삭제
+        List<Product> productList = productService.getProductListByAuctionSeq(auction.getSeq());
+        historyService.deleteSalesHistory(productList);
+        // 5. 물건 내역 등록
+        historyService.registerSalesHistory(memberSeq, productList);
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
     }
 
@@ -93,7 +107,13 @@ public class AuctionController {
     public ResponseEntity<? extends BaseResponseBody> deleteAuction(@PathVariable String auctionHash, @ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
-        Long auctionSeq = auctionService.getAuctionByHash(auctionHash).getSeq();
+        Auction auction = auctionService.getAuctionByHash(auctionHash);
+        if (LocalDateTime.parse(auction.getStartTime(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).isBefore(LocalDateTime.now())) {
+            throw new AuctionDeleteFailException("auction cannot be deleted after its startTime", ErrorCode.AUCTION_DELETE_FAIL);
+        }
+        Long auctionSeq = auction.getSeq();
+        List<Product> productList = productService.getProductListByAuctionSeq(auctionSeq);
+        historyService.deleteSalesHistory(productList);
         productService.deleteProductList(auctionSeq);
         auctionImageService.deleteAuctionImageList(auctionSeq);
         auctionService.deleteAuction(auctionSeq);
@@ -184,7 +204,9 @@ public class AuctionController {
     @GetMapping("/main")
     public ResponseEntity<AuctionListRes> getMainAuctionList(@RequestParam("page") int page, @RequestParam("size") int size, @ApiIgnore @Nullable Authentication authentication) {
         List<AuctionListEntityRes> auctionListEntityResList = new ArrayList<>();
-        Boolean hasMore = false; Boolean isInterest = false; Long categorySeq = 0L;
+        Boolean hasMore = false;
+        Boolean isInterest = false;
+        Long categorySeq = 0L;
         List<Auction> auctionList = null;
         List<Auction> hasMoreList = null;
         Random rand = new Random();
