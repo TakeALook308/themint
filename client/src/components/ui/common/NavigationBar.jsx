@@ -1,36 +1,47 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
-import { loggedinState, myInformationState } from '../../../atoms';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { keywordState, loggedinState, myInformationState } from '../../../atoms';
 import Logo from '../../common/Logo';
 import SubMenu from './SubMenu';
 import { HiSearch, HiOutlineChat, HiOutlineBell } from 'react-icons/hi';
 import { AiOutlineUser } from 'react-icons/ai';
+import { useState } from 'react';
 
-function NavigationBar({ url, keyword, categoryName }) {
+function NavigationBar() {
   const loggedin = useRecoilValue(loggedinState);
   const myInformation = useRecoilValue(myInformationState);
+  const [keyword, setKeyword] = useRecoilState(keywordState);
   const [search, setSearch] = useState('');
+  const location = useLocation();
   const onChangeSearch = (e) => {
     e.preventDefault();
-    setSearch(e.target.value);
-  };
-  const navigate = useNavigate();
-  const onClick = () => {
-    navigate(`${url}&keyword=${keyword}`);
+    setKeyword({ ...keyword, keyword: e.target.value });
   };
 
-  const onSubmit = () => {
-    navigate(`${url}&keyword=${keyword}`);
+  const navigate = useNavigate();
+  const onClick = () => {
+    navigate({
+      pathname: '/search',
+      search: `?type=${keyword.type}&keyword=${keyword.keyword}`,
+    });
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    navigate({
+      pathname: '/search',
+      search: `?type=${keyword.type}&keyword=${keyword.keyword}`,
+    });
   };
 
   if (
-    window.location.pathname.startsWith('/streamings') ||
-    window.location.pathname.startsWith('/register') ||
-    window.location.pathname.startsWith('/login') ||
-    window.location.pathname.startsWith('/help')
+    location.pathname.startsWith('/streamings') ||
+    location.pathname.startsWith('/register') ||
+    location.pathname.startsWith('/login') ||
+    location.pathname.startsWith('/help')
   )
     return null;
 
@@ -43,7 +54,7 @@ function NavigationBar({ url, keyword, categoryName }) {
             <HiSearch type="submit" aria-label="search" onClick={onClick} />
             <SearchBox
               type="text"
-              value={search}
+              value={keyword.keyword}
               placeholder="검색하기"
               inputProps={{ 'aria-label': '검색하기' }}
               onChange={onChangeSearch}
@@ -124,7 +135,7 @@ const NavList = styled.div`
   display: flex;
 `;
 
-const NavSearch = styled.div`
+const NavSearch = styled.form`
   display: flex;
   background-color: ${(props) => props.theme.colors.pointBlack};
   border: none;

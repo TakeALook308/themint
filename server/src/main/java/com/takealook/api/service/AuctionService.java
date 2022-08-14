@@ -6,6 +6,7 @@ import com.takealook.db.entity.Auction;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AuctionService {
@@ -18,6 +19,8 @@ public interface AuctionService {
     List<Auction> getAuctionListOrderByScore(String word, Pageable pageable);
     List<Auction> getAuctionListByCategorySeqOrderByScore(Long categorySeq, Pageable pageable);
     List<Auction> getAuctionListByCategorySeq(Long categorySeq, Pageable pageable);
-    void updateAuction(Long memberSeq, AuctionUpdatePatchReq auctionUpdatePostReq);
+    List<Auction> getAuctionListByStartTimeAndStatus(int status);
+    void updateAuctionStatus(Long auctionSeq, int status);
+    Auction updateAuction(Long memberSeq, AuctionUpdatePatchReq auctionUpdatePostReq);
     void deleteAuction(Long auctionSeq);
 }

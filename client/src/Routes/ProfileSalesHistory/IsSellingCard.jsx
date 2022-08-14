@@ -2,25 +2,16 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-function IsSellingCard({ ModalHandler, sellingItem, auctionitem }) {
-  // TODO: 데이터 교체하기
-
-  const [statusName, setStatusName] = useState(0);
-  useEffect(() => {
-    setStatusName(sellingItem.status);
-  }, []);
-  console.log();
-
+function IsSellingCard({ auction, func, numActive }) {
   const auctionstr = ['판매중', '입금대기', '입금완료', '판매완료', '유찰', '거래취소'];
-  // API 연결후 acutionitem 전부 sellingItem으로 변경
   return (
     <CardContainer>
       <div>
-        <Link to="/">
+        <Link to="#">
           <div>
             <picture>
               <img
-                // src={sellingItem.auctionImage.imageUrl}
+                src={process.env.REACT_APP_IMAGE_URL + auction.auctionImage.imageUrl}
                 alt="옥션이미지"
                 width="400"
                 height="300"
@@ -28,29 +19,42 @@ function IsSellingCard({ ModalHandler, sellingItem, auctionitem }) {
             </picture>
             <AuctionInfoContainer>
               <div>
-                <h4>{sellingItem.productName}</h4>
-                {4 > statusName > 0 && <p>{sellingItem.finalPrice}</p>}
-                {statusName >= 4 && <p>{sellingItem.startPrice}</p>}
-                {statusName === 0 && <p>{sellingItem.startPrice}</p>}
-                <AcutionTime>{sellingItem.startTime}</AcutionTime>
-                <AuctionStatus auctionstrkey={sellingItem.status}>
-                  {auctionstr[sellingItem.status]}
+                <h4>{auction.productName}</h4>
+                {auction.status === 1 && <p>{auction.finalPrice}</p>}
+                {auction.status === 2 && <p>{auction.finalPrice}</p>}
+                {auction.status === 3 && <p>{auction.finalPrice}</p>}
+                {auction.status === 0 && <p>{auction.startPrice}</p>}
+                {auction.status >= 4 && <p>{auction.startPrice}</p>}
+                <AcutionTime>{auction.startTime}</AcutionTime>
+                <AuctionStatus auctionstrkey={auction.status}>
+                  {auctionstr[auction.status]}
                 </AuctionStatus>
               </div>
             </AuctionInfoContainer>
           </div>
         </Link>
-        <Link to="/">
+        <Link to={`/profile/${auction?.memberSeq}`}>
           <div>
             <picture>
-              <img src={sellingItem.profileUrl} alt="유저 프로필" width="50" height="50" />
+              <img
+                src={process.env.REACT_APP_IMAGE_URL + auction.profileUrl}
+                alt="유저 프로필"
+                width="50"
+                height="50"
+              />
             </picture>
           </div>
         </Link>
       </div>
-      <Plus type="button" onClick={ModalHandler}>
-        판매 상세
-      </Plus>
+      {auction.status > 0 && auction.status <= 3 ? (
+        <Plus
+          type="button"
+          onClick={() => {
+            func(auction);
+          }}>
+          판매 상세
+        </Plus>
+      ) : null}
     </CardContainer>
   );
 }
@@ -184,7 +188,7 @@ const AuctionStatus = styled.div`
       : 'black'};
 `;
 
-const Plus = styled.span`
+const Plus = styled.button`
   position: absolute;
   border-radius: 5px;
   padding: 5px;
@@ -193,4 +197,5 @@ const Plus = styled.span`
   background-color: ${(props) => props.theme.colors.mainBlack};
   color: ${(props) => props.theme.colors.subMint};
   border: 1px solid ${(props) => props.theme.colors.subMint};
+  cursor: pointer;
 `;

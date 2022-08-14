@@ -2,70 +2,46 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-function AuctionCard({ auction }) {
-  const [auctionTime, setAuctionTime] = useState({ moreThenOneDay: false, time: '' });
-
-  const CalculateTime = () => {
-    const auctionStartTime = new Date(auction?.startTime);
-    const today = new Date();
-    const diff = auctionStartTime - today;
-    const diffDay = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const diffHour = Math.floor((diff / (1000 * 60 * 60)) % 24);
-    const diffMin = Math.floor((diff / (1000 * 60)) % 60);
-
-    if (diffDay > 1) {
-      const year = auctionStartTime.getFullYear();
-      const month = makeTwoDigitNumber(auctionStartTime.getMonth() + 1);
-      const date = makeTwoDigitNumber(auctionStartTime.getDate());
-      const hour = makeTwoDigitNumber(auctionStartTime.getHours());
-      const miniute = makeTwoDigitNumber(auctionStartTime.getMinutes());
-
-      setAuctionTime({
-        time: `${year}년 ${month}월 ${date}일 ${hour}시 ${miniute}분`,
-        moreThenOneDay: true,
-      });
-    } else if (diffHour >= 1) {
-      setAuctionTime({ time: `${diffHour} 시간 전`, moreThenOneDay: false });
-    } else {
-      setAuctionTime({ time: `${diffMin} 분 전`, moreThenOneDay: false });
-    }
-  };
-
-  const makeTwoDigitNumber = (time) => String(time).padStart(2, '0');
-
+function IsPurchasingCard({ auction, func }) {
+  // TODO: 데이터 교체하기
+  const [statusNum, setStatusNum] = useState(0);
   useEffect(() => {
-    CalculateTime();
-  }, []);
+    setStatusNum(auction.status);
+  });
+
+  const auctionstr = ['판매중', '입금대기', '발송대기', '구매완료', '', '거래취소'];
+
   return (
     <CardContainer>
       <div>
-        <Link to={`/auctions/${auction?.hash}`}>
+        <Link to="/">
           <div>
             <picture>
               <img
-                src={process.env.REACT_APP_IMAGE_URL + auction?.auctionImage?.imageUrl}
-                loading="lazy"
-                alt="닌텐도 스위치"
+                src={process.env.REACT_APP_IMAGE_URL + auction.auctionImage.imageUrl}
+                alt="판매내역 이미지"
                 width="400"
                 height="300"
               />
             </picture>
             <AuctionInfoContainer>
               <div>
-                <p>{auction?.title || auction?.productName}</p>
-                <AuctionTimeMessage time={auctionTime.moreThenOneDay}>
-                  경매시작: {auctionTime.time}
-                </AuctionTimeMessage>
+                <h4>{auction.productName}</h4>
+                <p>{auction.finalPrice}</p>
+                <AcutionTime>{auction.startTime}</AcutionTime>
+                <AuctionStatus auctionstrkey={auction.status}>
+                  {auctionstr[auction.status]}
+                </AuctionStatus>
               </div>
             </AuctionInfoContainer>
           </div>
         </Link>
-        <Link to={`/profile/${auction?.memberSeq}`}>
+        <Link to="/">
           <div>
             <picture>
               <img
-                src={process.env.REACT_APP_IMAGE_URL + auction?.profileUrl}
-                alt={`${auction?.nickname} 프로필 이미지`}
+                src={process.env.REACT_APP_IMAGE_URL + auction.profileUrl}
+                alt="유저 프로필"
                 width="50"
                 height="50"
               />
@@ -73,11 +49,29 @@ function AuctionCard({ auction }) {
           </div>
         </Link>
       </div>
+      {auction.status <= 3 ? (
+        <Plus
+          type="button"
+          onClick={() => {
+            func(auction);
+          }}>
+          구매 정보 입력
+        </Plus>
+      ) : null}
+      {auction.status > 3 ? (
+        <Plus
+          type="button"
+          onClick={() => {
+            func(auction);
+          }}>
+          배송 확인/리뷰
+        </Plus>
+      ) : null}
     </CardContainer>
   );
 }
 
-export default AuctionCard;
+export default IsPurchasingCard;
 
 const CardContainer = styled.article`
   position: relative;
@@ -85,8 +79,6 @@ const CardContainer = styled.article`
   border-radius: 5px;
   overflow: hidden;
   transition: all 0.3s ease-in;
-  background-color: ${(props) => props.theme.colors.textGray};
-
   &:hover {
     transform: scale(1.03);
   }
@@ -136,7 +128,6 @@ const CardContainer = styled.article`
             top: 0;
             height: 100%;
             width: 100%;
-            background-color: ${(props) => props.theme.colors.textGray};
             img {
               width: 100%;
               height: 100%;
@@ -170,16 +161,52 @@ const AuctionInfoContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    p {
+    h4 {
       font-weight: bold;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      font-size: ${(props) => props.theme.fontSizes.p};
+      font-size: 20px;
     }
   }
 `;
 
-const AuctionTimeMessage = styled.p`
-  color: ${(props) => (props.time ? props.theme.colors.white : props.theme.colors.pointRed)};
+const AcutionTime = styled.p`
+  position: absolute;
+  right: 5%;
+  top: -5%;
+  font-size: 12px;
+`;
+
+const AuctionStatus = styled.div`
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  width: 25%;
+  height: 25%;
+  right: 5%;
+  top: -180%;
+  border-radius: 10px;
+  color: ${(props) => props.theme.colors.white};
+  background-color: ${(props) =>
+    props.auctionstrkey === 0
+      ? 'green'
+      : props.auctionstrkey === 1
+      ? 'orange'
+      : props.auctionstrkey === 2
+      ? 'orange'
+      : props.auctionstrkey === 3
+      ? 'red'
+      : 'black'};
+`;
+
+const Plus = styled.span`
+  position: absolute;
+  border-radius: 5px;
+  padding: 5px;
+  bottom: 5%;
+  right: 30%;
+  background-color: ${(props) => props.theme.colors.mainBlack};
+  color: ${(props) => props.theme.colors.subMint};
+  border: 1px solid ${(props) => props.theme.colors.subMint};
 `;

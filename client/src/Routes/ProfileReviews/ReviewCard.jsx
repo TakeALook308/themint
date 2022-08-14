@@ -9,9 +9,14 @@ function ReviewCard({ review }) {
       <ProfileImgContainer>
         <ProfileImg>
           <div>
-            <Link to="/profile/:id">
+            <Link to={`/profile/${review.writerSeq}`}>
               <picture>
-                <img src={review.writerProfileUrl} alt="유저 프로필" width="168" height="168" />
+                <img
+                  src={process.env.REACT_APP_IMAGE_URL + review.writerProfileUrl}
+                  alt="유저 프로필"
+                  width="168"
+                  height="168"
+                />
               </picture>
             </Link>
           </div>
@@ -19,12 +24,13 @@ function ReviewCard({ review }) {
       </ProfileImgContainer>
       <ReviewArticle>
         <ReviewHeader>
-          <Link to="/profile/:id">{review.writerNickName}</Link>
+          <Link to={`/profile/${review.writerSeq}`}>{review.writerNickname}</Link>
           <StarContainer>
             <StarRating rating={review.score} />
           </StarContainer>
           <p>{review.date}</p>
         </ReviewHeader>
+        <p>{review.content}</p>
       </ReviewArticle>
     </Wrapper>
   );
@@ -86,7 +92,7 @@ const ReviewArticle = styled.article`
 const ReviewHeader = styled.header`
   font-size: ${(props) => props.theme.fontSizes.h4};
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   position: relative;
 
   > p {
