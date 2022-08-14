@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { NavLink, Route, Routes, useParams } from 'react-router-dom';
+import { NavLink, Route, Routes, useParams, useLocation, Outlet } from 'react-router-dom';
 import ProfileCard from './ProfileCard';
 import { instance } from '../../utils/apis/api';
 import ProfileReviewsPage from '../ProfileReviews/ProfileReviewsPage';
@@ -10,7 +10,15 @@ import ProfileInterestsPage from '../ProfileInterests/ProfileInterestsPage';
 import { myInformationState } from '../../atoms';
 import { useRecoilValue } from 'recoil';
 
+// let currentPath = '';
 function ProfilePage(props) {
+  // 링크로 이동시 새로고침
+  // let location = useLocation();
+  // useEffect(() => {
+  //   if (currentPath === location.pathname) window.location.reload();
+
+  //   currentPath = location.pathname;
+  // }, [location]);
   // 사용자와 프로필페이지 일치여부 확인
   const myInformation = useRecoilValue(myInformationState);
   const strMemberSeq = `${myInformation.memberSeq}`;

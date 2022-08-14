@@ -6,8 +6,17 @@ import SkeletonAuctionCard from '../../components/CardList/SkeletonAuctionCard';
 import IsSellingCard from './IsSellingCard';
 import axios from 'axios';
 import Modal from '../../components/common/Modal';
+import { useLocation } from 'react-router-dom';
 
+// let currentPath = '';
 function ProfileSalesHistoryPage({ params }) {
+  // // 새로고침
+  // let location = useLocation();
+  // useEffect(() => {
+  //   if (currentPath === location.pathname) window.location.reload();
+
+  //   currentPath = location.pathname;
+  // }, [location]);
   // 판매내역 전체 요청 API
 
   useEffect(() => {

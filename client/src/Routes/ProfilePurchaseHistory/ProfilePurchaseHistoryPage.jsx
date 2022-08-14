@@ -6,11 +6,25 @@ import { instance } from '../../utils/apis/api';
 import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
 import Modal from '../../components/common/Modal';
 import GradientButton from '../../components/ButtonList/GradientButton';
+import PopupDom from '../Register/PopupDom';
+import PopupPostCode from '../Register/PopupPostCode';
+import { InputContainer } from '../Register/Register2';
+import { ActiveInput } from '../../style/style';
+import MintButton from '../../components/ButtonList/MintButton';
+import { REGISTER_MESSAGE } from '../../utils/constants/constant';
+import { useForm } from 'react-hook-form';
 
 // 별점기능
 import { FaStar } from 'react-icons/fa';
-
+// let currentPath = '';
 function ProfilePurchaseHistoryPage({ params }) {
+  // 새로고침?
+  // let location = useLocation();
+  // useEffect(() => {
+  //   if (currentPath === location.pathname) window.location.reload();
+
+  //   currentPath = location.pathname;
+  // }, [location]);
   // 구매내역 API 요청
   const getPurchaseUrl = (paramsnum, size) => {
     return (page) => `/api/history/purchase/${active}?page=${page}&size=${size}`;
@@ -42,14 +56,23 @@ function ProfilePurchaseHistoryPage({ params }) {
       });
       onChange({ target: { name: 'name', value: itemDetail.data.name } });
       onChange({ target: { name: 'phone', value: itemDetail.data.phone } });
-      onChange({ target: { name: 'name', value: auction.name } });
-      onChange({ target: { name: 'phone', value: auction.phone } });
     });
     onChange({ target: { name: 'name', value: auction.name } });
     onChange({ target: { name: 'phone', value: auction.phone } });
+
     setIsModal((prev) => !prev);
     setPurchaseDetail([]);
   };
+  // 입금완료
+  const patchRemit = () => {
+    // const getPatchRemit = async (url) => {
+    //   const response = await instance.get(url);
+    //   return response;
+    // };
+    // const res = getPatchRemit(`/api/product/remit/${auction.productSeq}`);
+    // res.then(() => {});
+  };
+
   // 은행 이름으로 변경
   const bankList = {
     0: '테스트용은행',
@@ -114,6 +137,28 @@ function ProfilePurchaseHistoryPage({ params }) {
       [name]: value,
     });
   };
+  // 주소입력 API 활용
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const openPostCode = () => {
+    setIsPopupOpen(!isPopupOpen);
+  };
+  const closePostCode = () => {
+    setIsPopupOpen(false);
+  };
+  const {
+    register,
+    setError,
+    watch,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      nickname: '',
+      address: '',
+    },
+    mode: 'onChange',
+  });
   // 버튼 클릭하면 배송정보를 patch
   const patchDelivery = () => {
     console.log(deliveryData);
@@ -202,6 +247,7 @@ function ProfilePurchaseHistoryPage({ params }) {
         <ModalMain>
           {active === 'inprogress' && (
             <Purchasing>
+              <button onClick={patchRemit}>입금완료!</button>
               <p>입금 완료 후, 배송지를 입력해주세요!!!</p>
               <p>판매자 계좌: </p>
               <p>은행-{bankList[purchaseDetail.bankCode]}</p>
@@ -215,7 +261,7 @@ function ProfilePurchaseHistoryPage({ params }) {
                 onChange={onChange}
               />
               <p>배송정보 입력:</p>
-              <StyledInput
+              {/* <StyledInput
                 placeholder="우편번호를 입력해 주세요"
                 name="zipCode"
                 value={zipCode}
@@ -233,7 +279,69 @@ function ProfilePurchaseHistoryPage({ params }) {
                 name="addressDetail"
                 value={addressDetail}
                 onChange={onChange}
-              />
+              /> */}
+              <InputContainer>
+                <ActiveInput active={true}>
+                  <input
+                    name="zipCode"
+                    id="zipCode"
+                    type="text"
+                    {...register('zipCode', {
+                      required: REGISTER_MESSAGE.REQUIRED_ADDRESS,
+                      disabled: true,
+                    })}
+                    disabled
+                    placeholder=" "
+                    required
+                  />
+                  <label htmlFor="zipCode">우편번호</label>
+                </ActiveInput>
+                <MintButton text={'조회'} type={'button'} onClick={openPostCode} />
+              </InputContainer>
+              <div id="popupDom">
+                {isPopupOpen && (
+                  <PopupDom>
+                    <PopupPostCode onClose={closePostCode} setAddress={setValue} />
+                  </PopupDom>
+                )}
+              </div>
+              <AddressContainer>
+                <ActiveInput active={true}>
+                  <input
+                    name="address"
+                    id="address"
+                    type="text"
+                    {...register('address', {
+                      disabled: true,
+                    })}
+                    placeholder=" "
+                  />
+                  <label htmlFor="address">주소</label>
+                </ActiveInput>
+                <ActiveInput active={true}>
+                  <input
+                    name="addressDetail"
+                    id="addressDetail"
+                    type="text"
+                    {...register('addressDetail')}
+                    disabled
+                    placeholder=" "
+                  />
+                  <label htmlFor="addressDetail">상세주소</label>
+                </ActiveInput>
+              </AddressContainer>
+              {/* <div>
+                <button type="button" onClick={openPostCode}>
+                  우편번호 검색
+                </button>
+                <div id="popupDom">
+                  {isPopupOpen && (
+                    <PopupDom>
+                      <PopupPostCode onClose={closePostCode} />
+                    </PopupDom>
+                  )}
+                </div>
+              </div> */}
               <button onClick={patchDelivery}>배송정보 저장</button>
             </Purchasing>
           )}
@@ -374,4 +482,10 @@ const StyledInput = styled.input`
   color: ${(props) => props.theme.colors.white};
   width: 100%;
   outline: none;
+`;
+
+const AddressContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 `;

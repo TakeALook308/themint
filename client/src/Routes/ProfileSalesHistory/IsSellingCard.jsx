@@ -7,7 +7,7 @@ function IsSellingCard({ auction, func, numActive }) {
   return (
     <CardContainer>
       <div>
-        <Link to="#">
+        <Link to="/auctions/:auctionId">
           <div>
             <picture>
               <img
