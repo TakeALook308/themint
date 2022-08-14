@@ -252,7 +252,12 @@ function ProfilePurchaseHistoryPage({ params }) {
           {active === 'inprogress' && (
             <Purchasing>
               <p>입금을 완료 하셨나요??</p>
-              <MintButton onClick={patchRemit} text="입금완료" size="30%" />
+              {purchaseDetail.status < 2 && (
+                <MintButton onClick={patchRemit} text="입금완료" size="30%" />
+              )}
+              {purchaseDetail.status > 1 && (
+                <MintButton onClick={patchRemit} text="입금완료" size="30%" disabled={true} />
+              )}
               <p>꼭! 입금 완료 후, 배송지를 입력해주세요!!!</p>
               <p>판매자 계좌 정보</p>
               <SellerInfo>
