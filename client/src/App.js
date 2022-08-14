@@ -1,36 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import styled from 'styled-components';
 import Router from './Router';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
-import Session from './utils/functions/storage';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { HelmetProvider } from 'react-helmet-async';
+import { useSetRecoilState } from 'recoil';
+import { myInformationState } from './atoms';
+import { getCookie } from './utils/functions/cookies';
+import { fetchData } from './utils/apis/api';
+import { userApis } from './utils/apis/userApis';
 
-export const session = new Session();
-function App(props) {
+function App() {
+  const setMyInformation = useSetRecoilState(myInformationState);
   const [queryClient] = useState(() => new QueryClient());
+  const [loading, setLoading] = useState(false);
+  const token = getCookie('accessToken');
+  useEffect(() => {
+    (async () => {
+      if (token) {
+        const response = await fetchData.get(userApis.MY_BASIC_INFORMATION);
+        setMyInformation(response.data);
+      }
+      setLoading(true);
+    })();
+  }, []);
 
   return (
     <HelmetProvider>
-      <Container>
-        <ToastContainer
-          position="top-center"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
-        <QueryClientProvider client={queryClient}>
-          <Router />
-          <ReactQueryDevtools initialIsOpen={false} />
-        </QueryClientProvider>
-      </Container>
+      <Suspense fullback={<h1>Loading...</h1>}>
+        <Container>
+          <ToastContainer
+            position="top-center"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
+          {loading && (
+            <QueryClientProvider client={queryClient}>
+              <Router />
+              <ReactQueryDevtools initialIsOpen={false} />
+            </QueryClientProvider>
+          )}
+        </Container>
+      </Suspense>
     </HelmetProvider>
   );
 }

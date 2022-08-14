@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { auctionApis } from '../../utils/apis/auctionApis';
 import { getData } from '../../utils/apis/api';
 import moment from 'moment';
-// import { useInterval } from './useInterval.jsx';
+
 import Timer from './Timer';
 import { errorToast } from '../../lib/toast';
 function AuctionBidding({ products, sendPrice, price, producter }) {
