@@ -16,10 +16,17 @@ function NavigationBar({ url, keyword, categoryName }) {
   const onChangeSearch = (e) => {
     e.preventDefault();
     setSearch(e.target.value);
+    console.log(e.target.value);
   };
   const navigate = useNavigate();
   const onClick = () => {
-    navigate(`${url}&keyword=${keyword}`);
+    navigate(`/search?type=auctions&keyword=${search}`);
+  };
+
+  const onKeyPress = (e) => {
+    if (e.key == 'Enter') {
+      onClick();
+    }
   };
 
   const onSubmit = () => {
@@ -47,6 +54,7 @@ function NavigationBar({ url, keyword, categoryName }) {
               placeholder="검색하기"
               inputProps={{ 'aria-label': '검색하기' }}
               onChange={onChangeSearch}
+              onKeyPress={onKeyPress}
             />
           </NavSearch>
           <NavItemText>
