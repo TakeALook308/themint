@@ -1,6 +1,5 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { session } from '../../App';
 import { MessageWrapper } from '../../style/common';
 import { ActiveInput } from '../../style/style';
 import { LOGIN_MESSAGE, REGISTER_MESSAGE } from '../../utils/constants/constant';
@@ -30,9 +29,12 @@ function ThemintLogin({ login }) {
       login.setToken({ accessToken });
       login.moveToMain(nickname);
       login.setLogged(true);
-      session.set('profile', { memberId, memberSeq, nickname });
     } catch (err) {
       if (err.response.status === 409) {
+        setError('memberId', { message: LOGIN_MESSAGE.FAILED_LOGIN });
+        return;
+      }
+      if (err.response.status === 404) {
         setError('memberId', { message: LOGIN_MESSAGE.FAILED_LOGIN });
         return;
       }

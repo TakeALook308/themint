@@ -6,28 +6,18 @@ import { errorToast, successToast } from '../../lib/toast';
 import { fetchData } from '../../utils/apis/api';
 import { userApis } from '../../utils/apis/userApis';
 import { FaCamera } from 'react-icons/fa';
+import { useMutation, useQueryClient } from 'react-query';
 
-function ProfileImage({ userAllInfo, setUserAllInfo }) {
-  const [files, setFiles] = useState({
-    file: '',
-    imagePreviewUrl: '',
-  });
+function ProfileImage({ userAllInfo }) {
   const myInformation = useRecoilValue(myInformationState);
+  const queryClient = useQueryClient();
   const requestProfileImage = async (image) => {
-    try {
-      const res = await fetchData.post(userApis.PROFILE_IMAGE_CHANGE, image, {
-        headers: {
-          'Content-Type': 'multipart/form-data:',
-        },
-      });
-      setUserAllInfo((prev) => ({
-        ...prev,
-        profileUrl: res?.data,
-      }));
-      successToast('프로필 사진이 변경되었습니다.');
-    } catch (err) {
-      errorToast('프로필 사진 변경에 실패하였습니다.');
-    }
+    const res = await fetchData.post(userApis.PROFILE_IMAGE_CHANGE, image, {
+      headers: {
+        'Content-Type': 'multipart/form-data:',
+      },
+    });
+    return res?.data;
   };
 
   const isValidSize = (image) => {
@@ -44,16 +34,21 @@ function ProfileImage({ userAllInfo, setUserAllInfo }) {
     const file = e.target.files[0];
     if (!isValidSize(file)) return;
     formData.append('multipartFile', file);
-    await requestProfileImage(formData);
+    mutation.mutate(formData);
   };
 
-  useEffect(() => {
-    if (userAllInfo?.profileUrl) {
-      setFiles({
-        imagePreviewUrl: process.env.REACT_APP_IMAGE_URL + userAllInfo?.profileUrl,
-      });
-    }
-  }, [userAllInfo]);
+  const mutation = useMutation((formData) => requestProfileImage(formData), {
+    onSuccess: (data) => {
+      queryClient.setQueriesData(['userInformation'], (prev) => ({
+        ...prev,
+        profileUrl: data.imagePath,
+      }));
+      successToast('프로필 사진이 변경되었습니다.');
+    },
+    onError: () => {
+      errorToast('프로필 사진 변경에 실패하였습니다.');
+    },
+  });
 
   return (
     <Container>
@@ -64,8 +59,7 @@ function ProfileImage({ userAllInfo, setUserAllInfo }) {
               {userAllInfo?.profileUrl && (
                 <Img
                   htmlFor="photo-upload"
-                  loading="lazy"
-                  src={files.imagePreviewUrl}
+                  src={process.env.REACT_APP_IMAGE_URL + userAllInfo?.profileUrl}
                   alt={`${myInformation.nickname} 프로필 이미지`}
                   width="200"
                   height="200"
@@ -83,8 +77,8 @@ function ProfileImage({ userAllInfo, setUserAllInfo }) {
         </form>
       </div>
       <NameContainer>
-        <p>{userAllInfo.memberName}</p>
-        <p>{userAllInfo.memberId}</p>
+        <p>{userAllInfo?.memberName}</p>
+        <p>{userAllInfo?.memberId}</p>
       </NameContainer>
     </Container>
   );
