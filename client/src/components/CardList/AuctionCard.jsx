@@ -57,6 +57,7 @@ function AuctionCard({ auction }) {
             <picture>
               <img
                 src={process.env.REACT_APP_IMAGE_URL + auction?.auctionImage?.imageUrl}
+                loading="lazy"
                 alt="닌텐도 스위치"
                 width="400"
                 height="300"
@@ -97,6 +98,8 @@ const CardContainer = styled.article`
   border-radius: 5px;
   overflow: hidden;
   transition: all 0.3s ease-in;
+  background-color: ${(props) => props.theme.colors.textGray};
+
   &:hover {
     transform: scale(1.03);
   }
@@ -146,6 +149,7 @@ const CardContainer = styled.article`
             top: 0;
             height: 100%;
             width: 100%;
+            background-color: ${(props) => props.theme.colors.textGray};
             img {
               width: 100%;
               height: 100%;

@@ -29,7 +29,7 @@ function NavigationBar({ url, keyword, categoryName }) {
     e.preventDefault();
     navigate({
       pathname: '/search',
-      search: `?type=auctions&keyword=${search}`,
+      search: `?type=auction&keyword=${search}`,
     });
   };
 
