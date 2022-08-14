@@ -11,8 +11,8 @@ class StreamingComponent extends Component {
     super(props);
 
     this.state = {
-      mySessionId: 'SessionA',
-      myUserName: 'Participant' + Math.floor(Math.random() * 100),
+      mySessionId: this.props.auctionId,
+      myUserName: this.props.userInfo.nickname,
       session: undefined,
       mainStreamManager: undefined,
       publisher: undefined,
@@ -36,6 +36,8 @@ class StreamingComponent extends Component {
   }
 
   componentWillUnmount() {
+    console.log('leave');
+    this.leaveSession();
     window.removeEventListener('beforeunload', this.onbeforeunload);
   }
 
@@ -126,7 +128,7 @@ class StreamingComponent extends Component {
           mySession
             .connect(token, { clientData: this.state.myUserName })
             .then(async () => {
-              if (this.props.userInfo.memberId === this.props.auctionData.memberId) {
+              if (this.props.userInfo.memberSeq === this.props.auctionData.memberSeq) {
                 var devices = await this.OV.getDevices();
                 var videoDevices = devices.filter((device) => device.kind === 'videoinput');
 
@@ -184,7 +186,7 @@ class StreamingComponent extends Component {
       session: undefined,
       subscribers: [],
       mySessionId: 'SessionA',
-      myUserName: 'Participant' + Math.floor(Math.random() * 100),
+      myUserName: this.props.userInfo.nickname,
       mainStreamManager: undefined,
       publisher: undefined,
     });
@@ -243,7 +245,7 @@ class StreamingComponent extends Component {
                   <UserVideoComponent streamManager={this.state.publisher} />
                 </div>
               ) : null}
-              {this.props.userInfo.memberId !== this.props.auctionData.memberId &&
+              {this.props.userInfo.memberSeq !== this.props.auctionData.memberSeq &&
                 this.state.subscribers.map((sub, i) => (
                   <div
                     key={i}

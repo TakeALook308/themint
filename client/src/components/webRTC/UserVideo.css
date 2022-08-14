@@ -2,7 +2,7 @@ video {
   width: 100%;
   height: auto;
   float: left;
-  cursor: pointer;
+  border-radius: 10px;
 }
 .streamcomponent div {
   position: absolute;

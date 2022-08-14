@@ -1,5 +1,11 @@
 import { instance } from './api';
 
+export const auctionApis = {
+  AUCTION_CREATE_API: `/api/auction`,
+  AUCTION_DETAIL_API: (auctionId) => `/api/auction/${auctionId}`,
+  AUCTION_DATE_API: `/api/auction/date`,
+};
+
 export const auctionListApis = {
   LIVE_AUCTION_LIST: '/api/auction/live',
   AUCTION_LIST: (word, size, sort) => {

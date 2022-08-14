@@ -1,3 +1,3 @@
 export const streamingApis = {
-  STANDBY: (room) => `/api/auction/standby/${room}`,
+  STANDBY: (roomId) => `/api/auction/standby/${roomId}`,
 };
