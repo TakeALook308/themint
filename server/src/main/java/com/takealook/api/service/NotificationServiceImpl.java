@@ -41,9 +41,10 @@ public class NotificationServiceImpl implements NotificationService{
     }
     public void createNotificationServer(String memberId) {
         notificationServer.rightPush("NOTIFICATION_SERVER", memberId);
-        enterNotificationServer(memberId);
+//        enterNotificationServer(memberId);
     }
 
+    // TODO: 로그인 시 입장되게
     public void enterNotificationServer(String memberId) {
         ChannelTopic topic = topics.get(memberId);
         if (topic == null)
@@ -87,6 +88,7 @@ public class NotificationServiceImpl implements NotificationService{
         String productNameResult = "";
         for(String productName: productNameList) {
             productNameResult += productName;
+            productNameResult += " ";
         }
         List<String> memberIdList = interestKeywordService.getMemberListByProductName(productNameResult);
         for (String memberId : memberIdList) {

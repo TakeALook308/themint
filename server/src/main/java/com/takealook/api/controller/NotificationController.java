@@ -8,7 +8,6 @@ import com.takealook.db.entity.NotificationMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,23 +36,23 @@ public class NotificationController {
     }
 
     // 관심 경매 시작 알림 메시지 전송
-//    @MessageMapping("/notice/interest/auction")
-//    public ResponseEntity<?> sendInterestAuctionNotificationMessage(@RequestBody Map<String, String> auctionHash) {
-//        String hash = auctionHash.get("hash");
-//        List<String> memberIdList = interestAuctionService.getMemberListByHash(hash);
-//        for(String memberId: memberIdList) {
-//            String message = memberId + "님의 관심 경매가 시작됐어요!";
-//            NotificationMessage notificationMessage = NotificationMessage.builder()
-//                    .memberId(memberId)
-//                    .message(message)
-//                    .build();
-//            redisPublisher.publish(notificationService.getTopic(memberId), notificationMessage);
-//        }
-//        return ResponseEntity.status(200).body("success");
-//    }
+    @PostMapping("/notice/interest/auction")
+    public ResponseEntity<?> sendInterestAuctionNotificationMessage(@RequestBody Map<String, String> auctionHash) {
+        String hash = auctionHash.get("hash");
+        List<String> memberIdList = interestAuctionService.getMemberListByHash(hash);
+        for(String memberId: memberIdList) {
+            String message = memberId + "님의 관심 경매가 시작됐어요!";
+            NotificationMessage notificationMessage = NotificationMessage.builder()
+                    .memberId(memberId)
+                    .message(message)
+                    .build();
+            redisPublisher.publish(notificationService.getTopic(memberId), notificationMessage);
+        }
+        return ResponseEntity.status(200).body("success");
+    }
 
     // 관심 카테고리 경매 등록 알림 메시지 전송
-    @MessageMapping("/notice/interest/category")
+    @PostMapping("/notice/interest/category")
     public ResponseEntity<?> sendInterestCategoryNotificationMessage(@RequestBody Map<String, Long> category) {
         Long categorySeq = category.get("categorySeq");
         List<String> memberIdList = interestCategoryService.getMemberListByCategorySeq(categorySeq);
@@ -69,7 +68,7 @@ public class NotificationController {
     }
 
     // 관심 키워드 경매 등록 알림 메시지 전송
-    @MessageMapping("/notice/interest/keyword")
+    @PostMapping("/notice/interest/keyword")
     public ResponseEntity<?> sendInterestKeywordNotificationMessage() {
         return null;
     }

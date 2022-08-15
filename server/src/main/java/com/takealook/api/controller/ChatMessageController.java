@@ -32,11 +32,11 @@ public class ChatMessageController {
     @Autowired
     ChatMessageService chatMessageService;
 ////////// 테스트용 //////////////
-    @Autowired
-    NotificationService notificationService;
-
-    @Autowired
-    InterestAuctionService interestAuctionService;
+//    @Autowired
+//    NotificationService notificationService;
+//
+//    @Autowired
+//    InterestAuctionService interestAuctionService;
 //////////////////////////////////
     /**
      * websocket "/pub/api/chat/message"로 들어오는 메시징을 처리한다.
@@ -63,18 +63,18 @@ public class ChatMessageController {
     }
 
     // 관심 경매 시작 알림 메시지 전송
-    @MessageMapping("/notice/send")
-    public ResponseEntity<?> sendNotificationMessage(@RequestBody Map<String, String> auctionHash) {
-        String hash = auctionHash.get("hash");
-        List<String> memberList = interestAuctionService.getMemberListByHash(hash);
-        for(String memberId: memberList) {
-            String message = memberId + "님의 관심 경매가 시작됐어요!";
-            NotificationMessage notificationMessage = NotificationMessage.builder()
-                    .memberId(memberId)
-                    .message(message)
-                    .build();
-            redisPublisher.publish(notificationService.getTopic(memberId), notificationMessage);
-        }
-        return ResponseEntity.status(200).body("success");
-    }
+//    @MessageMapping("/notice/send")
+//    public ResponseEntity<?> sendNotificationMessage(@RequestBody Map<String, String> auctionHash) {
+//        String hash = auctionHash.get("hash");
+//        List<String> memberList = interestAuctionService.getMemberListByHash(hash);
+//        for(String memberId: memberList) {
+//            String message = memberId + "님의 관심 경매가 시작됐어요!";
+//            NotificationMessage notificationMessage = NotificationMessage.builder()
+//                    .memberId(memberId)
+//                    .message(message)
+//                    .build();
+//            redisPublisher.publish(notificationService.getTopic(memberId), notificationMessage);
+//        }
+//        return ResponseEntity.status(200).body("success");
+//    }
 }
