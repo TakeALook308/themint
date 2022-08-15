@@ -12,6 +12,7 @@ public class HistoryListEntityRes {
     Long historySeq;
     Long productSeq;
     Long auctionSeq;
+    String hash;
     String productName;
     int startPrice;
     int finalPrice;
@@ -25,6 +26,7 @@ public class HistoryListEntityRes {
                 .historySeq(history.getSeq())
                 .productSeq(history.getProductSeq())
                 .auctionSeq(product.getAuctionSeq())
+                .hash(auction.getHash())
                 .productName(product.getProductName())
                 .startPrice(product.getStartPrice())
                 .finalPrice(product.getFinalPrice())
