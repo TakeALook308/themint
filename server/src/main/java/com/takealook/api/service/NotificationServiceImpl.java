@@ -65,7 +65,7 @@ public class NotificationServiceImpl implements NotificationService{
             NotificationMessage notificationMessage = NotificationMessage.builder()
                     .memberId(memberId)
                     .title(title)
-                    .url("i7a308.p.ssafy.io/auctions/" + hash)
+                    .url("/auctions/" + hash)
                     .notification(notification)
                     .build();
             redisPublisher.publish(topics.get(memberId), notificationMessage);
@@ -85,7 +85,7 @@ public class NotificationServiceImpl implements NotificationService{
             NotificationMessage notificationMessage = NotificationMessage.builder()
                     .memberId(memberId)
                     .title(title)
-                    .url("i7a308.p.ssafy.io/auctions/" + hash)
+                    .url("/auctions/" + hash)
                     .notification(notification)
                     .build();
             redisPublisher.publish(topics.get(memberId), notificationMessage);

@@ -20,12 +20,10 @@ public class ChatRoom implements Serializable {
 
     @Id
     private String roomId;
-    private int type;
 
-    public static ChatRoom create(ChatRoomRegisterPostReq chatRoomRegisterPostReq) {
+    public static ChatRoom create(String roomId) {
         ChatRoom chatRoom = ChatRoom.builder()
-                .roomId(chatRoomRegisterPostReq.getRoomId())
-                .type(chatRoomRegisterPostReq.getType())
+                .roomId(roomId)
                 .build();
         return chatRoom;
     }

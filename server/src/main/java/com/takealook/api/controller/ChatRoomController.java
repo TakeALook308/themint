@@ -2,6 +2,7 @@ package com.takealook.api.controller;
 
 import com.takealook.api.request.ChatRoomPostReq;
 import com.takealook.api.request.ChatRoomRegisterPostReq;
+import com.takealook.api.request.OneOnOneChatRoomRegisterPostReq;
 import com.takealook.api.response.ChatMessagesRes;
 import com.takealook.api.response.ChatRoomMemberCountRes;
 import com.takealook.api.service.ChatMessageService;
@@ -36,6 +37,7 @@ public class ChatRoomController {
 
     @Autowired
     ChatMessageService chatMessageService;
+
     // 회원의 1:1 채팅 목록
     @GetMapping("/rooms")
     public ResponseEntity<?> memberRooms(@ApiIgnore Authentication authentication) {
@@ -44,11 +46,17 @@ public class ChatRoomController {
         return ResponseEntity.status(200).body(chatRoomService.getChatRooms(memberSeq));
     }
 
-    // 채팅방 생성
-    @PostMapping("/room")
+    // 경매 채팅방 생성
+    @PostMapping("/room/auction")
     @ResponseBody
-    public ResponseEntity<?> createRoom(@RequestBody ChatRoomRegisterPostReq chatRoomRegisterPostReq) {
-        return ResponseEntity.status(200).body(chatRoomService.createChatRoom(chatRoomRegisterPostReq));
+    public ResponseEntity<?> createAuctionChatRoom(@RequestBody ChatRoomRegisterPostReq chatRoomRegisterPostReq) {
+        return ResponseEntity.status(200).body(chatRoomService.createAuctionChatRoom(chatRoomRegisterPostReq));
+    }
+    
+    // 1:1 채팅방 생성
+    @PostMapping("/room/one")
+    public  ResponseEntity<?> createOneOnOneChatRoom(@RequestBody OneOnOneChatRoomRegisterPostReq oneOnOneChatRoomRegisterPostReq) {
+        return ResponseEntity.status(200).body(chatRoomService.createOneOnOneChatRoom(oneOnOneChatRoomRegisterPostReq));
     }
 
     // 채팅방 입장
@@ -57,17 +65,15 @@ public class ChatRoomController {
         ChatRoomMember chatRoomMember = chatRoomMemberService.saveChatRoomMember(ChatRoomPostReq.getRoomId(), ChatRoomPostReq.getMemberSeq());
         if (chatRoomMember == null)
             return ResponseEntity.status(409).body(BaseResponseBody.of(409, "이미 참여 중인 채팅방입니다.")); // 이미 입장한 채팅방
-        ChatRoomMemberCountRes chatRoomMemberCountRes = chatRoomMemberService.getChatRoomMemberCount(chatRoomMember.getRoomId());
-        return ResponseEntity.status(200).body(chatRoomMemberCountRes);
+        return ResponseEntity.status(200).body(chatRoomMemberService.getChatRoomMemberCount(chatRoomMember.getRoomId()));
     }
 
     // 채팅방 퇴장
     @PostMapping("/room/exit")
     public ResponseEntity<?> exitChatRoom(@RequestBody ChatRoomPostReq chatRoomPostReq) {
         int result = chatRoomMemberService.exitChatRoomMember(chatRoomPostReq.getRoomId(), chatRoomPostReq.getMemberSeq());
-        if (result == 0) { // 채팅방 퇴장 실패
+        if (result == 0) // 채팅방 퇴장 실패
             return ResponseEntity.status(409).body(BaseResponseBody.of(409, "채팅방에 없는 사용자입니다."));
-        }
         return ResponseEntity.status(200).body(chatRoomMemberService.getChatRoomMemberCount(chatRoomPostReq.getRoomId()));
     }
 
