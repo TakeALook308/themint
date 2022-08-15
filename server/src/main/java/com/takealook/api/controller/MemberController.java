@@ -122,7 +122,7 @@ public class MemberController {
         // refreshToken 정보 조회
         RefreshToken refreshTokenCheck = refreshTokenRepository.findByRefreshToken(refreshToken).orElse(null);
         if(refreshTokenCheck == null){
-            return ResponseEntity.status(403).body(BaseResponseBody.of(403, "REFRESH_ERROR"));
+            return ResponseEntity.status(401).body(BaseResponseBody.of(401, "REFRESH_ERROR"));
         } else {
             refreshToken = refreshTokenCheck.getRefreshToken();
         }
@@ -135,7 +135,7 @@ public class MemberController {
             refreshToken = updateRefToken.getRefreshToken();
             accessToken = JwtTokenUtil.getToken(refreshTokenCheck.getMember().getMemberId());
         } else {
-            return ResponseEntity.status(403).body(BaseResponseBody.of(403, "ACCESS_ERROR"));
+            return ResponseEntity.status(401).body(BaseResponseBody.of(401, "ACCESS_ERROR"));
         }
         Map<String, String> tokens = new HashMap<>();
         tokens.put("accessToken", accessToken);
