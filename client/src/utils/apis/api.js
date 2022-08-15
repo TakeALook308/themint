@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { getCookie, setCookie } from '../functions/cookies';
+import useLogout from '../hooks/useLogout';
 
 const getAccessToken = () => {
   const accessToken = getCookie('accessToken');
@@ -8,16 +9,35 @@ const getAccessToken = () => {
 
 // TODO: Backend refresh 로직따라 삭제 가능
 const getLocalRefreshToken = () => {
-  const refreshToken = window.localStorage.getItem('refreshToken');
+  const refreshToken = localStorage.getItem('refreshToken');
   return refreshToken;
+};
+
+export const setRefreshToken = (refreshToken) => {
+  localStorage.setItem('refreshToken', refreshToken);
+};
+
+export const removeRefreshToken = () => {
+  localStorage.removeItem('refreshToken');
 };
 
 // TODO: Backend refresh 로직따라 변경 가능
 const getNewAccessToken = () => {
-  return instance.post('/api/refreshtoken', {
-    refreshToken: getLocalRefreshToken(),
+  return axiosInstance.get('/api/member/refresh', {
+    headers: {
+      Authorization: '',
+      'ACCESS-TOKEN': `Bearer ${getAccessToken()}`,
+      'REFRESH-TOKEN': `Bearer ${getLocalRefreshToken()}`,
+    },
   });
 };
+
+export const axiosInstance = axios.create({
+  baseURL: process.env.REACT_APP_API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
 export const instance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
@@ -48,24 +68,27 @@ instance.interceptors.response.use(
     const originalConfig = err.config;
     console.log('originalConfig', originalConfig);
     if (err.response) {
-      if (err.response.status === 401 && !originalConfig._retry) {
-        originalConfig._retry = true;
+      console.log(err);
+      if (err.response.status === 401 && err.response.data?.error === 'TokenExpiredException') {
         try {
-          const newAccessToken = await getNewAccessToken();
-          const { accessToken } = newAccessToken.data;
+          const response = await getNewAccessToken();
+          console.log(response);
+          const { accessToken, refreshToken } = response.data;
           setCookie('accessToken', accessToken);
+          setRefreshToken(refreshToken);
           instance.defaults.headers.Authorization = `Bearer ${accessToken}`;
           return instance(originalConfig);
-        } catch (_error) {
-          if (_error.response && _error.response.data) {
-            return Promise.reject(_error.response.data);
+        } catch (error) {
+          if (error.response && error.response.data) {
+            return Promise.reject(error.response.data);
           }
-          return Promise.reject(_error);
+          return Promise.reject(error);
         }
       }
-      if (err.response.status === 403 && err.esponse.data) {
-        return Promise.reject(err.response.data);
+      if (err.response.status === 403 && err.esponse.data?.message === 'REFRESH_ERROR') {
+        window.location.href = '/logout';
       }
+      return Promise.reject(err);
     }
     return Promise.reject(err);
   },
