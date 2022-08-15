@@ -112,7 +112,7 @@ public class MemberController {
     }
 
     // JWT 토큰 재발급
-    @PostMapping(value = "/refresh")
+    @GetMapping(value = "/refresh")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "ACCESS-TOKEN", value = "access-token", required = true, dataType = "String", paramType = "header"),
             @ApiImplicitParam(name = "REFRESH-TOKEN", value = "refresh-token", required = true, dataType = "String", paramType = "header")
