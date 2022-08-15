@@ -43,9 +43,9 @@ function ProfileInterestsPage({ params }) {
         </StyledBtn>
       </ButtonNav>
       <InterestContainer>
-        {active === 1 && <InterestKeywordList />}
-        {active === 2 && <InterestCateList />}
-        {active === 3 && <InterestAuctionList />}
+        {active === 1 && <InterestKeywordList active={active} />}
+        {active === 2 && <InterestCateList active={active} />}
+        {active === 3 && <InterestAuctionList active={active} />}
       </InterestContainer>
     </Container>
   );

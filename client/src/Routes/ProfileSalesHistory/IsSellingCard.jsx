@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
 function IsSellingCard({ auction, func }) {
+  console.log(auction);
   const auctionstr = ['판매중', '입금대기', '입금완료', '판매완료', '유찰', '거래취소'];
   return (
     <CardContainer>
@@ -20,11 +21,11 @@ function IsSellingCard({ auction, func }) {
             <AuctionInfoContainer>
               <div>
                 <h4>{auction.productName}</h4>
-                {auction.status === 1 && <p>{auction.finalPrice}</p>}
-                {auction.status === 2 && <p>{auction.finalPrice}</p>}
-                {auction.status === 3 && <p>{auction.finalPrice}</p>}
-                {auction.status === 0 && <p>{auction.startPrice}</p>}
-                {auction.status >= 4 && <p>{auction.startPrice}</p>}
+                {auction.status === 1 && <p>{auction.finalPrice}원</p>}
+                {auction.status === 2 && <p>{auction.finalPrice}원</p>}
+                {auction.status === 3 && <p>{auction.finalPrice}원</p>}
+                {auction.status === 0 && <p>{auction.startPrice}원</p>}
+                {auction.status >= 4 && <p>{auction.startPrice}원</p>}
                 <AcutionTime>{auction.startTime}</AcutionTime>
                 <AuctionStatus auctionstrkey={auction.status}>
                   {auctionstr[auction.status]}
@@ -162,7 +163,7 @@ const AuctionInfoContainer = styled.div`
 const AcutionTime = styled.p`
   position: absolute;
   right: 5%;
-  top: -5%;
+  top: -1%;
   font-size: 12px;
 `;
 
@@ -197,5 +198,7 @@ const Plus = styled.button`
   background-color: ${(props) => props.theme.colors.mainBlack};
   color: ${(props) => props.theme.colors.subMint};
   border: 1px solid ${(props) => props.theme.colors.subMint};
-  cursor: pointer;
+  :hover {
+    cursor: pointer;
+  }
 `;

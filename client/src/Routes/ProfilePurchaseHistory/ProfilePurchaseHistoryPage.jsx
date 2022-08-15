@@ -183,8 +183,8 @@ function ProfilePurchaseHistoryPage({ params }) {
   // 배송 조회
   const [searchDeliveryData, setSearchDeliveryData] = useState({
     t_key: 'F021Ir60YiVKvqs5Fx4AXw',
-    t_code: '04',
-    t_invoice: '113323452345',
+    t_code: '',
+    t_invoice: '',
   });
   const [tcode, setTCode] = useState('');
   const [tInvoice, setTInvoice] = useState('');

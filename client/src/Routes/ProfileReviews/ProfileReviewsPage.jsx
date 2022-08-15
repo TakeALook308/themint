@@ -1,8 +1,8 @@
 import { instance } from '../../utils/apis/api';
-import React, { useEffect, useState, useParams } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import ReviewCard from './ReviewCard';
-import { useLocation } from 'react-router-dom';
+
 function ProfileReviewsPage({ params }) {
   // 리뷰 표시
   const [reviews, setReviews] = useState([]);
@@ -23,9 +23,15 @@ function ProfileReviewsPage({ params }) {
 
   return (
     <Container>
-      {reviews.map((data, index) => (
-        <ReviewCard review={data} key={index} />
-      ))}
+      {reviews ? (
+        <ReviewContainer>
+          {reviews.map((data, index) => (
+            <ReviewCard review={data} key={index} />
+          ))}
+        </ReviewContainer>
+      ) : (
+        <p>리뷰가 없습니다</p>
+      )}
     </Container>
   );
 }
@@ -33,3 +39,5 @@ function ProfileReviewsPage({ params }) {
 export default ProfileReviewsPage;
 
 const Container = styled.div``;
+
+const ReviewContainer = styled.div``;

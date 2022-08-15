@@ -7,12 +7,10 @@ import IsSellingCard from './IsSellingCard';
 import axios from 'axios';
 import Modal from '../../components/common/Modal';
 
+// 판매중. 판매완료 구분 미해결
 function ProfileSalesHistoryPage({ params }) {
-  // 구매내역과 판매내역 차이 구분
-  const [isSales, setIsSales] = useState('sales');
-  useEffect(() => {
-    setIsSales('sales');
-  });
+  // 판매내역 전체 요청 API
+
   // 버튼 클릭으로 판매중 판매완료 구분
   const [active, setActive] = useState('inprogress');
   const onSelling = () => {
@@ -27,7 +25,7 @@ function ProfileSalesHistoryPage({ params }) {
   const [isModal, setIsModal] = useState(false);
 
   const getUrl = (paramsnum, size) => {
-    return (page) => `/api/history/${isSales}/${active}/${paramsnum}?page=${page}&size=${size}`;
+    return (page) => `/api/history/sales/${active}/${paramsnum}?page=${page}&size=${size}`;
   };
 
   const ModalHandler = (auction) => {
@@ -79,8 +77,9 @@ function ProfileSalesHistoryPage({ params }) {
       const response = await instance.patch(url, data);
       return response;
     };
-    // const res = patchTrackingNo(`/api/delivery/trackingno`, getTrackingNo);
-    // res.then(() => {});
+    console.log(getTrackingNo);
+    const res = patchTrackingNo(`/api/delivery/trackingno`, getTrackingNo);
+    res.then(() => {});
   };
   return (
     <Container>
@@ -102,7 +101,7 @@ function ProfileSalesHistoryPage({ params }) {
       </ButtonNav>
       <InfiniteAuctionList
         getUrl={getUrl(params, 9)}
-        queryKey={[`${params}${active}${isSales}`]}
+        queryKey={[`${params}${active}`]}
         CardComponent={IsSellingCard}
         SkeltonCardComponent={SkeletonAuctionCard}
         text={'판매 내역이 없습니다'}
@@ -228,3 +227,5 @@ const ModalMain = styled.main`
     padding: 5px;
   }
 `;
+
+const IsSellingContainer = styled.div``;

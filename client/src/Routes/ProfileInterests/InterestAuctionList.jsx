@@ -5,7 +5,7 @@ import SkeletonAuctionCard from '../../components/CardList/SkeletonAuctionCard';
 import InterestAuctionCard from './InterestAuctionCard';
 import { instance } from '../../utils/apis/api';
 
-function InterestAuctionList({ params }) {
+function InterestAuctionList({ params, active }) {
   const [isDeleted, setIsDeleted] = useState(true);
   const getUrl = (size) => {
     return (page) => `/api/interest/auction?page=0&size=${size}`;
@@ -29,7 +29,7 @@ function InterestAuctionList({ params }) {
     <Container>
       <InfiniteAuctionList
         getUrl={getUrl(9)}
-        queryKey={[`${isDeleted}`]}
+        queryKey={[`${isDeleted}${active}${params}`]}
         CardComponent={InterestAuctionCard}
         SkeltonCardComponent={SkeletonAuctionCard}
         text={'관심 경매 내역이 없습니다'}

@@ -4,6 +4,7 @@ import { instance } from '../../utils/apis/api';
 import InterestCateCard from './InterestCateCard';
 import { categories } from '../../utils/constants/constant';
 import GradientButton from '../../components/ButtonList/GradientButton';
+import { errorToast, successToast } from '../../lib/toast';
 
 function InterestCateList() {
   // 관심 카테고리 조회 API
@@ -38,6 +39,9 @@ function InterestCateList() {
       const res = getCateList(`/api/interest/category`);
       res.then((catelist) => {
         setShowCateList(catelist.data.interestCategoryList);
+      });
+      res.catch((error) => {
+        errorToast('이미 추가된 카테고리입니다');
       });
     });
   };

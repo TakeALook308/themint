@@ -9,7 +9,7 @@ function IsPurchasingCard({ auction, func }) {
     setStatusNum(auction.status);
   });
   const auctionstr = ['판매중', '입금대기', '발송대기', '구매완료', '', '거래취소'];
-
+  console.log(auction);
   return (
     <CardContainer>
       <div>
@@ -48,7 +48,7 @@ function IsPurchasingCard({ auction, func }) {
           </div>
         </Link>
       </div>
-      {auction.status <= 3 ? (
+      {auction.status < 3 ? (
         <Plus
           type="button"
           onClick={() => {
@@ -57,15 +57,17 @@ function IsPurchasingCard({ auction, func }) {
           구매 정보 입력
         </Plus>
       ) : null}
-      {auction.status > 3 ? (
-        <Plus
-          type="button"
-          onClick={() => {
-            func(auction);
-          }}>
-          배송 확인/리뷰
-        </Plus>
-      ) : null}
+      {
+        (auction.status = 3 ? (
+          <Plus
+            type="button"
+            onClick={() => {
+              func(auction);
+            }}>
+            배송 확인/리뷰
+          </Plus>
+        ) : null)
+      }
     </CardContainer>
   );
 }
@@ -173,7 +175,7 @@ const AuctionInfoContainer = styled.div`
 const AcutionTime = styled.p`
   position: absolute;
   right: 5%;
-  top: -5%;
+  top: -1%;
   font-size: 12px;
 `;
 
@@ -199,7 +201,7 @@ const AuctionStatus = styled.div`
       : 'black'};
 `;
 
-const Plus = styled.span`
+const Plus = styled.button`
   position: absolute;
   border-radius: 5px;
   padding: 5px;
@@ -208,4 +210,7 @@ const Plus = styled.span`
   background-color: ${(props) => props.theme.colors.mainBlack};
   color: ${(props) => props.theme.colors.subMint};
   border: 1px solid ${(props) => props.theme.colors.subMint};
+  :hover {
+    cursor: pointer;
+  }
 `;

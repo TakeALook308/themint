@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import InterestKeyWordCard from './InterestKeyWordCard';
 import ActiveInputBox from '../../components/common/ActiveInputBox';
 import GradientButton from '../../components/ButtonList/GradientButton';
+import { errorToast, successToast } from '../../lib/toast';
 
 function InterestKeywordList() {
   const [addKeyword, setAddKeyword] = useState('');
@@ -30,6 +31,9 @@ function InterestKeywordList() {
       const res = getKeyword(`/api/interest/keyword`);
       res.then((keywords) => {
         setShowKeyword(keywords.data.interestKeywordList);
+      });
+      res.catch((error) => {
+        errorToast('이미 추가된 카테고리입니다');
       });
     });
   };

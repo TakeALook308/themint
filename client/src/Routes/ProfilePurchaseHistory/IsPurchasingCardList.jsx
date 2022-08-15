@@ -1,18 +1,8 @@
-import React, { useState, useEffect, useForm } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 import { instance } from '../../utils/apis/api';
 import styled from 'styled-components';
 import IsPurchasingCard from './IsPurchasingCard';
 import Modal from '../../components/common/Modal';
-// 주소등록
-import { ActiveInput } from '../../style/style';
-import { InputContainer } from '../Register/Register2';
-import PopupPostCode from '../Register/PopupPostCode';
-import { REGISTER_MESSAGE } from '../../utils/constants/constant';
-import MintButton from '../../components/ButtonList/MintButton';
-import PopupDom from '../Register/PopupDom';
-import { MessageWrapper } from '../../style/common';
-import ValidationMessage from '../../components/common/ValidationMessage';
 
 function IsPurchasingCardList({ buyItems }) {
   // API 확인후 삭제
@@ -80,40 +70,12 @@ function IsPurchasingCardList({ buyItems }) {
     remitName: `${auctionDetail.remitName}`,
     zipCode: `${auctionDetail.zipCode}`,
   });
-  // 주소입력 API
-  // const [isPopupOpen, setIsPopupOpen] = useState(false);
-  // const [address, setAddress] = useState();
+
   const { remitName, addressDetail } = registerPurchase;
-  // const handleInput = (e) => {
-  //   setAddress(e.target.value);
-  // };
-
-  // const togglePostCode = () => {
-  //   setIsPopupOpen(!isPopupOpen);
-  // };
-
-  // const closePostCode = () => {
-  //   setIsPopupOpen(false);
-  // };
-  // const {
-  //   register,
-  //   setError,
-  //   watch,
-  //   handleSubmit,
-  //   setValue,
-  //   formState: { errors },
-  // } = useForm({
-  //   defaultValues: {
-  //     nickname: '',
-  //     address: '',
-  //   },
-  //   mode: 'onChange',
-  // });
 
   return (
     <Container>
       <CardContainer>
-        {/* auctionitem => buyItems  */}
         <IsPurchasingCard auctionitem={auctionitem} ModalHandler={ModalHandler}></IsPurchasingCard>
       </CardContainer>
       <Modal open={isModal} close={ModalHandler} title="구매 내역">
@@ -131,59 +93,6 @@ function IsPurchasingCardList({ buyItems }) {
               name="remitName"
               value={remitName}></input>
             <p>배송정보 입력:</p>
-            {/* <InputContainer>
-              <ActiveInput active={true}>
-                <input
-                  name="zipCode"
-                  id="zipCode"
-                  type="text"
-                  {...register('zipCode', {
-                    required: REGISTER_MESSAGE.REQUIRED_ADDRESS,
-                    disabled: true,
-                  })}
-                  disabled
-                  placeholder=" "
-                  required
-                />
-                <label htmlFor="zipCode">우편번호</label>
-              </ActiveInput>
-              <MintButton text={'조회'} type={'button'} onClick={togglePostCode} />
-            </InputContainer>
-            <div id="popupDom">
-              {isPopupOpen && (
-                <PopupDom>
-                  <PopupPostCode onClose={closePostCode} setAddress={setValue} />
-                </PopupDom>
-              )}
-            </div>
-            <MessageWrapper>
-              <ValidationMessage text={errors?.pwd?.message} state={'fail'} />
-            </MessageWrapper>
-            <AddressContainer>
-              <ActiveInput active={true}>
-                <input
-                  name="address"
-                  id="address"
-                  type="text"
-                  {...register('address', {
-                    disabled: true,
-                  })}
-                  placeholder=" "
-                />
-                <label htmlFor="address">주소</label>
-              </ActiveInput>
-              <ActiveInput active={true}>
-                <input
-                  name="addressDetail"
-                  id="addressDetail"
-                  type="text"
-                  {...register('addressDetail')}
-                  disabled
-                  placeholder=" "
-                />
-                <label htmlFor="addressDetail">상세주소</label>
-              </ActiveInput>
-            </AddressContainer> */}
             <input
               placeholder="상세 주소를 입력해 주세요"
               name="addressDetail"
