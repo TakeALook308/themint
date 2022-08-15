@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Container, Title } from '../../style/style';
 import { categories } from '../../utils/constants/constant';
@@ -83,6 +83,29 @@ function AuctionCreatePage(props) {
   // reader.onload = () =>
   //   (document.querySelector('.img_box').style.backgrondImage = `url(${reader.result})`);
   // reader.readAsDataURL(auctionImageList[0]);
+  const [imageSrc, setImageSrc] = useState([]);
+  const encodeFileToBase64 = (fileBlob) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(fileBlob);
+    return new Promise((resolve) => {
+      reader.onload = () => {
+        let temp = [...imageSrc];
+        temp.push(reader.result);
+        setImageSrc(temp);
+        resolve();
+      };
+    });
+  };
+  useEffect(() => {
+    // if (auctionImageList.length > 0) {
+    //   auctionImageList.map((item) => {
+    //     encodeFileToBase64(item);
+    //   });
+    // }
+    console.log(auctionImageList);
+  }, [auctionImageList]);
+  // if (imageSrc.length !== 0) console.log(imageSrc[0]);
+  // console.log(imageSrc.length);
   return (
     <Container>
       <Title>경매 생성</Title>
@@ -134,9 +157,14 @@ function AuctionCreatePage(props) {
               <input {...getInputProps()} />
               {isDragActive ? <p>Drop the files here ...</p> : <div>파일을 추가해주세요</div>}
             </div>
-            {auctionImageList.map((item, i) => (
+            {/* {auctionImageList.map((item, i) => (
               <div key={i}>{item.path}</div>
-            ))}
+            ))} */}
+            {imageSrc.length !== 0
+              ? imageSrc.map((item, i) => <img src={item} alt="preview-img" key={i} />)
+              : null}
+            {/* {imageSrc.length !== 0 ? <img src={imageSrc[1]} alt="preview-img" /> : null} */}
+            {/* {imageSrc.length !== 0 ? imageSrc[0] : null} */}
           </FileUpload>
         </Div>
 
@@ -300,8 +328,10 @@ const FileUpload = styled.div`
   background-color: ${(props) => props.theme.colors.pointBlack};
   overflow-y: auto;
   overflow-x: hidden;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+
+  /* display: grid;
+  grid-template-columns: repeat(3, 1fr); */
   place-items: center;
   div {
     width: 150px;
