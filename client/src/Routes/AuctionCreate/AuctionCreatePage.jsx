@@ -10,6 +10,7 @@ import { auctionApis } from '../../utils/apis/auctionApis';
 import { postData } from '../../utils/apis/api';
 import { useNavigate } from 'react-router-dom';
 import GradientButton from '../../components/ButtonList/GradientButton';
+import { AiOutlineDownload, AiFillPlusCircle } from 'react-icons/ai';
 function AuctionCreatePage(props) {
   const navigate = useNavigate();
   const onDrop = (acceptedFiles) => {
@@ -153,10 +154,23 @@ function AuctionCreatePage(props) {
         <Div>
           <Label>사진 업로드</Label>
           <FileUpload>
-            <div {...getRootProps()}>
-              <input {...getInputProps()} />
-              {isDragActive ? <p>Drop the files here ...</p> : <div>파일을 추가해주세요</div>}
-            </div>
+            {auctionImageList.length === 0 ? (
+              <div {...getRootProps()}>
+                <input {...getInputProps()} />
+
+                {isDragActive ? (
+                  <div className="nofile">
+                    <AiOutlineDownload size={50}></AiOutlineDownload>
+                  </div>
+                ) : (
+                  <div className="nofile">
+                    <AiFillPlusCircle size={50}></AiFillPlusCircle>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <p>얄루</p>
+            )}
             {/* {auctionImageList.map((item, i) => (
               <div key={i}>{item.path}</div>
             ))} */}
@@ -248,6 +262,38 @@ function AuctionCreatePage(props) {
     </Container>
   );
 }
+const FileUpload = styled.div`
+  width: 100%;
+  height: 200px;
+  border-radius: 5px;
+  background-color: ${(props) => props.theme.colors.pointBlack};
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* place-items: center; */
+  div {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    /* width: 150px;
+    height: 100px;
+    white-space: normal;
+    word-break: break-all;
+    display: flex;
+    align-items: center;
+    justify-content: center; */
+  }
+  .nofile {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+`;
+
 const Button = styled.button`
   display: block;
   margin: 40px auto 20px;
@@ -321,28 +367,6 @@ const Div = styled.div`
   position: relative;
 `;
 
-const FileUpload = styled.div`
-  width: 100%;
-  height: 200px;
-  border-radius: 5px;
-  background-color: ${(props) => props.theme.colors.pointBlack};
-  overflow-y: auto;
-  overflow-x: hidden;
-  display: flex;
-
-  /* display: grid;
-  grid-template-columns: repeat(3, 1fr); */
-  place-items: center;
-  div {
-    width: 150px;
-    height: 100px;
-    white-space: normal;
-    word-break: break-all;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-`;
 const Textarea = styled.textarea`
   width: 100%;
   background-color: ${(props) => props.theme.colors.pointBlack};
