@@ -23,13 +23,21 @@ export const removeRefreshToken = () => {
 
 // TODO: Backend refresh 로직따라 변경 가능
 const getNewAccessToken = () => {
-  return fetchData.get('/api/member/refresh', {
+  return axiosInstance.get('/api/member/refresh', {
     headers: {
+      Authorization: '',
       'ACCESS-TOKEN': `Bearer ${getAccessToken()}`,
       'REFRESH-TOKEN': `Bearer ${getLocalRefreshToken()}`,
     },
   });
 };
+
+export const axiosInstance = axios.create({
+  baseURL: process.env.REACT_APP_API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
 export const instance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
@@ -60,9 +68,11 @@ instance.interceptors.response.use(
     const originalConfig = err.config;
     console.log('originalConfig', originalConfig);
     if (err.response) {
-      if (err.response.status === 403 && err.response.data?.message === 'ACCESS_ERROR') {
+      console.log(err);
+      if (err.response.status === 401 && err.response.data?.error === 'TokenExpiredException') {
         try {
           const response = await getNewAccessToken();
+          console.log(response);
           const { accessToken, refreshToken } = response.data;
           setCookie('accessToken', accessToken);
           setRefreshToken(refreshToken);

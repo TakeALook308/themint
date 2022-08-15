@@ -53,7 +53,7 @@ function Router() {
             <Route path="profile/:userId/purchasehistory" element={<ProfilePurchaseHistory />} />
             <Route path="profile/:userId/interest" element={<ProfileInterest />} />
           </Route>
-          <Route path="accounts" element={<Accounts />}>
+          <Route path="accounts/" element={<Accounts />}>
             <Route path="edit" element={<AccountsEdit />} />
             <Route path="password" element={<AccountsPassword />} />
             <Route path="phone-number" element={<AccountsPhoneNumber />} />
