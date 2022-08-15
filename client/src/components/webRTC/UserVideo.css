@@ -1,8 +1,9 @@
 video {
   width: 100%;
-  height: auto;
+  /* height: 500px; */
   float: left;
   border-radius: 10px;
+  /* object-fit: contain; */
 }
 .streamcomponent div {
   position: absolute;

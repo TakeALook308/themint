@@ -26,8 +26,8 @@ function StreamingPage(props) {
   const [products, setProducts] = useState([
     {
       productName: 'error',
-      startPrice: 1000,
-      status: 1000,
+      startPrice: -1,
+      status: -1,
     },
   ]);
 
@@ -38,10 +38,10 @@ function StreamingPage(props) {
       setProducts(res.data.productList);
     });
   }, [nextProduct]);
-  console.log(nextProduct);
+  // console.log(nextProduct);
   let nickname = userInfo.nickname;
   let memberSeq = userInfo.memberSeq;
-  let roomId = auctionId; //저장하는 api 룸 만들고 보내줘도 돼?
+  let roomId = auctionId;
   const [chat, setChat] = useState([]);
   const [priceList, setPriceList] = useState([]);
   const [newTime, setNewTime] = useState(moment());
@@ -52,6 +52,7 @@ function StreamingPage(props) {
   useEffect(() => {
     sock = new SockJS('https://i7a308.p.ssafy.io/api/ws-stomp');
     client = Stomp.over(sock);
+    client.debug = null;
     client.connect({}, () => {
       console.log('Connected : ' + roomId);
       //연결 후 데이터 가져오기
@@ -80,7 +81,7 @@ function StreamingPage(props) {
       client.disconnect();
     };
   }, []);
-  console.log('부탁드립니다');
+  // console.log('부탁드립니다');
   const sendMessage = (msg) => {
     client.send(
       `/pub/chat/message`,
@@ -111,14 +112,20 @@ function StreamingPage(props) {
   };
   return (
     <Stream>
-      <Header>
-        <StreamingHeader auctionInfo={auctionInfo} />
-      </Header>
+      {/* <Header>
+        
+      </Header> */}
       <Main>
         <Section>
-          <AuctionList products={products} />
-          <TimeBar />
-          <StreamingComponent userInfo={userInfo} auctionData={auctionData} auctionId={auctionId} />
+          <StreamingHeader id="StreamingHeader" auctionInfo={auctionInfo} />
+          <AuctionList id="AuctionList" products={products} />
+          <TimeBar id="TimeBar" />
+          <StreamingComponent
+            id="StreamingComponent"
+            userInfo={userInfo}
+            auctionData={auctionData}
+            auctionId={auctionId}
+          />
         </Section>
         <Aside>
           <AuctionBidding
@@ -137,51 +144,43 @@ function StreamingPage(props) {
   );
 }
 
-// const Stream = styled.div`
-//   width: 100%;
-//   display: grid;
-//   grid-template-rows: 80px 1fr;
-// `;
-
-// const Main = styled.main``;
-
-// const Header = styled.header``;
-// const Section = styled.section``;
-
-// const Aside = styled.aside``;
-
 const Stream = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  width: 100vw;
   width: 100%;
 `;
 
 const Main = styled.main`
   display: flex;
   width: 100%;
-  /* width: 100vw; */
-  height: calc(100vh - 80px);
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
-const Header = styled.header`
-  display: flex;
-  width: 100%;
-  height: 80px;
-`;
+// const Header = styled.header`
+//   display: flex;
+//   width: 100%;
+//   height: 80px;
+// `;
 const Section = styled.section`
   display: flex;
   flex-direction: column;
-  width: 75%;
+  /* width: 100%; */
   margin: 10px 5px 10px 0;
   gap: 10px;
+  flex-grow: 3;
+  #StreamingHeader {
+    height: 250px;
+  }
 `;
 
 const Aside = styled.aside`
   display: flex;
   flex-direction: column;
-  width: 25%;
+  /* width: 100%; */
+  flex-grow: 1;
   margin: 10px 0 10px 5px;
   gap: 10px;
 `;
