@@ -51,15 +51,4 @@ public class ChatMessageController {
         // Websocket에 발행된 메시지를 redis로 발행한다(publish)
         redisPublisher.publish(chatRoomService.getTopic(productPrice.getRoomId()), productPrice);
     }
-
-    @PostMapping("/chat/history")
-    public ResponseEntity<?> getChatHistory(@RequestBody Map<String, String> roomIdMap) {
-        String roomId = roomIdMap.get("roomId");
-        List<ChatMessage> chatMessages = chatMessageService.getChatMessages(roomId);
-        List<ChatMessagesRes> chatMessagesRes = new ArrayList<>();
-        for (ChatMessage chatMessage: chatMessages) {
-            chatMessagesRes.add(ChatMessagesRes.of(chatMessage.getNickname(), chatMessage.getMessage(), chatMessage.getDate()));
-        }
-        return ResponseEntity.status(200).body(chatMessagesRes);
-    }
 }
