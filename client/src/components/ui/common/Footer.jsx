@@ -2,13 +2,15 @@ import React from 'react';
 import styled from 'styled-components';
 import { AiOutlineYoutube, AiOutlineInstagram } from 'react-icons/ai';
 import { BsChatLeftDots } from 'react-icons/bs';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 function Footer(props) {
+  const location = useLocation();
+
   if (
-    window.location.pathname.startsWith('/streamings') ||
-    window.location.pathname.startsWith('/register') ||
-    window.location.pathname.startsWith('/login') ||
-    window.location.pathname.startsWith('/help')
+    location.pathname.startsWith('/streamings') ||
+    location.pathname.startsWith('/register') ||
+    location.pathname.startsWith('/login') ||
+    location.pathname.startsWith('/help')
   )
     return null;
   return (

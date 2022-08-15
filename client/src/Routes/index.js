@@ -21,3 +21,5 @@ export { default as Streaming } from './Streaming/StreamingPage';
 export { default as Talks } from './Talks/TalksPage';
 export { default as TalksChatRoom } from './TalksChatRoom/TalksChatRoomPage';
 export { default as Accounts } from './Accounts/AccountsPage';
+export { default as Search } from './Search/SearchPage';
+export { default as Logout } from './Logout/LogoutPage';

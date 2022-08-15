@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
@@ -9,7 +9,14 @@ function ProfileCard({ member }) {
         <ProfileImg>
           <div>
             <picture>
-              <img src={member.profileUrl} alt="유저 프로필" width="168" height="168" />
+              {member.profileUrl ? (
+                <img
+                  src={process.env.REACT_APP_IMAGE_URL + member.profileUrl}
+                  alt="유저 프로필"
+                  width="168"
+                  height="168"
+                />
+              ) : null}
             </picture>
           </div>
         </ProfileImg>

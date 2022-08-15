@@ -25,6 +25,11 @@ import {
   Streaming,
   Talks,
   Accounts,
+  Search,
+  SearchAuction,
+  SearchProduct,
+  SearchProfile,
+  Logout,
 } from './Routes/index';
 import { useRecoilValue } from 'recoil';
 import { loggedinState } from './atoms';
@@ -48,7 +53,7 @@ function Router() {
             <Route path="profile/:userId/purchasehistory" element={<ProfilePurchaseHistory />} />
             <Route path="profile/:userId/interest" element={<ProfileInterest />} />
           </Route>
-          <Route path="accounts" element={<Accounts />}>
+          <Route path="accounts/" element={<Accounts />}>
             <Route path="edit" element={<AccountsEdit />} />
             <Route path="password" element={<AccountsPassword />} />
             <Route path="phone-number" element={<AccountsPhoneNumber />} />
@@ -59,10 +64,16 @@ function Router() {
           <Route path="standby/:auctionId" element={<StandBy />} />
           <Route path="auctions/new" element={<AuctionCreate />} />
           <Route path="streamings/:auctionId" element={<Streaming />} />
+          <Route path="logout" element={<Logout />} />
         </Route>
         <Route path="main" element={<Main />} />
         <Route path="categories/:categoryId" element={<Category />} />
         <Route path="auctions/:auctionId" element={<AuctionDetail />} />
+        <Route path="search" element={<Search />} />
+        {/* <Route path="" element={<SearchAuction />} />
+          <Route path="search" element={<SearchAuction />} />
+          <Route path="" element={<SearchAuction />} />
+        </Route> */}
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
