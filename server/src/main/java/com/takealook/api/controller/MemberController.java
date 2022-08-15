@@ -112,7 +112,7 @@ public class MemberController {
     }
 
     // JWT 토큰 재발급
-    @PostMapping(value = "/refresh")
+    @GetMapping(value = "/refresh")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "ACCESS-TOKEN", value = "access-token", required = true, dataType = "String", paramType = "header"),
             @ApiImplicitParam(name = "REFRESH-TOKEN", value = "refresh-token", required = true, dataType = "String", paramType = "header")
@@ -122,7 +122,7 @@ public class MemberController {
         // refreshToken 정보 조회
         RefreshToken refreshTokenCheck = refreshTokenRepository.findByRefreshToken(refreshToken).orElse(null);
         if(refreshTokenCheck == null){
-            return ResponseEntity.status(404).body(BaseResponseBody.of(404, "refresh token 정보가 존재하지 않습니다."));
+            return ResponseEntity.status(401).body(BaseResponseBody.of(401, "REFRESH_ERROR"));
         } else {
             refreshToken = refreshTokenCheck.getRefreshToken();
         }
@@ -135,7 +135,7 @@ public class MemberController {
             refreshToken = updateRefToken.getRefreshToken();
             accessToken = JwtTokenUtil.getToken(refreshTokenCheck.getMember().getMemberId());
         } else {
-            return ResponseEntity.status(409).body(BaseResponseBody.of(409, "access token 발급 중 문제가 발생했습니다."));
+            return ResponseEntity.status(401).body(BaseResponseBody.of(401, "ACCESS_ERROR"));
         }
         Map<String, String> tokens = new HashMap<>();
         tokens.put("accessToken", accessToken);

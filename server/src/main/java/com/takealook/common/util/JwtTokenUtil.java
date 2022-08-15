@@ -77,7 +77,7 @@ public class JwtTokenUtil {
     }
 
     public static String getRefreshToken(String userId) {
-        Date expires = JwtTokenUtil.getTokenExpiration(expirationTime * 8 * 7); // 7일
+        Date expires = JwtTokenUtil.getTokenExpiration(expirationTime * 6); // 7일 8 * 7
         return JWT.create()
                 .withSubject(userId)
                 .withExpiresAt(expires)
@@ -91,7 +91,7 @@ public class JwtTokenUtil {
         Map<String, String> tokens = new HashMap<>();
 
         Date expiresAccess = JwtTokenUtil.getTokenExpiration(expirationTime);
-        Date expiresRefresh = JwtTokenUtil.getTokenExpiration(expirationTime * 8 * 7);
+        Date expiresRefresh = JwtTokenUtil.getTokenExpiration(expirationTime * 6); //8 * 7
 
         String accessToken = JWT.create()
                 .withSubject(userId)
