@@ -129,6 +129,7 @@ public class AuctionController {
         for (Product product : productList){
             productDeliveryService.deleteByProductSeq(product.getSeq());
         }
+        interestAuctionService.deleteAuction(memberSeq, auctionHash);
         historyService.deleteSalesHistory(productList);
         productService.deleteProductList(auctionSeq);
         auctionImageService.deleteAuctionImageList(auctionSeq);
