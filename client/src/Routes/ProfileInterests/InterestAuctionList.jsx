@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
 import SkeletonAuctionCard from '../../components/CardList/SkeletonAuctionCard';
 import InterestAuctionCard from './InterestAuctionCard';
 import { instance } from '../../utils/apis/api';
-import { useEffect } from 'react';
 
 function InterestAuctionList({ params }) {
+  const [isDeleted, setIsDeleted] = useState(true);
   const getUrl = (size) => {
     return (page) => `/api/interest/auction?page=0&size=${size}`;
   };
@@ -18,14 +18,18 @@ function InterestAuctionList({ params }) {
     };
     console.log(auction.hash);
     const res = deleteInterest(`/api/interest/auction/${auction.hash}`);
-    res.then(() => {});
+    res.then(() => {
+      setIsDeleted((prev) => {
+        setIsDeleted(!prev);
+      });
+    });
   };
 
   return (
     <Container>
       <InfiniteAuctionList
         getUrl={getUrl(9)}
-        queryKey={['interestAuctions']}
+        queryKey={[`${isDeleted}`]}
         CardComponent={InterestAuctionCard}
         SkeltonCardComponent={SkeletonAuctionCard}
         text={'관심 경매 내역이 없습니다'}

@@ -233,7 +233,9 @@ function ProfilePurchaseHistoryPage({ params }) {
     let score = clicked.filter(Boolean).length;
     onChange2({ target: { name: 'score', value: score } });
   };
-
+  const ConsoleD = () => {
+    console.log(searchDeliveryData);
+  };
   return (
     <Container>
       <ButtonNav>
@@ -314,7 +316,10 @@ function ProfilePurchaseHistoryPage({ params }) {
               <p>배송주소: {purchaseDetail.address}</p>
               <p>상세 배송주소: {purchaseDetail.addressDetail}</p>
               <p>배송조회</p>
-              <form action="http://info.sweettracker.co.kr/tracking/2" method="post">
+              <form
+                action="http://info.sweettracker.co.kr/tracking/2"
+                method="post"
+                target="_blank">
                 <div className="form-group">
                   <input
                     type="hidden"
@@ -345,9 +350,13 @@ function ProfilePurchaseHistoryPage({ params }) {
                     value={searchDeliveryData.t_invoice}
                   />
                 </div>
-                <button type="submit" className="btn btn-default">
-                  조회하기
-                </button>
+                <GradientButton
+                  type="submit"
+                  className="btn btn-default"
+                  text="배송 조회"
+                  size="20%"
+                  onClick={ConsoleD}
+                />
               </form>
               <p>리뷰 작성</p>
               <p>별점을 선택해 주세요!</p>
@@ -461,6 +470,9 @@ const Purchased = styled.div`
   > textarea {
     margin-bottom: 10px;
     padding: 10px;
+  }
+  > form {
+    margin-bottom: 10px;
   }
 `;
 
