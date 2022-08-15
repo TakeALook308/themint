@@ -104,7 +104,7 @@ public class HistoryController {
         for (History history : historyList) {
             Product product = productService.getProductBySeq(history.getProductSeq());
             Auction auction = auctionService.getAuctionBySeq(product.getAuctionSeq());
-            Member member = memberService.getMemberByMemberSeq(history.getMemberSeq());
+            Member member = memberService.getMemberByMemberSeq(auction.getMemberSeq());
             List<AuctionImage> auctionImageList = auctionImageService.getAuctionImageListByAuctionSeq(auction.getSeq());
             historyListEntityResList.add(HistoryListEntityRes.of(history, product, auction, member, auctionImageList.get(0)));
         }
@@ -124,7 +124,7 @@ public class HistoryController {
         for (History history : historyList) {
             Product product = productService.getProductBySeq(history.getProductSeq());
             Auction auction = auctionService.getAuctionBySeq(product.getAuctionSeq());
-            Member member = memberService.getMemberByMemberSeq(history.getMemberSeq());
+            Member member = memberService.getMemberByMemberSeq(auction.getMemberSeq());
             List<AuctionImage> auctionImageList = auctionImageService.getAuctionImageListByAuctionSeq(auction.getSeq());
             historyListEntityResList.add(HistoryListEntityRes.of(history, product, auction, member, auctionImageList.get(0)));
         }
