@@ -1,6 +1,11 @@
 import { atom, selector, selectorFamily } from 'recoil';
 import { getCookie } from './utils/functions/cookies';
 import { v1 } from 'uuid';
+import Session from './utils/functions/storage';
+import { fetchData } from './utils/apis/api';
+import { userApis } from './utils/apis/userApis';
+
+const session = new Session();
 
 export const loggedinState = atom({
   key: `loggedin/${v1()}`,
@@ -21,13 +26,5 @@ export const keywordState = atom({
   default: {
     keyword: '',
     type: 'auction',
-  },
-});
-
-export const deviceListState = atom({
-  key: `deviceList/${v1()}`,
-  default: {
-    videoId: '',
-    microPhoneId: '',
   },
 });

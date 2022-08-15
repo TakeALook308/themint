@@ -6,7 +6,7 @@ import StreamChat from './StreamChat';
 import AuctionBidding from './AuctionBidding';
 import AuctionList from './AuctionList';
 import { useRecoilValue } from 'recoil';
-import { deviceListState, myInformationState } from '../../atoms';
+import { myInformationState } from '../../atoms';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -21,7 +21,6 @@ function StreamingPage(props) {
   const { auctionId } = useParams();
   const [auctionInfo, setAuctionInfo] = useState({});
   const [auctionData, setAuctionData] = useState({});
-  const deviceList = useRecoilValue(deviceListState);
   // const [products, setProducts] = useState([]);
   const [products, setProducts] = useState([
     {
@@ -40,7 +39,7 @@ function StreamingPage(props) {
 
   let nickname = userInfo.nickname;
   let memberSeq = userInfo.memberSeq;
-  let roomId = auctionId; //저장하는 api 룸 만들고 보내줘도 돼?
+  let roomId = 'test'; //저장하는 api 룸 만들고 보내줘도 돼?
   const [chat, setChat] = useState([]);
   const [priceList, setPriceList] = useState([]);
   const [newTime, setNewTime] = useState(moment());
@@ -116,12 +115,7 @@ function StreamingPage(props) {
       <Main>
         <Section>
           <AuctionList products={products} />
-          <StreamingComponent
-            userInfo={userInfo}
-            auctionData={auctionData}
-            auctionId={auctionId}
-            deviceList={deviceList}
-          />
+          <StreamingComponent userInfo={userInfo} auctionData={auctionData} auctionId={auctionId} />
         </Section>
         <Aside>
           <AuctionBidding
