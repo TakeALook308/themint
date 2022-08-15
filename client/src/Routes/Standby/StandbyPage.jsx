@@ -394,7 +394,7 @@ const Header = styled.div`
   width: 80%;
   background-color: ${(props) => props.theme.colors.subBlack};
   margin-bottom: 1rem;
-  padding: 0.125rem 1rem;
+  padding: 0.25rem 1rem;
   border-radius: 10px;
   line-height: 1.5;
   > p {
