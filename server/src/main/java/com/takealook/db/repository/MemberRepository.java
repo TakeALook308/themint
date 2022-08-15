@@ -20,7 +20,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Member findByMemberIdAndEmail(String memberId, String email);
 
     List<Member> findAllByNicknameContains(String word, Pageable pageable);
-
+    List<Member> findAll();
 //    @Transactional
 //    void deleteMemberBySeq(Long memberSeq);
 

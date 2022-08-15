@@ -9,5 +9,7 @@ import lombok.Setter;
 @Builder
 public class NotificationMessage {
     String memberId;
-    String message;
+    String title;
+    String url;
+    String notification;
 }

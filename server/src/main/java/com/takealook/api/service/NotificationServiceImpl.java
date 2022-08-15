@@ -39,12 +39,12 @@ public class NotificationServiceImpl implements NotificationService{
         notificationServer = redisTemplate.opsForList();
         topics = new HashMap<>();
     }
-    public void createNotificationServer(String memberId) {
-        notificationServer.rightPush("NOTIFICATION_SERVER", memberId);
+//    public void createNotificationServer(String memberId) {
+//        notificationServer.rightPush("NOTIFICATION_SERVER", memberId);
 //        enterNotificationServer(memberId);
-    }
+//    }
 
-    // TODO: 로그인 시 입장되게
+    // 서버 시작과 동시에 모든 토픽 생성 (common/util/initService)
     public void enterNotificationServer(String memberId) {
         ChannelTopic topic = topics.get(memberId);
         if (topic == null)
@@ -57,34 +57,23 @@ public class NotificationServiceImpl implements NotificationService{
         return topics.get(memberId);
     }
 
-    // 관심 경매 시작 알림 메시지 전송
-    public void sendInterestAuctionNotificationMessage(String hash) {
-        List<String> memberIdList = interestAuctionService.getMemberListByHash(hash);
-        for(String memberId: memberIdList) {
-            String message = memberId + "님의 관심 경매가 시작됐어요!";
-            NotificationMessage notificationMessage = NotificationMessage.builder()
-                    .memberId(memberId)
-                    .message(message)
-                    .build();
-            redisPublisher.publish(topics.get(memberId), notificationMessage);
-        }
-    }
-
     // 관심 카테고리 경매 등록 알림 메시지 전송
-    public void sendInterestCategoryNotificationMessage(Long categorySeq) {
+    public void sendInterestCategoryNotificationMessage(String title, String hash, Long categorySeq) {
         List<String> memberIdList = interestCategoryService.getMemberListByCategorySeq(categorySeq);
         for (String memberId : memberIdList) {
-            String message = memberId + "님의 관심 카테고리 경매가 등록됐어요!";
+            String notification = memberId + "님의 관심 카테고리 경매가 등록됐어요!";
             NotificationMessage notificationMessage = NotificationMessage.builder()
                     .memberId(memberId)
-                    .message(message)
+                    .title(title)
+                    .url("i7a308.p.ssafy.io/auctions/" + hash)
+                    .notification(notification)
                     .build();
             redisPublisher.publish(topics.get(memberId), notificationMessage);
         }
     }
 
     // 관심 키워드 경매 등록 알림 메시지 전송
-    public void sendInterestKeywordNotificationMessage(List<String> productNameList) {
+    public void sendInterestKeywordNotificationMessage(String title, String hash, List<String> productNameList) {
         String productNameResult = "";
         for(String productName: productNameList) {
             productNameResult += productName;
@@ -92,15 +81,14 @@ public class NotificationServiceImpl implements NotificationService{
         }
         List<String> memberIdList = interestKeywordService.getMemberListByProductName(productNameResult);
         for (String memberId : memberIdList) {
-            String message = memberId + "님의 관심 키워드 경매가 등록됐어요!";
+            String notification = memberId + "님의 관심 키워드 경매가 등록됐어요!";
             NotificationMessage notificationMessage = NotificationMessage.builder()
                     .memberId(memberId)
-                    .message(message)
+                    .title(title)
+                    .url("i7a308.p.ssafy.io/auctions/" + hash)
+                    .notification(notification)
                     .build();
             redisPublisher.publish(topics.get(memberId), notificationMessage);
         }
-
-
-
     }
 }
