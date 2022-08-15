@@ -1,7 +1,8 @@
 package com.takealook.api.controller;
 
+import com.takealook.api.request.ChatRoomPostReq;
 import com.takealook.api.request.ChatRoomRegisterPostReq;
-import com.takealook.api.request.EnterChatRoomPostReq;
+import com.takealook.api.response.ChatRoomMemberCountRes;
 import com.takealook.api.service.ChatRoomMemberService;
 import com.takealook.api.service.ChatRoomService;
 import com.takealook.common.auth.MemberDetails;
@@ -43,13 +44,24 @@ public class ChatRoomController {
         return ResponseEntity.status(200).body(chatRoomService.createChatRoom(chatRoomRegisterPostReq));
     }
 
-    // 채팅방 입장(1:1 채팅방만 입장 관리)
+    // 채팅방 입장
     @PostMapping("/room/enter")
-    public ResponseEntity<?> enterChatRoom(@RequestBody EnterChatRoomPostReq enterChatRoomPostReq) {
-        ChatRoomMember chatRoomMember = chatRoomMemberService.saveChatRoomMember(enterChatRoomPostReq.getRoomId(), enterChatRoomPostReq.getMemberSeq());
+    public ResponseEntity<?> enterChatRoom(@RequestBody ChatRoomPostReq ChatRoomPostReq) {
+        ChatRoomMember chatRoomMember = chatRoomMemberService.saveChatRoomMember(ChatRoomPostReq.getRoomId(), ChatRoomPostReq.getMemberSeq());
         if (chatRoomMember == null)
             return ResponseEntity.status(409).body(BaseResponseBody.of(409, "이미 참여 중인 채팅방입니다.")); // 이미 입장한 채팅방
-        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
+        ChatRoomMemberCountRes chatRoomMemberCountRes = chatRoomMemberService.getChatRoomMemberCount(chatRoomMember.getRoomId());
+        return ResponseEntity.status(200).body(chatRoomMemberCountRes);
+    }
+
+    // 채팅방 퇴장
+    @PostMapping("/room/exit")
+    public ResponseEntity<?> exitChatRoom(@RequestBody ChatRoomPostReq chatRoomPostReq) {
+        int result = chatRoomMemberService.exitChatRoomMember(chatRoomPostReq.getRoomId(), chatRoomPostReq.getMemberSeq());
+        if (result == 0) { // 채팅방 퇴장 실패
+            return ResponseEntity.status(409).body(BaseResponseBody.of(409, "채팅방에 없는 사용자입니다."));
+        }
+        return ResponseEntity.status(200).body(chatRoomMemberService.getChatRoomMemberCount(chatRoomPostReq.getRoomId()));
     }
 
     // 채팅 내역 불러오기
