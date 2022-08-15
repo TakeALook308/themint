@@ -145,7 +145,7 @@ class StreamingComponent extends Component {
                   resolution: '640x480', // The resolution of your video
                   frameRate: 60, // The frame rate of your video
                   insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
-                  mirror: false, // Whether to mirror your local video or not
+                  mirror: true, // Whether to mirror your local video or not
                 });
 
                 // --- 6) Publish your stream ---
@@ -231,7 +231,7 @@ class StreamingComponent extends Component {
   render() {
     const mySessionId = this.state.mySessionId;
     const myUserName = this.state.myUserName;
-    console.log(this.state.session);
+    console.log('여기여기', this.props.deviceList);
 
     return (
       <div className="container">

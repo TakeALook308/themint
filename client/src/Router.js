@@ -29,6 +29,7 @@ import {
   SearchAuction,
   SearchProduct,
   SearchProfile,
+  Logout,
 } from './Routes/index';
 import { useRecoilValue } from 'recoil';
 import { loggedinState } from './atoms';
@@ -63,6 +64,7 @@ function Router() {
           <Route path="standby/:auctionId" element={<StandBy />} />
           <Route path="auctions/new" element={<AuctionCreate />} />
           <Route path="streamings/:auctionId" element={<Streaming />} />
+          <Route path="logout" element={<Logout />} />
         </Route>
         <Route path="main" element={<Main />} />
         <Route path="categories/:categoryId" element={<Category />} />

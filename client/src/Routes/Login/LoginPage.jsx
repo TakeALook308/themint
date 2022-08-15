@@ -10,24 +10,10 @@ import { SocialLoginContainer } from '../Register/RegisterPage';
 import { setCookie } from '../../utils/functions/cookies';
 import { fetchData } from '../../utils/apis/api';
 import { userApis } from '../../utils/apis/userApis';
-import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { successToast } from '../../lib/toast';
 function LoginPage() {
-  const setUserInfo = useSetRecoilState(myInformationState);
-  const setLogged = useSetRecoilState(loggedinState);
-  const navigate = useNavigate();
-  const setToken = ({ accessToken }) => {
-    setCookie('accessToken', accessToken);
-  };
-
   const login = async (userInfo) => {
     return await fetchData.post(userApis.LOGIN, userInfo);
-  };
-
-  const moveToMain = (nickname) => {
-    successToast(`${nickname}${LOGIN_MESSAGE.SUCCESS_LOGIN[makeRandomNumber()]}`);
-    navigate('/main');
   };
 
   return (
@@ -36,7 +22,7 @@ function LoginPage() {
         <title>로그인 | 더민트</title>
       </Helmet>
       <SignContainer pageName={PAGES.LOGIN}>
-        <ThemintLogin login={{ setToken, login, setUserInfo, moveToMain, setLogged }} />
+        <ThemintLogin login={login} />
         <Links />
         <SocialLoginContainer>
           <SocialLogginButton text={'네이버 로그인'} social={'네이버'} />
@@ -48,8 +34,3 @@ function LoginPage() {
 }
 
 export default LoginPage;
-
-const makeRandomNumber = () => {
-  const len = LOGIN_MESSAGE.SUCCESS_LOGIN.length;
-  return Math.floor(Math.random() * len);
-};
