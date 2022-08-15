@@ -1,6 +1,5 @@
 package com.takealook.api.controller;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.takealook.api.request.AuctionRegisterPostReq;
 import com.takealook.api.request.AuctionUpdatePatchReq;
 import com.takealook.api.response.AuctionListEntityRes;

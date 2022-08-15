@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class EnterChatRoomPostReq {
+public class ChatRoomPostReq {
     String roomId;
     Long memberSeq;
 }
