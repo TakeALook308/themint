@@ -53,7 +53,16 @@ function IsPurchasingCard({ auction, func }) {
           onClick={() => {
             func(auction);
           }}>
-          구매 정보 입력
+          입금 확인
+        </Plus>
+      ) : null}
+      {auction.status === 2 ? (
+        <Plus
+          type="button"
+          onClick={() => {
+            func(auction);
+          }}>
+          배송 정보 입력
         </Plus>
       ) : null}
       {auction.status === 3 ? (

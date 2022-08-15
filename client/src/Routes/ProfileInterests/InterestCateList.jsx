@@ -4,7 +4,7 @@ import { instance } from '../../utils/apis/api';
 import InterestCateCard from './InterestCateCard';
 import { categories } from '../../utils/constants/constant';
 import GradientButton from '../../components/ButtonList/GradientButton';
-import { errorToast, successToast } from '../../lib/toast';
+import { errorToast } from '../../lib/toast';
 
 function InterestCateList() {
   // 관심 카테고리 조회 API

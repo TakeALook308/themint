@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import InterestKeyWordCard from './InterestKeyWordCard';
 import ActiveInputBox from '../../components/common/ActiveInputBox';
 import GradientButton from '../../components/ButtonList/GradientButton';
-import { errorToast, successToast } from '../../lib/toast';
+import { errorToast } from '../../lib/toast';
 
 function InterestKeywordList() {
   const [addKeyword, setAddKeyword] = useState('');

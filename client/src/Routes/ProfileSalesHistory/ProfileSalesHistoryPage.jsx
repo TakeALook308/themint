@@ -37,9 +37,9 @@ function ProfileSalesHistoryPage({ params }) {
     res.then((itemDetail) => {
       setSalesDetail(itemDetail.data); // 상세보기 내용을 salesDetail에 저장
     });
+    onChange({ target: { name: 'productSeq', value: auction.productSeq } });
     setIsModal((prev) => !prev);
     setSalesDetail([]);
-    onChange({ target: { name: 'productSeq', value: auction.productSeq } });
   };
 
   // 송장번호 입력& PATCH 요청을 위한 getTrackingNo
@@ -79,7 +79,10 @@ function ProfileSalesHistoryPage({ params }) {
     };
     console.log(getTrackingNo);
     const res = patchTrackingNo(`/api/delivery/trackingno`, getTrackingNo);
-    res.then(() => {});
+    res.then(() => {
+      setIsModal((prev) => !prev);
+      setGetTrackingNo({});
+    });
   };
   return (
     <Container>
@@ -101,7 +104,7 @@ function ProfileSalesHistoryPage({ params }) {
       </ButtonNav>
       <InfiniteAuctionList
         getUrl={getUrl(params, 9)}
-        queryKey={[`${params}${active}`]}
+        queryKey={[`${params}${active}${isModal}`]}
         CardComponent={IsSellingCard}
         SkeltonCardComponent={SkeletonAuctionCard}
         text={'판매 내역이 없습니다'}
@@ -134,7 +137,7 @@ function ProfileSalesHistoryPage({ params }) {
             onChange={onChange}
             name="trackingNo"
             value={trackingNo}></input>
-          <button onClick={onClick}>송장번호 저장</button>
+          <Plus onClick={onClick}>송장번호 저장</Plus>
         </ModalMain>
       </Modal>
     </Container>
@@ -228,4 +231,15 @@ const ModalMain = styled.main`
   }
 `;
 
-const IsSellingContainer = styled.div``;
+const Plus = styled.button`
+  border-radius: 5px;
+  padding: 5px;
+  bottom: 5%;
+  right: 30%;
+  background-color: ${(props) => props.theme.colors.mainBlack};
+  color: ${(props) => props.theme.colors.subMint};
+  border: 1px solid ${(props) => props.theme.colors.subMint};
+  :hover {
+    cursor: pointer;
+  }
+`;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import IsPurchasingCard from './IsPurchasingCard';
 import SkeletonAuctionCard from '../../components/CardList/SkeletonAuctionCard';
 import { instance } from '../../utils/apis/api';
@@ -15,6 +15,7 @@ import { useRecoilValue } from 'recoil';
 import { fetchData } from '../../utils/apis/api';
 import { userApis } from '../../utils/apis/userApis';
 import { myInformationState } from '../../atoms';
+import { useQuery } from 'react-query';
 import { ActiveInput } from '../../style/style';
 import MintButton from '../../components/ButtonList/MintButton';
 
@@ -40,7 +41,6 @@ function ProfilePurchaseHistoryPage({ params }) {
   const [isModal, setIsModal] = useState(false);
 
   const ModalHandler = (auction) => {
-    console.log(auction.historySeq);
     const getPurchaseDetail = async (url) => {
       const response = await instance.get(url);
       return response;
@@ -48,6 +48,7 @@ function ProfilePurchaseHistoryPage({ params }) {
     const res = getPurchaseDetail(`/api/history/purchase/detail/${auction.historySeq}`);
     res.then((itemDetail) => {
       setPurchaseDetail(itemDetail.data); // 상세보기 내용을 salesDetail에 저장
+      console.log(itemDetail.data);
       setAuctionProductSeq(itemDetail.data.productSeq);
       onChange2({ target: { name: 'receiverSeq', value: itemDetail.data.sellerMemberSeq } });
       setDeliveryData((prevState) => {
@@ -90,7 +91,9 @@ function ProfilePurchaseHistoryPage({ params }) {
       return response;
     };
     const res = getPatchRemit(`/api/product/remit/${auctionProductSeq}`);
-    res.then(() => {});
+    res.then(() => {
+      setIsModal((prev) => !prev);
+    });
   };
 
   // 은행 이름으로 변경
@@ -146,6 +149,7 @@ function ProfilePurchaseHistoryPage({ params }) {
     const response = await fetchData.get(userApis.USER_INFORMATION(myInformation?.memberSeq));
     return response?.data;
   };
+  const { isLoading, error, data, isFetching } = useQuery(['userInformation'], getUserInfo);
   const queryClient = useQueryClient();
   const userAllInfo = queryClient.getQueryData(['userInformation']);
   const [deliveryData, setDeliveryData] = useState({
@@ -176,13 +180,15 @@ function ProfilePurchaseHistoryPage({ params }) {
       return response;
     };
     const res = patchDeliveryData(`/api/delivery`, deliveryData);
-    res.then(() => {});
+    res.then(() => {
+      setIsModal((prev) => !prev);
+    });
   };
   // 배송 조회
   const [searchDeliveryData, setSearchDeliveryData] = useState({
     t_key: 'F021Ir60YiVKvqs5Fx4AXw',
-    t_code: '',
-    t_invoice: '',
+    t_code: '04',
+    t_invoice: '113323452345',
   });
 
   // 리뷰 작성
@@ -252,7 +258,7 @@ function ProfilePurchaseHistoryPage({ params }) {
       </ButtonNav>
       <InfiniteAuctionList
         getUrl={getPurchaseUrl(params, 9)}
-        queryKey={[`${params}${active}${isPurchase}`]}
+        queryKey={[`${params}${active}${isPurchase}${isModal}`]}
         CardComponent={IsPurchasingCard}
         SkeltonCardComponent={SkeletonAuctionCard}
         text={'구매 내역이 없습니다'}
@@ -263,47 +269,51 @@ function ProfilePurchaseHistoryPage({ params }) {
         <ModalMain>
           {active === 'inprogress' && (
             <Purchasing>
-              <p>입금을 완료 하셨나요??</p>
-              {purchaseDetail.status < 2 && (
-                <MintButton onClick={patchRemit} text="입금완료" size="30%" />
+              {purchaseDetail.status === 1 && (
+                <PutMoney>
+                  <p>입금을 완료 하셨나요??</p>
+                  <MintButton onClick={patchRemit} text="입금완료" size="30%" />
+                </PutMoney>
               )}
-              {purchaseDetail.status > 1 && (
-                <MintButton onClick={patchRemit} text="입금완료" size="30%" disabled={true} />
-              )}
-              <p>꼭! 입금 완료 후, 배송지를 입력해주세요!!!</p>
-              <p>판매자 계좌 정보</p>
-              <SellerInfo>
-                <p>은행명:{bankList[purchaseDetail.bankCode]}</p>
-                <p>계좌번호:{purchaseDetail.accountNo}</p>
-                <p>계좌소유주:{purchaseDetail.name}</p>
-              </SellerInfo>
-              <p>입금자명:</p>
-              <ActiveInput active={true}>
-                <input
-                  name="remitName"
-                  id="remitName"
-                  type="text"
-                  autoComplete="off"
-                  required
-                  onChange={onChange}
-                />
-                <label htmlFor="nickname">입금자명</label>
-              </ActiveInput>
-              <MemoizedInformation
-                icon={<BsHouseFill aria-label="주소" />}
-                textList={[userAllInfo?.zipCode, userAllInfo?.address, userAllInfo?.addressDetail]}
-                Component={AddressInput}
-                userAllInfo={userAllInfo}
-              />
-              {purchaseDetail.status >= 2 && (
-                <GradientButton onClick={onClick} text="배송지 입력" size="30%"></GradientButton>
-              )}
-              {purchaseDetail.status < 2 && (
-                <GradientButton
-                  onClick={onClick}
-                  text="배송지 입력"
-                  size="30%"
-                  disabled={true}></GradientButton>
+              {purchaseDetail.status === 2 && (
+                <PutAddress>
+                  <h3>배송지를 입력해주세요!!!</h3>
+                  <p>판매자 계좌 정보</p>
+                  <SellerInfo>
+                    <p>은행명: {bankList[purchaseDetail.bankCode]}</p>
+                    <p>계좌번호: {purchaseDetail.accountNo}</p>
+                    <p>계좌소유주: {purchaseDetail.name}</p>
+                  </SellerInfo>
+                  <ActiveInput active={true}>
+                    <input
+                      name="remitName"
+                      id="remitName"
+                      type="text"
+                      autoComplete="off"
+                      required
+                      onChange={onChange}
+                      placeholder=""
+                    />
+                    <label htmlFor="nickname">입금자명</label>
+                  </ActiveInput>
+                  <p>배송 정보 입력</p>
+                  <MemoizedInformation
+                    icon={<BsHouseFill aria-label="주소" />}
+                    textList={[
+                      userAllInfo?.zipCode,
+                      userAllInfo?.address,
+                      userAllInfo?.addressDetail,
+                    ]}
+                    Component={AddressInput}
+                    userAllInfo={userAllInfo}
+                  />
+                  <ButtonContainer>
+                    <GradientButton
+                      onClick={onClick}
+                      text="배송지 입력"
+                      size="30%"></GradientButton>
+                  </ButtonContainer>
+                </PutAddress>
               )}
             </Purchasing>
           )}
@@ -346,13 +356,9 @@ function ProfilePurchaseHistoryPage({ params }) {
                     value={searchDeliveryData.t_invoice}
                   />
                 </div>
-                <GradientButton
-                  type="submit"
-                  className="btn btn-default"
-                  text="배송 조회"
-                  size="20%"
-                  onClick={ConsoleD}
-                />
+                <Button type="submit" className="btn btn-default" onClick={ConsoleD}>
+                  배송 조회
+                </Button>
               </form>
               <p>리뷰 작성</p>
               <p>별점을 선택해 주세요!</p>
@@ -376,7 +382,7 @@ function ProfilePurchaseHistoryPage({ params }) {
                 cols="70"
                 rows="4"
                 placeholder="리뷰를 작성해 주세요"></textarea>
-              <GradientButton onClick={postReview} text="리뷰작성" size="20%"></GradientButton>
+              <Button onClick={postReview}>리뷰작성</Button>
             </Purchased>
           )}
         </ModalMain>
@@ -457,19 +463,6 @@ const Purchased = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  > p {
-    margin-bottom: 10px;
-  }
-  > input {
-    margin-bottom: 10px;
-  }
-  > textarea {
-    margin-bottom: 10px;
-    padding: 10px;
-  }
-  > form {
-    margin-bottom: 10px;
-  }
 `;
 
 // 별점기능
@@ -502,5 +495,71 @@ const SellerInfo = styled.article`
   margin-bottom: 10px;
   > p {
     padding: 5px 10px 5px 10px;
+  }
+`;
+
+const PutMoney = styled.div``;
+
+const PutAddress = styled.div`
+  > h3 {
+    margin-bottom: 10px;
+    font-size: 20px;
+    font-weight: bold;
+  }
+  > p {
+    margin-bottom: 10px;
+  }
+  > div {
+    margin-bottom: 10px;
+  }
+  > textarea {
+    margin-bottom: 10px;
+    padding: 10px;
+  }
+  > form {
+    margin-bottom: 10px;
+  }
+`;
+
+const ButtonContainer = styled.div`
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+`;
+
+const shine = keyframes`
+   0% {
+     background-position: 0% 50%;
+     }
+   50% {
+     background-position: 100% 50%;
+     }
+   100% {
+     background-position: 0% 50%;
+     }
+`;
+
+const Button = styled.button`
+  margin: 10px 0px;
+  width: ${(props) => (props.size ? props.size : '30%')};
+  height: 25px;
+  background: ${(props) => props.theme.colors.gradientMintToPurple};
+  border-radius: 5px;
+  border: none;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  color: ${(props) => props.theme.colors.white};
+  font-size: ${(props) => props.theme.fontSizes.h5};
+  font-weight: bold;
+  cursor: pointer;
+  background-size: 200% 200%;
+  border-radius: 5px;
+  transition: all 0.4s ease;
+  &:hover {
+    animation: ${shine} 3s infinite linear;
+  }
+  &:disabled {
+    background: ${(props) => props.theme.colors.disabledGray};
+    color: ${(props) => props.theme.colors.pointGray};
+    cursor: not-allowed;
   }
 `;

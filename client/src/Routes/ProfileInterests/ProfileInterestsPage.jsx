@@ -6,8 +6,10 @@ import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
 import SkeletonAuctionCard from '../../components/CardList/SkeletonAuctionCard';
 import InterestAuctionCard from './InterestAuctionCard';
 import { instance } from '../../utils/apis/api';
+import { useParams } from 'react-router-dom';
 
 function ProfileInterestsPage({ params }) {
+  let { interestParams } = useParams();
   const [active, setActive] = useState(1);
   const onKeyword = () => {
     setActive(1);
@@ -69,7 +71,7 @@ function ProfileInterestsPage({ params }) {
         {active === 3 && (
           <InfiniteAuctionList
             getUrl={getUrl(9)}
-            queryKey={[`${isDeleted}${active}`]}
+            queryKey={[`${isDeleted}${active}${interestParams}`]}
             CardComponent={InterestAuctionCard}
             SkeltonCardComponent={SkeletonAuctionCard}
             text={'관심 경매 내역이 없습니다'}
