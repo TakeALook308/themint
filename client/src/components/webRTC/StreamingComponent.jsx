@@ -89,6 +89,7 @@ class StreamingComponent extends Component {
       },
       () => {
         var mySession = this.state.session;
+        console.log('mySession,', mySession);
 
         // --- 3) Specify the actions when events take place in the session ---
 
@@ -170,7 +171,6 @@ class StreamingComponent extends Component {
       },
     );
   }
-
   leaveSession() {
     // --- 7) Leave the session by calling 'disconnect' method over the Session object ---
 
@@ -231,7 +231,7 @@ class StreamingComponent extends Component {
   render() {
     const mySessionId = this.state.mySessionId;
     const myUserName = this.state.myUserName;
-    // console.log(this.props.userInfo);
+    console.log(this.state.session);
 
     return (
       <div className="container">
