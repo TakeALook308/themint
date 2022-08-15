@@ -6,6 +6,7 @@ import com.takealook.db.entity.ChatRoomMember;
 
 public interface ChatRoomMemberService {
     ChatRoomMember saveChatRoomMember(String roomId, Long memberSeq);
+    int exitChatRoomMember(String roomId, Long memberSeq);
 
     ChatRoomMemberCountRes getChatRoomMemberCount(String roomId);
 

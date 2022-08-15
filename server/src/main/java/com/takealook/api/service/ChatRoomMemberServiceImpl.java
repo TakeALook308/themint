@@ -38,6 +38,11 @@ public class ChatRoomMemberServiceImpl implements ChatRoomMemberService{
     }
 
     @Override
+    public int exitChatRoomMember(String roomId, Long memberSeq) {
+        return chatRoomMemberRepository.deleteByRoomIdAndAndMemberSeq(roomId, memberSeq);
+    }
+
+    @Override
     public ChatRoomMemberCountRes getChatRoomMemberCount(String roomId) {
         ChatRoomMemberCountInterface chatRoomMemberCountInterface = chatRoomMemberRepository.getChatRoomMemberCountByRoomId(roomId);
         Long memberCount = chatRoomMemberCountInterface.getMemberCount();
