@@ -33,12 +33,16 @@ import {
 } from './Routes/index';
 import { useRecoilValue } from 'recoil';
 import { loggedinState } from './atoms';
+import { useState } from 'react';
 
-function Router() {
+function Router({ toggleNotification, setToggleNotifiaction }) {
   const loggedin = useRecoilValue(loggedinState);
   return (
-    <BrowserRouter>
-      <NavigationBar />
+    <BrowserRouter onClick={() => setToggleNotifiaction(false)}>
+      <NavigationBar
+        toggleNotification={toggleNotification}
+        setToggleNotifiaction={setToggleNotifiaction}
+      />
       <Routes>
         <Route path="" element={<Main />} />
         <Route element={<ProtectedRoute loggedin={!loggedin} />}>

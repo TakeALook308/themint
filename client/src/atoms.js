@@ -1,4 +1,4 @@
-import { atom, selector, selectorFamily } from 'recoil';
+import { atom, atomFamily, selector, selectorFamily } from 'recoil';
 import { getCookie } from './utils/functions/cookies';
 import { v1 } from 'uuid';
 
@@ -31,3 +31,30 @@ export const deviceListState = atom({
     microPhoneId: '',
   },
 });
+
+export const notificationListFamilyState = atomFamily({
+  key: `notificationList/${v1()}`,
+  default: (param) =>
+    localStorage.getItem(`notificationList/${param}`)
+      ? JSON.parse(localStorage.getItem(`notificationList/${param}`))
+      : [],
+});
+
+// export const notificationListSelector = selector({
+//   key: `notificationListSelector/${v1()}`,
+//   get: ({ get }) =>
+//     localStorage.getItem(`notificationList/${get(myInformationState).memberId}`)
+//       ? JSON.parse(localStorage.getItem(`notificationList/${get(myInformationState).memberId}`))
+//       : [],
+//   set: ({ set }, newValue) => {
+//     set(notificationListState, newValue);
+//   },
+// });
+
+// export const notificationSelector = atom({
+//   key: `notificationSelector/${v1()}`,
+//   get: ({ get }) => [],
+//   set: ({ set }, newValue) => {
+//     set(notificationListState, newValue);
+//   },
+// });

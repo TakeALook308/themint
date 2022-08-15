@@ -17,6 +17,8 @@ function App() {
   const [queryClient] = useState(() => new QueryClient());
   const [loading, setLoading] = useState(false);
   const token = getCookie('accessToken');
+  const [toggleNotification, setToggleNotifiaction] = useState(false);
+
   useEffect(() => {
     (async () => {
       if (token) {
@@ -30,7 +32,7 @@ function App() {
   return (
     <HelmetProvider>
       <Suspense fullback={<h1>Loading...</h1>}>
-        <Container>
+        <Container onClick={() => setToggleNotifiaction(false)}>
           <ToastContainer
             position="top-center"
             autoClose={3000}
@@ -44,7 +46,10 @@ function App() {
           />
           {loading && (
             <QueryClientProvider client={queryClient}>
-              <Router />
+              <Router
+                toggleNotification={toggleNotification}
+                setToggleNotifiaction={setToggleNotifiaction}
+              />
               <ReactQueryDevtools initialIsOpen={false} />
             </QueryClientProvider>
           )}
