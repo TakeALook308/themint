@@ -12,6 +12,8 @@ import { fetchData } from '../../utils/apis/api';
 import { errorToast, successToast } from '../../lib/toast';
 import { auctionApis } from '../../utils/apis/auctionApis';
 import { categories } from '../../utils/constants/constant';
+import { socketApis } from '../../utils/apis/socketApis';
+import { Helmet } from 'react-helmet-async';
 
 const OPENVIDU_SERVER_URL = 'https://i7a308.p.ssafy.io:8443';
 const OPENVIDU_SERVER_SECRET = 'themint';
@@ -34,14 +36,14 @@ function StandbyPage() {
   const testSession = OV.initSession();
 
   const getToken = async (curSessionId) => {
-    // console.log('===== 세션 연결 중 : ', curSessionId);
+    console.log('===== 세션 연결 중 : ', curSessionId);
     return await createSession(curSessionId).then((sessionId) => createToken(sessionId));
   };
 
-  const standbyJoin = (standbySession, nickName) => {
-    // let standbySessionId = `${nickName}tests`;
-    let standbySessionId = `${nickName}tests`;
-    // console.log('스탠바이 세션 입장 ', standbySessionId);
+  const standbyJoin = (standbySession, auctionId) => {
+    // let standbySessionId = `${auctionId}tests`;
+    let standbySessionId = `${auctionId}tests`;
+    console.log('스탠바이 세션 입장 ', standbySessionId);
     getToken(standbySessionId).then((token) => {
       standbySession
         .connect(token, {})
@@ -56,7 +58,7 @@ function StandbyPage() {
             insertMode: 'APPEND',
             mirror: false,
           });
-          // console.log('video active', pub.stream.videoActive);
+          console.log('video active', pub.stream.videoActive);
           standbySession.publish(pub);
           setPublisher(pub);
         })
@@ -85,7 +87,7 @@ function StandbyPage() {
           },
         })
         .then((response) => {
-          // console.log('CREATE SESION', response);
+          console.log('CREATE SESION', response);
           resolve(response.data.id);
         })
         .catch((response) => {
@@ -117,7 +119,6 @@ function StandbyPage() {
     return new Promise((resolve, reject) => {
       var data = {};
       if (userInfo.memberSeq === standByInfo.memberSeq) data.role = 'MODERATOR';
-      else data.role = 'SUBSCRIBER';
       axios
         .post(OPENVIDU_SERVER_URL + '/openvidu/api/sessions/' + sessionId + '/connection', data, {
           headers: {
@@ -145,9 +146,26 @@ function StandbyPage() {
     Speaking(true);
   });
 
+  const createChatRoom = async () => {
+    const body = {
+      roomId: auctionId,
+      type: 0,
+    };
+    try {
+      const response = await fetchData.post(socketApis.ROOM_CREATION, body);
+      if (response.status === 200) {
+        console.log('채팅방 생성 성공');
+      }
+    } catch (err) {
+      if (err.response.status === 409) {
+        errorToast('채팅방 생성에 실패하였습니다.');
+      }
+    }
+  };
+
   useEffect(() => {
     if (standByInfo.memberSeq) {
-      standbyJoin(testSession, userInfo.nickname);
+      standbyJoin(testSession, auctionId);
     }
     if (standByInfo.memberSeq === userInfo.memberSeq) {
       successToast(
@@ -160,6 +178,7 @@ function StandbyPage() {
         3000,
       );
     }
+    (async () => await createChatRoom())();
     return () => leaveSession();
   }, [standByInfo]);
 
@@ -191,87 +210,92 @@ function StandbyPage() {
   }
 
   return (
-    <Container>
-      <Header>
-        <p>{categories[standByInfo?.categorySeq - 1]?.name}</p>
-        <h2>{standByInfo.title}</h2>
-      </Header>
-      <AuctionCreatorVideoContainer>
-        <VideoWrapper>{publisher && <UserVideoComponent streamManager={publisher} />}</VideoWrapper>
-      </AuctionCreatorVideoContainer>
-      <SettingWrapper>
-        <SettingBox>
-          {video === 1 ? (
-            <div>
-              <IconWrapper
-                as="button"
-                color={'mainMint'}
-                onClick={() => {
-                  videoControll(0);
-                }}>
-                <BsFillCameraVideoFill />
-              </IconWrapper>
-              <ContentText>비디오 중지</ContentText>
-            </div>
-          ) : (
-            <div>
-              <IconWrapper
-                as="button"
-                onClick={() => {
-                  videoControll(1);
-                }}>
-                <BsFillCameraVideoOffFill />
-              </IconWrapper>
-              <ContentText>비디오 시작</ContentText>
-            </div>
-          )}
-          <SettingIcons>
-            {!audioEnabled ? (
+    <>
+      <Helmet>경매 준비 | 더민트</Helmet>
+      <Container>
+        <Header>
+          <p>{categories[standByInfo?.categorySeq - 1]?.name}</p>
+          <h2>{standByInfo.title}</h2>
+        </Header>
+        <AuctionCreatorVideoContainer>
+          <VideoWrapper>
+            {publisher && <UserVideoComponent streamManager={publisher} />}
+          </VideoWrapper>
+        </AuctionCreatorVideoContainer>
+        <SettingWrapper>
+          <SettingBox>
+            {video === 1 ? (
               <div>
                 <IconWrapper
-                  color={'pointRed'}
                   as="button"
-                  onClick={() => {
-                    setAudioEnabled(true);
-                  }}>
-                  <BsFillMicFill />
-                </IconWrapper>
-                <ContentText>음성 켜기</ContentText>
-              </div>
-            ) : isSpeaking ? (
-              <div>
-                <IconWrapper
                   color={'mainMint'}
-                  as="button"
                   onClick={() => {
-                    setAudioEnabled(false);
+                    videoControll(0);
                   }}>
-                  <BsFillMicFill />
+                  <BsFillCameraVideoFill />
                 </IconWrapper>
-                <ContentText>음성 인식중</ContentText>
+                <ContentText>비디오 중지</ContentText>
               </div>
             ) : (
               <div>
                 <IconWrapper
                   as="button"
                   onClick={() => {
-                    setAudioEnabled(false);
+                    videoControll(1);
                   }}>
-                  <BsFillMicFill />
+                  <BsFillCameraVideoOffFill />
                 </IconWrapper>
-                <ContentText>마이크 체크</ContentText>
+                <ContentText>비디오 시작</ContentText>
               </div>
             )}
-          </SettingIcons>
-          <SettingIcons>
-            <IconWrapper exit={true} as="button" onClick={movoToStreaming}>
-              <IoExit />
-            </IconWrapper>
-            <ContentText>경매장 입장</ContentText>
-          </SettingIcons>
-        </SettingBox>
-      </SettingWrapper>
-    </Container>
+            <SettingIcons>
+              {!audioEnabled ? (
+                <div>
+                  <IconWrapper
+                    color={'pointRed'}
+                    as="button"
+                    onClick={() => {
+                      setAudioEnabled(true);
+                    }}>
+                    <BsFillMicFill />
+                  </IconWrapper>
+                  <ContentText>음성 켜기</ContentText>
+                </div>
+              ) : isSpeaking ? (
+                <div>
+                  <IconWrapper
+                    color={'mainMint'}
+                    as="button"
+                    onClick={() => {
+                      setAudioEnabled(false);
+                    }}>
+                    <BsFillMicFill />
+                  </IconWrapper>
+                  <ContentText>음성 인식중</ContentText>
+                </div>
+              ) : (
+                <div>
+                  <IconWrapper
+                    as="button"
+                    onClick={() => {
+                      setAudioEnabled(false);
+                    }}>
+                    <BsFillMicFill />
+                  </IconWrapper>
+                  <ContentText>마이크 체크</ContentText>
+                </div>
+              )}
+            </SettingIcons>
+            <SettingIcons>
+              <IconWrapper exit={true} as="button" onClick={movoToStreaming}>
+                <IoExit />
+              </IconWrapper>
+              <ContentText>경매장 입장</ContentText>
+            </SettingIcons>
+          </SettingBox>
+        </SettingWrapper>
+      </Container>
+    </>
   );
 }
 
