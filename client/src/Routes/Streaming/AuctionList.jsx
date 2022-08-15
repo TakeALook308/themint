@@ -19,7 +19,7 @@ function AuctionList({ products }) {
 }
 
 const Article = styled.article`
-  height: 140px;
+  height: 130px;
   width: 100%;
   /* background-color: purple; */
   background-color: ${(props) => props.theme.colors.subBlack};
@@ -28,7 +28,7 @@ const Article = styled.article`
   & > p {
     font-size: 20px;
     font-weight: 500;
-    padding: 10px 0;
+    padding: 5px 0;
   }
 `;
 

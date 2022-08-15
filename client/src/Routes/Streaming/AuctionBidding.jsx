@@ -98,17 +98,19 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct 
         <AuctionInfo>
           <div>
             <p>{products[Number(price[0].index)].productName}</p>
-            <span>시작가: {products[Number(price[0].index)].startPrice.toLocaleString()}원 </span>
-            <span>현재가: {nowPrice.toLocaleString()}원</span>
+            <div>
+              <span>시작가: {products[Number(price[0].index)].startPrice.toLocaleString()}원 </span>
+              <span className="now-price">현재가: {nowPrice.toLocaleString()}원</span>
+            </div>
           </div>
-          <Timer delay="30" ref={myRef} finishAuction={finishAuction}></Timer>
         </AuctionInfo>
+        <Timer delay="30" ref={myRef} finishAuction={finishAuction}></Timer>
         <PriceList>
           {price.map((item, i) => {
             if (i !== 0) {
               return (
                 <p key={i}>
-                  {item.nickname}님 <b>{item.price.toLocaleString()}원</b> 입찰
+                  {item.nickname} 님 <b>{item.price.toLocaleString()}원</b> 입찰
                 </p>
               );
             }
@@ -122,6 +124,7 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct 
           <Bidding>
             <div>
               <button
+                className="minus"
                 onClick={() => {
                   if (Number(myPrice) - 1000 > nowPrice) setMyPrice(Number(myPrice) - 1000);
                   else errorToast('현재 입찰가 보다 낮은 금액입니다.');
@@ -138,6 +141,7 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct 
                 원
               </p>
               <button
+                className="plus"
                 onClick={() => {
                   setMyPrice(Number(myPrice) + 1000);
                 }}>
@@ -145,6 +149,7 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct 
               </button>
             </div>
             <button
+              className="bidding-btn"
               onClick={() => {
                 if (myPrice > nowPrice) {
                   sendPrice(myPrice, nowProduct, products[nowProduct].seq);
@@ -185,6 +190,11 @@ const AuctionInfo = styled.div`
   & > div {
     display: flex;
     flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    padding: 10px 15px;
+    gap: 10px;
+    height: 80px;
     & > p {
       width: 100px;
       white-space: nowrap;
@@ -193,12 +203,21 @@ const AuctionInfo = styled.div`
       overflow: hidden;
       text-overflow: ellipsis;
     }
+    & > div {
+      display: flex;
+      justify-content: space-between;
+      font-size: 18px;
+      & > .now-price {
+        color: ${(props) => props.theme.colors.pointRed};
+      }
+    }
   }
 `;
 
 const PriceList = styled.div`
   height: 150px;
   overflow: auto;
+  padding: 0 20px;
   p {
     background-color: ${(props) => props.theme.colors.textGray};
     text-align: center;
@@ -206,7 +225,10 @@ const PriceList = styled.div`
     font-size: 14px;
     border-radius: 5px;
     margin: 10px 0;
-
+    &:last-child {
+      background-color: ${(props) => props.theme.colors.subMint};
+      font-weight: 600;
+    }
     color: ${(props) => props.theme.colors.mainBlack};
     b {
       font-weight: 700;
@@ -217,8 +239,32 @@ const PriceList = styled.div`
 
 const Bidding = styled.div`
   display: flex;
+  height: 35px;
+  gap: 15px;
+  justify-content: center;
   div {
     display: flex;
+
+    justify-content: center;
+    button {
+      width: 30px;
+    }
+    .minus {
+    }
+    .plus {
+    }
+    p {
+      text-align: center;
+
+      input {
+        height: 35px;
+      }
+      input[type='number']::-webkit-outer-spin-button,
+      input[type='number']::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+    }
   }
 `;
 

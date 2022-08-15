@@ -2,7 +2,7 @@ import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
 import React, { Component } from 'react';
 import UserVideoComponent from './UserVideoComponent';
-
+import './UserVideo.css';
 const OPENVIDU_SERVER_URL = 'https://i7a308.p.ssafy.io:8443';
 const OPENVIDU_SERVER_SECRET = 'themint';
 
