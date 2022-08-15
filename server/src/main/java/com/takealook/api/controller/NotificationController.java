@@ -33,18 +33,18 @@ public class NotificationController {
     }
     
     // 관심 경매 시작 알림 메시지 전송
-    @PostMapping("send")
-    public ResponseEntity<?> sendNotificationMessage(@RequestBody Map<String, String> auctionHash) {
-        String hash = auctionHash.get("hash");
-        List<String> memberList = interestAuctionService.getMemberListByHash(hash);
-        for(String memberId: memberList) {
-            String message = memberId + "님의 관심 경매가 시작됐어요!";
-            NotificationMessage notificationMessage = NotificationMessage.builder()
-                    .memberId(memberId)
-                    .message(message)
-                    .build();
-            redisPublisher.publish(notificationService.getTopic(memberId), notificationMessage);
-        }
-        return ResponseEntity.status(200).body("success");
-    }
+//    @PostMapping("send")
+//    public ResponseEntity<?> sendNotificationMessage(@RequestBody Map<String, String> auctionHash) {
+//        String hash = auctionHash.get("hash");
+//        List<String> memberList = interestAuctionService.getMemberListByHash(hash);
+//        for(String memberId: memberList) {
+//            String message = memberId + "님의 관심 경매가 시작됐어요!";
+//            NotificationMessage notificationMessage = NotificationMessage.builder()
+//                    .memberId(memberId)
+//                    .message(message)
+//                    .build();
+//            redisPublisher.publish(notificationService.getTopic(memberId), notificationMessage);
+//        }
+//        return ResponseEntity.status(200).body("success");
+//    }
 }
