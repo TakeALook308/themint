@@ -8,4 +8,5 @@ public interface InterestKeywordService {
     void createInterestKeyword(Long memberSeq, String keywordName);
     List<String> getInterestKeywordListByMemberSeq(Long memberSeq);
     void deleteKeyword(Long memberSeq, String keywordName);
+    List<String> getMemberListByProductName(String productName);
 }

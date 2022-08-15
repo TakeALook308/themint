@@ -10,4 +10,5 @@ public interface InterestAuctionService {
     List<Auction> getInterestAuctionListByMemberSeq(Long memberSeq, Pageable pageable);
     void deleteAuction(Long memberSeq, String hash);
     Boolean checkInterestByMemberSeq(Long memberSeq, String auctionHash);
+    List<String> getMemberListByHash(String hash);
 }
