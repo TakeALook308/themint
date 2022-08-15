@@ -69,6 +69,12 @@ function ProfilePurchaseHistoryPage({ params }) {
       setDeliveryData((prevState) => {
         return { ...prevState, zipCode: userAllInfo.zipCode };
       });
+      setSearchDeliveryData((prevState) => {
+        return { ...prevState, t_code: itemDetail.data.parcelCompanyCode };
+      });
+      setSearchDeliveryData((prevState) => {
+        return { ...prevState, t_invoice: itemDetail.data.trackingNo };
+      });
     });
 
     setIsModal((prev) => !prev);
@@ -174,6 +180,14 @@ function ProfilePurchaseHistoryPage({ params }) {
     const res = patchDeliveryData(`/api/delivery`, deliveryData);
     res.then(() => {});
   };
+  // 배송 조회
+  const [searchDeliveryData, setSearchDeliveryData] = useState({
+    t_key: 'F021Ir60YiVKvqs5Fx4AXw',
+    t_code: '04',
+    t_invoice: '113323452345',
+  });
+  const [tcode, setTCode] = useState('');
+  const [tInvoice, setTInvoice] = useState('');
 
   // 리뷰 작성
   const [reviewData, setReviewData] = useState({
@@ -300,6 +314,41 @@ function ProfilePurchaseHistoryPage({ params }) {
               <p>배송주소: {purchaseDetail.address}</p>
               <p>상세 배송주소: {purchaseDetail.addressDetail}</p>
               <p>배송조회</p>
+              <form action="http://info.sweettracker.co.kr/tracking/2" method="post">
+                <div className="form-group">
+                  <input
+                    type="hidden"
+                    className="form-control"
+                    id="t_key"
+                    name="t_key"
+                    placeholder="제공받은 APIKEY"
+                    value={'F021Ir60YiVKvqs5Fx4AXw'}
+                  />
+                </div>
+                <div className="form-group">
+                  <input
+                    type="hidden"
+                    className="form-control"
+                    name="t_code"
+                    id="t_code"
+                    placeholder="택배사 코드"
+                    value={searchDeliveryData.t_code}
+                  />
+                </div>
+                <div className="form-group">
+                  <input
+                    type="hidden"
+                    className="form-control"
+                    name="t_invoice"
+                    id="t_invoice"
+                    placeholder="운송장 번호"
+                    value={searchDeliveryData.t_invoice}
+                  />
+                </div>
+                <button type="submit" className="btn btn-default">
+                  조회하기
+                </button>
+              </form>
               <p>리뷰 작성</p>
               <p>별점을 선택해 주세요!</p>
               <Stars>

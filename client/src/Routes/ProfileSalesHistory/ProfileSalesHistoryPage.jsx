@@ -6,7 +6,6 @@ import SkeletonAuctionCard from '../../components/CardList/SkeletonAuctionCard';
 import IsSellingCard from './IsSellingCard';
 import axios from 'axios';
 import Modal from '../../components/common/Modal';
-import { useLocation } from 'react-router-dom';
 
 function ProfileSalesHistoryPage({ params }) {
   // 구매내역과 판매내역 차이 구분
