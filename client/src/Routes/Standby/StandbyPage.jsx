@@ -1,11 +1,16 @@
 import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
 import React, { useEffect, useState } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
-import { myInformationState } from '../../atoms';
+import { myInformationState, deviceListState } from '../../atoms';
 import UserVideoComponent from '../../components/webRTC/UserVideoComponent';
-import { BsFillCameraVideoFill, BsFillCameraVideoOffFill, BsFillMicFill } from 'react-icons/bs';
+import {
+  BsFillCameraVideoFill,
+  BsFillCameraVideoOffFill,
+  BsFillMicFill,
+  BsFillMicMuteFill,
+} from 'react-icons/bs';
 import { IoExit } from 'react-icons/io5';
 import { useNavigate, useParams } from 'react-router-dom';
 import { fetchData } from '../../utils/apis/api';
@@ -14,6 +19,7 @@ import { auctionApis } from '../../utils/apis/auctionApis';
 import { categories } from '../../utils/constants/constant';
 import { socketApis } from '../../utils/apis/socketApis';
 import { Helmet } from 'react-helmet-async';
+import UserVideo from '../../components/webRTC/UserVideo';
 
 const OPENVIDU_SERVER_URL = 'https://i7a308.p.ssafy.io:8443';
 const OPENVIDU_SERVER_SECRET = 'themint';
@@ -27,39 +33,53 @@ function StandbyPage() {
   const [video, setVideo] = useState(0); // 1 ON, 0 OFF
   const [publisher, setPublisher] = useState('');
   const [audioEnabled, setAudioEnabled] = useState(true);
+  const [videoDeviceList, setVideoDeviceList] = useState([]);
+  const [microPhoneDeviceList, setMicroPhoneDeviceList] = useState([]);
+  const [OV, setOV] = useState('');
+  const [session, setSession] = useState('');
+  const [streamingDeviceList, setStreamingDeviceList] = useRecoilState(deviceListState);
   useEffect(() => {
     fetchData.get(auctionApis.AUCTION_DETAIL_API(auctionId)).then((res) => setStanByInfo(res.data));
   }, []);
-
-  const OV = new OpenVidu();
-  OV.enableProdMode();
-  const testSession = OV.initSession();
 
   const getToken = async (curSessionId) => {
     console.log('===== 세션 연결 중 : ', curSessionId);
     return await createSession(curSessionId).then((sessionId) => createToken(sessionId));
   };
 
-  const standbyJoin = (standbySession, auctionId) => {
-    // let standbySessionId = `${auctionId}tests`;
-    let standbySessionId = `${auctionId}tests`;
+  const standbyJoin = () => {
+    const newOV = new OpenVidu();
+    newOV.enableProdMode();
+    const newSession = newOV.initSession();
+    setOV(newOV);
+    setSession(newSession);
+    const standbySessionId = `${auctionId}tests`;
     console.log('스탠바이 세션 입장 ', standbySessionId);
     getToken(standbySessionId).then((token) => {
-      standbySession
-        .connect(token, {})
-        .then(() => {
-          let pub = OV.initPublisher(undefined, {
-            audioSource: undefined,
-            videoSource: undefined,
+      newSession
+        .connect(token, { clientData: auctionId })
+        .then(async () => {
+          const devices = await newOV.getDevices();
+          const videoDevices = devices.filter((device) => device.kind === 'videoinput');
+          const microPhoneDevices = devices.filter((device) => device.kind === 'audioinput');
+          setVideoDeviceList(videoDevices);
+          setMicroPhoneDeviceList(microPhoneDevices);
+          setStreamingDeviceList((prev) => ({
+            videoId: videoDevices[0].deviceId,
+            microPhoneId: microPhoneDevices[1].deviceId,
+          }));
+          let pub = newOV.initPublisher(undefined, {
+            audioSource: microPhoneDevices[1].deviceId,
+            videoSource: videoDevices[0].deviceId,
             publishAudio: true,
             publishVideo: true,
             resolution: '640x480',
             frameRate: 60,
             insertMode: 'APPEND',
-            mirror: false,
+            mirror: true,
           });
           console.log('video active', pub.stream.videoActive);
-          standbySession.publish(pub);
+          newSession.publish(pub);
           setPublisher(pub);
         })
         .catch((error) => {
@@ -69,16 +89,14 @@ function StandbyPage() {
   };
 
   const leaveSession = () => {
-    const mySession = testSession;
-
-    if (mySession) {
-      mySession.disconnect();
+    if (session) {
+      session.disconnect();
     }
   };
 
   const createSession = (sessionId) => {
     return new Promise((resolve, reject) => {
-      let data = JSON.stringify({ customSessionId: sessionId });
+      const data = JSON.stringify({ customSessionId: sessionId });
       axios
         .post(OPENVIDU_SERVER_URL + '/openvidu/api/sessions', data, {
           headers: {
@@ -87,7 +105,7 @@ function StandbyPage() {
           },
         })
         .then((response) => {
-          console.log('CREATE SESION', response);
+          console.log('CREATE SESSION', response);
           resolve(response.data.id);
         })
         .catch((response) => {
@@ -127,7 +145,7 @@ function StandbyPage() {
           },
         })
         .then((response) => {
-          // console.log('TOKEN', response);
+          console.log('TOKEN', response);
           resolve(response.data.token);
         })
         .catch((error) => reject(error));
@@ -138,13 +156,15 @@ function StandbyPage() {
     setIsSpeaking(isSpeaking);
   };
 
-  testSession.on('publisherStopSpeaking', (event) => {
-    Speaking(false);
-  });
+  if (session) {
+    session?.on('publisherStopSpeaking', (event) => {
+      Speaking(false);
+    });
 
-  testSession.on('publisherStartSpeaking', (event) => {
-    Speaking(true);
-  });
+    session?.on('publisherStartSpeaking', (event) => {
+      Speaking(true);
+    });
+  }
 
   const createChatRoom = async () => {
     const body = {
@@ -164,8 +184,14 @@ function StandbyPage() {
   };
 
   useEffect(() => {
+    return () => {
+      console.log('세션떠나요');
+      leaveSession();
+    };
+  }, [session]);
+  useEffect(() => {
     if (standByInfo.memberSeq) {
-      standbyJoin(testSession, auctionId);
+      standbyJoin();
     }
     if (standByInfo.memberSeq === userInfo.memberSeq) {
       successToast(
@@ -178,8 +204,8 @@ function StandbyPage() {
         3000,
       );
     }
+
     (async () => await createChatRoom())();
-    return () => leaveSession();
   }, [standByInfo]);
 
   useEffect(() => {
@@ -205,9 +231,39 @@ function StandbyPage() {
 
   if (standByInfo?.memberSeq && userInfo.memberSeq !== standByInfo?.memberSeq) {
     navigate(-1);
-    errorToast('⚠️접근 권한이 없습니다.', 3000);
+    errorToast('⚠️접근 권한이 없습니다.', 'colored', 3000);
     return;
   }
+
+  const switchCamera = async ({ target: { value } }) => {
+    const newPublisher = OV.initPublisher(undefined, {
+      ...publisher,
+      videoSource: value,
+    });
+    try {
+      await session.unpublish(publisher);
+      await session.publish(newPublisher);
+      setPublisher(newPublisher);
+      setStreamingDeviceList((prev) => ({ ...prev, videoId: value }));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const switchMicroPhone = async ({ target: { value } }) => {
+    const newPublisher = OV.initPublisher(undefined, {
+      ...publisher,
+      audioSource: value,
+    });
+    try {
+      await session.unpublish(publisher);
+      await session.publish(newPublisher);
+      setPublisher(newPublisher);
+      setStreamingDeviceList((prev) => ({ ...prev, microPhoneId: value }));
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
     <>
@@ -218,76 +274,93 @@ function StandbyPage() {
           <h2>{standByInfo.title}</h2>
         </Header>
         <AuctionCreatorVideoContainer>
-          <VideoWrapper>
-            {publisher && <UserVideoComponent streamManager={publisher} />}
-          </VideoWrapper>
+          <VideoWrapper>{publisher && <UserVideo streamManager={publisher} />}</VideoWrapper>
         </AuctionCreatorVideoContainer>
         <SettingWrapper>
           <SettingBox>
-            {video === 1 ? (
-              <div>
-                <IconWrapper
-                  as="button"
-                  color={'mainMint'}
-                  onClick={() => {
-                    videoControll(0);
-                  }}>
-                  <BsFillCameraVideoFill />
-                </IconWrapper>
-                <ContentText>비디오 중지</ContentText>
-              </div>
-            ) : (
-              <div>
-                <IconWrapper
-                  as="button"
-                  onClick={() => {
-                    videoControll(1);
-                  }}>
-                  <BsFillCameraVideoOffFill />
-                </IconWrapper>
-                <ContentText>비디오 시작</ContentText>
-              </div>
-            )}
+            <SelectContainer>
+              <ControlContainer>
+                {videoDeviceList.length && (
+                  <Select onChange={switchCamera} value={streamingDeviceList?.videoId}>
+                    {videoDeviceList.map((device) => (
+                      <option value={device.deviceId} key={device.deviceId}>
+                        {device.label}
+                      </option>
+                    ))}
+                  </Select>
+                )}
+
+                {video === 1 ? (
+                  <div>
+                    <IconWrapper
+                      as="button"
+                      color={'mainMint'}
+                      onClick={() => {
+                        videoControll(0);
+                      }}>
+                      <BsFillCameraVideoFill />
+                    </IconWrapper>
+                  </div>
+                ) : (
+                  <div>
+                    <IconWrapper
+                      color={'pointRed'}
+                      as="button"
+                      onClick={() => {
+                        videoControll(1);
+                      }}>
+                      <BsFillCameraVideoOffFill />
+                    </IconWrapper>
+                  </div>
+                )}
+              </ControlContainer>
+              <ControlContainer>
+                {microPhoneDeviceList.length && (
+                  <Select onChange={switchMicroPhone} value={streamingDeviceList.microPhoneId}>
+                    {microPhoneDeviceList.map((device) => (
+                      <option value={device.deviceId} key={device.deviceId}>
+                        {device.label}
+                      </option>
+                    ))}
+                  </Select>
+                )}
+                {!audioEnabled ? (
+                  <div>
+                    <IconWrapper
+                      color={'pointRed'}
+                      as="button"
+                      onClick={() => {
+                        setAudioEnabled(true);
+                      }}>
+                      <BsFillMicMuteFill />
+                    </IconWrapper>
+                  </div>
+                ) : isSpeaking ? (
+                  <div>
+                    <IconWrapper
+                      color={'mainMint'}
+                      as="button"
+                      onClick={() => {
+                        setAudioEnabled(false);
+                      }}>
+                      <BsFillMicFill />
+                    </IconWrapper>
+                  </div>
+                ) : (
+                  <div>
+                    <IconWrapper
+                      as="button"
+                      onClick={() => {
+                        setAudioEnabled(false);
+                      }}>
+                      <BsFillMicFill />
+                    </IconWrapper>
+                  </div>
+                )}
+              </ControlContainer>
+            </SelectContainer>
             <SettingIcons>
-              {!audioEnabled ? (
-                <div>
-                  <IconWrapper
-                    color={'pointRed'}
-                    as="button"
-                    onClick={() => {
-                      setAudioEnabled(true);
-                    }}>
-                    <BsFillMicFill />
-                  </IconWrapper>
-                  <ContentText>음성 켜기</ContentText>
-                </div>
-              ) : isSpeaking ? (
-                <div>
-                  <IconWrapper
-                    color={'mainMint'}
-                    as="button"
-                    onClick={() => {
-                      setAudioEnabled(false);
-                    }}>
-                    <BsFillMicFill />
-                  </IconWrapper>
-                  <ContentText>음성 인식중</ContentText>
-                </div>
-              ) : (
-                <div>
-                  <IconWrapper
-                    as="button"
-                    onClick={() => {
-                      setAudioEnabled(false);
-                    }}>
-                    <BsFillMicFill />
-                  </IconWrapper>
-                  <ContentText>마이크 체크</ContentText>
-                </div>
-              )}
-            </SettingIcons>
-            <SettingIcons>
-              <IconWrapper exit={true} as="button" onClick={movoToStreaming}>
+              <IconWrapper active={true} exit={true} as="button" onClick={movoToStreaming}>
                 <IoExit />
               </IconWrapper>
               <ContentText>경매장 입장</ContentText>
@@ -321,7 +394,7 @@ const Header = styled.div`
   width: 80%;
   background-color: ${(props) => props.theme.colors.subBlack};
   margin-bottom: 1rem;
-  padding: 0.125rem 1rem;
+  padding: 0.25rem 1rem;
   border-radius: 10px;
   line-height: 1.5;
   > p {
@@ -357,26 +430,31 @@ const SettingIcons = styled.div`
   background-color: transparent;
   outline: none;
   width: 100px;
-  margin: 0 auto;
   text-align: center;
 `;
 
 const SettingWrapper = styled.div`
   position: relative;
   padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-items: center;
+  width: 100%;
 `;
+
 const SettingBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   color: black;
   font-size: 2vw;
-  gap: 2.5rem;
+  gap: 1rem;
 `;
 
 const IconWrapper = styled.div`
-  width: 4rem;
-  height: 4rem;
+  width: ${(props) => (props.active ? '4rem' : '2rem')};
+  height: ${(props) => (props.active ? '4rem' : '2rem')};
   background-color: ${(props) =>
     props.color ? props.theme.colors[props.color] : props.theme.colors.white};
   border-radius: 50%;
@@ -384,7 +462,6 @@ const IconWrapper = styled.div`
   align-items: center;
   justify-content: center;
   margin: 0 auto;
-  margin-bottom: 1rem;
   font-size: 1.5rem;
   cursor: pointer;
   &:hover {
@@ -396,4 +473,29 @@ const IconWrapper = styled.div`
 const ContentText = styled.p`
   font-size: ${(props) => props.theme.fontSizes.p};
   color: ${(props) => props.theme.colors.white};
+  margin-top: 1rem;
+`;
+
+const ControlContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 400px;
+  gap: 1rem;
+  align-items: center;
+`;
+
+const Select = styled.select`
+  background-color: ${(props) => props.theme.colors.subBlack};
+  border: none;
+  color: ${(props) => props.theme.colors.white};
+  width: 250px;
+  padding: 1rem;
+  height: 50px;
+  border-radius: 5px;
+`;
+
+const SelectContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 `;
