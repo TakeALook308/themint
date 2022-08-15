@@ -19,7 +19,10 @@ function AuctionCreatePage(props) {
     setAuctionImageList(temp);
   };
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    acceptedFiles: 'image/jpeg,image/png,image/gif',
+    onDrop,
+  });
   const [auctionImageList, setAuctionImageList] = useState([]);
   const [inputAuction, setInputAuction] = useState({
     categorySeq: 1,
@@ -154,8 +157,8 @@ function AuctionCreatePage(props) {
         <Div>
           <Label>사진 업로드</Label>
           <FileUpload>
-            {auctionImageList.length === 0 ? (
-              <div {...getRootProps()}>
+            {auctionImageList.length === 0 ? ( //사진 없을 때
+              <div {...getRootProps()} className="emptyfile">
                 <input {...getInputProps()} />
 
                 {isDragActive ? (
@@ -169,7 +172,23 @@ function AuctionCreatePage(props) {
                 )}
               </div>
             ) : (
-              <p>얄루</p>
+              //사진 있을 때
+              <div className="filelist">
+                <div {...getRootProps()}>
+                  <input {...getInputProps()} />
+                  {isDragActive ? (
+                    <AiOutlineDownload size={50}></AiOutlineDownload>
+                  ) : (
+                    <AiFillPlusCircle size={50}></AiFillPlusCircle>
+                  )}
+                </div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
             )}
             {/* {auctionImageList.map((item, i) => (
               <div key={i}>{item.path}</div>
@@ -271,26 +290,48 @@ const FileUpload = styled.div`
   overflow-x: hidden;
   display: flex;
   justify-content: center;
-  align-items: center;
   /* place-items: center; */
-  div {
+  .emptyfile {
     position: relative;
     width: 100%;
     height: 100%;
-    /* width: 150px;
-    height: 100px;
-    white-space: normal;
-    word-break: break-all;
-    display: flex;
-    align-items: center;
-    justify-content: center; */
+    .nofile {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
   }
-  .nofile {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  margin: 0 auto;
+  .filelist {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 20px;
+    padding: 10px;
+
+    & > div {
+      width: 160px;
+      height: 120px;
+
+      background-color: skyblue;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar,
+    &::-webkit-scrollbar-thumb {
+      overflow: visible;
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(13, 12, 15, 0.4);
+    }
   }
 `;
 
