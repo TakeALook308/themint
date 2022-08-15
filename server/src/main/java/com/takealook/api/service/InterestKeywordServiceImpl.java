@@ -45,4 +45,9 @@ public class InterestKeywordServiceImpl implements InterestKeywordService {
     public void deleteKeyword(Long memberSeq, String keywordName) {
         interestKeywordRepository.deleteByMemberSeqAndKeywordName(memberSeq, keywordName);
     }
+
+    @Override
+    public List<String> getMemberListByProductName(String productName) {
+        return interestKeywordRepository.getMemeberListByProductName(productName);
+    }
 }
