@@ -16,12 +16,14 @@ function InterestKeywordList() {
   // 키워드 추가
   const onClick = () => {
     const keyword_name = addKeyword;
-    console.log(keyword_name);
     const addInterest = async (url) => {
       const response = await instance.post(url);
       return response;
     };
     const res = addInterest(`/api/interest/keyword/${keyword_name}`);
+    res.catch((error) => {
+      errorToast('이미 추가된 키워드입니다');
+    });
     res.then(() => {
       console.log(keyword_name);
       const getKeyword = async (url) => {
@@ -31,9 +33,6 @@ function InterestKeywordList() {
       const res = getKeyword(`/api/interest/keyword`);
       res.then((keywords) => {
         setShowKeyword(keywords.data.interestKeywordList);
-      });
-      res.catch((error) => {
-        errorToast('이미 추가된 카테고리입니다');
       });
     });
   };

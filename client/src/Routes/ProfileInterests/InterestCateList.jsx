@@ -31,6 +31,9 @@ function InterestCateList() {
       return response;
     };
     const res = addInterestCategory(`/api/interest/category/${cateSeq}`);
+    res.catch((error) => {
+      errorToast('이미 추가된 카테고리입니다');
+    });
     res.then(() => {
       const getCateList = async (url) => {
         const response = await instance.get(url);
@@ -39,9 +42,6 @@ function InterestCateList() {
       const res = getCateList(`/api/interest/category`);
       res.then((catelist) => {
         setShowCateList(catelist.data.interestCategoryList);
-      });
-      res.catch((error) => {
-        errorToast('이미 추가된 카테고리입니다');
       });
     });
   };

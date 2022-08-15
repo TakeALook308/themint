@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
 function IsSellingCard({ auction, func }) {
-  console.log(auction);
   const auctionstr = ['판매중', '입금대기', '입금완료', '판매완료', '유찰', '거래취소'];
   return (
     <CardContainer>

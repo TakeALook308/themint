@@ -498,7 +498,11 @@ const SellerInfo = styled.article`
   }
 `;
 
-const PutMoney = styled.div``;
+const PutMoney = styled.div`
+  > p {
+    margin-bottom: 10px;
+  }
+`;
 
 const PutAddress = styled.div`
   > h3 {
