@@ -47,7 +47,7 @@ function IsSellingCard({ auction, func }) {
           </div>
         </Link>
       </div>
-      {auction.status > 0 && auction.status <= 3 ? (
+      {auction.status === 2 ? (
         <Plus
           type="button"
           onClick={() => {
@@ -183,9 +183,9 @@ const AuctionStatus = styled.div`
       : props.auctionstrkey === 1
       ? 'orange'
       : props.auctionstrkey === 2
-      ? 'orange'
-      : props.auctionstrkey === 3
       ? 'red'
+      : props.auctionstrkey === 3
+      ? 'brown'
       : 'black'};
 `;
 

@@ -15,7 +15,6 @@ import { useRecoilValue } from 'recoil';
 import { fetchData } from '../../utils/apis/api';
 import { userApis } from '../../utils/apis/userApis';
 import { myInformationState } from '../../atoms';
-import { useQuery } from 'react-query';
 import { ActiveInput } from '../../style/style';
 import MintButton from '../../components/ButtonList/MintButton';
 
@@ -41,6 +40,7 @@ function ProfilePurchaseHistoryPage({ params }) {
   const [isModal, setIsModal] = useState(false);
 
   const ModalHandler = (auction) => {
+    console.log(auction.historySeq);
     const getPurchaseDetail = async (url) => {
       const response = await instance.get(url);
       return response;
@@ -48,7 +48,6 @@ function ProfilePurchaseHistoryPage({ params }) {
     const res = getPurchaseDetail(`/api/history/purchase/detail/${auction.historySeq}`);
     res.then((itemDetail) => {
       setPurchaseDetail(itemDetail.data); // 상세보기 내용을 salesDetail에 저장
-      console.log(itemDetail.data);
       setAuctionProductSeq(itemDetail.data.productSeq);
       onChange2({ target: { name: 'receiverSeq', value: itemDetail.data.sellerMemberSeq } });
       setDeliveryData((prevState) => {
@@ -147,7 +146,6 @@ function ProfilePurchaseHistoryPage({ params }) {
     const response = await fetchData.get(userApis.USER_INFORMATION(myInformation?.memberSeq));
     return response?.data;
   };
-  const { isLoading, error, data, isFetching } = useQuery(['userInformation'], getUserInfo);
   const queryClient = useQueryClient();
   const userAllInfo = queryClient.getQueryData(['userInformation']);
   const [deliveryData, setDeliveryData] = useState({
@@ -186,8 +184,6 @@ function ProfilePurchaseHistoryPage({ params }) {
     t_code: '',
     t_invoice: '',
   });
-  const [tcode, setTCode] = useState('');
-  const [tInvoice, setTInvoice] = useState('');
 
   // 리뷰 작성
   const [reviewData, setReviewData] = useState({

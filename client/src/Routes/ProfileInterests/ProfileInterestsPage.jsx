@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import InterestKeywordList from './InterestKeywordList';
-import InterestAuctionList from './InterestAuctionList';
 import InterestCateList from './InterestCateList';
+import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
+import SkeletonAuctionCard from '../../components/CardList/SkeletonAuctionCard';
+import InterestAuctionCard from './InterestAuctionCard';
+import { instance } from '../../utils/apis/api';
 
 function ProfileInterestsPage({ params }) {
   const [active, setActive] = useState(1);
@@ -16,6 +19,24 @@ function ProfileInterestsPage({ params }) {
 
   const onAuction = () => {
     setActive(3);
+  };
+  const [isDeleted, setIsDeleted] = useState(true);
+  const getUrl = (size) => {
+    return (page) => `/api/interest/auction?page=0&size=${size}`;
+  };
+
+  const deleteAuction = (auction) => {
+    const deleteInterest = async (url) => {
+      const response = await instance.delete(url);
+      return response;
+    };
+    console.log(auction.hash);
+    const res = deleteInterest(`/api/interest/auction/${auction.hash}`);
+    res.then(() => {
+      setIsDeleted((prev) => {
+        setIsDeleted(!prev);
+      });
+    });
   };
   return (
     <Container>
@@ -45,7 +66,16 @@ function ProfileInterestsPage({ params }) {
       <InterestContainer>
         {active === 1 && <InterestKeywordList active={active} />}
         {active === 2 && <InterestCateList active={active} />}
-        {active === 3 && <InterestAuctionList active={active} />}
+        {active === 3 && (
+          <InfiniteAuctionList
+            getUrl={getUrl(9)}
+            queryKey={[`${isDeleted}${active}`]}
+            CardComponent={InterestAuctionCard}
+            SkeltonCardComponent={SkeletonAuctionCard}
+            text={'관심 경매 내역이 없습니다'}
+            func={deleteAuction}
+          />
+        )}
       </InterestContainer>
     </Container>
   );

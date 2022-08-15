@@ -3,13 +3,12 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
 function IsPurchasingCard({ auction, func }) {
-  // TODO: 데이터 교체하기
   const [statusNum, setStatusNum] = useState(0);
   useEffect(() => {
     setStatusNum(auction.status);
   });
   const auctionstr = ['판매중', '입금대기', '발송대기', '구매완료', '', '거래취소'];
-  console.log(auction);
+
   return (
     <CardContainer>
       <div>
@@ -48,7 +47,7 @@ function IsPurchasingCard({ auction, func }) {
           </div>
         </Link>
       </div>
-      {auction.status < 3 ? (
+      {auction.status === 1 ? (
         <Plus
           type="button"
           onClick={() => {
@@ -57,17 +56,15 @@ function IsPurchasingCard({ auction, func }) {
           구매 정보 입력
         </Plus>
       ) : null}
-      {
-        (auction.status = 3 ? (
-          <Plus
-            type="button"
-            onClick={() => {
-              func(auction);
-            }}>
-            배송 확인/리뷰
-          </Plus>
-        ) : null)
-      }
+      {auction.status === 3 ? (
+        <Plus
+          type="button"
+          onClick={() => {
+            func(auction);
+          }}>
+          배송 확인/리뷰
+        </Plus>
+      ) : null}
     </CardContainer>
   );
 }
@@ -195,9 +192,9 @@ const AuctionStatus = styled.div`
       : props.auctionstrkey === 1
       ? 'orange'
       : props.auctionstrkey === 2
-      ? 'orange'
-      : props.auctionstrkey === 3
       ? 'red'
+      : props.auctionstrkey === 3
+      ? 'brown'
       : 'black'};
 `;
 
