@@ -41,7 +41,7 @@ public class Scheduler {
         }
     }
 
-    @Scheduled(fixedDelay = 30000)
+    @Scheduled(fixedDelay = 3600000)
     public void checkNotRemittedPurchase(){
         List<History> historyList = historyService.getHistoryByDateAndSalesPurchase(); // 구매한지 일주일 지난 목록 가져옴
         for (History history : historyList){

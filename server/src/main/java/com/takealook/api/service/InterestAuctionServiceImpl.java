@@ -100,4 +100,9 @@ public class InterestAuctionServiceImpl implements InterestAuctionService {
             return true;
         }
     }
+
+    @Override
+    public List<String> getMemberListByHash(String hash) {
+        return interestAuctionRepository.getMemberListByAuctionHash(hash);
+    }
 }

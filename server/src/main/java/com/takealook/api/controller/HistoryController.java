@@ -104,7 +104,7 @@ public class HistoryController {
         for (History history : historyList) {
             Product product = productService.getProductBySeq(history.getProductSeq());
             Auction auction = auctionService.getAuctionBySeq(product.getAuctionSeq());
-            Member member = memberService.getMemberByMemberSeq(history.getMemberSeq());
+            Member member = memberService.getMemberByMemberSeq(auction.getMemberSeq());
             List<AuctionImage> auctionImageList = auctionImageService.getAuctionImageListByAuctionSeq(auction.getSeq());
             historyListEntityResList.add(HistoryListEntityRes.of(history, product, auction, member, auctionImageList.get(0)));
         }
@@ -124,15 +124,22 @@ public class HistoryController {
         for (History history : historyList) {
             Product product = productService.getProductBySeq(history.getProductSeq());
             Auction auction = auctionService.getAuctionBySeq(product.getAuctionSeq());
-            Member member = memberService.getMemberByMemberSeq(history.getMemberSeq());
+            Member member = memberService.getMemberByMemberSeq(auction.getMemberSeq());
             List<AuctionImage> auctionImageList = auctionImageService.getAuctionImageListByAuctionSeq(auction.getSeq());
             historyListEntityResList.add(HistoryListEntityRes.of(history, product, auction, member, auctionImageList.get(0)));
         }
         return ResponseEntity.status(200).body(HistoryListRes.of(hasMore, historyListEntityResList));
     }
 
+    // 유찰, 낙찰
     @PostMapping("/purchase")
     public ResponseEntity<BaseResponseBody> registerPurchase(@RequestBody PurchaseRegisterPostReq purchaseRegisterPostReq) {
+        // 유찰
+        if(purchaseRegisterPostReq.getFinalPrice() == -1){
+            productService.updateStatus(purchaseRegisterPostReq.getProductSeq(), 4);
+        }
+
+        // 낙찰
         // 1. history에 구매 내역 추가하고,  2. productDelivery 추가 자동으로 추가하고,  3. product status 1로 바꾸고,  4. product finalPrice 낙찰가로 업데이트.
         int result = historyService.registerPurchaseHistory(purchaseRegisterPostReq);
         Member member = memberService.getMemberByMemberSeq(purchaseRegisterPostReq.getMemberSeq());
