@@ -90,7 +90,7 @@ const Container = styled.div`
 
 const SelectContainer = styled.div`
   display: flex;
-  width: 80%;
+  width: 50%;
   margin-bottom: 30px;
   > select {
     margin-right: 10px;

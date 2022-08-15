@@ -103,7 +103,7 @@ const AddKeyword = styled.div`
 `;
 
 const InputBoxContainer = styled.div`
-  width: 30%;
+  width: 25%;
   margin-bottom: 30px;
   margin-right: 30px;
 `;
