@@ -115,10 +115,11 @@ const NavStyle = styled(NavLink)`
   text-align: center;
   background-color: ${(props) => props.theme.colors.mainBlack};
   border-bottom: 2px solid ${(props) => props.theme.colors.subMint};
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 
   outline: invert;
   &:link {
-    transition: 0.5s;
     text-decoration: none;
   }
   &:hover {
@@ -130,7 +131,7 @@ const NavStyle = styled(NavLink)`
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     font-weight: bold;
-    border: 3px solid ${(props) => props.theme.colors.subMint};
+    border: 2px solid ${(props) => props.theme.colors.subMint};
     border-bottom: none;
   }
 `;

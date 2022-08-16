@@ -36,6 +36,12 @@ function InterestKeywordList() {
       });
     });
   };
+  // 키보드 엔터로 키워드 추가
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      onClick();
+    }
+  };
   // 키워드 삭제 API
   const [deleteword, setDeleteword] = useState('');
   const getData = (word) => {
@@ -76,6 +82,7 @@ function InterestKeywordList() {
             type="text"
             placeholder="키워드를 추가하려면 입력하세요"
             onChange={onChange}
+            onKeyPress={handleKeyPress}
           />
         </InputBoxContainer>
         <ButtonContainer>

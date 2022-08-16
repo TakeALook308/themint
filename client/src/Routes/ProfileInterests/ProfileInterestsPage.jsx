@@ -10,7 +10,7 @@ import { useLocation } from 'react-router-dom';
 
 function ProfileInterestsPage({ params }) {
   const location = useLocation();
-  console.log(location);
+  console.log(location.pathname);
   const [active, setActive] = useState(1);
   console.log(active);
   const onKeyword = () => {
