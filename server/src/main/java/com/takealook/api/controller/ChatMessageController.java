@@ -61,6 +61,7 @@ public class ChatMessageController {
                             .previewMsg(message.getMessage())
                             .senderNickname(message.getNickname())
                             .date(message.getDate())
+                            .type(2)
                             .build();
                     redisPublisher.publish(notificationService.getTopic(member.getMemberId()), chatNotificationMessage);
                 }

@@ -67,6 +67,7 @@ public class NotificationServiceImpl implements NotificationService{
                     .title(title)
                     .url("/auctions/" + hash)
                     .notification(notification)
+                    .type(1)
                     .build();
             redisPublisher.publish(topics.get(memberId), notificationMessage);
         }
@@ -87,6 +88,7 @@ public class NotificationServiceImpl implements NotificationService{
                     .title(title)
                     .url("/auctions/" + hash)
                     .notification(notification)
+                    .type(1)
                     .build();
             redisPublisher.publish(topics.get(memberId), notificationMessage);
         }
