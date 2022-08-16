@@ -1,11 +1,6 @@
 import axios from 'axios';
-<<<<<<< HEAD
-import { errorToast } from '../../lib/toast';
-import { getCookie, removeCookie, setCookie } from '../functions/cookies';
-import useLogout from '../hooks/useLogout';
-=======
 import { getCookie, setCookie } from '../functions/cookies';
->>>>>>> e8bc2a08dc270d74637fb9a97653074efe62fc58
+import useLogout from '../hooks/useLogout';
 
 const getAccessToken = () => {
   const accessToken = getCookie('accessToken');
@@ -14,16 +9,35 @@ const getAccessToken = () => {
 
 // TODO: Backend refresh 로직따라 삭제 가능
 const getLocalRefreshToken = () => {
-  const refreshToken = window.localStorage.getItem('refreshToken');
+  const refreshToken = localStorage.getItem('refreshToken');
   return refreshToken;
+};
+
+export const setRefreshToken = (refreshToken) => {
+  localStorage.setItem('refreshToken', refreshToken);
+};
+
+export const removeRefreshToken = () => {
+  localStorage.removeItem('refreshToken');
 };
 
 // TODO: Backend refresh 로직따라 변경 가능
 const getNewAccessToken = () => {
-  return instance.post('/api/refreshtoken', {
-    refreshToken: getLocalRefreshToken(),
+  return axiosInstance.get('/api/member/refresh', {
+    headers: {
+      Authorization: '',
+      'ACCESS-TOKEN': `Bearer ${getAccessToken()}`,
+      'REFRESH-TOKEN': `Bearer ${getLocalRefreshToken()}`,
+    },
   });
 };
+
+export const axiosInstance = axios.create({
+  baseURL: process.env.REACT_APP_API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
 export const instance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
@@ -52,29 +66,27 @@ instance.interceptors.response.use(
   },
   async (err) => {
     const originalConfig = err.config;
-    console.log(err);
+    console.log('originalConfig', originalConfig);
     if (err.response) {
-      if (err.response.status === 401 && !originalConfig._retry) {
-        originalConfig._retry = true;
+      console.log(err);
+      if (err.response.status === 401 && err.response.data?.error === 'TokenExpiredException') {
         try {
-          const newAccessToken = await getNewAccessToken();
-          const { accessToken } = newAccessToken.data;
+          const response = await getNewAccessToken();
+          console.log(response);
+          const { accessToken, refreshToken } = response.data;
           setCookie('accessToken', accessToken);
+          setRefreshToken(refreshToken);
           instance.defaults.headers.Authorization = `Bearer ${accessToken}`;
           return instance(originalConfig);
-        } catch (err) {
-          console.log(err);
-          if (err.response.status === 401 && err.response.data?.message === 'REFRESH_ERROR') {
-            removeCookie('accessToken');
-            removeRefreshToken();
-            errorToast('토큰이 만료되어 로그아웃되었습니다.');
-            setTimeout(() => {
-              window.location.href = '/';
-            }, 2000);
-            return;
+        } catch (error) {
+          if (error.response && error.response.data) {
+            return Promise.reject(error.response.data);
           }
-          return Promise.reject(err);
+          return Promise.reject(error);
         }
+      }
+      if (err.response.status === 403 && err.esponse.data?.message === 'REFRESH_ERROR') {
+        window.location.href = '/logout';
       }
       return Promise.reject(err);
     }
