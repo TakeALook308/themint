@@ -24,6 +24,10 @@ export const keywordState = atom({
   },
 });
 
+export const timeState = atom({
+  key: 'timeState',
+  default: 0,
+});
 export const deviceListState = atom({
   key: `deviceList/${v1()}`,
   default: {
