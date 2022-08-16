@@ -6,11 +6,13 @@ import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
 import SkeletonAuctionCard from '../../components/CardList/SkeletonAuctionCard';
 import InterestAuctionCard from './InterestAuctionCard';
 import { instance } from '../../utils/apis/api';
-import { useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 function ProfileInterestsPage({ params }) {
-  let { interestParams } = useParams();
+  const location = useLocation();
+  console.log(location);
   const [active, setActive] = useState(1);
+  console.log(active);
   const onKeyword = () => {
     setActive(1);
   };
@@ -32,7 +34,6 @@ function ProfileInterestsPage({ params }) {
       const response = await instance.delete(url);
       return response;
     };
-    console.log(auction.hash);
     const res = deleteInterest(`/api/interest/auction/${auction.hash}`);
     res.then(() => {
       setIsDeleted((prev) => {
@@ -70,8 +71,8 @@ function ProfileInterestsPage({ params }) {
         {active === 2 && <InterestCateList active={active} />}
         {active === 3 && (
           <InfiniteAuctionList
-            getUrl={getUrl(9)}
-            queryKey={[`${isDeleted}${active}${interestParams}`]}
+            getUrl={getUrl(params, 9)}
+            queryKey={[`${isDeleted}${active}${location.pathname}${params}`]}
             CardComponent={InterestAuctionCard}
             SkeltonCardComponent={SkeletonAuctionCard}
             text={'관심 경매 내역이 없습니다'}
