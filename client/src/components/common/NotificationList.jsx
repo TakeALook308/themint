@@ -37,7 +37,7 @@ function NotificationList({ setShow }) {
               <NotificationButton
                 to={`talks/${notification.roomId}`}
                 onClick={() => setShow(false)}>
-                <p>{notification.senderNickname}님이 보낸 메시지 🔔</p>
+                <p>{notification.senderNickname}님의 메시지 🔔</p>
                 <p>{notification.previewMsg}</p>
               </NotificationButton>
             </>
@@ -132,6 +132,9 @@ const NotificationButton = styled(Link)`
     &:first-child {
       font-weight: bold;
       margin-bottom: 0.25rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     &:last-child {
       font-size: ${(props) => props.theme.fontSizes.small};

@@ -108,13 +108,21 @@ function TalkRoomPage() {
 const ChatCard = ({ chat, previousChat, nextChat }) => {
   const myInformation = useRecoilValue(myInformationState);
   const date = new Date(chat.date);
+  const month = date.getMonth();
+  const days = date.getDate();
   const hour = date.getHours().toString().padStart(2, '0');
   const minutes = date.getMinutes().toString().padStart(2, '0');
   const nowMinutes = Math.floor((new Date(chat.date).getTime() / (1000 * 60)) % 60);
   const nextMinutes = Math.floor((new Date(nextChat?.date).getTime() / (1000 * 60)) % 60);
   const isSame = !!(chat.memberSeq === nextChat?.memberSeq);
+  const previousDate = new Date(previousChat?.date);
+  const previousMonth = previousDate?.getMonth();
+  const previousDays = previousDate?.getDate();
   return (
     <>
+      {(month !== previousMonth || days !== previousDays) && (
+        <Today>----------{`${month + 1}월 ${days}일`}-----------</Today>
+      )}
       {chat.memberSeq === myInformation.memberSeq ? (
         <MyTalk>
           {((isSame && nowMinutes - nextMinutes !== 0) || !isSame) && (
@@ -241,4 +249,8 @@ const TalkingContainer = styled.div`
   display: flex;
   align-items: end;
   gap: 0.5rem;
+`;
+
+const Today = styled.p`
+  text-align: center;
 `;

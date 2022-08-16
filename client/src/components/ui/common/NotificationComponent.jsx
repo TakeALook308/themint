@@ -39,7 +39,7 @@ function NotificationComponent({ toggleNotification, setShow }) {
             }
             if (messagedto.type === 2) {
               fireNotification('더민트', {
-                body: `${messagedto.title}: ${messagedto.notification}`,
+                body: `${messagedto.senderNickname} 메시지: ${messagedto.previewMsg}`,
               });
             }
 

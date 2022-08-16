@@ -43,7 +43,7 @@ function TalksPage() {
           ))}
         </TalksContainer>
         <RoutesContainer>
-          {!roomId && <p>다른 유저와 대화를 시작해보세요</p>}
+          {!roomId && <BeforeChatRoom>다른 유저와 대화를 시작해보세요</BeforeChatRoom>}
           <Routes>
             <Route path=":talkId" element={<TalkRoom />} />
           </Routes>
@@ -86,4 +86,14 @@ const Title = styled.h2`
 
 const RoutesContainer = styled.article`
   width: 50%;
+`;
+
+const BeforeChatRoom = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: ${(props) => props.theme.fontSizes.h5};
+  font-weight: bold;
 `;
