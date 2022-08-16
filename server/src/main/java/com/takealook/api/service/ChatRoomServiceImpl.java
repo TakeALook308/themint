@@ -43,7 +43,8 @@ public class ChatRoomServiceImpl implements ChatRoomService{
     private ChatRoomRepository chatRoomRepository;
     @Autowired
     private ChatMessageRepository chatMessageRepository;
-
+    @Autowired
+    ChatRoomMemberServiceImpl chatRoomMemberService;
     @PostConstruct
     private void init() {
         opsHashChatRoom = redisTemplate.opsForHash();
@@ -76,8 +77,13 @@ public class ChatRoomServiceImpl implements ChatRoomService{
         String roomId = seq1 + "to" + seq2;
         ChatRoom chatRoom = ChatRoom.create(roomId);
         opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom);
+        // 채팅방 db에 저장
         chatRoomRepository.save(chatRoom);
+        // 채팅방 토픽 생성
         enterChatRoom(chatRoom.getRoomId());
+        // 채팅방에 멤버 db 추가
+        chatRoomMemberService.saveChatRoomMember(roomId, oneOnOneChatRoomRegisterPostReq.getMemberSeq1());
+        chatRoomMemberService.saveChatRoomMember(roomId, oneOnOneChatRoomRegisterPostReq.getMemberSeq2());
         return chatRoom;
     }
 
