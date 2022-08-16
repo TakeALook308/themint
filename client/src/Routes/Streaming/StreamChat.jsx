@@ -1,13 +1,18 @@
 import React, { useState, useSelector, useEffect, useRef } from 'react';
 
 import styled from 'styled-components';
-
+import { IoIosSend } from 'react-icons/io';
 function StreamChat({ sendMessage, chat, userInfo }) {
   const [chatMessage, setChatMessage] = useState('');
 
-  const scrollRef = useRef();
+  useEffect(() => {
+    // scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+  }, [chatMessage]);
+
+  // const scrollRef = useRef();
   return (
     <Article>
+      {/* <ul ref={scrollRef}> */}
       <ul>
         {chat.map((item, i) => {
           if (item.type === 0) {
@@ -16,11 +21,10 @@ function StreamChat({ sendMessage, chat, userInfo }) {
             return <MyBox key={i}>{item.message}</MyBox>;
           } else {
             return (
-              <MyBox key={i}>
-                {/* <span>{item.nickname}</span> */}
-                {/* <p>{item.message}</p> */}
-                {item.message}
-              </MyBox>
+              <YourBox key={i}>
+                <span>{item.nickname}</span>
+                <p>{item.message}</p>
+              </YourBox>
             );
           }
         })}
@@ -48,7 +52,7 @@ function StreamChat({ sendMessage, chat, userInfo }) {
               setChatMessage('');
             }
           }}>
-          send
+          <IoIosSend size={20}></IoIosSend>
         </button>
       </SendBox>
     </Article>
@@ -67,7 +71,7 @@ const Article = styled.article`
 
   ul {
     flex-grow: 1;
-
+    padding: 10px;
     height: 100%;
     flex-basis: 0;
     display: flex;
@@ -86,6 +90,10 @@ const Article = styled.article`
     &::-webkit-scrollbar-thumb {
       background: rgba(206, 206, 206, 0.7);
       /* background-color: red; */
+    }
+
+    @media screen and (max-width: 768px) {
+      min-height: 300px;
     }
   }
   li {
@@ -114,40 +122,31 @@ const MyBox = styled.li`
   align-items: center;
   padding: 10px 15px;
   white-space: pre-wrap;
+  /* word-wrap: break-word; */
+  word-break: break-all;
 `;
 const YourBox = styled.li`
-  background-color: ${(props) => props.theme.colors.pointGray};
-  align-self: flex-end;
-
-  max-width: 80%;
-  border-radius: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px 15px;
-  white-space: pre-wrap;
-  /* position: relative;
+  position: relative;
   padding-top: 25px;
   align-self: flex-start;
-  width: 100%;
+  max-width: 80%;
   span {
     position: absolute;
-    
     top: 0;
   }
   p {
-    
     background-color: ${(props) => props.theme.colors.pointGray};
     align-self: flex-start;
-    flex-basis: 0;
-    max-width: 80%;
+
     border-radius: 5px;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 10px 15px;
     white-space: pre-wrap;
-  } */
+    /* word-wrap: break-word; */
+    word-break: break-all;
+  }
 `;
 const SendBox = styled.div`
   width: 100%;
@@ -166,6 +165,12 @@ const SendBox = styled.div`
   }
   button {
     width: 50px;
+    color: ${(props) => props.theme.colors.mainBlack};
+    background-color: ${(props) => props.theme.colors.subMint};
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    padding-top: 5px;
   }
 `;
 

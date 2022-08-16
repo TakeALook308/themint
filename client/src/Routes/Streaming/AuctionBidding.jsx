@@ -5,7 +5,7 @@ import { successToast, errorToast } from '../../lib/toast';
 import { fetchData } from '../../utils/apis/api';
 import { productApis } from '../../utils/apis/productApis';
 import GradientButton from '../../components/ButtonList/GradientButton';
-
+import { FaMinus, FaPlus } from 'react-icons/fa';
 function AuctionBidding({ products, sendPrice, price, producter, setNextProduct }) {
   const [nowProduct, setNowProduct] = useState(-1); // 현재 상품 index
   const [nowPrice, setNowPrice] = useState(0); // 현재 상품의 가격
@@ -132,7 +132,7 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct 
                   if (Number(myPrice) - 1000 > nowPrice) setMyPrice(Number(myPrice) - 1000);
                   else errorToast('현재 입찰가 보다 낮은 금액입니다.');
                 }}>
-                -
+                <FaMinus size={15} color="white"></FaMinus>
               </button>
               <p>
                 <input
@@ -140,6 +140,21 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct 
                   min={nowPrice}
                   value={myPrice}
                   onChange={(e) => setMyPrice(e.target.value)}
+                  // onKeyDown={(e) => {
+                  //   if (e.key === 'Enter' && AuctionStart) {
+                  //     if (myPrice > nowPrice) {
+                  //       sendPrice(myPrice, nowProduct, products[nowProduct].seq);
+                  //       setMyPrice(Number(myPrice) + 1000);
+                  //     } else if (
+                  //       myPrice === nowPrice &&
+                  //       price.length === 1 &&
+                  //       price[0].price === -1
+                  //     ) {
+                  //       sendPrice(myPrice, nowProduct, products[nowProduct].seq);
+                  //       setMyPrice(Number(myPrice) + 1000);
+                  //     } else errorToast('현재 입찰가 보다 낮은 금액입니다.');
+                  //   }
+                  // }}
                 />
               </p>
               <button
@@ -147,7 +162,7 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct 
                 onClick={() => {
                   setMyPrice(Number(myPrice) + 1000);
                 }}>
-                +
+                <FaPlus size={15} color="white"></FaPlus>
               </button>
             </div>
             <BidBtn
@@ -271,6 +286,19 @@ const PriceList = styled.div`
   height: 150px;
   overflow: auto;
   padding: 0 20px;
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar,
+  &::-webkit-scrollbar-thumb {
+    overflow: visible;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(206, 206, 206, 0.7);
+    /* background-color: red; */
+  }
   p {
     background-color: ${(props) => props.theme.colors.textGray};
     text-align: center;
@@ -299,13 +327,14 @@ const Bidding = styled.div`
     display: flex;
     justify-content: center;
     button {
-      width: 30px;
+      width: 35px;
       height: 40px;
       border: none;
     }
     .minus {
       background-color: ${(props) => props.theme.colors.pointBlue};
       border-radius: 5px 0 0 5px;
+      padding-top: 5px;
     }
     .plus {
       background-color: ${(props) => props.theme.colors.pointRed};
