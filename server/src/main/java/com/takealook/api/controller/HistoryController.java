@@ -137,6 +137,7 @@ public class HistoryController {
         // 유찰
         if(purchaseRegisterPostReq.getFinalPrice() == -1){
             productService.updateStatus(purchaseRegisterPostReq.getProductSeq(), 4);
+            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
         }
 
         // 낙찰
