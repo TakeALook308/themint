@@ -551,9 +551,11 @@ const shine = keyframes`
 `;
 
 const Button = styled.button`
-  margin: 10px 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: ${(props) => (props.size ? props.size : '30%')};
-  height: 25px;
+  height: 30px;
   background: ${(props) => props.theme.colors.gradientMintToPurple};
   border-radius: 5px;
   border: none;
