@@ -10,6 +10,7 @@ import com.takealook.api.service.ChatRoomService;
 import com.takealook.common.auth.MemberDetails;
 import com.takealook.common.model.response.BaseResponseBody;
 import com.takealook.db.entity.ChatMessage;
+import com.takealook.db.entity.ChatRoom;
 import com.takealook.db.entity.ChatRoomMember;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -82,6 +83,10 @@ public class ChatRoomController {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long jwtMemberSeq = memberDetails.getMemberSeq();
         String roomId = roomIdMap.get("roomId");
+        ChatRoom chatRoom = chatRoomService.getChatRoom(roomId);
+        // 채팅방 존재 여부 확인
+        if (chatRoom == null)
+            return ResponseEntity.status(409).body(BaseResponseBody.of(409, "존재하지 않은 채팅방입니다."));
         String[] memberSeqList = roomId.split("to");
         boolean flag = false;
         // 접근 권한 있는지 확인
@@ -93,7 +98,7 @@ public class ChatRoomController {
         }
         if (!flag) {
             // 접근 권한 없다면
-            ResponseEntity.status(403).body("채팅방에 입장하지 않은 사용자입니다.");
+            return ResponseEntity.status(403).body("채팅방에 입장하지 않은 사용자입니다.");
         }
         List<ChatMessage> chatMessages = chatMessageService.getChatMessages(roomId);
         List<ChatMessagesRes> chatMessagesRes = new ArrayList<>();
