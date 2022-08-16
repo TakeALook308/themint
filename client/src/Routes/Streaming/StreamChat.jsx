@@ -5,9 +5,19 @@ import { IoIosSend } from 'react-icons/io';
 function StreamChat({ sendMessage, chat, userInfo }) {
   const [chatMessage, setChatMessage] = useState('');
 
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   useEffect(() => {
-    // scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+    scrollToBottom();
   }, [chatMessage]);
+
+  // useEffect(() => {
+  //   // scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+  // }, [chatMessage]);
 
   // const scrollRef = useRef();
   return (
@@ -28,8 +38,8 @@ function StreamChat({ sendMessage, chat, userInfo }) {
             );
           }
         })}
+        <div ref={messagesEndRef}></div>
       </ul>
-
       <SendBox>
         <input
           type="text"
@@ -133,6 +143,7 @@ const YourBox = styled.li`
   span {
     position: absolute;
     top: 0;
+    width: 100%;
   }
   p {
     background-color: ${(props) => props.theme.colors.pointGray};

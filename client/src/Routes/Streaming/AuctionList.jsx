@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 function AuctionList({ products }) {
+  console.log('내부에서', products);
   return (
     <Article>
       <p>경매리스트</p>
@@ -11,6 +12,7 @@ function AuctionList({ products }) {
             <p>{item.productName}</p>
             <span>{item.startPrice.toLocaleString()}원~</span>
             {item.status === 1 ? <Finish>끝났습니다</Finish> : null}
+            {item.status === 4 ? <Finish>유찰입니다</Finish> : null}
           </li>
         ))}
       </List>

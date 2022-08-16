@@ -25,7 +25,7 @@ function StreamingHeader({ auctionInfo, countSub }) {
           <ul>
             <li onClick={() => doCopy(process.env.REACT_APP_API_URL + url)}>
               <BiLink size={25}></BiLink>
-              <span>복사</span>
+              <span>링크 복사</span>
             </li>
             <li>
               <AiOutlineBell size={25}></AiOutlineBell>
@@ -76,10 +76,11 @@ const HeadButtonSet = styled.div`
   justify-content: center;
   ul {
     display: flex;
-    gap: 25px;
+    gap: 5px;
     align-items: center;
     li {
-      font-size: 14px;
+      width: 50px;
+      font-size: 12px;
       display: flex;
       flex-direction: column;
       justify-content: center;

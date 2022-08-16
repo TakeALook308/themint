@@ -16,7 +16,6 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct 
   const [AuctionEnd, setAuctionEnd] = useState(false); //모든 상품의 경매가 진행되었는지 여부
 
   useEffect(() => {
-    // setNowProduct()
     console.log(products);
   }, []);
 
@@ -28,7 +27,7 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct 
         setNowPrice(products[price[0].index].startPrice);
         setAuctionStart(true);
         if (toggle === 1) {
-          setNextProduct(nowProduct);
+          // setNextProduct(nowProduct);
           setMyPrice(products[price[0].index].startPrice);
           // console.log('살려주세요');
         }
@@ -64,7 +63,6 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct 
     if (nowProduct < products.length - 1) {
       sendPrice(-1, nowProduct + 1, products[nowProduct + 1].seq);
     } else {
-      setNextProduct(nowProduct + 1);
       errorToast('경매가 종료되었습니다.');
       setAuctionEnd(true);
     }
@@ -73,7 +71,9 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct 
   const finishAuction = () => {
     stopClick();
     setAuctionStart(false);
-    successToast(`${price[price.length - 1].nickname}님이 낙찰되셨습니다. 축하합니다🥳🎉🎊`);
+    setNextProduct(nowProduct);
+    if (price[price.length - 1].price === -1) errorToast(`상품이 유찰되었습니다...😥`);
+    else successToast(`${price[price.length - 1].nickname}님이 낙찰되셨습니다. 축하합니다🥳🎉🎊`);
     if (producter)
       fetchData.post(productApis.PRODUCT_SUCCESS_API, {
         memberSeq: price[price.length - 1].memberSeq,
@@ -106,7 +106,7 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct 
             </div>
           </div>
         </AuctionInfo>
-        <Timer delay="30" ref={myRef} finishAuction={finishAuction}></Timer>
+        <Timer delay="5" ref={myRef} finishAuction={finishAuction}></Timer>
         <PriceList>
           {price.map((item, i) => {
             if (i !== 0) {
@@ -184,7 +184,11 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct 
       </Article>
     );
   else if (AuctionEnd) {
-    return <Article>모든 경매가 종료되었습니다.</Article>;
+    return (
+      <Article>
+        <div className="prev">모든 경매가 종료되었습니다.</div>
+      </Article>
+    );
   } else {
     return (
       <Article>
