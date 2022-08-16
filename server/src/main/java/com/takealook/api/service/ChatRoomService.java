@@ -14,6 +14,7 @@ public interface ChatRoomService {
     ChatRoom createOneOnOneChatRoom(OneOnOneChatRoomRegisterPostReq oneOnOneChatRoomRegisterPostReq);
     void enterChatRoom(String roomId);
 
+    ChatRoom getChatRoom(String roomId);
     List<ChatRoomsInterface> getChatRooms(Long memberSeq);
 
     void deleteChatRoom(String roomId);

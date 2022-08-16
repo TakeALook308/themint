@@ -104,6 +104,10 @@ public class ChatRoomServiceImpl implements ChatRoomService{
 //        }
     }
 
+    public ChatRoom getChatRoom(String roomId) {
+        return chatRoomRepository.getChatRoomByRoomId(roomId);
+    }
+
     // 1:1 대화 내역 보기
     @Override
     public List<ChatRoomsInterface> getChatRooms(Long memberSeq) {
