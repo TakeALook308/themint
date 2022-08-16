@@ -53,6 +53,7 @@ public class MemberServiceImpl implements MemberService {
                 .noticeKakao(memberRegisterPostReq.getNoticeKakao())
                 .noticeEmail(memberRegisterPostReq.getNoticeEmail())
                 .profileUrl(profileUrl) // 기본이미지
+                .status(1)
                 .build();
         return memberRepository.save(member);
     }

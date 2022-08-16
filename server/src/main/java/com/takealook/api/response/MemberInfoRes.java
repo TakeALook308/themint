@@ -15,7 +15,7 @@ import lombok.Setter;
 @Builder
 @ApiModel("MemberResponse")
 public class MemberInfoRes {
-	@ApiModelProperty(name="Member Id")
+	Long memberSeq;
 	String memberId;
 	String memberName;
 	String nickname;
@@ -33,6 +33,7 @@ public class MemberInfoRes {
 
 	public static MemberInfoRes of(Member member) {
 		MemberInfoRes res = MemberInfoRes.builder()
+				.memberSeq(member.getSeq())
 				.memberId(member.getMemberId())
 				.memberName(member.getMemberName())
 				.nickname(member.getNickname())

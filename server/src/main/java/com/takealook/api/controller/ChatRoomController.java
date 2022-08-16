@@ -4,7 +4,6 @@ import com.takealook.api.request.ChatRoomPostReq;
 import com.takealook.api.request.ChatRoomRegisterPostReq;
 import com.takealook.api.request.OneOnOneChatRoomRegisterPostReq;
 import com.takealook.api.response.ChatMessagesRes;
-import com.takealook.api.response.ChatRoomMemberCountRes;
 import com.takealook.api.service.ChatMessageService;
 import com.takealook.api.service.ChatRoomMemberService;
 import com.takealook.api.service.ChatRoomService;
@@ -79,12 +78,27 @@ public class ChatRoomController {
 
     // 채팅 내역 불러오기
     @PostMapping("/history")
-    public ResponseEntity<?> getChatHistory(@RequestBody Map<String, String> roomIdMap) {
+    public ResponseEntity<?> getChatHistory(@RequestBody Map<String, String> roomIdMap, @ApiIgnore Authentication authentication) {
+        MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
+        Long jwtMemberSeq = memberDetails.getMemberSeq();
         String roomId = roomIdMap.get("roomId");
+        String[] memberSeqList = roomId.split("to");
+        boolean flag = false;
+        // 접근 권한 있는지 확인
+        for (String memberSeq: memberSeqList) {
+            if (jwtMemberSeq == Long.parseLong(memberSeq)) {
+                flag = true;
+                continue;
+            }
+        }
+        if (!flag) {
+            // 접근 권한 없다면
+            ResponseEntity.status(403).body("채팅방에 입장하지 않은 사용자입니다.");
+        }
         List<ChatMessage> chatMessages = chatMessageService.getChatMessages(roomId);
         List<ChatMessagesRes> chatMessagesRes = new ArrayList<>();
         for (ChatMessage chatMessage: chatMessages) {
-            chatMessagesRes.add(ChatMessagesRes.of(chatMessage.getNickname(), chatMessage.getMessage(), chatMessage.getDate()));
+            chatMessagesRes.add(ChatMessagesRes.of(chatMessage.getMemberSeq(), chatMessage.getNickname(), chatMessage.getMessage(), chatMessage.getDate()));
         }
         return ResponseEntity.status(200).body(chatMessagesRes);
     }
