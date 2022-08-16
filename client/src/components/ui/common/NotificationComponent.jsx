@@ -32,7 +32,17 @@ function NotificationComponent({ toggleNotification, setShow }) {
               `notificationList/${myInformation.memberId}`,
               JSON.stringify([messagedto, ...notificationList]),
             );
-            fireNotification('더민트', { body: `${messagedto.title}: ${messagedto.notification}` });
+            if (messagedto.type === 1) {
+              fireNotification('더민트', {
+                body: `${messagedto.title}: ${messagedto.notification}`,
+              });
+            }
+            if (messagedto.type === 2) {
+              fireNotification('더민트', {
+                body: `${messagedto.title}: ${messagedto.notification}`,
+              });
+            }
+
             SetHasNewNotice(true);
           },
           (err) => {},

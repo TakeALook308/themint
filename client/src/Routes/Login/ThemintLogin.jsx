@@ -46,7 +46,6 @@ function ThemintLogin({ login }) {
             name="memberId"
             id="memberId"
             type="text"
-            autoComplete="off"
             {...register('memberId', {
               required: REGISTER_MESSAGE.REQUIRED_ID,
             })}
