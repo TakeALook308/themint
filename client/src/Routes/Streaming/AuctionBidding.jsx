@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import Timer from './Timer';
-import { errorToast } from '../../lib/toast';
+import { successToast, errorToast } from '../../lib/toast';
 import { fetchData } from '../../utils/apis/api';
 import { productApis } from '../../utils/apis/productApis';
+import GradientButton from '../../components/ButtonList/GradientButton';
 
 function AuctionBidding({ products, sendPrice, price, producter, setNextProduct }) {
   const [nowProduct, setNowProduct] = useState(-1); // 현재 상품 index
@@ -72,6 +73,7 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct 
   const finishAuction = () => {
     stopClick();
     setAuctionStart(false);
+    successToast(`${price[price.length - 1].nickname}님이 낙찰되셨습니다. 축하합니다🥳🎉🎊`);
     if (producter)
       fetchData.post(productApis.PRODUCT_SUCCESS_API, {
         memberSeq: price[price.length - 1].memberSeq,
@@ -117,9 +119,10 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct 
           })}
         </PriceList>
         {producter ? (
-          <button onClick={startAuction} disabled={AuctionStart}>
-            경매시작
-          </button>
+          <GradientButton
+            text="경매시작"
+            onClick={startAuction}
+            disabled={AuctionStart}></GradientButton>
         ) : (
           <Bidding>
             <div>
@@ -138,7 +141,6 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct 
                   value={myPrice}
                   onChange={(e) => setMyPrice(e.target.value)}
                 />
-                원
               </p>
               <button
                 className="plus"
@@ -148,7 +150,7 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct 
                 +
               </button>
             </div>
-            <button
+            <BidBtn
               className="bidding-btn"
               onClick={() => {
                 if (myPrice > nowPrice) {
@@ -161,7 +163,7 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct 
               }}
               disabled={!AuctionStart}>
               응찰
-            </button>
+            </BidBtn>
           </Bidding>
         )}
       </Article>
@@ -171,17 +173,68 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct 
   } else {
     return (
       <Article>
-        경매 시작 전입니다. {producter ? <button onClick={startAuction}>경매시작</button> : null}
+        <div className="prev">경매 시작 전입니다.</div>
+        {producter ? (
+          <GradientButton onClick={startAuction} text="경매시작"></GradientButton>
+        ) : (
+          <div className="blank"></div>
+        )}
       </Article>
     );
   }
 }
 
+const shine = keyframes`
+   0% {
+     background-position: 0% 50%;
+     }
+   50% {
+     background-position: 100% 50%;
+     }
+   100% {
+     background-position: 0% 50%;
+     }
+`;
+const BidBtn = styled.button`
+  width: 50px;
+  height: 40px;
+  background: ${(props) => props.theme.colors.gradientMintToPurple};
+  border-radius: 5px;
+  border: none;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  color: ${(props) => props.theme.colors.white};
+  font-weight: bold;
+  cursor: pointer;
+  background-size: 200% 200%;
+  border-radius: 5px;
+  transition: all 0.4s ease;
+  &:hover {
+    animation: ${shine} 3s infinite linear;
+  }
+  &:disabled {
+    background: ${(props) => props.theme.colors.disabledGray};
+    color: ${(props) => props.theme.colors.pointGray};
+    cursor: not-allowed;
+  }
+`;
 const Article = styled.article`
-  width: 100%;
   height: 300px;
   background-color: ${(props) => props.theme.colors.subBlack};
   border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  .prev {
+    height: 230px;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .blank {
+    height: 40px;
+    width: 100%;
+  }
 `;
 
 const AuctionInfo = styled.div`
@@ -239,25 +292,37 @@ const PriceList = styled.div`
 
 const Bidding = styled.div`
   display: flex;
-  height: 35px;
+  height: 40px;
   gap: 15px;
   justify-content: center;
   div {
     display: flex;
-
     justify-content: center;
     button {
       width: 30px;
+      height: 40px;
+      border: none;
     }
     .minus {
+      background-color: ${(props) => props.theme.colors.pointBlue};
+      border-radius: 5px 0 0 5px;
     }
     .plus {
+      background-color: ${(props) => props.theme.colors.pointRed};
+      border-radius: 0 5px 5px 0;
     }
     p {
       text-align: center;
 
       input {
-        height: 35px;
+        height: 40px;
+        outline: none;
+        background-color: ${(props) => props.theme.colors.pointBlack};
+        border: none;
+        text-align: center;
+        color: ${(props) => props.theme.colors.white};
+        font-size: 18px;
+        width: 120px;
       }
       input[type='number']::-webkit-outer-spin-button,
       input[type='number']::-webkit-inner-spin-button {

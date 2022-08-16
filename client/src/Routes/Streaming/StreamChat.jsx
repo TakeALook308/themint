@@ -12,14 +12,15 @@ function StreamChat({ sendMessage, chat, userInfo }) {
         {chat.map((item, i) => {
           if (item.type === 0) {
             return <ComeBox key={i}> {item.message}</ComeBox>;
-          } else if (item.memberSeq === userInfo.memberSeq) {
+          } else if (item.type !== 0 && item.memberSeq === userInfo.memberSeq) {
             return <MyBox key={i}>{item.message}</MyBox>;
           } else {
             return (
-              <YourBox key={i}>
-                <span>{item.nickname}</span>
-                <p>{item.message}</p>
-              </YourBox>
+              <MyBox key={i}>
+                {/* <span>{item.nickname}</span> */}
+                {/* <p>{item.message}</p> */}
+                {item.message}
+              </MyBox>
             );
           }
         })}
@@ -56,65 +57,102 @@ function StreamChat({ sendMessage, chat, userInfo }) {
 
 const Article = styled.article`
   width: 100%;
+  height: 100%;
   background-color: ${(props) => props.theme.colors.subBlack};
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  flex-grow: 1;
+  position: relative;
+
   ul {
+    flex-grow: 1;
+
+    height: 100%;
+    flex-basis: 0;
     display: flex;
     flex-direction: column;
     overflow: auto;
+    gap: 10px;
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar,
+    &::-webkit-scrollbar-thumb {
+      overflow: visible;
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(206, 206, 206, 0.7);
+      /* background-color: red; */
+    }
   }
   li {
+    flex-basis: 0;
   }
 `;
 const ComeBox = styled.li`
-  background-color: ${(props) => props.theme.colors.subMint};
+  background-color: #c0c0c0;
   align-self: center;
   color: ${(props) => props.theme.colors.subBlack};
   font-weight: 600;
   width: 80%;
-  margin: 10px;
   padding: 3px;
+  margin: 0 auto;
   border-radius: 5px;
   text-align: center;
 `;
 const MyBox = styled.li`
   background-color: ${(props) => props.theme.colors.pointGray};
   align-self: flex-end;
+
   max-width: 80%;
   border-radius: 5px;
-  min-height: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 5px;
-  padding: 5px 10px;
+  padding: 10px 15px;
+  white-space: pre-wrap;
 `;
 const YourBox = styled.li`
-  position: relative;
-  margin: 25px 5px 5px;
-  align-self: flex-start;
+  background-color: ${(props) => props.theme.colors.pointGray};
+  align-self: flex-end;
+
   max-width: 80%;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 15px;
+  white-space: pre-wrap;
+  /* position: relative;
+  padding-top: 25px;
+  align-self: flex-start;
+  width: 100%;
   span {
     position: absolute;
-    top: -24px;
+    
+    top: 0;
   }
   p {
+    
     background-color: ${(props) => props.theme.colors.pointGray};
+    align-self: flex-start;
+    flex-basis: 0;
+    max-width: 80%;
     border-radius: 5px;
-    min-height: 30px;
     display: flex;
+    justify-content: center;
     align-items: center;
-    padding: 5px 10px;
-  }
+    padding: 10px 15px;
+    white-space: pre-wrap;
+  } */
 `;
 const SendBox = styled.div`
-  bottom: 0;
   width: 100%;
   display: flex;
+  padding: 0 5px;
   gap: 10px;
   input {
     flex-grow: 1;

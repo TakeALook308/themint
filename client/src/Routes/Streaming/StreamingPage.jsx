@@ -5,8 +5,9 @@ import StreamingHeader from './StreamingHeader';
 import StreamChat from './StreamChat';
 import AuctionBidding from './AuctionBidding';
 import AuctionList from './AuctionList';
+
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { myInformationState, timeState } from '../../atoms';
+import { deviceListState, myInformationState, timeState } from '../../atoms';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { useParams } from 'react-router-dom';
@@ -22,6 +23,7 @@ function StreamingPage(props) {
   const [auctionInfo, setAuctionInfo] = useState({});
   const [auctionData, setAuctionData] = useState({});
   const [nextProduct, setNextProduct] = useState(-1);
+  const deviceList = useRecoilValue(deviceListState);
   // const [products, setProducts] = useState([]);
   const [products, setProducts] = useState([
     {
@@ -112,34 +114,33 @@ function StreamingPage(props) {
   };
   return (
     <Stream>
-      {/* <Header>
-        
-      </Header> */}
-      <Main>
-        <Section>
-          <StreamingHeader id="StreamingHeader" auctionInfo={auctionInfo} />
-          <AuctionList id="AuctionList" products={products} />
-          <TimeBar id="TimeBar" />
-          <StreamingComponent
-            id="StreamingComponent"
-            userInfo={userInfo}
-            auctionData={auctionData}
-            auctionId={auctionId}
-          />
-        </Section>
-        <Aside>
-          <AuctionBidding
-            products={products}
-            sendPrice={sendPrice}
-            price={priceList}
-            newTime={newTime}
-            producter={userInfo.memberSeq === auctionInfo.memberSeq ? true : false}
-            setNextProduct={setNextProduct}
-          />
+      <Ratio>
+        <Main>
+          <Section>
+            <StreamingHeader auctionInfo={auctionInfo} />
+            <AuctionList products={products} />
+            <TimeBar />
+            <StreamingComponent
+              userInfo={userInfo}
+              auctionData={auctionData}
+              auctionId={auctionId}
+              deviceList={deviceList}
+            />
+          </Section>
+          <Aside>
+            <AuctionBidding
+              products={products}
+              sendPrice={sendPrice}
+              price={priceList}
+              newTime={newTime}
+              producter={userInfo.memberSeq === auctionInfo.memberSeq ? true : false}
+              setNextProduct={setNextProduct}
+            />
 
-          <StreamChat sendMessage={sendMessage} chat={chat} userInfo={userInfo} />
-        </Aside>
-      </Main>
+            <StreamChat sendMessage={sendMessage} chat={chat} userInfo={userInfo} />
+          </Aside>
+        </Main>
+      </Ratio>
     </Stream>
   );
 }
@@ -149,13 +150,32 @@ const Stream = styled.div`
   top: 0;
   left: 0;
   width: 100%;
+  height: calc(100% - 40px);
+  overflow: hidden;
+  @media screen and (max-width: 768px) {
+    position: relative;
+    overflow: visible;
+    height: 100%;
+  }
 `;
 
+const Ratio = styled.div`
+  padding-top: 56.25%;
+  width: 100%;
+  height: 100%;
+  @media screen and (max-width: 768px) {
+    padding-top: 0;
+  }
+`;
 const Main = styled.main`
+  position: absolute;
+  top: 0;
   display: flex;
   width: 100%;
+  height: 100%;
   @media screen and (max-width: 768px) {
     flex-direction: column;
+    position: relative;
   }
 `;
 
@@ -167,10 +187,12 @@ const Main = styled.main`
 const Section = styled.section`
   display: flex;
   flex-direction: column;
-  /* width: 100%; */
-  margin: 10px 5px 10px 0;
+  width: 100%;
+  padding: 10px 5px 10px 0;
+  /* margin: 10px 5px 10px 0; */
   gap: 10px;
   flex-grow: 3;
+  flex-basis: 0;
   #StreamingHeader {
     height: 250px;
   }
@@ -179,10 +201,11 @@ const Section = styled.section`
 const Aside = styled.aside`
   display: flex;
   flex-direction: column;
-  /* width: 100%; */
+
   flex-grow: 1;
-  margin: 10px 0 10px 5px;
+  padding: 10px 0 10px 5px;
   gap: 10px;
+  flex-basis: 0;
 `;
 
 export default StreamingPage;
