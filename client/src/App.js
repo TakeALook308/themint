@@ -17,11 +17,17 @@ function App() {
   const [queryClient] = useState(() => new QueryClient());
   const [loading, setLoading] = useState(false);
   const token = getCookie('accessToken');
+  const [toggleNotification, setToggleNotifiaction] = useState(false);
+
   useEffect(() => {
     (async () => {
       if (token) {
-        const response = await fetchData.get(userApis.MY_BASIC_INFORMATION);
-        setMyInformation(response.data);
+        try {
+          const response = await fetchData.get(userApis.MY_BASIC_INFORMATION);
+          setMyInformation(response.data);
+        } catch (err) {
+          console.log(err);
+        }
       }
       setLoading(true);
     })();
@@ -30,7 +36,10 @@ function App() {
   return (
     <HelmetProvider>
       <Suspense fullback={<h1>Loading...</h1>}>
-        <Container>
+        <Container
+          onClick={(e) => {
+            setToggleNotifiaction(false);
+          }}>
           <ToastContainer
             position="top-center"
             autoClose={3000}
@@ -44,7 +53,10 @@ function App() {
           />
           {loading && (
             <QueryClientProvider client={queryClient}>
-              <Router />
+              <Router
+                toggleNotification={toggleNotification}
+                setToggleNotifiaction={setToggleNotifiaction}
+              />
               <ReactQueryDevtools initialIsOpen={false} />
             </QueryClientProvider>
           )}
@@ -57,7 +69,6 @@ function App() {
 export default App;
 
 const Container = styled.div`
-  max-width: 1024px;
   margin-left: auto;
   margin-right: auto;
 `;

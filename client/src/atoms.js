@@ -1,4 +1,4 @@
-import { atom, selector, selectorFamily } from 'recoil';
+import { atom, atomFamily } from 'recoil';
 import { getCookie } from './utils/functions/cookies';
 import { v1 } from 'uuid';
 import Session from './utils/functions/storage';
@@ -39,4 +39,12 @@ export const deviceListState = atom({
     videoId: '',
     microPhoneId: '',
   },
+});
+
+export const notificationListFamilyState = atomFamily({
+  key: `notificationList/${v1()}`,
+  default: (param) =>
+    localStorage.getItem(`notificationList/${param}`)
+      ? JSON.parse(localStorage.getItem(`notificationList/${param}`))
+      : [],
 });
