@@ -5,7 +5,6 @@ import { ActiveInput } from '../../style/style';
 import { LOGIN_MESSAGE, REGISTER_MESSAGE } from '../../utils/constants/constant';
 import GradientButton from '../../components/ButtonList/GradientButton';
 import ValidationMessage from '../../components/common/ValidationMessage';
-import useSetLoggedIn from '../../utils/hooks/useLogin';
 
 function ThemintLogin({ login }) {
   const {
@@ -20,13 +19,17 @@ function ThemintLogin({ login }) {
     },
   });
 
-  const setLoggedIn = useSetLoggedIn();
-
   const onValid = async (data) => {
     try {
-      await setLoggedIn(login, data);
+      const response = await login.login(data);
+      const {
+        data: { memberId, memberSeq, nickname, accessToken },
+      } = response;
+      login.setUserInfo({ memberId, memberSeq, nickname });
+      login.setToken({ accessToken });
+      login.moveToMain(nickname);
+      login.setLogged(true);
     } catch (err) {
-      console.log(err);
       if (err.response.status === 409) {
         setError('memberId', { message: LOGIN_MESSAGE.FAILED_LOGIN });
         return;

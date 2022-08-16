@@ -1,6 +1,5 @@
 package com.takealook.api.controller;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.takealook.api.request.AuctionRegisterPostReq;
 import com.takealook.api.request.AuctionUpdatePatchReq;
 import com.takealook.api.response.AuctionListEntityRes;
@@ -8,6 +7,7 @@ import com.takealook.api.response.AuctionListRes;
 import com.takealook.api.response.AuctionRes;
 import com.takealook.api.response.AuctionStandByRes;
 import com.takealook.api.service.*;
+import com.takealook.chat.RedisPublisher;
 import com.takealook.common.auth.MemberDetails;
 import com.takealook.common.exception.auction.AuctionDeleteFailException;
 import com.takealook.common.exception.auction.AuctionUpdateFailException;
@@ -15,6 +15,7 @@ import com.takealook.common.exception.code.ErrorCode;
 import com.takealook.common.model.response.BaseResponseBody;
 import com.takealook.db.entity.*;
 import io.swagger.annotations.Api;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,9 +34,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 @Api(value = "경매 API", tags = {"Auction"})
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/auction")
 public class AuctionController {
@@ -63,6 +66,11 @@ public class AuctionController {
 
     @Autowired
     ProductDeliveryService productDeliveryService;
+
+    @Autowired
+    NotificationService notificationService;
+
+    private final RedisPublisher redisPublisher;
 
     @PostMapping
     public ResponseEntity<?> registerAuction(@RequestPart("auctionInfo")AuctionRegisterPostReq auctionRegisterPostReq, @RequestPart(required = false) List<MultipartFile> auctionImageList, @ApiIgnore Authentication authentication) {
@@ -129,10 +137,25 @@ public class AuctionController {
         for (Product product : productList){
             productDeliveryService.deleteByProductSeq(product.getSeq());
         }
+        interestAuctionService.deleteAuction(memberSeq, auctionHash);
         historyService.deleteSalesHistory(productList);
         productService.deleteProductList(auctionSeq);
         auctionImageService.deleteAuctionImageList(auctionSeq);
         auctionService.deleteAuction(auctionSeq);
+        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
+    }
+
+    @PatchMapping("/end")
+    public ResponseEntity<? extends BaseResponseBody> auctionTerminate(@RequestBody Map<String, String> auctionMap){
+        String hash = auctionMap.get("hash");
+        Auction auction = auctionService.getAuctionByHash(hash);
+        auctionService.updateAuctionStatus(auction.getSeq(), 2);
+        List<Product> productList = productService.getProductListByAuctionSeq(auction.getSeq());
+        for (Product product : productList){
+            if(product.getStatus() == 0){
+                productService.updateStatus(product.getSeq(), 4);
+            }
+        }
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
     }
 
@@ -266,5 +289,26 @@ public class AuctionController {
     public ResponseEntity<?> getServerTime() {
         String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         return ResponseEntity.status(200).body(date);
+    }
+
+    // 관심 경매 시작 알림메시지 전송
+    @PostMapping("/notice")
+    public ResponseEntity<?> sendInterestAuctionNotificationMessage(@RequestBody Map<String, String> auctionHash) {
+        String hash = auctionHash.get("hash");
+        List<String> memberIdList = interestAuctionService.getMemberListByHash(hash);
+        Auction auction = auctionService.getAuctionByHash(hash);
+        auctionService.updateAuctionStatus(auction.getSeq(), 1); // 경매 상태 1로 변경(시작됨)
+        for(String memberId: memberIdList) {
+            String notification = memberId + "님의 관심 경매가 시작됐어요!";
+            NotificationMessage notificationMessage = NotificationMessage.builder()
+                    .memberId(memberId)
+                    .title(auction.getTitle())
+                    .url("/streamings/" + hash)
+                    .notification(notification)
+                    .type(1)
+                    .build();
+            redisPublisher.publish(notificationService.getTopic(memberId), notificationMessage);
+        }
+        return ResponseEntity.status(200).body("success");
     }
 }

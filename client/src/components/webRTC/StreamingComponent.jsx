@@ -89,7 +89,6 @@ class StreamingComponent extends Component {
       },
       () => {
         var mySession = this.state.session;
-        console.log('mySession,', mySession);
 
         // --- 3) Specify the actions when events take place in the session ---
 
@@ -145,7 +144,7 @@ class StreamingComponent extends Component {
                   resolution: '640x480', // The resolution of your video
                   frameRate: 60, // The frame rate of your video
                   insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
-                  mirror: true, // Whether to mirror your local video or not
+                  mirror: false, // Whether to mirror your local video or not
                 });
 
                 // --- 6) Publish your stream ---
@@ -171,6 +170,7 @@ class StreamingComponent extends Component {
       },
     );
   }
+
   leaveSession() {
     // --- 7) Leave the session by calling 'disconnect' method over the Session object ---
 
@@ -231,10 +231,14 @@ class StreamingComponent extends Component {
   render() {
     const mySessionId = this.state.mySessionId;
     const myUserName = this.state.myUserName;
+<<<<<<< HEAD
 
     // console.log(this.props.userInfo);
 
     console.log('여기여기', this.props.deviceList);
+=======
+    // console.log(this.props.userInfo);
+>>>>>>> c6f13abc577a9a4d6e0d3cb9a57ea7ae5ac0023f
 
     return (
       <div className="container">

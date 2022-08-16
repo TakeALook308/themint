@@ -16,6 +16,7 @@ public interface MemberService {
 
     Member getMemberKakao(String access_token) throws Exception;
 
+    List<Member> getMemberListByWord(String word, String nickname, Pageable pageable);
     List<Member> getMemberListByWord(String word, Pageable pageable);
 
     // 회원 정보 보기

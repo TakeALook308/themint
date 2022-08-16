@@ -53,6 +53,7 @@ public class MemberServiceImpl implements MemberService {
                 .noticeKakao(memberRegisterPostReq.getNoticeKakao())
                 .noticeEmail(memberRegisterPostReq.getNoticeEmail())
                 .profileUrl(profileUrl) // 기본이미지
+                .status(1)
                 .build();
         return memberRepository.save(member);
     }
@@ -140,6 +141,16 @@ public class MemberServiceImpl implements MemberService {
             e.printStackTrace();
         }
         return member;
+    }
+
+    @Override
+    public List<Member> getMemberListByWord(String word, String nickname, Pageable pageable) {
+        List<Member> memberList = null;
+        if (word == null) {
+            word = "";
+        }
+        memberList = memberRepository.findAllByNicknameContainsAndNicknameIsNot(word, nickname, pageable);
+        return memberList;
     }
 
     @Override

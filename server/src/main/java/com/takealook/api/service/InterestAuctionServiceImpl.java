@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +57,8 @@ public class InterestAuctionServiceImpl implements InterestAuctionService {
 
     @Override
     public List<Auction> getInterestAuctionListByMemberSeq(Long memberSeq, Pageable pageable) {
-        List<InterestAuction> interestAuctionList = interestAuctionRepository.findAllByMemberSeq(memberSeq, pageable);
+        String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        List<InterestAuction> interestAuctionList = interestAuctionRepository.findAllByMemberSeqAndStartTimeAfterOrStatus(memberSeq, currentTime, pageable);
         List<Auction> auctionList = new ArrayList<>();
         for (InterestAuction interestAuction : interestAuctionList) {
             Auction auction = auctionRepository.findByHash(interestAuction.getHash()).get();
@@ -99,5 +102,10 @@ public class InterestAuctionServiceImpl implements InterestAuctionService {
         } else {
             return true;
         }
+    }
+
+    @Override
+    public List<String> getMemberListByHash(String hash) {
+        return interestAuctionRepository.getMemberListByAuctionHash(hash);
     }
 }

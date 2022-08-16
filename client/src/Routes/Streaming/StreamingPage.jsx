@@ -5,7 +5,6 @@ import StreamingHeader from './StreamingHeader';
 import StreamChat from './StreamChat';
 import AuctionBidding from './AuctionBidding';
 import AuctionList from './AuctionList';
-
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { deviceListState, myInformationState, timeState } from '../../atoms';
 import SockJS from 'sockjs-client';
@@ -136,7 +135,6 @@ function StreamingPage(props) {
               producter={userInfo.memberSeq === auctionInfo.memberSeq ? true : false}
               setNextProduct={setNextProduct}
             />
-
             <StreamChat sendMessage={sendMessage} chat={chat} userInfo={userInfo} />
           </Aside>
         </Main>
