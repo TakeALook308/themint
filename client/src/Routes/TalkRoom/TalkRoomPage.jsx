@@ -34,7 +34,6 @@ function TalkRoomPage() {
     client = Stomp.over(sock);
     client.connect({}, () => {
       console.log('Connected : ' + roomId);
-      //연결 후 데이터 가져오기
       client.subscribe(
         '/sub/chat/room/' + roomId,
         function (message) {
@@ -43,7 +42,6 @@ function TalkRoomPage() {
         },
         (err) => {},
       );
-      //종료
       return () => client.disconnect();
     });
   }, [roomId]);
