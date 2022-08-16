@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import SockJS from 'sockjs-client';
@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { myInformationState } from '../../atoms';
 import { fetchData } from '../../utils/apis/api';
 import { socketApis } from '../../utils/apis/socketApis';
+import { IoIosSend } from 'react-icons/io';
 
 let sock;
 let client;
@@ -14,6 +15,7 @@ function TalkRoomPage() {
   const myInformation = useRecoilValue(myInformationState);
   const [chatList, setChatList] = useState([]);
   const [chat, setChat] = useState('');
+  const [prevChat, setPrevChat] = useState({});
   const { roomId } = useParams();
   useEffect(() => {
     (async () => {
@@ -67,42 +69,86 @@ function TalkRoomPage() {
     );
   };
 
+  // 채팅 스크롤 아래로 내려주기
+  const messagesEndRef = useRef(null);
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatList]);
+
   return (
     <Container>
       <ChatContainer>
-        {chatList.map((chat, i) => (
-          <ChatCard key={i} chat={chat} />
-        ))}
+        <ChatScroll>
+          {chatList.map((chat, i) => (
+            <MemoizedChat
+              key={i}
+              chat={chat}
+              previousChat={chatList[i - 1]}
+              nextChat={chatList[i + 1]}
+            />
+          ))}
+          <div ref={messagesEndRef}></div>
+        </ChatScroll>
       </ChatContainer>
       <Form onSubmit={onSubmit}>
-        <ChatInput value={chat} onChange={(e) => setChat(e.target.value)} />
-        <button type="submit">전송</button>
+        <ChatInput
+          value={chat}
+          onChange={(e) => setChat(e.target.value)}
+          placeholder="채팅 메세지를 입력해주세요."
+        />
+        <SendButton type="submit">
+          <IoIosSend />
+        </SendButton>
       </Form>
     </Container>
   );
 }
 
-const ChatCard = ({ chat }) => {
+const ChatCard = ({ chat, previousChat, nextChat }) => {
   const myInformation = useRecoilValue(myInformationState);
-
+  const date = new Date(chat.date);
+  const hour = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  const nowMinutes = Math.floor((new Date(chat.date).getTime() / (1000 * 60)) % 60);
+  const nextMinutes = Math.floor((new Date(nextChat?.date).getTime() / (1000 * 60)) % 60);
+  const isSame = !!(chat.memberSeq === nextChat?.memberSeq);
+  console.log(isSame);
   return (
     <>
       {chat.memberSeq === myInformation.memberSeq ? (
         <MyTalk>
-          <p>{chat.nickname}</p>
-          <p>{chat.message}</p>
-          <p>{chat.data}</p>
+          {((isSame && nowMinutes - nextMinutes !== 0) || !isSame) && (
+            <DateText>
+              <small>
+                {hour}:{minutes}
+              </small>
+            </DateText>
+          )}
+          <Talking active={true}>{chat.message}</Talking>
         </MyTalk>
       ) : (
-        <div>
-          <p>{chat.nickname}</p>
-          <p>{chat.message}</p>
-          <p>{chat.data}</p>
-        </div>
+        <YourTalk>
+          {chat.memberSeq !== previousChat?.memberSeq && <Nickname>{chat.nickname}</Nickname>}
+          <TalkingContainer>
+            <Talking>{chat.message}</Talking>
+            {((isSame && nowMinutes - nextMinutes !== 0) || !isSame) && (
+              <DateText>
+                <small>
+                  {hour}:{minutes}
+                </small>
+              </DateText>
+            )}
+          </TalkingContainer>
+        </YourTalk>
       )}
     </>
   );
 };
+
+const MemoizedChat = React.memo(ChatCard);
 
 export default TalkRoomPage;
 
@@ -112,28 +158,90 @@ const Container = styled.div`
   background-color: ${(props) => props.theme.colors.subBlack};
   position: relative;
   color: ${(props) => props.theme.colors.white};
-  padding: 3rem;
 `;
 
-const ChatContainer = styled.div`
+const ChatContainer = styled.article`
   height: 90%;
   overflow-y: scroll;
 `;
 
+const ChatScroll = styled.div`
+  padding: 2rem;
+`;
+
 const ChatInput = styled.input`
-  width: 90%;
+  width: 100%;
+  background-color: ${(props) => props.theme.colors.pointBlack};
+  border: none;
+  outline: none;
+  height: 40px;
+  border-radius: 5px;
+  color: ${(props) => props.theme.colors.white};
+  padding-left: 1rem;
+  padding-right: 3rem;
 `;
 
 const Form = styled.form`
   position: relative;
   width: 100%;
-  padding: 0 1rem;
+  padding: 0 2rem;
   bottom: 0;
   height: 10%;
+  display: flex;
+  align-items: center;
 `;
 
 const MyTalk = styled.div`
   width: 100%;
   display: flex;
   justify-content: end;
+  margin-top: 0.5rem;
+  align-items: end;
+  gap: 0.5rem;
+`;
+
+const YourTalk = styled.article`
+  width: 100%;
+  line-height: 1;
+  > div {
+    margin-top: 0.5rem;
+    display: flex;
+  }
+`;
+
+const DateText = styled.p`
+  font-size: ${(props) => props.theme.fontSizes.small};
+`;
+
+const Talking = styled.p`
+  background-color: ${(props) =>
+    props.active ? props.theme.colors.pointGray : props.theme.colors.disabledGray};
+  padding: 0.25rem 0.5rem;
+  border-radius: 5px;
+  max-width: 250px;
+  word-wrap: break-word;
+`;
+
+const SendButton = styled.button`
+  position: absolute;
+  right: 0;
+  height: 25px;
+  width: 25px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  margin-right: 3rem;
+`;
+
+const Nickname = styled.p`
+  font-size: 14px;
+  font-weight: bold;
+`;
+
+const TalkingContainer = styled.div`
+  display: flex;
+  align-items: end;
+  gap: 0.5rem;
 `;

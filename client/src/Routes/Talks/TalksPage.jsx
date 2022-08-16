@@ -24,7 +24,7 @@ function TalksPage(props) {
 export default TalksPage;
 
 const TalkSection = styled.section`
-  min-height: calc(100vh - 341px);
+  height: calc(100vh - 341px);
   width: 100%;
   background-color: ${(props) => props.theme.colors.subBlack};
   display: flex;
