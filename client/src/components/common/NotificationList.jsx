@@ -24,10 +24,24 @@ function NotificationList({ setShow }) {
       {!notificationList?.length && <NotList>알림이 없습니다.</NotList>}
       {notificationList?.map((notification, i) => (
         <NotificationCard key={i}>
-          <NotificationButton to={`${notification.url}`} onClick={() => setShow(false)}>
-            <p>{notification.title} 🔔</p>
-            <p>{notification.notification}</p>
-          </NotificationButton>
+          {notification.type === 1 && (
+            <>
+              <NotificationButton to={`${notification.url}`} onClick={() => setShow(false)}>
+                <p>{notification.title} 🔔</p>
+                <p>{notification.notification}</p>
+              </NotificationButton>
+            </>
+          )}
+          {notification.type === 2 && (
+            <>
+              <NotificationButton
+                to={`talks/${notification.roomId}`}
+                onClick={() => setShow(false)}>
+                <p>{notification.senderNickname}님이 보낸 메시지 🔔</p>
+                <p>{notification.previewMsg}</p>
+              </NotificationButton>
+            </>
+          )}
           <DeleteButton onClick={() => deleteNotification(i)}>
             <MdClose />
           </DeleteButton>
