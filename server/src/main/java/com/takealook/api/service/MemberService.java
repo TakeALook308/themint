@@ -16,6 +16,7 @@ public interface MemberService {
 
     Member getMemberKakao(String access_token) throws Exception;
 
+    List<Member> getMemberListByWord(String word, String nickname, Pageable pageable);
     List<Member> getMemberListByWord(String word, Pageable pageable);
 
     // 회원 정보 보기
@@ -40,7 +41,7 @@ public interface MemberService {
     void setNewPassword(MemberSetNewPwdPatchReq memberSetNewPwdPatchReq);
 
     // 회원 삭제
-    void deleteMember(Long memberSeq);
+    void updateMemberStatus(Long memberSeq);
 
     // 아이디로 회원 찾기
     Member getMemberByMemberId(String memberId);

@@ -27,7 +27,7 @@ public class DeliveryController {
     ProductService productService;
 
     @PatchMapping("/trackingno")
-    public ResponseEntity<? extends BaseResponseBody> updateTrackingno(@RequestBody TrackingNoRegisterPostReq trackingnoRegisterPostReq, @ApiIgnore Authentication authentication){
+    public ResponseEntity<? extends BaseResponseBody> updateTrackingno(@RequestBody TrackingNoRegisterPostReq trackingnoRegisterPostReq){
         int result = productDeliveryService.updateTrackingno(trackingnoRegisterPostReq);
         productService.updateStatus(trackingnoRegisterPostReq.getProductSeq(), 3);
         if(result == 1) {

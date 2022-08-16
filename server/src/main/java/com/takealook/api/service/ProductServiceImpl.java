@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -37,12 +38,12 @@ public class ProductServiceImpl implements ProductService {
             word = "";
         }
         List<Product> productList = null;
-        if (sort.equals("startPrice")) { // 낮은가격순
+        if ("startPrice".equals(sort)) { // 낮은가격순
             Pageable sortPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(sort).ascending());
             productList = productRepository.findAllByProductNameContainsAndStartTimeAfter(word, currentTime, sortPageable);
-        } else if (sort.equals("startTime")) { // 경매임박순
+        } else if ("startTime".equals(sort)) { // 경매임박순
             productList = productRepository.findAllByProductNameContainsAndStartTimeAfterOrderByStartTime(word, currentTime, pageable);
-        } else if (sort.equals("auctionSeq")) { // 최신등록순
+        } else if ("auctionSeq".equals(sort)) { // 최신등록순
             Pageable sortPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(sort).descending());
             productList = productRepository.findAllByProductNameContainsAndStartTimeAfterOrderByAuctionSeq(word, currentTime, sortPageable);
         } else { // 인기순
@@ -118,6 +119,7 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    @Transactional
     @Override
     public void deleteProductList(Long auctionSeq) {
         productRepository.deleteAllByAuctionSeq(auctionSeq);

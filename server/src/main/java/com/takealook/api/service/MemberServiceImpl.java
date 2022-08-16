@@ -53,6 +53,7 @@ public class MemberServiceImpl implements MemberService {
                 .noticeKakao(memberRegisterPostReq.getNoticeKakao())
                 .noticeEmail(memberRegisterPostReq.getNoticeEmail())
                 .profileUrl(profileUrl) // 기본이미지
+                .status(1)
                 .build();
         return memberRepository.save(member);
     }
@@ -143,6 +144,16 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public List<Member> getMemberListByWord(String word, String nickname, Pageable pageable) {
+        List<Member> memberList = null;
+        if (word == null) {
+            word = "";
+        }
+        memberList = memberRepository.findAllByNicknameContainsAndNicknameIsNot(word, nickname, pageable);
+        return memberList;
+    }
+
+    @Override
     public List<Member> getMemberListByWord(String word, Pageable pageable) {
         List<Member> memberList = null;
         if (word == null) {
@@ -194,9 +205,8 @@ public class MemberServiceImpl implements MemberService {
 
 
     @Override
-    public void deleteMember(Long memberSeq) {
-        // 토큰으로 회원 정보 확인 후, pwd 같은지 확인
-        memberRepository.deleteMemberBySeq(memberSeq);
+    public void updateMemberStatus(Long memberSeq) {
+        memberRepository.updateMemberStatus(memberSeq);
     }
 
     @Override

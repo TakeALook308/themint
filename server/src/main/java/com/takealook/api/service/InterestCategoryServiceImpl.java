@@ -42,4 +42,9 @@ public class InterestCategoryServiceImpl implements InterestCategoryService{
     public void deleteCategory(Long memberSeq, Long categorySeq) {
         interestCategoryRepository.deleteByMemberSeqAndCategorySeq(memberSeq, categorySeq);
     }
+
+    @Override
+    public List<String> getMemberListByCategorySeq(Long categorySeq) {
+        return interestCategoryRepository.getMemberListByCategorySeq(categorySeq);
+    }
 }
