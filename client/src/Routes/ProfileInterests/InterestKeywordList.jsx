@@ -39,6 +39,7 @@ function InterestKeywordList() {
   // 키보드 엔터로 키워드 추가
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
+      console.log(e.key);
       onClick();
     }
   };
@@ -77,7 +78,7 @@ function InterestKeywordList() {
     <Container>
       <AddKeyword>
         <InputBoxContainer>
-          <ActiveInputBox
+          <input
             name="InterestWord"
             type="text"
             placeholder="키워드를 추가하려면 입력하세요"
@@ -113,9 +114,20 @@ const AddKeyword = styled.div`
 `;
 
 const InputBoxContainer = styled.div`
-  width: 25%;
+  width: 30%;
   margin-bottom: 30px;
   margin-right: 30px;
+  > input {
+    background-color: ${(props) => props.theme.colors.pointBlack};
+    padding-left: 15px;
+    border-radius: 5px;
+    border: none;
+    width: 100%;
+    height: 40px;
+    font-size: 20px;
+    outline: none;
+    color: ${(props) => props.theme.colors.white};
+  }
 `;
 
 const ButtonContainer = styled.div`
