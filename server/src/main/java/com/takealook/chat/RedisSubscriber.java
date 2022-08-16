@@ -3,6 +3,7 @@ package com.takealook.chat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.takealook.db.entity.ChatMessage;
+import com.takealook.db.entity.ChatNotificationMessage;
 import com.takealook.db.entity.NotificationMessage;
 import com.takealook.db.entity.ProductPrice;
 import lombok.RequiredArgsConstructor;
@@ -49,9 +50,15 @@ public class RedisSubscriber implements MessageListener {
                 // Websocket 구독자에게 메시지 Send
                 messagingTemplate.convertAndSend("/sub/chat/room/" + priceMessage.getRoomId(), priceMessage);
             }
-            else { // 알림 메시지를 받았다면
+            // 알림 메시지를 받았다면
+            else if (publishMessage.contains("notification")){
                 NotificationMessage notificationMessage = objectMapper.readValue(publishMessage, NotificationMessage.class);
                 messagingTemplate.convertAndSend("/sub/notice/" + notificationMessage.getMemberId(), notificationMessage);
+            }
+            // 1:1 채팅 알림 메시지를 받았다면
+            else {
+                ChatNotificationMessage chatNotificationMessage = objectMapper.readValue(publishMessage, ChatNotificationMessage.class);
+                messagingTemplate.convertAndSend("/sub/notice/" + chatNotificationMessage.getReceiverId(), chatNotificationMessage);
             }
         } catch (Exception e) {
             log.error(e.getMessage());

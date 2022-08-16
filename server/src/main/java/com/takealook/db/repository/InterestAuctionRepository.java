@@ -13,7 +13,8 @@ import java.util.List;
 @Repository
 public interface InterestAuctionRepository extends JpaRepository<InterestAuction, Long> {
     InterestAuction findByMemberSeqAndHash(Long memberSeq, String hash);
-    List<InterestAuction> findAllByMemberSeq(Long memberSeq, Pageable pageable);
+    @Query(value = "SELECT * FROM interest_auction i LEFT JOIN auction a ON i.hash = a.hash WHERE i.member_seq = :memberSeq AND (a.start_time > :currentTime OR a.status = 1)", nativeQuery = true)
+    List<InterestAuction> findAllByMemberSeqAndStartTimeAfterOrStatus(Long memberSeq, String currentTime, Pageable pageable);
     @Transactional // update, delete 필수
     @Modifying(clearAutomatically = true) // 영속성 컨텍스트 초기화
     int deleteByMemberSeqAndHash(Long memberSeq, String hash);
