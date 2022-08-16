@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { getCookie, setCookie } from '../functions/cookies';
-import useLogout from '../hooks/useLogout';
+import { errorToast } from '../../lib/toast';
+import { getCookie, removeCookie, setCookie } from '../functions/cookies';
 
 const getAccessToken = () => {
   const accessToken = getCookie('accessToken');
@@ -66,7 +66,7 @@ instance.interceptors.response.use(
   },
   async (err) => {
     const originalConfig = err.config;
-    console.log('originalConfig', originalConfig);
+    console.log(err);
     if (err.response) {
       console.log(err);
       if (err.response.status === 401 && err.response.data?.error === 'TokenExpiredException') {
@@ -78,15 +78,19 @@ instance.interceptors.response.use(
           setRefreshToken(refreshToken);
           instance.defaults.headers.Authorization = `Bearer ${accessToken}`;
           return instance(originalConfig);
-        } catch (error) {
-          if (error.response && error.response.data) {
-            return Promise.reject(error.response.data);
+        } catch (err) {
+          console.log(err);
+          if (err.response.status === 401 && err.response.data?.message === 'REFRESH_ERROR') {
+            removeCookie('accessToken');
+            removeRefreshToken();
+            errorToast('토큰이 만료되어 로그아웃되었습니다.');
+            setTimeout(() => {
+              window.location.href = '/';
+            }, 2000);
+            return;
           }
-          return Promise.reject(error);
+          return Promise.reject(err);
         }
-      }
-      if (err.response.status === 403 && err.esponse.data?.message === 'REFRESH_ERROR') {
-        window.location.href = '/logout';
       }
       return Promise.reject(err);
     }

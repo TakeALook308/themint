@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Register1, Register2, Register3 } from '.';
 import { userApis } from '../../utils/apis/userApis';
 import { fetchData } from '../../utils/apis/api';
+import SocialLogginButton from '../../components/ButtonList/SocialLogginButton';
 import SignContainer from '../../components/common/SignContainer';
-import { LOGIN_MESSAGE, PAGES } from '../../utils/constants/constant';
-import { setCookie } from '../../utils/functions/cookies';
-import { toast } from 'react-toastify';
-import { makeLoginMessageRandomNumber } from '../../utils/functions/util';
-import { useSetRecoilState } from 'recoil';
-import { loggedinState, myInformationState } from '../../atoms';
+import { PAGES } from '../../utils/constants/constant';
 import { Helmet } from 'react-helmet-async';
+import useSetLoggedIn from '../../utils/hooks/useLogin';
 
 function RegisterPage() {
   const [userInfo, setUserInfo] = useState({
@@ -30,24 +27,14 @@ function RegisterPage() {
     step2: false,
     step3: false,
   });
-  const setUser = useSetRecoilState(myInformationState);
-  const setLogged = useSetRecoilState(loggedinState);
-  const navigate = useNavigate();
+
+  const setLoggedIn = useSetLoggedIn();
   useEffect(() => {
     if (!step.step3) return;
     if (!userInfo.address) return;
-    console.log('여기 로그인');
     (async () => {
       try {
-        const response = await register();
-        console.log(response);
-        const {
-          data: { memberId, memberSeq, nickname, accessToken },
-        } = response;
-        setUser({ memberId, memberSeq, nickname });
-        setToken({ accessToken });
-        setLogged(true);
-        moveToMain(nickname);
+        await setLoggedIn(register);
       } catch (err) {
         if (err.response.status === 409) {
           return;
@@ -55,24 +42,6 @@ function RegisterPage() {
       }
     })();
   }, [userInfo, step]);
-
-  const setToken = ({ accessToken }) => {
-    setCookie('accessToken', accessToken);
-  };
-
-  const moveToMain = (nickname) => {
-    toast.success(`${nickname}${LOGIN_MESSAGE.SUCCESS_LOGIN[makeLoginMessageRandomNumber()]}`, {
-      position: 'top-center',
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: 'colored',
-    });
-    navigate('/main');
-  };
 
   const register = async () => {
     return await fetchData.post(userApis.REGISTER, userInfo);
@@ -92,6 +61,10 @@ function RegisterPage() {
                 <h2>로그인</h2>
               </Link>
             </LinkContainer>
+            <SocialLoginContainer>
+              <SocialLogginButton text={'네이버로 회원가입'} social={'네이버'} />
+              <SocialLogginButton text={'카카오톡으로 회원가입'} social={'카카오톡'} />
+            </SocialLoginContainer>
           </>
         )}
         {step.step2 && <Register2 setUserInfo={setUserInfo} setStep={setStep} />}
