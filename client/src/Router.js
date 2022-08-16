@@ -30,6 +30,7 @@ import {
   SearchProduct,
   SearchProfile,
   Logout,
+  TalkRoom,
 } from './Routes/index';
 import { useRecoilValue } from 'recoil';
 import { loggedinState } from './atoms';
@@ -63,7 +64,9 @@ function Router({ toggleNotification, setToggleNotifiaction }) {
             <Route path="phone-number" element={<AccountsPhoneNumber />} />
             <Route path="withdrawl" element={<AccountsWithdrawl />} />
           </Route>
-          <Route path="talks" element={<Talks />} />
+          <Route path="talks" element={<Talks />}>
+            <Route path=":roomId" element={<TalkRoom />} />
+          </Route>
           <Route path="puchase-history/:purchaseId" element={<PurchaseHistoryDetail />} />
           <Route path="standby/:auctionId" element={<StandBy />} />
           <Route path="auctions/new" element={<AuctionCreate />} />
