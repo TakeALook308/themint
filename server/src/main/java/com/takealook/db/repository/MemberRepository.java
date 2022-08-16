@@ -19,6 +19,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Member findByPhone(String phone);
     Member findByMemberIdAndEmail(String memberId, String email);
 
+    List<Member> findAllByNicknameContainsAndNicknameIsNot(String word, String memberNick, Pageable pageable);
     List<Member> findAllByNicknameContains(String word, Pageable pageable);
 
 //    @Transactional

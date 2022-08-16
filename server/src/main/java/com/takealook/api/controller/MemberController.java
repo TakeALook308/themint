@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.annotation.Nullable;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
@@ -156,12 +157,24 @@ public class MemberController {
 
     // 회원 목록 검색
     @GetMapping("/search")
-    public ResponseEntity<MemberListRes> getMemberList(@RequestParam(value = "word", required = false) String word, @RequestParam("page") int page, @RequestParam("size") int size) {
+    public ResponseEntity<MemberListRes> getMemberList(@RequestParam(value = "word", required = false) String word, @RequestParam("page") int page, @RequestParam("size") int size, @ApiIgnore @Nullable Authentication authentication) {
         List<MemberListEntityRes> memberListEntityResList = new ArrayList<>();
         Boolean hasMore = false;
+        Member loginMember = null;
+        if(authentication != null){
+            MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
+            loginMember = memberService.getMemberByMemberSeq(memberDetails.getMemberSeq());
+        }
         Pageable pageable = PageRequest.of(page, size, Sort.by("score").descending());
-        List<Member> memberList = memberService.getMemberListByWord(word, pageable);
-        List<Member> hasMoreList = memberService.getMemberListByWord(word, PageRequest.of(page + 1, size, Sort.by("score").descending()));
+        List<Member> memberList = null;
+        List<Member> hasMoreList = null;
+        if(loginMember != null){
+            memberList = memberService.getMemberListByWord(word, loginMember.getNickname(), pageable);
+            hasMoreList = memberService.getMemberListByWord(word, loginMember.getNickname(), PageRequest.of(page + 1, size, Sort.by("score").descending()));
+        } else {
+            memberList = memberService.getMemberListByWord(word, pageable);
+            hasMoreList = memberService.getMemberListByWord(word, PageRequest.of(page + 1, size, Sort.by("score").descending()));
+        }
         if (hasMoreList.size() != 0) hasMore = true;
         for (Member member : memberList) {
             // 탈퇴한 회원이면 리스트에 추가 x
