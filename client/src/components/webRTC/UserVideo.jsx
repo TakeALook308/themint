@@ -4,13 +4,14 @@ import './UserVideo.css';
 
 function UserVideo({ streamManager }) {
   return (
-    <div>
+    <>
       {streamManager !== undefined ? (
         <div className="streamcomponent">
           <OpenViduVideo streamManager={streamManager} />
+          <div>{/* <p>{getNickNametag()}</p> */}</div>
         </div>
       ) : null}
-    </div>
+    </>
   );
 }
 

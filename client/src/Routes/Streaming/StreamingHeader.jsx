@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { categories } from '../../utils/constants/constant';
 import { doCopy } from './TextCopy';
+import { BiLink } from 'react-icons/bi';
+import { BsDoorOpen, BsFileEarmarkText } from 'react-icons/bs';
+import { AiOutlineBell } from 'react-icons/ai';
 function StreamingHeader({ auctionInfo, countSub }) {
+  const navigate = useNavigate();
   const url = useLocation().pathname;
-
   if (auctionInfo) {
     return (
       <Head>
@@ -20,12 +23,25 @@ function StreamingHeader({ auctionInfo, countSub }) {
         </MainText>
         <HeadButtonSet>
           <ul>
-            <li>
-              <button onClick={() => doCopy(url)}>복사</button>
+            <li onClick={() => doCopy(process.env.REACT_APP_API_URL + url)}>
+              <BiLink size={25}></BiLink>
+              <span>복사</span>
             </li>
-            <li>알림</li>
-            <li>경매정보</li>
-            <li>나가기</li>
+            <li>
+              <AiOutlineBell size={25}></AiOutlineBell>
+              <span>알림</span>
+            </li>
+            <li>
+              <BsFileEarmarkText size={25}></BsFileEarmarkText>
+              <span>정보</span>
+            </li>
+            <li
+              onClick={() => {
+                navigate('/main');
+              }}>
+              <BsDoorOpen size={25}></BsDoorOpen>
+              <span>나가기</span>
+            </li>
           </ul>
         </HeadButtonSet>
       </Head>
@@ -40,6 +56,7 @@ const Head = styled.div`
   width: 100%;
   background-color: ${(props) => props.theme.colors.subBlack};
   /* background-color: red; */
+  height: 80px;
 `;
 const MainText = styled.div`
   display: flex;
@@ -59,8 +76,18 @@ const HeadButtonSet = styled.div`
   justify-content: center;
   ul {
     display: flex;
-    gap: 10px;
+    gap: 25px;
     align-items: center;
+    li {
+      font-size: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: ${(props) => props.theme.colors.white};
+      gap: 5px;
+      cursor: pointer;
+    }
   }
 `;
 export default StreamingHeader;

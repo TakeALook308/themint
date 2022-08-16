@@ -170,6 +170,8 @@ const AuctionImage = styled.div`
   background-color: ${(props) => props.theme.colors.mainBlack};
   img {
     border-radius: 10px;
+    object-fit: fill;
+    /* object-fit: cover; */
   }
   @media screen and (max-width: 768px) {
     width: 100%;
@@ -192,8 +194,12 @@ const AuctionInfoBox = styled.div`
   .profile {
     display: flex;
     align-items: center;
+
     img {
       cursor: pointer;
+      object-fit: contain;
+      width: 30px;
+      height: 30px;
       border-radius: 15px;
     }
     span {
