@@ -48,13 +48,13 @@ function IsPurchasingCard({ auction, func }) {
         </Link>
       </div>
       {auction.status === 1 ? (
-        <Plus
+        <Plus2
           type="button"
           onClick={() => {
             func(auction);
           }}>
           입금 확인
-        </Plus>
+        </Plus2>
       ) : null}
       {auction.status === 2 ? (
         <Plus
@@ -213,6 +213,19 @@ const Plus = styled.button`
   padding: 5px;
   bottom: 5%;
   right: 30%;
+  background-color: ${(props) => props.theme.colors.mainBlack};
+  color: ${(props) => props.theme.colors.subMint};
+  border: 1px solid ${(props) => props.theme.colors.subMint};
+  :hover {
+    cursor: pointer;
+  }
+`;
+const Plus2 = styled.button`
+  position: absolute;
+  border-radius: 5px;
+  padding: 5px;
+  bottom: 5%;
+  right: 40%;
   background-color: ${(props) => props.theme.colors.mainBlack};
   color: ${(props) => props.theme.colors.subMint};
   border: 1px solid ${(props) => props.theme.colors.subMint};

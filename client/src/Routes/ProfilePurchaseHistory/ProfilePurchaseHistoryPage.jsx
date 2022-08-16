@@ -4,7 +4,7 @@ import IsPurchasingCard from './IsPurchasingCard';
 import SkeletonAuctionCard from '../../components/CardList/SkeletonAuctionCard';
 import { instance } from '../../utils/apis/api';
 import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
-import Modal from '../../components/common/Modal';
+import Modal2 from '../../components/common/Modal2';
 import GradientButton from '../../components/ButtonList/GradientButton';
 import { FaStar } from 'react-icons/fa';
 import { MemoizedInformation } from '../AccountsEdit/Information';
@@ -46,7 +46,7 @@ function ProfilePurchaseHistoryPage({ params }) {
   const onSold = async () => {
     setActive('complete');
   };
-  // Modal 연결
+  // Modal2 연결
   const [purchaseDetail, setPurchaseDetail] = useState([]); // 판매내역 상세 내용 저장
   const [isModal, setIsModal] = useState(false);
 
@@ -95,7 +95,6 @@ function ProfilePurchaseHistoryPage({ params }) {
   const [auctionProductSeq, setAuctionProductSeq] = useState(0);
 
   const patchRemit = () => {
-    console.log(auctionProductSeq);
     const getPatchRemit = async (url) => {
       const response = await instance.patch(url);
       return response;
@@ -166,11 +165,10 @@ function ProfilePurchaseHistoryPage({ params }) {
   });
   const onChange = (e) => {
     setDeliveryData((prevState) => {
-      console.log(e.target.value);
       return { ...prevState, remitName: e.target.value };
     });
   };
-  // console.log(userAllInfo.address);
+
   const onClick = () => {
     const data = queryClient.getQueryData(['userInformation']);
     const newData = {
@@ -216,7 +214,6 @@ function ProfilePurchaseHistoryPage({ params }) {
   };
   // 버튼 클릭하면 리뷰 정보를 post
   const postReview = () => {
-    console.log(reviewData);
     const postReviewData = async (url, data) => {
       const response = await instance.post(url, data);
       return response;
@@ -275,7 +272,7 @@ function ProfilePurchaseHistoryPage({ params }) {
         func={ModalHandler}
         active={active}
       />
-      <Modal open={isModal} close={ModalHandler} title="구매 내역 관리">
+      <Modal2 open={isModal} close={ModalHandler} title="구매 내역 관리">
         <ModalMain>
           {active === 'inprogress' && (
             <Purchasing>
@@ -396,7 +393,7 @@ function ProfilePurchaseHistoryPage({ params }) {
             </Purchased>
           )}
         </ModalMain>
-      </Modal>
+      </Modal2>
     </Container>
   );
 }
