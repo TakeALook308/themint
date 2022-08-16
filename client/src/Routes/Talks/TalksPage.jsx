@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { TalkRoom } from '..';
 import { Container } from '../../style/common';
 import { fetchData } from '../../utils/apis/api';
 import { socketApis } from '../../utils/apis/socketApis';
-import TalkCard, { MemoizedTalkCard } from './TalkCard';
+import { MemoizedTalkCard } from './TalkCard';
+import { TbMoodSad } from 'react-icons/tb';
 
 function TalksPage() {
   const [roomInformationList, setRoomInformationList] = useState([]);
+  const { roomId } = useParams();
+  console.log(roomId);
   useEffect(() => {
     (async () => {
       try {
@@ -21,17 +24,26 @@ function TalksPage() {
       }
     })();
   }, []);
-  console.log(roomInformationList);
+
   return (
     <Container>
       <TalkSection>
         <TalksContainer>
           <Title>전체 대화</Title>
+          {roomInformationList.length === 0 && (
+            <>
+              <NotExist>
+                아직 개설된 채팅방이 없어요
+                <TbMoodSad />
+              </NotExist>
+            </>
+          )}
           {roomInformationList?.map((roomInformation, idx) => (
             <MemoizedTalkCard roomInformation={roomInformation} key={idx} />
           ))}
         </TalksContainer>
         <RoutesContainer>
+          {!roomId && <p>다른 유저와 대화를 시작해보세요</p>}
           <Routes>
             <Route path=":talkId" element={<TalkRoom />} />
           </Routes>
@@ -43,6 +55,11 @@ function TalksPage() {
 
 export default TalksPage;
 
+const NotExist = styled.p`
+  padding: 2rem;
+  font-size: ${(props) => props.theme.fontSizes.h4};
+`;
+
 const TalkSection = styled.section`
   height: calc(100vh - 341px);
   width: 100%;
@@ -53,7 +70,6 @@ const TalkSection = styled.section`
 const TalksContainer = styled.article`
   width: 50%;
   background-color: ${(props) => props.theme.colors.subBlack};
-  /* flex: 1 1 0; */
   border-right: 5px solid ${(props) => props.theme.colors.pointBlack};
 `;
 

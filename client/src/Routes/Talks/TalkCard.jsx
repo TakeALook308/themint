@@ -13,7 +13,6 @@ let client;
 function TalkCard({ roomInformation }) {
   const [chatList, setChatList] = useState([]);
   const { roomId } = useParams();
-  console.log(roomId);
 
   useEffect(() => {
     (async () => {

@@ -20,12 +20,11 @@ function NotificationList({ setShow }) {
     <Modal
       onClick={(e) => {
         e.stopPropagation();
-        setShow(true);
       }}>
       {!notificationList?.length && <NotList>알림이 없습니다.</NotList>}
       {notificationList?.map((notification, i) => (
         <NotificationCard key={i}>
-          <NotificationButton to={`${notification.url}`}>
+          <NotificationButton to={`${notification.url}`} onClick={() => setShow(false)}>
             <p>{notification.title} 🔔</p>
             <p>{notification.notification}</p>
           </NotificationButton>

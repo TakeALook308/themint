@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { Register1, Register2, Register3 } from '.';
 import { userApis } from '../../utils/apis/userApis';
 import { fetchData } from '../../utils/apis/api';
-import SocialLogginButton from '../../components/ButtonList/SocialLogginButton';
 import SignContainer from '../../components/common/SignContainer';
 import { PAGES } from '../../utils/constants/constant';
 import { Helmet } from 'react-helmet-async';
@@ -32,6 +31,7 @@ function RegisterPage() {
   useEffect(() => {
     if (!step.step3) return;
     if (!userInfo.address) return;
+    console.log('여기 로그인');
     (async () => {
       try {
         await setLoggedIn(register);
@@ -61,10 +61,6 @@ function RegisterPage() {
                 <h2>로그인</h2>
               </Link>
             </LinkContainer>
-            <SocialLoginContainer>
-              <SocialLogginButton text={'네이버로 회원가입'} social={'네이버'} />
-              <SocialLogginButton text={'카카오톡으로 회원가입'} social={'카카오톡'} />
-            </SocialLoginContainer>
           </>
         )}
         {step.step2 && <Register2 setUserInfo={setUserInfo} setStep={setStep} />}

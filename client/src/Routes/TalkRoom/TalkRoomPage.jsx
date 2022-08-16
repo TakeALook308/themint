@@ -49,7 +49,6 @@ function TalkRoomPage() {
   }, [roomId]);
 
   const onSubmit = (e) => {
-    console.log('흠냐링 여기가 문제인가');
     e.preventDefault();
     if (!chat) return;
     sendMessage(chat);
