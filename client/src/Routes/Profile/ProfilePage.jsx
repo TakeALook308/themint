@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { NavLink, Route, Routes, useParams } from 'react-router-dom';
+import { NavLink, Route, Routes, useParams, useLocation, Outlet } from 'react-router-dom';
 import ProfileCard from './ProfileCard';
 import { instance } from '../../utils/apis/api';
 import ProfileReviewsPage from '../ProfileReviews/ProfileReviewsPage';
@@ -22,12 +22,11 @@ function ProfilePage(props) {
       const response = await instance.get(url);
       return response;
     };
-
     const res = getProfile(`/api/member/${params.userId}`);
     res.then((member) => {
       setMember(member.data);
     });
-  }, []);
+  }, [params]);
 
   return (
     <Container>
@@ -116,10 +115,11 @@ const NavStyle = styled(NavLink)`
   text-align: center;
   background-color: ${(props) => props.theme.colors.mainBlack};
   border-bottom: 2px solid ${(props) => props.theme.colors.subMint};
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 
   outline: invert;
   &:link {
-    transition: 0.5s;
     text-decoration: none;
   }
   &:hover {
@@ -131,7 +131,7 @@ const NavStyle = styled(NavLink)`
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     font-weight: bold;
-    border: 3px solid ${(props) => props.theme.colors.subMint};
+    border: 2px solid ${(props) => props.theme.colors.subMint};
     border-bottom: none;
   }
 `;
