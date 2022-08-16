@@ -1,20 +1,20 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { keywordState, loggedinState, myInformationState } from '../../../atoms';
 import Logo from '../../common/Logo';
 import SubMenu from './SubMenu';
-import { HiSearch, HiOutlineChat, HiOutlineBell } from 'react-icons/hi';
+import { HiSearch, HiOutlineChat } from 'react-icons/hi';
 import { AiOutlineUser } from 'react-icons/ai';
-import { useState } from 'react';
+import NotificationComponent from './NotificationComponent';
+import NotificationList from '../../common/NotificationList';
 
-function NavigationBar() {
+function NavigationBar({ toggleNotification, setToggleNotifiaction }) {
   const loggedin = useRecoilValue(loggedinState);
   const myInformation = useRecoilValue(myInformationState);
   const [keyword, setKeyword] = useRecoilState(keywordState);
-  const [search, setSearch] = useState('');
   const location = useLocation();
   const onChangeSearch = (e) => {
     e.preventDefault();
@@ -74,9 +74,13 @@ function NavigationBar() {
                 <Link to="/">
                   <HiOutlineChat size={25} />
                 </Link>
-                <Link to="/">
-                  <HiOutlineBell size={25} />
-                </Link>
+                <NotiContainer>
+                  <NotificationComponent
+                    toggleNotification={toggleNotification}
+                    setShow={setToggleNotifiaction}
+                  />
+                  {toggleNotification && <NotificationList setShow={setToggleNotifiaction} />}
+                </NotiContainer>
                 <SubContainer to={`profile/${myInformation.memberSeq}`}>
                   <AiOutlineUser size={25} />
                   <NavbarDropdownContent>
@@ -174,23 +178,6 @@ const NavItemIcon = styled.div`
   margin-left: auto;
 `;
 
-const fadeIn = keyframes`
-   0% {
-        display: none;
-        opacity: 0;
-    }
-
-    1% {
-        display: block;
-        opacity: 0;
-    }
-
-    100% {
-        display: block;
-        opacity: 1;
-    }
-`;
-
 const NavbarDropdownContent = styled.ul`
   position: absolute;
   min-width: 120px;
@@ -230,4 +217,8 @@ const SubContainer = styled.div`
       opacity: 1;
     }
   }
+`;
+
+const NotiContainer = styled.div`
+  position: relative;
 `;

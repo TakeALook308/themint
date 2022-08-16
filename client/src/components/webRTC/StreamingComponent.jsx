@@ -232,12 +232,6 @@ class StreamingComponent extends Component {
     const mySessionId = this.state.mySessionId;
     const myUserName = this.state.myUserName;
 
-    // console.log(this.props.userInfo);
-
-    console.log('여기여기', this.props.deviceList);
-
-    // console.log(this.props.userInfo);
-
     return (
       <div className="container">
         {this.state.session !== undefined ? (

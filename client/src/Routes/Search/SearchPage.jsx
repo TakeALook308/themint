@@ -8,7 +8,7 @@ import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
 import AuctionCard from '../../components/CardList/AuctionCard';
 import ProductCard from './ProductCard';
 import ProfileSearchCard from './ProfileSearchCard';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { keywordState } from '../../atoms';
 
 function SearchPage(props) {
@@ -146,9 +146,9 @@ function SearchPage(props) {
             <InfiniteAuctionList
               getUrl={getSearchUrl(key, 9)}
               queryKey={[type + key + sortKey]}
-              CardComponent={AuctionCard}
+              CardComponent={ProductCard}
               SkeltonCardComponent={SkeletonAuctionCard}
-              text={'경매 검색 결과가 없습니다.'}
+              text={'상품 검색 결과가 없습니다.'}
             />
           </>
         )}
