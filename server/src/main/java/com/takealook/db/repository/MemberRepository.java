@@ -21,7 +21,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     List<Member> findAllByNicknameContainsAndNicknameIsNot(String word, String memberNick, Pageable pageable);
     List<Member> findAllByNicknameContains(String word, Pageable pageable);
-
+    List<Member> findAll();
 //    @Transactional
 //    void deleteMemberBySeq(Long memberSeq);
 

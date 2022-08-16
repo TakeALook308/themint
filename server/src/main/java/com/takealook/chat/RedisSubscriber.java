@@ -3,6 +3,7 @@ package com.takealook.chat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.takealook.db.entity.ChatMessage;
+import com.takealook.db.entity.NotificationMessage;
 import com.takealook.db.entity.ProductPrice;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +48,10 @@ public class RedisSubscriber implements MessageListener {
                 priceMessage.setDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                 // Websocket 구독자에게 메시지 Send
                 messagingTemplate.convertAndSend("/sub/chat/room/" + priceMessage.getRoomId(), priceMessage);
+            }
+            else { // 알림 메시지를 받았다면
+                NotificationMessage notificationMessage = objectMapper.readValue(publishMessage, NotificationMessage.class);
+                messagingTemplate.convertAndSend("/sub/notice/" + notificationMessage.getMemberId(), notificationMessage);
             }
         } catch (Exception e) {
             log.error(e.getMessage());
