@@ -8,12 +8,14 @@ import lombok.Setter;
 @Setter
 @Builder
 public class ChatMessagesRes {
+    Long memberSeq;
     String nickname;
     String message;
     String date;
 
-    public static ChatMessagesRes of(String nickname, String message, String date) {
+    public static ChatMessagesRes of(Long memberSeq, String nickname, String message, String date) {
         ChatMessagesRes res = ChatMessagesRes.builder()
+                .memberSeq(memberSeq)
                 .nickname(nickname)
                 .message(message)
                 .date(date)
