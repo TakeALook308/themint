@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -41,10 +43,13 @@ public class ChatMessageController {
     @MessageMapping("/chat/message")
     public void message(ChatMessage message) {
         System.out.println(message.toString());
+        String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        message.setDate(currentTime);
         if (message.getType() == 0) { // 입장 메시지
 //            chatRoomService.enterChatRoom(message.getRoomId());
             message.setMessage(message.getNickname() + "님이 입장하셨습니다.");
         } else if (message.getType() == 2) { // 1:1 채팅 메시지
+            // 서버 시간
             // 1:1 메시지 알림 보내주기
             String[] memberSeqList = message.getRoomId().split("to");
             for (String memberSeq : memberSeqList) {
