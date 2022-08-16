@@ -143,6 +143,16 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public List<Member> getMemberListByWord(String word, String nickname, Pageable pageable) {
+        List<Member> memberList = null;
+        if (word == null) {
+            word = "";
+        }
+        memberList = memberRepository.findAllByNicknameContainsAndNicknameIsNot(word, nickname, pageable);
+        return memberList;
+    }
+
+    @Override
     public List<Member> getMemberListByWord(String word, Pageable pageable) {
         List<Member> memberList = null;
         if (word == null) {
