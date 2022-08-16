@@ -1,6 +1,7 @@
 package com.takealook.api.service;
 
 import com.takealook.api.request.ChatRoomRegisterPostReq;
+import com.takealook.api.request.OneOnOneChatRoomRegisterPostReq;
 import com.takealook.api.response.ChatRoomsInterface;
 import com.takealook.chat.RedisPublisher;
 import com.takealook.chat.RedisSubscriber;
@@ -42,7 +43,8 @@ public class ChatRoomServiceImpl implements ChatRoomService{
     private ChatRoomRepository chatRoomRepository;
     @Autowired
     private ChatMessageRepository chatMessageRepository;
-
+    @Autowired
+    ChatRoomMemberServiceImpl chatRoomMemberService;
     @PostConstruct
     private void init() {
         opsHashChatRoom = redisTemplate.opsForHash();
@@ -52,20 +54,42 @@ public class ChatRoomServiceImpl implements ChatRoomService{
     /**
      * 채팅방 생성 : 서버간 채팅방 공유를 위해 redis hash에 저장한다.
      */
-    public ChatRoom createChatRoom(ChatRoomRegisterPostReq chatRoomRegisterPostReq) {
-        if (chatRoomRegisterPostReq.getType() == 1) { // 1:1 채팅방이라면 roomId 직접 생성
-//            String roomId = UUID.randomUUID().toString();
-            String roomId = HashUtil.MD5(LocalDateTime.now() + UUID.randomUUID().toString());
-            chatRoomRegisterPostReq.setRoomId(roomId);
-        }
-        ChatRoom chatRoom = ChatRoom.create(chatRoomRegisterPostReq);
+    public ChatRoom createAuctionChatRoom(ChatRoomRegisterPostReq chatRoomRegisterPostReq) {
+        ChatRoom chatRoom = ChatRoom.create(chatRoomRegisterPostReq.getRoomId(), 0);
         opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom);
         chatRoomRepository.save(chatRoom);
+        enterChatRoom(chatRoom.getRoomId());
+        return chatRoom;
+    }
+
+    // 1:1 채팅방 생성
+    public ChatRoom createOneOnOneChatRoom(OneOnOneChatRoomRegisterPostReq oneOnOneChatRoomRegisterPostReq) {
+        String seq1;
+        String seq2;
+        if (oneOnOneChatRoomRegisterPostReq.getMemberSeq1() < oneOnOneChatRoomRegisterPostReq.getMemberSeq2()) {
+            seq1 = Long.toString(oneOnOneChatRoomRegisterPostReq.getMemberSeq1());
+            seq2 = Long.toString(oneOnOneChatRoomRegisterPostReq.getMemberSeq2());
+        }
+        else {
+            seq1 = Long.toString(oneOnOneChatRoomRegisterPostReq.getMemberSeq2());
+            seq2 = Long.toString(oneOnOneChatRoomRegisterPostReq.getMemberSeq1());
+        }
+        String roomId = seq1 + "to" + seq2;
+        ChatRoom chatRoom = ChatRoom.create(roomId, 1);
+        opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom);
+        // 채팅방 db에 저장
+        chatRoomRepository.save(chatRoom);
+        // 채팅방 토픽 생성
+        enterChatRoom(chatRoom.getRoomId());
+        // 채팅방에 멤버 db 추가
+        chatRoomMemberService.saveChatRoomMember(roomId, oneOnOneChatRoomRegisterPostReq.getMemberSeq1());
+        chatRoomMemberService.saveChatRoomMember(roomId, oneOnOneChatRoomRegisterPostReq.getMemberSeq2());
         return chatRoom;
     }
 
     /**
      * 채팅방 입장 : redis에 topic을 만들고 pub/sub 통신을 하기 위해 리스너를 설정한다.
+     * 서버 시작하자마자 모든 채팅방 토픽 생성
      */
     public void enterChatRoom(String roomId) {
         ChannelTopic topic = topics.get(roomId);
@@ -78,6 +102,10 @@ public class ChatRoomServiceImpl implements ChatRoomService{
 //        for (ChatMessage message: messages) {
 //            redisPublisher.publish(topic, message);
 //        }
+    }
+
+    public ChatRoom getChatRoom(String roomId) {
+        return chatRoomRepository.getChatRoomByRoomId(roomId);
     }
 
     // 1:1 대화 내역 보기

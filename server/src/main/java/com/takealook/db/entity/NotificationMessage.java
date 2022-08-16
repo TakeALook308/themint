@@ -12,4 +12,5 @@ public class NotificationMessage {
     String title;
     String url;
     String notification;
+    int type;
 }

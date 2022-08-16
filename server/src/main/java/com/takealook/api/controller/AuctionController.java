@@ -303,8 +303,9 @@ public class AuctionController {
             NotificationMessage notificationMessage = NotificationMessage.builder()
                     .memberId(memberId)
                     .title(auction.getTitle())
-                    .url("i7a308.p.ssafy.io/streamings/" + hash)
+                    .url("/streamings/" + hash)
                     .notification(notification)
+                    .type(1)
                     .build();
             redisPublisher.publish(notificationService.getTopic(memberId), notificationMessage);
         }

@@ -1,6 +1,7 @@
 package com.takealook.chat;
 
 import com.takealook.db.entity.ChatMessage;
+import com.takealook.db.entity.ChatNotificationMessage;
 import com.takealook.db.entity.NotificationMessage;
 import com.takealook.db.entity.ProductPrice;
 import lombok.RequiredArgsConstructor;
@@ -24,5 +25,9 @@ public class RedisPublisher {
     }
     public void publish(ChannelTopic topic, NotificationMessage notificationMessage) {
         redisTemplate.convertAndSend(topic.getTopic(), notificationMessage);
+    }
+
+    public void publish(ChannelTopic topic, ChatNotificationMessage chatNotificationMessage) {
+        redisTemplate.convertAndSend(topic.getTopic(), chatNotificationMessage);
     }
 }
