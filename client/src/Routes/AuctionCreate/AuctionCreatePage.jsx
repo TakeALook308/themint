@@ -432,6 +432,7 @@ const FileUpload = styled.div`
       display: flex;
       justify-content: center;
       align-items: center;
+      cursor: pointer;
     }
   }
   margin: 0 auto;
@@ -440,6 +441,9 @@ const FileUpload = styled.div`
     grid-template-columns: repeat(4, 1fr);
     grid-gap: 30px;
     padding: 10px;
+    & > div:first-child {
+      cursor: pointer;
+    }
 
     & > div {
       width: 180px;
@@ -543,6 +547,10 @@ const SubmitBox = styled.div`
 const Div = styled.div`
   padding: 15px 80px;
   position: relative;
+
+  input[type='datetime-local'] {
+    width: 50%;
+  }
 `;
 
 const Textarea = styled.textarea`
