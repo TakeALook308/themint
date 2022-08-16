@@ -10,7 +10,6 @@ function NotificationList({ setShow }) {
   const [notificationList, setNotificationList] = useRecoilState(
     notificationListFamilyState(myInformation.memberId),
   );
-  console.log(notificationList);
   const deleteNotification = (idx) => {
     const list = notificationList.filter((notification, i) => idx !== i);
     localStorage.setItem(`notificationList/${myInformation.memberId}`, JSON.stringify(list));

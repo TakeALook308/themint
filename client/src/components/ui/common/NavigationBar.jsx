@@ -219,15 +219,3 @@ const SubContainer = styled.div`
 const NotiContainer = styled.div`
   position: relative;
 `;
-
-const Modal = styled.div`
-  width: 100px;
-  height: 100px;
-  background-color: red;
-  position: absolute;
-  padding: 0.5rem;
-  z-index: 1;
-  background-color: ${(props) => props.theme.colors.pointBlack};
-  right: 0;
-  border-radius: 5px;
-`;

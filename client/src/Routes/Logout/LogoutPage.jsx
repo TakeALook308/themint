@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { errorToast } from '../../lib/toast';
 import useLogout from '../../utils/hooks/useLogout';
 
-function LogoutPage(props) {
+function LogoutPage() {
   const logout = useLogout();
   useEffect(() => {
     errorToast('토큰이 만료되었습니다.');

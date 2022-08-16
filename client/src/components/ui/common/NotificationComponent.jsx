@@ -11,36 +11,38 @@ let sock;
 let client;
 
 function NotificationComponent({ setShow }) {
-  const [hasNewNotice, SetHasNewNotice] = useState(true);
+  const [hasNewNotice, SetHasNewNotice] = useState(false);
   const isLoggedin = useRecoilValue(loggedinState);
   const myInformation = useRecoilValue(myInformationState);
   const [notificationList, setNotificationList] = useRecoilState(
     notificationListFamilyState(myInformation.memberId),
   );
   const { fireNotification } = usePushNotification();
-  // useEffect(() => {
-  //   if (isLoggedin && myInformation?.memberId) {
-  //     sock = new SockJS('https://i7a308.p.ssafy.io/api/ws-stomp');
-  //     client = Stomp.over(sock);
-  //     client.connect({}, () => {
-  //       //연결 후 데이터 가져오기
-  //       client.subscribe(
-  //         `/sub/notice/${myInformation.memberId}`,
-  //         function (message) {
-  //           const messagedto = JSON.parse(message.body);
-  //           setNotificationList(prev =>([messagedto, ...prev]);
-  // localStorage.setItem('notificationList', JSON.stringify([messagedto, ...notification]));
-  //           fireNotification('더민트', messagedto);
-  //           SetHasNewNotice(true);
-  //         },
-  //         (err) => {},
-  //       );
-  //     });
-  //   }
-  //   return () => {
-  //     client.disconnect();
-  //   };
-  // }, []);
+  useEffect(() => {
+    if (isLoggedin && myInformation?.memberId) {
+      sock = new SockJS('https://i7a308.p.ssafy.io/api/ws-stomp');
+      client = Stomp.over(sock);
+      client.connect({}, () => {
+        client.subscribe(
+          `/sub/notice/${myInformation.memberId}`,
+          function (message) {
+            const messagedto = JSON.parse(message.body);
+            setNotificationList((prev) => [messagedto, ...prev]);
+            localStorage.setItem(
+              `notificationList/${myInformation.memberId}`,
+              JSON.stringify([messagedto, ...notificationList]),
+            );
+            fireNotification('더민트', { body: `${messagedto.title}: ${messagedto.notification}` });
+            SetHasNewNotice(true);
+          },
+          (err) => {},
+        );
+      });
+    }
+    return () => {
+      client?.disconnect();
+    };
+  }, []);
 
   const onClick = (e) => {
     e.stopPropagation();

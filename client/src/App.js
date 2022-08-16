@@ -22,8 +22,10 @@ function App() {
   useEffect(() => {
     (async () => {
       if (token) {
-        const response = await fetchData.get(userApis.MY_BASIC_INFORMATION);
-        setMyInformation(response.data);
+        try {
+          const response = await fetchData.get(userApis.MY_BASIC_INFORMATION);
+          setMyInformation(response.data);
+        } catch (err) {}
       }
       setLoading(true);
     })();
