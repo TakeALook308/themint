@@ -305,6 +305,7 @@ public class AuctionController {
                     .title(auction.getTitle())
                     .url("/streamings/" + hash)
                     .notification(notification)
+                    .type(1)
                     .build();
             redisPublisher.publish(notificationService.getTopic(memberId), notificationMessage);
         }

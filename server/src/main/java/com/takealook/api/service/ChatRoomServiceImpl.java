@@ -55,7 +55,7 @@ public class ChatRoomServiceImpl implements ChatRoomService{
      * 채팅방 생성 : 서버간 채팅방 공유를 위해 redis hash에 저장한다.
      */
     public ChatRoom createAuctionChatRoom(ChatRoomRegisterPostReq chatRoomRegisterPostReq) {
-        ChatRoom chatRoom = ChatRoom.create(chatRoomRegisterPostReq.getRoomId());
+        ChatRoom chatRoom = ChatRoom.create(chatRoomRegisterPostReq.getRoomId(), 0);
         opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom);
         chatRoomRepository.save(chatRoom);
         enterChatRoom(chatRoom.getRoomId());
@@ -75,7 +75,7 @@ public class ChatRoomServiceImpl implements ChatRoomService{
             seq2 = Long.toString(oneOnOneChatRoomRegisterPostReq.getMemberSeq1());
         }
         String roomId = seq1 + "to" + seq2;
-        ChatRoom chatRoom = ChatRoom.create(roomId);
+        ChatRoom chatRoom = ChatRoom.create(roomId, 1);
         opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom);
         // 채팅방 db에 저장
         chatRoomRepository.save(chatRoom);

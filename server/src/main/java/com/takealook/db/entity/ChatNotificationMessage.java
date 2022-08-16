@@ -13,4 +13,5 @@ public class ChatNotificationMessage {
     String previewMsg;
     String senderNickname;
     String date;
+    int type;
 }

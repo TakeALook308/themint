@@ -18,14 +18,20 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
 
     ChatRoom getChatRoomByRoomId(String roomId);
 
-    @Query(value = "select d.room_id as roomId, d.member_seq as memberSeq, a.nickname, a.profile_url as profileUrl from member a\n" +
-            "join \n" +
-            "(select b.room_id, b.member_seq from chat_room_member b \n" +
+    @Query(value = "select tb2.roomId, tb2.memberSeq, tb2.nickname, tb2.profileUrl from chat_room tb1\n" +
             "join\n" +
-            "(select * from chat_room_member\n" +
-            "where member_seq = :memberSeq) c\n" +
-            "on b.room_id = c.room_id\n" +
-            "where b.member_seq != :memberSeq) d\n" +
-            "on d.member_seq = a.seq;", nativeQuery = true)
+            "(select d.room_id as roomId, d.member_seq as memberSeq, a.nickname, a.profile_url as profileUrl from member a\n" +
+            "            join\n" +
+            "            (select b.room_id, b.member_seq from chat_room_member b\n" +
+            "            join\n" +
+            "            (select * from chat_room_member\n" +
+            "            where member_seq = :memberSeq) c\n" +
+            "            on b.room_id = c.room_id\n" +
+            "            where b.member_seq != :memberSeq) d\n" +
+            "            on d.member_seq = a.seq) tb2\n" +
+            "\t\t\ton tb1.room_id = tb2.roomId\n" +
+            "            where type = 1\n" +
+            "            group by room_id;\n" +
+            "            ", nativeQuery = true)
     List<ChatRoomsInterface> getChatRooms(Long memberSeq);
 }
