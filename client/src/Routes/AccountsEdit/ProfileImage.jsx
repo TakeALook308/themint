@@ -41,7 +41,7 @@ function ProfileImage({ userAllInfo }) {
     onSuccess: (data) => {
       queryClient.setQueriesData(['userInformation'], (prev) => ({
         ...prev,
-        profileUrl: data.message,
+        profileUrl: data.imagePath,
       }));
       successToast('프로필 사진이 변경되었습니다.');
     },

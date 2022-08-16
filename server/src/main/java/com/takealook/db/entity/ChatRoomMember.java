@@ -3,10 +3,7 @@ package com.takealook.db.entity;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Getter
@@ -15,11 +12,12 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Builder
 @Entity
-public class ChatRoomMember implements Serializable {
+public class ChatRoomMember {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
+    @Column(name = "room_id")
     private String roomId;
     private Long memberSeq;
 }

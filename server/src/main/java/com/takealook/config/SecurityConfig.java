@@ -79,7 +79,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/interest/*").authenticated()
                 .antMatchers(HttpMethod.GET, "/api/history/sales/detail/*").authenticated()
                 .antMatchers(HttpMethod.GET, "/api/history/purchase/*").authenticated()
-                .antMatchers(HttpMethod.PATCH, "/api/delivery/*").authenticated()
+                .antMatchers(HttpMethod.PATCH, "/api/delivery").authenticated()
                 .antMatchers(HttpMethod.PATCH, "/api/product/remit/*").authenticated()
                 .antMatchers(HttpMethod.POST, "/api/review").authenticated()
                 .antMatchers(HttpMethod.POST, "/api/auction").authenticated()

@@ -1,5 +1,7 @@
 package com.takealook.api.service;
 
+import com.takealook.api.response.ChatRoomMemberCountInterface;
+import com.takealook.api.response.ChatRoomMemberCountRes;
 import com.takealook.db.entity.ChatRoom;
 import com.takealook.db.entity.ChatRoomMember;
 import com.takealook.db.entity.Member;
@@ -16,7 +18,6 @@ public class ChatRoomMemberServiceImpl implements ChatRoomMemberService{
     ChatRoomMemberRepository chatRoomMemberRepository;
     @Autowired
     ChatRoomRepository chatRoomRepository;
-
     @Autowired
     MemberRepository memberRepository;
 
@@ -33,5 +34,22 @@ public class ChatRoomMemberServiceImpl implements ChatRoomMemberService{
                 .memberSeq(memberSeq)
                 .build();
         return chatRoomMemberRepository.save(chatRoomMember);
+
+    }
+
+    @Override
+    public int exitChatRoomMember(String roomId, Long memberSeq) {
+        return chatRoomMemberRepository.deleteByRoomIdAndAndMemberSeq(roomId, memberSeq);
+    }
+
+    @Override
+    public ChatRoomMemberCountRes getChatRoomMemberCount(String roomId) {
+        ChatRoomMemberCountInterface chatRoomMemberCountInterface = chatRoomMemberRepository.getChatRoomMemberCountByRoomId(roomId);
+        Long memberCount = chatRoomMemberCountInterface.getMemberCount();
+        ChatRoomMemberCountRes chatRoomMemberCountRes = ChatRoomMemberCountRes.builder()
+                .memberCount(memberCount)
+                .roomId(roomId)
+                .build();
+        return chatRoomMemberCountRes;
     }
 }

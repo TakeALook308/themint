@@ -8,8 +8,11 @@ import com.takealook.db.entity.InterestAuction;
 import com.takealook.db.repository.AuctionRepository;
 import com.takealook.db.repository.InterestAuctionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,8 +56,9 @@ public class InterestAuctionServiceImpl implements InterestAuctionService {
     }
 
     @Override
-    public List<Auction> getInterestAuctionListByMemberSeq(Long memberSeq) {
-        List<InterestAuction> interestAuctionList = interestAuctionRepository.findAllByMemberSeq(memberSeq);
+    public List<Auction> getInterestAuctionListByMemberSeq(Long memberSeq, Pageable pageable) {
+        String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        List<InterestAuction> interestAuctionList = interestAuctionRepository.findAllByMemberSeqAndStartTimeAfterOrStatus(memberSeq, currentTime, pageable);
         List<Auction> auctionList = new ArrayList<>();
         for (InterestAuction interestAuction : interestAuctionList) {
             Auction auction = auctionRepository.findByHash(interestAuction.getHash()).get();
@@ -88,5 +92,20 @@ public class InterestAuctionServiceImpl implements InterestAuctionService {
             throw new AuctionNotFoundException("auction with hash " + hash + " not found", ErrorCode.AUCTION_NOT_FOUND);
         }
         interestAuctionRepository.deleteByMemberSeqAndHash(memberSeq, hash);
+    }
+
+    @Override
+    public Boolean checkInterestByMemberSeq(Long memberSeq, String auctionHash) {
+        InterestAuction interestAuction = interestAuctionRepository.findByMemberSeqAndHash(memberSeq, auctionHash);
+        if(interestAuction == null){
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public List<String> getMemberListByHash(String hash) {
+        return interestAuctionRepository.getMemberListByAuctionHash(hash);
     }
 }
