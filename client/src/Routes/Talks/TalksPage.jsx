@@ -1,15 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import styled from 'styled-components';
 import { TalkRoom } from '..';
 import { Container } from '../../style/common';
+import { fetchData } from '../../utils/apis/api';
+import { socketApis } from '../../utils/apis/socketApis';
+import TalkCard, { MemoizedTalkCard } from './TalkCard';
 
-function TalksPage(props) {
+function TalksPage() {
+  const [roomInformationList, setRoomInformationList] = useState([]);
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await fetchData.get(socketApis.CHAT_ROOMS);
+        if (response.status === 200) {
+          setRoomInformationList(response.data);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    })();
+  }, []);
+  console.log(roomInformationList);
   return (
     <Container>
       <TalkSection>
         <TalksContainer>
           <Title>전체 대화</Title>
+          {roomInformationList?.map((roomInformation, idx) => (
+            <MemoizedTalkCard roomInformation={roomInformation} key={idx} />
+          ))}
         </TalksContainer>
         <RoutesContainer>
           <Routes>
@@ -31,9 +51,9 @@ const TalkSection = styled.section`
 `;
 
 const TalksContainer = styled.article`
-  width: 100%;
+  width: 50%;
   background-color: ${(props) => props.theme.colors.subBlack};
-  flex: 1 1 0;
+  /* flex: 1 1 0; */
   border-right: 5px solid ${(props) => props.theme.colors.pointBlack};
 `;
 
@@ -49,6 +69,5 @@ const Title = styled.h2`
 `;
 
 const RoutesContainer = styled.article`
-  width: 100%;
-  flex: 1 1 0;
+  width: 50%;
 `;

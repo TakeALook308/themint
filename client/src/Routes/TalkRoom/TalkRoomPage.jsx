@@ -27,7 +27,7 @@ function TalkRoomPage() {
         console.log(err);
       }
     })();
-  }, []);
+  }, [roomId]);
 
   useEffect(() => {
     sock = new SockJS('https://i7a308.p.ssafy.io/api/ws-stomp');
@@ -46,9 +46,10 @@ function TalkRoomPage() {
       //종료
       return () => client.disconnect();
     });
-  }, []);
+  }, [roomId]);
 
   const onSubmit = (e) => {
+    console.log('흠냐링 여기가 문제인가');
     e.preventDefault();
     if (!chat) return;
     sendMessage(chat);
@@ -115,7 +116,6 @@ const ChatCard = ({ chat, previousChat, nextChat }) => {
   const nowMinutes = Math.floor((new Date(chat.date).getTime() / (1000 * 60)) % 60);
   const nextMinutes = Math.floor((new Date(nextChat?.date).getTime() / (1000 * 60)) % 60);
   const isSame = !!(chat.memberSeq === nextChat?.memberSeq);
-  console.log(isSame);
   return (
     <>
       {chat.memberSeq === myInformation.memberSeq ? (
@@ -216,7 +216,7 @@ const DateText = styled.p`
 const Talking = styled.p`
   background-color: ${(props) =>
     props.active ? props.theme.colors.pointGray : props.theme.colors.disabledGray};
-  padding: 0.25rem 0.5rem;
+  padding: 0.5rem;
   border-radius: 5px;
   max-width: 250px;
   word-wrap: break-word;
