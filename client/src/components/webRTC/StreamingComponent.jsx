@@ -2,7 +2,7 @@ import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
 import React, { Component } from 'react';
 import UserVideoComponent from './UserVideoComponent';
-
+import './UserVideo.css';
 const OPENVIDU_SERVER_URL = 'https://i7a308.p.ssafy.io:8443';
 const OPENVIDU_SERVER_SECRET = 'themint';
 
@@ -231,7 +231,14 @@ class StreamingComponent extends Component {
   render() {
     const mySessionId = this.state.mySessionId;
     const myUserName = this.state.myUserName;
+<<<<<<< HEAD
+
     // console.log(this.props.userInfo);
+
+    console.log('여기여기', this.props.deviceList);
+=======
+    // console.log(this.props.userInfo);
+>>>>>>> c6f13abc577a9a4d6e0d3cb9a57ea7ae5ac0023f
 
     return (
       <div className="container">
