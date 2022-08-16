@@ -231,7 +231,6 @@ class StreamingComponent extends Component {
   render() {
     const mySessionId = this.state.mySessionId;
     const myUserName = this.state.myUserName;
-    console.log('여기여기', this.props.deviceList);
 
     return (
       <div className="container">

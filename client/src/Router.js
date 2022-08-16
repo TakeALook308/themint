@@ -38,7 +38,7 @@ import { useState } from 'react';
 function Router({ toggleNotification, setToggleNotifiaction }) {
   const loggedin = useRecoilValue(loggedinState);
   return (
-    <BrowserRouter onClick={() => setToggleNotifiaction(false)}>
+    <BrowserRouter>
       <NavigationBar
         toggleNotification={toggleNotification}
         setToggleNotifiaction={setToggleNotifiaction}

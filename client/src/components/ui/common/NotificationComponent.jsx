@@ -10,7 +10,7 @@ import usePushNotification from '../../../utils/hooks/usePushNotification';
 let sock;
 let client;
 
-function NotificationComponent({ setShow }) {
+function NotificationComponent({ toggleNotification, setShow }) {
   const [hasNewNotice, SetHasNewNotice] = useState(false);
   const isLoggedin = useRecoilValue(loggedinState);
   const myInformation = useRecoilValue(myInformationState);
@@ -46,7 +46,7 @@ function NotificationComponent({ setShow }) {
 
   const onClick = (e) => {
     e.stopPropagation();
-    setShow((prev) => !prev);
+    setShow(!toggleNotification);
     SetHasNewNotice(false);
   };
 

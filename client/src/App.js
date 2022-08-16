@@ -25,7 +25,9 @@ function App() {
         try {
           const response = await fetchData.get(userApis.MY_BASIC_INFORMATION);
           setMyInformation(response.data);
-        } catch (err) {}
+        } catch (err) {
+          console.log(err);
+        }
       }
       setLoading(true);
     })();
@@ -34,7 +36,10 @@ function App() {
   return (
     <HelmetProvider>
       <Suspense fullback={<h1>Loading...</h1>}>
-        <Container onClick={() => setToggleNotifiaction(false)}>
+        <Container
+          onClick={(e) => {
+            setToggleNotifiaction(false);
+          }}>
           <ToastContainer
             position="top-center"
             autoClose={3000}
@@ -64,7 +69,6 @@ function App() {
 export default App;
 
 const Container = styled.div`
-  max-width: 1024px;
   margin-left: auto;
   margin-right: auto;
 `;

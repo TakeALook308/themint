@@ -174,7 +174,7 @@ function StandbyPage() {
     try {
       const response = await fetchData.post(socketApis.ROOM_CREATION, body);
       if (response.status === 200) {
-        console.log('채팅방 생성 성공');
+        console.log('==========채팅방 생성=============');
       }
     } catch (err) {
       if (err.response.status === 409) {
@@ -185,7 +185,6 @@ function StandbyPage() {
 
   useEffect(() => {
     return () => {
-      console.log('세션떠나요');
       leaveSession();
     };
   }, [session]);
@@ -196,7 +195,9 @@ function StandbyPage() {
     if (standByInfo.memberSeq === userInfo.memberSeq) {
       successToast(
         <div>
-          <strong>경매 입장 준비장입니다.</strong> <br />
+          <strong>
+            <h1>경매 입장 준비장입니다.</h1>
+          </strong>
           <br />
           경매장에 입장하기 전 카메라와 마이크 등 테스트를 마친 후 입장해주세요.
         </div>,
@@ -224,7 +225,15 @@ function StandbyPage() {
     }
   }, [audioEnabled]);
 
-  const movoToStreaming = () => {
+  const startAuction = async () => {
+    try {
+      const response = await fetchData.post(socketApis.AUCTION_START, { hash: auctionId });
+    } catch (err) {
+      return console.log(err);
+    }
+  };
+  const movoToStreaming = async () => {
+    await startAuction();
     leaveSession();
     navigate(`/streamings/${auctionId}`);
   };

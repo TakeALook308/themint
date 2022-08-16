@@ -16,16 +16,17 @@ function NotificationList({ setShow }) {
     setNotificationList(list);
   };
 
-  const toggleShow = () => {
-    setShow(false);
-  };
   return (
-    <Modal onClick={(e) => e.stopPropagation()}>
+    <Modal
+      onClick={(e) => {
+        e.stopPropagation();
+        setShow(true);
+      }}>
       {!notificationList?.length && <NotList>알림이 없습니다.</NotList>}
       {notificationList?.map((notification, i) => (
         <NotificationCard key={i}>
-          <NotificationButton to={`${notification.url}`} onClick={toggleShow}>
-            <p>{notification.title}</p>
+          <NotificationButton to={`${notification.url}`}>
+            <p>{notification.title} 🔔</p>
             <p>{notification.notification}</p>
           </NotificationButton>
           <DeleteButton onClick={() => deleteNotification(i)}>
@@ -79,7 +80,7 @@ const NotList = styled.div`
 
 const Modal = styled.div`
   width: 250px;
-  height: 300px;
+  height: 275px;
   background-color: red;
   position: absolute;
   padding: 0.5rem;
@@ -91,7 +92,7 @@ const Modal = styled.div`
   padding: 0.5rem;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.5rem;
 `;
 
 const NotificationCard = styled.div`

@@ -75,7 +75,10 @@ function NavigationBar({ toggleNotification, setToggleNotifiaction }) {
                   <HiOutlineChat size={25} />
                 </Link>
                 <NotiContainer>
-                  <NotificationComponent setShow={setToggleNotifiaction} />
+                  <NotificationComponent
+                    toggleNotification={toggleNotification}
+                    setShow={setToggleNotifiaction}
+                  />
                   {toggleNotification && <NotificationList setShow={setToggleNotifiaction} />}
                 </NotiContainer>
                 <SubContainer to={`profile/${myInformation.memberSeq}`}>
