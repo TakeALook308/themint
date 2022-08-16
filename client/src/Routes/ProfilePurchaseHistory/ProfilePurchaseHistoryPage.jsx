@@ -20,6 +20,16 @@ import { ActiveInput } from '../../style/style';
 import MintButton from '../../components/ButtonList/MintButton';
 
 function ProfilePurchaseHistoryPage({ params }) {
+  const myInformation = useRecoilValue(myInformationState);
+  const getUserInfo = async () => {
+    const response = await fetchData.get(userApis.USER_INFORMATION(myInformation?.memberSeq));
+    return response?.data;
+  };
+
+  const { isLoading, error, data, isFetching } = useQuery(['userInformation'], getUserInfo);
+  const queryClient = useQueryClient();
+  const userAllInfo = queryClient.getQueryData(['userInformation']);
+
   // 구매내역과 판매내역 차이 구분
   const [isPurchase, setIsPurchase] = useState('purchase');
   useEffect(() => {
@@ -54,21 +64,21 @@ function ProfilePurchaseHistoryPage({ params }) {
       setDeliveryData((prevState) => {
         return { ...prevState, productDeliverySeq: itemDetail.data.productDeliverySeq };
       });
-      setDeliveryData((prevState) => {
-        return { ...prevState, name: userAllInfo.memberName };
-      });
-      setDeliveryData((prevState) => {
-        return { ...prevState, phone: userAllInfo.phone };
-      });
-      setDeliveryData((prevState) => {
-        return { ...prevState, address: userAllInfo.address };
-      });
-      setDeliveryData((prevState) => {
-        return { ...prevState, addressDetail: userAllInfo.addressDetail };
-      });
-      setDeliveryData((prevState) => {
-        return { ...prevState, zipCode: userAllInfo.zipCode };
-      });
+      // setDeliveryData((prevState) => {
+      //   return { ...prevState, name: userAllInfo.memberName };
+      // });
+      // setDeliveryData((prevState) => {
+      //   return { ...prevState, phone: userAllInfo.phone };
+      // });
+      // setDeliveryData((prevState) => {
+      //   return { ...prevState, address: userAllInfo.address };
+      // });
+      // setDeliveryData((prevState) => {
+      //   return { ...prevState, addressDetail: userAllInfo.addressDetail };
+      // });
+      // setDeliveryData((prevState) => {
+      //   return { ...prevState, zipCode: userAllInfo.zipCode };
+      // });
       setSearchDeliveryData((prevState) => {
         return { ...prevState, t_code: itemDetail.data.parcelCompanyCode };
       });
@@ -144,14 +154,7 @@ function ProfilePurchaseHistoryPage({ params }) {
   };
 
   // 배송정보 수정
-  const myInformation = useRecoilValue(myInformationState);
-  const getUserInfo = async () => {
-    const response = await fetchData.get(userApis.USER_INFORMATION(myInformation?.memberSeq));
-    return response?.data;
-  };
-  const { isLoading, error, data, isFetching } = useQuery(['userInformation'], getUserInfo);
-  const queryClient = useQueryClient();
-  const userAllInfo = queryClient.getQueryData(['userInformation']);
+
   const [deliveryData, setDeliveryData] = useState({
     productDeliverySeq: 1,
     name: '',
@@ -167,28 +170,35 @@ function ProfilePurchaseHistoryPage({ params }) {
       return { ...prevState, remitName: e.target.value };
     });
   };
+  // console.log(userAllInfo.address);
   const onClick = () => {
-    const { value, name } = deliveryData;
-    setDeliveryData({
-      ...deliveryData,
-      [name]: value,
-    });
-    console.log(deliveryData);
-    // 버튼 클릭하면 배송정보를 patch
-    const patchDeliveryData = async (url, data) => {
-      const response = await instance.patch(url, data);
+    const data = queryClient.getQueryData(['userInformation']);
+    const newData = {
+      productDeliverySeq: deliveryData.productDeliverySeq,
+      name: data.memberName,
+      remitName: deliveryData.remitName,
+      phone: data.phone,
+      address: data.address,
+      addressDetail: data.addressDetail,
+      zipCode: data.zipCode,
+    };
+    const patchDeliveryData = (url, data) => {
+      const response = instance.patch(url, data);
       return response;
     };
-    const res = patchDeliveryData(`/api/delivery`, deliveryData);
+    const res = patchDeliveryData(`/api/delivery`, newData);
     res.then(() => {
       setIsModal((prev) => !prev);
+      console.log(newData);
     });
+    // 버튼 클릭하면 배송정보를 patch
   };
+
   // 배송 조회
   const [searchDeliveryData, setSearchDeliveryData] = useState({
     t_key: 'F021Ir60YiVKvqs5Fx4AXw',
-    t_code: '04',
-    t_invoice: '113323452345',
+    t_code: '',
+    t_invoice: '',
   });
 
   // 리뷰 작성

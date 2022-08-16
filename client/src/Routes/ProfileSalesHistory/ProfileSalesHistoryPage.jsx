@@ -113,14 +113,23 @@ function ProfileSalesHistoryPage({ params }) {
       />
       <Modal open={isModal} close={ModalHandler} title="상품 관리">
         <ModalProfile>
-          <img src={process.env.REACT_APP_IMAGE_URL + salesDetail.profileUrl} alt="프로필이미지" />
+          <picture>
+            <img
+              src={process.env.REACT_APP_IMAGE_URL + salesDetail.profileUrl}
+              alt="프로필이미지"
+            />
+          </picture>
           <p>{salesDetail.nickname}</p>
         </ModalProfile>
         <ModalMain>
           <p>입금자명 : {salesDetail.remitName}</p>
           <p>입금자 전화번호: {salesDetail.phone}</p>
-          <p>구매자 배송지: {salesDetail.address}</p>
-          <p>상세 배송지: {salesDetail.addressDetail}</p>
+          <hr />
+          <h3>구매자 배송지 </h3>
+          <p>우편번호: {salesDetail.zipCode}</p>
+          <p>
+            {salesDetail.address} {salesDetail.addressDetail}
+          </p>
           <select onChange={onChange} name="parcelCompanyCode" value={parcelCompanyCode}>
             <option value="none" hidden>
               택배 회사 선택
@@ -198,12 +207,22 @@ const ModalProfile = styled.div`
   justify-content: flex-start;
   align-items: center;
   margin-bottom: 20px;
-  > img {
+  > picture {
     width: 20%;
     height: 100%;
     border-radius: 50%;
     margin-right: 20px;
+    border: 2px solid ${(props) => props.theme.colors.subMint};
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    > img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+    }
   }
+
   > p {
     font-size: 24px;
     font-weight: bold;
@@ -212,7 +231,6 @@ const ModalProfile = styled.div`
 
 const ModalMain = styled.main`
   width: 100%;
-  height: 200px;
   > p {
     margin-bottom: 15px;
   }
@@ -229,16 +247,19 @@ const ModalMain = styled.main`
   > button {
     padding: 5px;
   }
+  > h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
 `;
 
 const Plus = styled.button`
   border-radius: 5px;
   padding: 5px;
-  bottom: 5%;
-  right: 30%;
   background-color: ${(props) => props.theme.colors.mainBlack};
   color: ${(props) => props.theme.colors.subMint};
   border: 1px solid ${(props) => props.theme.colors.subMint};
+
   :hover {
     cursor: pointer;
   }
