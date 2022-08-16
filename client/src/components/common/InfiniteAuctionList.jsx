@@ -44,7 +44,7 @@ function InfiniteAuctionList({
       },
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
-      refetchOnMount: false,
+      refetchOnMount: true,
       refetchInterval: 60 * 1000,
     },
   );
