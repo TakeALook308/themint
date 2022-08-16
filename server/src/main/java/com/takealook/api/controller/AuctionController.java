@@ -145,6 +145,20 @@ public class AuctionController {
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
     }
 
+    @PatchMapping("/end")
+    public ResponseEntity<? extends BaseResponseBody> auctionTerminate(@RequestBody Map<String, String> auctionMap){
+        String hash = auctionMap.get("hash");
+        Auction auction = auctionService.getAuctionByHash(hash);
+        auctionService.updateAuctionStatus(auction.getSeq(), 2);
+        List<Product> productList = productService.getProductListByAuctionSeq(auction.getSeq());
+        for (Product product : productList){
+            if(product.getStatus() == 0){
+                productService.updateStatus(product.getSeq(), 4);
+            }
+        }
+        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
+    }
+
     // 실시간 진행되고 있는 경매 목록 조회
     @GetMapping("/live")
     public ResponseEntity<List<AuctionListEntityRes>> getLiveAuctionList() {
@@ -283,6 +297,7 @@ public class AuctionController {
         String hash = auctionHash.get("hash");
         List<String> memberIdList = interestAuctionService.getMemberListByHash(hash);
         Auction auction = auctionService.getAuctionByHash(hash);
+        auctionService.updateAuctionStatus(auction.getSeq(), 1); // 경매 상태 1로 변경(시작됨)
         for(String memberId: memberIdList) {
             String notification = memberId + "님의 관심 경매가 시작됐어요!";
             NotificationMessage notificationMessage = NotificationMessage.builder()
