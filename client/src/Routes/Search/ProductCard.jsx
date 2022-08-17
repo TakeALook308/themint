@@ -2,8 +2,16 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-function ProductCard({ auction, func }) {
-  const [statusNum, setStatusNum] = useState(0);
+function ProductCard({ auction }) {
+  console.log(auction.startTime);
+
+  const auctionDate = new Date(auction?.startTime);
+  console.log(auctionDate);
+  const year = auctionDate.getFullYear();
+  const month = String(auctionDate.getMonth() + 1).padStart(2, '0');
+  const date = String(auctionDate.getDate()).padStart(2, '0');
+  const hours = String(auctionDate.getHours()).padStart(2, '0');
+  const minutes = String(auctionDate.getMinutes()).padStart(2, '0');
   return (
     <CardContainer>
       <div>
@@ -20,8 +28,8 @@ function ProductCard({ auction, func }) {
             <AuctionInfoContainer>
               <div>
                 <h3>{auction.productName}</h3>
-                <p>{auction.startPrice}</p>
-                <AcutionTime>{auction.startTime}</AcutionTime>
+                <p>{auction.startPrice.toLocaleString()}원</p>
+                <AcutionTime>{`경매 시작: ${year}.${month}.${date} ${hours}:${minutes}`}</AcutionTime>
               </div>
             </AuctionInfoContainer>
           </div>
@@ -120,7 +128,7 @@ const AuctionInfoContainer = styled.div`
   );
   left: 0;
   bottom: 0;
-  padding: 5%;
+  padding: 0.5rem 5%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -135,14 +143,14 @@ const AuctionInfoContainer = styled.div`
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      font-size: 20px;
+      font-size: ${(props) => props.theme.fontSizes.p};
+    }
+    p {
+      font-size: 12px;
     }
   }
 `;
 
 const AcutionTime = styled.p`
-  position: absolute;
-  right: 5%;
-  top: -5%;
   font-size: 12px;
 `;
