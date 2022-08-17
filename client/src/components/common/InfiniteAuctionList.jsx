@@ -107,5 +107,5 @@ const NotExist = styled.p`
   width: 100%;
   text-align: center;
   font-size: ${(props) => props.theme.fontSizes.h5};
-  font-weight: bold;
+  font-weight: ;
 `;

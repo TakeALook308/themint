@@ -262,7 +262,7 @@ function ProfilePurchaseHistoryPage({ params }) {
         </StyledBtn>
       </ButtonNav>
       <InfiniteAuctionList
-        getUrl={getPurchaseUrl(params, 9)}
+        getUrl={getPurchaseUrl(9)}
         queryKey={[`${params}${active}${isPurchase}${isModal}`]}
         CardComponent={IsPurchasingCard}
         SkeltonCardComponent={SkeletonAuctionCard}

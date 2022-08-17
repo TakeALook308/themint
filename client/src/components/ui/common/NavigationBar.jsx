@@ -10,16 +10,12 @@ import { HiSearch, HiOutlineChat } from 'react-icons/hi';
 import { AiOutlineUser } from 'react-icons/ai';
 import Notification from '../../Notification/Notification';
 
-function NavigationBar({ toggleNotification, setToggleNotifiaction }) {
+function NavigationBar() {
   const loggedin = useRecoilValue(loggedinState);
   const myInformation = useRecoilValue(myInformationState);
   const [keyword, setKeyword] = useRecoilState(keywordState);
   const [key, setKey] = useState('');
   const location = useLocation();
-  const onChangeSearch = (e) => {
-    e.preventDefault();
-    setKeyword({ ...keyword, keyword: e.target.value });
-  };
 
   const navigate = useNavigate();
 
@@ -34,6 +30,10 @@ function NavigationBar({ toggleNotification, setToggleNotifiaction }) {
       search: `?type=${keyword.type}&keyword=${word}`,
     });
   };
+
+  // if (!location.pathname.startsWith('/search')) {
+  //   setKey('');
+  // }
 
   if (
     location.pathname.startsWith('/streamings') ||
