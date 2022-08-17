@@ -123,7 +123,7 @@ const NavStyle = styled(NavLink)`
     text-decoration: none;
   }
   &:hover {
-    color: ${(props) => props.theme.colors.mainMint};
+    color: ${(props) => props.theme.colors.subMint};
   }
   &.active {
     color: ${(props) => props.theme.colors.white};
@@ -149,12 +149,9 @@ const NavStyle2 = styled(NavLink)`
   border-bottom: 2px solid ${(props) => props.theme.colors.subMint};
 
   outline: invert;
-  &:link {
-    transition: 0.5s;
-    text-decoration: none;
-  }
+
   &:hover {
-    color: ${(props) => props.theme.colors.mainMint};
+    color: ${(props) => props.theme.colors.subMint};
   }
   &.active {
     color: ${(props) => props.theme.colors.white};
