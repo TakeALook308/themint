@@ -32,6 +32,7 @@
     "react-slick": "^0.29.0",
     "react-toastify": "^9.0.7",
     "recoil": "^0.7.4",
+    "recoil-persist": "^4.2.0",
     "slick-carousel": "^1.8.1",
     "sockjs": "^0.3.24",
     "sockjs-client": "^1.6.1",

@@ -36,9 +36,6 @@ class StreamingComponent extends Component {
   componentDidMount() {
     window.addEventListener('beforeunload', this.onbeforeunload);
     this.joinSession();
-    // console.log('내 정보 확인', this.props.userInfo);
-    this.setState({ toggleVideo: this.publisher?.stream?.videoActive });
-    this.setState({ audioEnabled: this.state.publisher?.stream.audioActive });
   }
 
   componentWillUnmount() {
@@ -240,6 +237,7 @@ class StreamingComponent extends Component {
   }
 
   audioControll() {
+    console.log(this.state.publisher.stream);
     this.setState({ audioEnabled: !this.state.publisher.stream.audioActive });
     this.state.publisher?.publishAudio(!this.state.publisher.stream.audioActive);
   }
@@ -247,16 +245,14 @@ class StreamingComponent extends Component {
   render() {
     const mySessionId = this.state.mySessionId;
     const myUserName = this.state.myUserName;
-    console.log('audio', this.state.publisher?.stream?.audioActive);
-    console.log('video', this.state.publisher?.stream?.videoActive);
 
     return (
       <div className="container">
         <button onClick={this.videoControll}>
-          {this.state.videoEnabled ? '카메라 off' : '카메라 on'}
+          {this.state.publisher?.stream?.videoActive ? '카메라 off' : '카메라 on'}
         </button>
         <button onClick={this.audioControll}>
-          {this.state.audioEnabled ? '마이크 off' : '마이크 on'}
+          {this.state.publisher?.stream?.audioActive ? '마이크 off' : '마이크 on'}
         </button>
         {this.state.session !== undefined ? (
           <div id="session">

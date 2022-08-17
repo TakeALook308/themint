@@ -1,11 +1,9 @@
 import { atom, atomFamily } from 'recoil';
 import { getCookie } from './utils/functions/cookies';
 import { v1 } from 'uuid';
-import Session from './utils/functions/storage';
-import { fetchData } from './utils/apis/api';
-import { userApis } from './utils/apis/userApis';
+import { recoilPersist } from 'recoil-persist';
 
-const session = new Session();
+const { persistAtom } = recoilPersist();
 
 export const loggedinState = atom({
   key: `loggedin/${v1()}`,
@@ -34,11 +32,13 @@ export const timeState = atom({
   default: 0,
 });
 export const deviceListState = atom({
-  key: `deviceList/${v1()}`,
+  key: `deviceList`,
   default: {
     videoId: '',
     microPhoneId: '',
   },
+  effects_UNSTABLE: [persistAtom],
+  storage: localStorage,
 });
 
 export const notificationListFamilyState = atomFamily({
