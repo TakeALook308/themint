@@ -19,6 +19,8 @@ function SearchPage(props) {
   const key = searchParams.get('keyword');
   const type = searchParams.get('type');
   const navigate = useNavigate();
+
+  console.log('검색 페이지 렌더링');
   const auctionSortKeys = [
     { value: 'startTime', name: '경매임박순' },
     { value: 'seq', name: '최신등록순' },

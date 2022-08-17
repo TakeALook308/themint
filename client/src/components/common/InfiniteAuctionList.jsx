@@ -60,7 +60,7 @@ function InfiniteAuctionList({
   });
   return (
     <Container>
-      {data?.pages[0]?.data?.resultList.length < 1 && <p>{text}</p>}
+      {data?.pages[0]?.data?.resultList.length < 1 && <NotExist>{text}</NotExist>}
       {isLoading && <Loading />}
       {status === 'error' && <p>{error.message}</p>}
       {status === 'success' &&
@@ -101,4 +101,11 @@ const GridContainer = styled.div`
 const Container = styled.div`
   width: 100%;
   height: 100%;
+`;
+
+const NotExist = styled.p`
+  width: 100%;
+  text-align: center;
+  font-size: ${(props) => props.theme.fontSizes.h5};
+  font-weight: bold;
 `;
