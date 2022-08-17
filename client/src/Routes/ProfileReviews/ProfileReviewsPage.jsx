@@ -6,7 +6,6 @@ import ReviewCard from './ReviewCard';
 function ProfileReviewsPage({ params }) {
   // 리뷰 표시
   const [reviews, setReviews] = useState([]);
-  console.log(reviews);
   useEffect(() => {
     const getReview = async (url) => {
       const response = await instance.get(url);

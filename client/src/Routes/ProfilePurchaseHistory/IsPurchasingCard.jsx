@@ -10,75 +10,79 @@ function IsPurchasingCard({ auction, func }) {
   const auctionstr = ['판매중', '입금대기', '발송대기', '구매완료', '', '거래취소'];
 
   return (
-    <CardContainer>
-      <div>
-        <Link to={`/auctions/${auction?.hash}`}>
-          <div>
-            <picture>
-              <img
-                src={process.env.REACT_APP_IMAGE_URL + auction.auctionImage.imageUrl}
-                alt="판매내역 이미지"
-                width="400"
-                height="300"
-              />
-            </picture>
-            <AuctionInfoContainer>
-              <div>
-                <h4>{auction.productName}</h4>
-                <p>{auction.finalPrice}</p>
-                <AcutionTime>{auction.startTime}</AcutionTime>
-                <AuctionStatus auctionstrkey={auction.status}>
-                  {auctionstr[auction.status]}
-                </AuctionStatus>
-              </div>
-            </AuctionInfoContainer>
-          </div>
-        </Link>
-        <Link to={`/profile/${auction?.memberSeq}`}>
-          <div>
-            <picture>
-              <img
-                src={process.env.REACT_APP_IMAGE_URL + auction.profileUrl}
-                alt="유저 프로필"
-                width="50"
-                height="50"
-              />
-            </picture>
-          </div>
-        </Link>
-      </div>
-      {auction.status === 1 ? (
-        <Plus
-          type="button"
-          onClick={() => {
-            func(auction);
-          }}>
-          입금 확인
-        </Plus>
-      ) : null}
-      {auction.status === 2 ? (
-        <Plus
-          type="button"
-          onClick={() => {
-            func(auction);
-          }}>
-          배송 정보 입력
-        </Plus>
-      ) : null}
-      {auction.status === 3 ? (
-        <Plus
-          type="button"
-          onClick={() => {
-            func(auction);
-          }}>
-          배송 확인/리뷰
-        </Plus>
-      ) : null}
-    </CardContainer>
+    <Wrapper>
+      <CardContainer>
+        <div>
+          <Link to="#">
+            <div>
+              <picture>
+                <img
+                  src={process.env.REACT_APP_IMAGE_URL + auction.auctionImage.imageUrl}
+                  alt="판매내역 이미지"
+                  width="400"
+                  height="300"
+                />
+              </picture>
+              <AuctionInfoContainer>
+                <div>
+                  <h4>{auction.productName}</h4>
+                  <p>{auction.finalPrice.toLocaleString()}원</p>
+                  <AcutionTime>{auction.startTime}</AcutionTime>
+                  <AuctionStatus auctionstrkey={auction.status}>
+                    {auctionstr[auction.status]}
+                  </AuctionStatus>
+                </div>
+              </AuctionInfoContainer>
+            </div>
+          </Link>
+          <Link to={`/profile/${auction?.memberSeq}`}>
+            <div>
+              <picture>
+                <img
+                  src={process.env.REACT_APP_IMAGE_URL + auction.profileUrl}
+                  alt="유저 프로필"
+                  width="50"
+                  height="50"
+                />
+              </picture>
+            </div>
+          </Link>
+        </div>
+        {auction.status === 1 ? (
+          <Plus2
+            type="button"
+            onClick={() => {
+              func(auction);
+            }}>
+            입금 확인
+          </Plus2>
+        ) : null}
+        {auction.status === 2 ? (
+          <Plus
+            type="button"
+            onClick={() => {
+              func(auction);
+            }}>
+            배송 정보 입력
+          </Plus>
+        ) : null}
+        {auction.status === 3 ? (
+          <Plus
+            type="button"
+            onClick={() => {
+              func(auction);
+            }}>
+            배송 확인/리뷰
+          </Plus>
+        ) : null}
+      </CardContainer>
+    </Wrapper>
   );
 }
 
 export default IsPurchasingCard;
+
+const Wrapper = styled.div``;
 
 const CardContainer = styled.article`
   position: relative;
@@ -94,6 +98,7 @@ const CardContainer = styled.article`
     padding-top: 75%;
     position: relative;
     a {
+      cursor: default;
       &:first-child {
         > div {
           width: 100%;
@@ -209,10 +214,31 @@ const AuctionStatus = styled.div`
 
 const Plus = styled.button`
   position: absolute;
+  font-size: 30px;
+  font-weight: bold;
+  width: 80%;
+  height: 30%;
   border-radius: 5px;
   padding: 5px;
-  bottom: 5%;
-  right: 30%;
+  bottom: 40%;
+  right: 10%;
+  background-color: ${(props) => props.theme.colors.mainBlack};
+  color: ${(props) => props.theme.colors.subMint};
+  border: 1px solid ${(props) => props.theme.colors.subMint};
+  :hover {
+    cursor: pointer;
+  }
+`;
+const Plus2 = styled.button`
+  position: absolute;
+  font-size: 30px;
+  font-weight: bold;
+  border-radius: 5px;
+  padding: 5px;
+  width: 80%;
+  height: 30%;
+  bottom: 40%;
+  right: 10%;
   background-color: ${(props) => props.theme.colors.mainBlack};
   color: ${(props) => props.theme.colors.subMint};
   border: 1px solid ${(props) => props.theme.colors.subMint};
