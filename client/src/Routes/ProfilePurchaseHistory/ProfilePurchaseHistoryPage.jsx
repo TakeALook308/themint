@@ -277,7 +277,9 @@ function ProfilePurchaseHistoryPage({ params }) {
               {purchaseDetail.status === 1 && (
                 <PutMoney>
                   <p>입금을 완료 하셨나요??</p>
-                  <MintButton onClick={patchRemit} text="입금완료" size="30%" />
+                  <PutMoneyButton>
+                    <MintButton onClick={patchRemit} text="입금완료" size="30%" />
+                  </PutMoneyButton>
                   <StyledLink to={`/auctions/${purchaseDetail?.hash}`}>
                     제품 정보 상세보기
                   </StyledLink>
@@ -520,8 +522,13 @@ const SellerInfo = styled.article`
 
 const PutMoney = styled.div`
   > p {
-    margin-bottom: 10px;
+    font-size: 20px;
+    margin-bottom: 20px;
   }
+`;
+const PutMoneyButton = styled.div`
+  width: 100%;
+  display: flex;
 `;
 
 const PutAddress = styled.div`
