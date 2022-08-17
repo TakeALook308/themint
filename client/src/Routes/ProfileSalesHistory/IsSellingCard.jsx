@@ -191,6 +191,7 @@ const AuctionStatus = styled.div`
 
 const Plus = styled.button`
   font-size: 30px;
+  font-weight: bold;
   position: absolute;
   border-radius: 5px;
   padding: 5px;
