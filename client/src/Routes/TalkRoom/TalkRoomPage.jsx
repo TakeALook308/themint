@@ -47,8 +47,9 @@ function TalkRoomPage() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    if (!chat) return;
-    sendMessage(chat);
+    const trimmed = chat.trim();
+    if (!trimmed) return;
+    sendMessage(trimmed);
     setChat('');
   };
 
@@ -70,6 +71,7 @@ function TalkRoomPage() {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
+
   useEffect(() => {
     scrollToBottom();
   }, [chatList]);
@@ -194,6 +196,7 @@ const ChatInput = styled.input`
   color: ${(props) => props.theme.colors.white};
   padding-left: 1rem;
   padding-right: 3rem;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 `;
 
 const Form = styled.form`
@@ -248,6 +251,7 @@ const SendButton = styled.button`
   display: flex;
   align-items: center;
   margin-right: 3rem;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 `;
 
 const Nickname = styled.p`

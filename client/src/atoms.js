@@ -48,3 +48,8 @@ export const notificationListFamilyState = atomFamily({
       ? JSON.parse(localStorage.getItem(`notificationList/${param}`))
       : [],
 });
+
+export const notificationState = atom({
+  key: `notification/${v1()}`,
+  default: false,
+});

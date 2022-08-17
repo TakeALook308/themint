@@ -3,18 +3,20 @@ import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { keywordState, loggedinState, myInformationState } from '../../../atoms';
+import { keywordState, loggedinState, myInformationState, notificationState } from '../../../atoms';
 import Logo from '../../common/Logo';
 import SubMenu from './SubMenu';
 import { HiSearch, HiOutlineChat } from 'react-icons/hi';
 import { AiOutlineUser } from 'react-icons/ai';
-import NotificationComponent from './NotificationComponent';
-import NotificationList from '../../common/NotificationList';
+import NotificationList from '../../Notification/NotificationList';
+import NotificationButton from '../../Notification/NotificationButton';
+import Notification from '../../Notification/Notification';
 
 function NavigationBar({ toggleNotification, setToggleNotifiaction }) {
   const loggedin = useRecoilValue(loggedinState);
   const myInformation = useRecoilValue(myInformationState);
   const [keyword, setKeyword] = useRecoilState(keywordState);
+  const notificationEnabled = useRecoilValue(notificationState);
   const location = useLocation();
   const onChangeSearch = (e) => {
     e.preventDefault();
@@ -74,13 +76,7 @@ function NavigationBar({ toggleNotification, setToggleNotifiaction }) {
                 <Link to="/talks">
                   <HiOutlineChat size={25} />
                 </Link>
-                <NotiContainer>
-                  <NotificationComponent
-                    toggleNotification={toggleNotification}
-                    setShow={setToggleNotifiaction}
-                  />
-                  {toggleNotification && <NotificationList setShow={setToggleNotifiaction} />}
-                </NotiContainer>
+                <Notification />
                 <SubContainer to={`profile/${myInformation.memberSeq}`}>
                   <AiOutlineUser size={25} />
                   <NavbarDropdownContent>
