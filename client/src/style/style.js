@@ -23,6 +23,7 @@ export const ActiveInput = styled.div`
     color: ${(props) => props.theme.colors.white};
     width: 100%;
     outline: none;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 
     &:focus ~ label,
     &:not(:placeholder-shown) ~ label {

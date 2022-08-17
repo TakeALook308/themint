@@ -5,18 +5,24 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import styled from 'styled-components';
-import { loggedinState, myInformationState, notificationListFamilyState } from '../../../atoms';
-import usePushNotification from '../../../utils/hooks/usePushNotification';
+import {
+  loggedinState,
+  myInformationState,
+  notificationListFamilyState,
+  notificationState,
+} from '../../atoms';
+import usePushNotification from '../../utils/hooks/usePushNotification';
 let sock;
 let client;
 
-function NotificationComponent({ toggleNotification, setShow }) {
+function NotificationButton() {
   const [hasNewNotice, SetHasNewNotice] = useState(false);
   const isLoggedin = useRecoilValue(loggedinState);
   const myInformation = useRecoilValue(myInformationState);
   const [notificationList, setNotificationList] = useRecoilState(
     notificationListFamilyState(myInformation.memberId),
   );
+  const [notificationEnabled, setNotificationEnabled] = useRecoilState(notificationState);
   const { fireNotification } = usePushNotification();
   useEffect(() => {
     if (isLoggedin && myInformation?.memberId) {
@@ -57,7 +63,7 @@ function NotificationComponent({ toggleNotification, setShow }) {
 
   const onClick = (e) => {
     e.stopPropagation();
-    setShow(!toggleNotification);
+    setNotificationEnabled(!notificationEnabled);
     SetHasNewNotice(false);
   };
 
@@ -69,7 +75,7 @@ function NotificationComponent({ toggleNotification, setShow }) {
   );
 }
 
-export default NotificationComponent;
+export default NotificationButton;
 
 const Button = styled.button`
   background-color: transparent;

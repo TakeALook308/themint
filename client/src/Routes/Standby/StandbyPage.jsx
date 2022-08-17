@@ -1,10 +1,9 @@
 import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
 import React, { useEffect, useState } from 'react';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 import { myInformationState, deviceListState } from '../../atoms';
-import UserVideoComponent from '../../components/webRTC/UserVideoComponent';
 import {
   BsFillCameraVideoFill,
   BsFillCameraVideoOffFill,

@@ -69,8 +69,8 @@ const Container = styled.article`
   width: 100%;
   height: 80px;
   background-color: ${(props) =>
-    props.active ? props.theme.colors.pointGray : props.theme.colors.pointBlack};
-  border: 2px solid black;
+    props.active ? props.theme.colors.pointBlack : props.theme.colors.pointGray};
+  border-top: 1px solid ${(props) => props.theme.colors.mainBlack};
   display: flex;
   transition: background-color 0.3s ease-out;
   &:hover {
