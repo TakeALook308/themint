@@ -11,9 +11,11 @@ import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { useParams } from 'react-router-dom';
 import { getData } from '../../utils/apis/api';
+import { fetchData } from '../../utils/apis/api';
 import { auctionApis } from '../../utils/apis/auctionApis';
 import moment from 'moment';
 import TimeBar from './TimeBar';
+import { chatApis } from '../../utils/apis/chatApis';
 let sock;
 let client;
 function StreamingPage(props) {
@@ -38,15 +40,18 @@ function StreamingPage(props) {
       setAuctionData({ memberSeq: res.data.memberSeq });
       setProducts(res.data.productList);
     });
+    // console.log('잘 실행되나요?');
   }, [nextProduct]);
+
   // console.log(nextProduct);
+  // console.log(products);
   let nickname = userInfo.nickname;
   let memberSeq = userInfo.memberSeq;
   let roomId = auctionId;
   const [chat, setChat] = useState([]);
   const [priceList, setPriceList] = useState([]);
   const [newTime, setNewTime] = useState(moment());
-
+  // const []
   const setAuctionTime = useSetRecoilState(timeState);
 
   //처음 접속했을 때
@@ -54,6 +59,7 @@ function StreamingPage(props) {
     sock = new SockJS('https://i7a308.p.ssafy.io/api/ws-stomp');
     client = Stomp.over(sock);
     client.debug = null;
+    // fetchData.post(chatApis.AUCTION_CHAT_IN_API, { roomId: roomId, memberSeq: memberSeq });
     client.connect({}, () => {
       console.log('Connected : ' + roomId);
       //연결 후 데이터 가져오기
@@ -79,6 +85,7 @@ function StreamingPage(props) {
     //종료
     return () => {
       setAuctionTime(0);
+      // fetchData.post(chatApis.AUCTION_CHAT_OUT_API, { roomId: roomId, memberSeq: memberSeq });
       client.disconnect();
     };
   }, []);
@@ -117,7 +124,7 @@ function StreamingPage(props) {
         <Main>
           <Section>
             <StreamingHeader auctionInfo={auctionInfo} />
-            <AuctionList products={products} />
+            <AuctionList products={products} auctionId={auctionId} />
             <TimeBar />
             <StreamingComponent
               userInfo={userInfo}
@@ -134,6 +141,7 @@ function StreamingPage(props) {
               newTime={newTime}
               producter={userInfo.memberSeq === auctionInfo.memberSeq ? true : false}
               setNextProduct={setNextProduct}
+              auctionsHash={auctionId}
             />
             <StreamChat sendMessage={sendMessage} chat={chat} userInfo={userInfo} />
           </Aside>

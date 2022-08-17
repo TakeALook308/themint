@@ -9,6 +9,7 @@ import { AiOutlineBell } from 'react-icons/ai';
 function StreamingHeader({ auctionInfo, countSub }) {
   const navigate = useNavigate();
   const url = useLocation().pathname;
+  // console.log(auctionInfo);
   if (auctionInfo) {
     return (
       <Head>
@@ -25,15 +26,17 @@ function StreamingHeader({ auctionInfo, countSub }) {
           <ul>
             <li onClick={() => doCopy(process.env.REACT_APP_API_URL + url)}>
               <BiLink size={25}></BiLink>
-              <span>복사</span>
+              <span>링크 복사</span>
             </li>
             <li>
               <AiOutlineBell size={25}></AiOutlineBell>
               <span>알림</span>
             </li>
             <li>
-              <BsFileEarmarkText size={25}></BsFileEarmarkText>
-              <span>정보</span>
+              <a href={`/auctions/${auctionInfo.hash}`} target="_blank" rel="noreferrer">
+                <BsFileEarmarkText size={25}></BsFileEarmarkText>
+                <span>정보</span>
+              </a>
             </li>
             <li
               onClick={() => {
@@ -76,10 +79,22 @@ const HeadButtonSet = styled.div`
   justify-content: center;
   ul {
     display: flex;
-    gap: 25px;
+    gap: 5px;
     align-items: center;
     li {
-      font-size: 14px;
+      width: 50px;
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: ${(props) => props.theme.colors.white};
+      gap: 5px;
+      cursor: pointer;
+    }
+    li > a {
+      width: 50px;
+      font-size: 12px;
       display: flex;
       flex-direction: column;
       justify-content: center;
