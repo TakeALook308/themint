@@ -76,7 +76,7 @@ function InterestCateList() {
             </option>
           ))}
         </select>
-        <GradientButton text={'카테고리 추가'} onClick={onClick} />
+        <GradientButton text={'카테고리 추가'} onClick={onClick} size="60%" />
       </SelectContainer>
       <CardContainer>
         {showCateList.map((keyword, i) => (
@@ -94,11 +94,23 @@ const Container = styled.div`
 
 const SelectContainer = styled.div`
   display: flex;
-  width: 50%;
+  width: 47%;
   margin-bottom: 30px;
   > select {
-    margin-right: 10px;
+    margin-right: 20px;
     width: 100%;
+    background-color: ${(props) => props.theme.colors.pointBlack};
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    color: ${(props) => props.theme.colors.white};
+    width: 80%;
+    height: 40px;
+    font-size: 20px;
+    text-align: center;
+    > option {
+      border-radius: 5px;
+    }
   }
 `;
 
