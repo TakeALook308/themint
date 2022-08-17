@@ -15,9 +15,9 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct 
   const [AuctionStart, setAuctionStart] = useState(false); //상품별 경매 진행 여부
   const [AuctionEnd, setAuctionEnd] = useState(false); //모든 상품의 경매가 진행되었는지 여부
 
-  useEffect(() => {
-    console.log(products);
-  }, []);
+  // useEffect(() => {
+  //   console.log(products);
+  // }, []);
 
   useEffect(() => {
     if (price.length > 0) {
@@ -29,6 +29,7 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct 
         if (toggle === 1) {
           // setNextProduct(nowProduct);
           setMyPrice(products[price[0].index].startPrice);
+          successToast('💸경매가 시작되었습니다💸');
           // console.log('살려주세요');
         }
       } else {
@@ -52,6 +53,7 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct 
       if (myRef.current) {
         resetClick();
         startClick();
+        setMyPrice(nowPrice + 1000);
       }
       setToggle(2);
       // console.log('1 -> 2');
@@ -71,15 +73,19 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct 
   const finishAuction = () => {
     stopClick();
     setAuctionStart(false);
-    setNextProduct(nowProduct);
+
     if (price[price.length - 1].price === -1) errorToast(`상품이 유찰되었습니다...😥`);
     else successToast(`${price[price.length - 1].nickname}님이 낙찰되셨습니다. 축하합니다🥳🎉🎊`);
     if (producter)
-      fetchData.post(productApis.PRODUCT_SUCCESS_API, {
-        memberSeq: price[price.length - 1].memberSeq,
-        productSeq: price[price.length - 1].productSeq,
-        finalPrice: price[price.length - 1].price,
-      });
+      fetchData
+        .post(productApis.PRODUCT_SUCCESS_API, {
+          memberSeq: price[price.length - 1].memberSeq,
+          productSeq: price[price.length - 1].productSeq,
+          finalPrice: price[price.length - 1].price,
+        })
+        .then(() => {
+          setNextProduct(nowProduct);
+        });
   };
 
   const myRef = useRef(null);
@@ -94,6 +100,16 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct 
     myRef.current.handlePauseClick();
   }
 
+  const priceEndRef = useRef(null);
+  const scrollToBottom = () => {
+    // messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+    priceEndRef.current?.scrollTo({ top: priceEndRef.current.scrollHeight });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [price]);
+
   if (price[0] && !AuctionEnd)
     return (
       <Article>
@@ -106,8 +122,8 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct 
             </div>
           </div>
         </AuctionInfo>
-        <Timer delay="5" ref={myRef} finishAuction={finishAuction}></Timer>
-        <PriceList>
+        <Timer delay="30" ref={myRef} finishAuction={finishAuction}></Timer>
+        <PriceList ref={priceEndRef}>
           {price.map((item, i) => {
             if (i !== 0) {
               return (

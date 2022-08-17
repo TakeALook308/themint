@@ -4,16 +4,15 @@ import styled from 'styled-components';
 import { IoIosSend } from 'react-icons/io';
 function StreamChat({ sendMessage, chat, userInfo }) {
   const [chatMessage, setChatMessage] = useState('');
-
   const messagesEndRef = useRef(null);
-
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+    messagesEndRef.current?.scrollTo({ top: messagesEndRef.current.scrollHeight });
   };
 
   useEffect(() => {
     scrollToBottom();
-  }, [chatMessage]);
+  }, [chat]);
 
   // useEffect(() => {
   //   // scrollRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -23,7 +22,7 @@ function StreamChat({ sendMessage, chat, userInfo }) {
   return (
     <Article>
       {/* <ul ref={scrollRef}> */}
-      <ul>
+      <div className="uld" ref={messagesEndRef}>
         {chat.map((item, i) => {
           if (item.type === 0) {
             return <ComeBox key={i}> {item.message}</ComeBox>;
@@ -38,9 +37,17 @@ function StreamChat({ sendMessage, chat, userInfo }) {
             );
           }
         })}
-        <div ref={messagesEndRef}></div>
-      </ul>
-      <SendBox>
+        {/* <div></div> */}
+      </div>
+
+      <SendBox
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (chatMessage.trim()) {
+            sendMessage(chatMessage.trim());
+            setChatMessage('');
+          }
+        }}>
         <input
           type="text"
           placeholder="내용 입력"
@@ -48,20 +55,8 @@ function StreamChat({ sendMessage, chat, userInfo }) {
           onChange={(e) => {
             setChatMessage(e.target.value);
           }}
-          onKeyDown={(e) => {
-            if (e.key == 'Enter') {
-              sendMessage(chatMessage);
-              setChatMessage('');
-            }
-          }}
         />
-        <button
-          onClick={() => {
-            if (chatMessage) {
-              sendMessage(chatMessage);
-              setChatMessage('');
-            }
-          }}>
+        <button>
           <IoIosSend size={20}></IoIosSend>
         </button>
       </SendBox>
@@ -79,7 +74,7 @@ const Article = styled.article`
   gap: 10px;
   position: relative;
 
-  ul {
+  .uld {
     flex-grow: 1;
     padding: 10px;
     height: 100%;
@@ -106,11 +101,11 @@ const Article = styled.article`
       min-height: 300px;
     }
   }
-  li {
+  div {
     flex-basis: 0;
   }
 `;
-const ComeBox = styled.li`
+const ComeBox = styled.div`
   background-color: #c0c0c0;
   align-self: center;
   color: ${(props) => props.theme.colors.subBlack};
@@ -120,8 +115,9 @@ const ComeBox = styled.li`
   margin: 0 auto;
   border-radius: 5px;
   text-align: center;
+  font-size: 1rem;
 `;
-const MyBox = styled.li`
+const MyBox = styled.div`
   background-color: ${(props) => props.theme.colors.pointGray};
   align-self: flex-end;
 
@@ -135,7 +131,7 @@ const MyBox = styled.li`
   /* word-wrap: break-word; */
   word-break: break-all;
 `;
-const YourBox = styled.li`
+const YourBox = styled.div`
   position: relative;
   padding-top: 25px;
   align-self: flex-start;
@@ -159,7 +155,7 @@ const YourBox = styled.li`
     word-break: break-all;
   }
 `;
-const SendBox = styled.div`
+const SendBox = styled.form`
   width: 100%;
   display: flex;
   padding: 0 5px;

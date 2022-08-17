@@ -9,6 +9,7 @@ import { AiOutlineBell } from 'react-icons/ai';
 function StreamingHeader({ auctionInfo, countSub }) {
   const navigate = useNavigate();
   const url = useLocation().pathname;
+  console.log(auctionInfo);
   if (auctionInfo) {
     return (
       <Head>
@@ -32,8 +33,10 @@ function StreamingHeader({ auctionInfo, countSub }) {
               <span>알림</span>
             </li>
             <li>
-              <BsFileEarmarkText size={25}></BsFileEarmarkText>
-              <span>정보</span>
+              <a href={`/auctions/${auctionInfo.hash}`} target="_blank" rel="noreferrer">
+                <BsFileEarmarkText size={25}></BsFileEarmarkText>
+                <span>정보</span>
+              </a>
             </li>
             <li
               onClick={() => {
@@ -79,6 +82,17 @@ const HeadButtonSet = styled.div`
     gap: 5px;
     align-items: center;
     li {
+      width: 50px;
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: ${(props) => props.theme.colors.white};
+      gap: 5px;
+      cursor: pointer;
+    }
+    li > a {
       width: 50px;
       font-size: 12px;
       display: flex;

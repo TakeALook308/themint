@@ -1,23 +1,52 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { fetchData } from '../../utils/apis/api';
+// import { auctionApis } from '../../utils/apis/auctionApis';
 
-function AuctionList({ products }) {
-  console.log('내부에서', products);
-  return (
-    <Article>
-      <p>경매리스트</p>
-      <List>
-        {products.map((item, i) => (
-          <li key={i}>
-            <p>{item.productName}</p>
-            <span>{item.startPrice.toLocaleString()}원~</span>
-            {item.status === 1 ? <Finish>끝났습니다</Finish> : null}
-            {item.status === 4 ? <Finish>유찰입니다</Finish> : null}
-          </li>
-        ))}
-      </List>
-    </Article>
-  );
+function AuctionList({ products, auctionId }) {
+  // console.log('내부에서', products);
+  const [productList, setProductList] = useState([]);
+
+  useEffect(() => {
+    // if (auctionApis)
+    setInterval(() => {
+      fetchData.get(`/api/auction/${auctionId}`).then((res) => {
+        setProductList(res.data.productList);
+      });
+    }, 1000);
+  }, []);
+  if (productList.length !== 0)
+    return (
+      <Article>
+        <p>경매리스트</p>
+        <List>
+          {productList?.map((item, i) => (
+            <li key={i}>
+              <p>{item.productName}</p>
+              <span>{item.startPrice.toLocaleString()}원~</span>
+              {item.status === 1 ? <Finish>끝났습니다</Finish> : null}
+              {item.status === 4 ? <Finish>유찰입니다</Finish> : null}
+            </li>
+          ))}
+        </List>
+      </Article>
+    );
+  else
+    return (
+      <Article>
+        <p>경매리스트</p>
+        <List>
+          {products?.map((item, i) => (
+            <li key={i}>
+              <p>{item.productName}</p>
+              <span>{item.startPrice.toLocaleString()}원~</span>
+              {item.status === 1 ? <Finish>끝났습니다</Finish> : null}
+              {item.status === 4 ? <Finish>유찰입니다</Finish> : null}
+            </li>
+          ))}
+        </List>
+      </Article>
+    );
 }
 
 const Article = styled.article`
