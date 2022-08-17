@@ -46,7 +46,7 @@
 | ----- | ------ | ----------- | ----------------- |
 | React | Recoil | React-Query | Styled-components |
 
-|![sockjs](/uploads/34dabafeb8e1c43c45c70a99bf5c0bac/sockjs.png)|![axios](/uploads/a65ed9e296606d2422484a6071e528a2/axios.png)|![Node.js_logo.svg](/uploads/a14ce8434713f8e81d8a891d70fe43e1/Node.js_logo.svg)|![openvidu](/uploads/1e0b1b33cae37a737c61dd28dd9b189e/openvidu.png)|
+|![sockjs](/uploads/34dabafeb8e1c43c45c70a99bf5c0bac/sockjs.png)|![axios](/uploads/a65ed9e296606d2422484a6071e528a2/axios.png)|![Node.js_logo.svg](/uploads/a14ce8434713f8e81d8a891d70fe43e1/Node.js_logo.svg)|![openvidu](/uploads/c1a233c419974a535b98fc61f6ff1f5e/openvidu.png)|
 | ------- | ----- | ------- | -------- |
 | Sock.js | axios | Node.js | OpenVidu |
 
