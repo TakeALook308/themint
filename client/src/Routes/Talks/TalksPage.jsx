@@ -11,7 +11,6 @@ import { TbMoodSad } from 'react-icons/tb';
 function TalksPage() {
   const [roomInformationList, setRoomInformationList] = useState([]);
   const { roomId } = useParams();
-  console.log(roomId);
   useEffect(() => {
     (async () => {
       try {

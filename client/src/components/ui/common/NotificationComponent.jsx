@@ -22,6 +22,7 @@ function NotificationComponent({ toggleNotification, setShow }) {
     if (isLoggedin && myInformation?.memberId) {
       sock = new SockJS('https://i7a308.p.ssafy.io/api/ws-stomp');
       client = Stomp.over(sock);
+      client.debug = null;
       client.connect({}, () => {
         client.subscribe(
           `/sub/notice/${myInformation.memberId}`,

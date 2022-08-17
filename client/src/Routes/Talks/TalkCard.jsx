@@ -29,9 +29,8 @@ function TalkCard({ roomInformation }) {
   useEffect(() => {
     sock = new SockJS('https://i7a308.p.ssafy.io/api/ws-stomp');
     client = Stomp.over(sock);
+    client.debug = null;
     client.connect({}, () => {
-      console.log('Connected : ' + roomInformation.roomId);
-      //연결 후 데이터 가져오기
       client.subscribe(
         '/sub/chat/room/' + roomInformation.roomId,
         function (message) {
@@ -40,7 +39,6 @@ function TalkCard({ roomInformation }) {
         },
         (err) => {},
       );
-      //종료
       return () => client.disconnect();
     });
   }, []);
@@ -69,7 +67,7 @@ export const MemoizedTalkCard = React.memo(TalkCard);
 
 const Container = styled.article`
   width: 100%;
-  height: 10%;
+  height: 80px;
   background-color: ${(props) =>
     props.active ? props.theme.colors.pointGray : props.theme.colors.pointBlack};
   border: 2px solid black;

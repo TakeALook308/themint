@@ -15,7 +15,6 @@ function TalkRoomPage() {
   const myInformation = useRecoilValue(myInformationState);
   const [chatList, setChatList] = useState([]);
   const [chat, setChat] = useState('');
-  const [prevChat, setPrevChat] = useState({});
   const { roomId } = useParams();
   useEffect(() => {
     (async () => {
@@ -32,8 +31,8 @@ function TalkRoomPage() {
   useEffect(() => {
     sock = new SockJS('https://i7a308.p.ssafy.io/api/ws-stomp');
     client = Stomp.over(sock);
+    client.debug = null;
     client.connect({}, () => {
-      console.log('Connected : ' + roomId);
       client.subscribe(
         '/sub/chat/room/' + roomId,
         function (message) {
@@ -67,7 +66,6 @@ function TalkRoomPage() {
     );
   };
 
-  // 채팅 스크롤 아래로 내려주기
   const messagesEndRef = useRef(null);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

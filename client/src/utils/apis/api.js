@@ -66,9 +66,7 @@ instance.interceptors.response.use(
   },
   async (err) => {
     const originalConfig = err.config;
-    console.log(err);
     if (err.response) {
-      console.log(err);
       if (err.response.status === 401 && err.response.data?.error === 'TokenExpiredException') {
         try {
           const response = await getNewAccessToken();
@@ -79,7 +77,6 @@ instance.interceptors.response.use(
           instance.defaults.headers.Authorization = `Bearer ${accessToken}`;
           return instance(originalConfig);
         } catch (err) {
-          console.log(err);
           if (err.response.status === 401 && err.response.data?.message === 'REFRESH_ERROR') {
             removeCookie('accessToken');
             removeRefreshToken();
