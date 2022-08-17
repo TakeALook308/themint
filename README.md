@@ -88,6 +88,7 @@
 - 아키텍처(Architecture)
 
 - ERD
+![ERD.PNG](/uploads/061557c0488fdf06b22a7fcf7b5a14ef/ERD.PNG.png)
 
 - WireFrame
 
