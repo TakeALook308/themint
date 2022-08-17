@@ -38,31 +38,31 @@
 
 #### Front-end
 
-|       | ![CSS3.svg](/uploads/c18d14ea96a25911bc7927b3e35560a8/CSS3.svg) |     |
+|![HTML5.svg](/uploads/338128594a6c58476183bbcd1c0b9557/HTML5.svg)|![CSS3.svg](/uploads/b1515c9303faf54e2eeccb980c3236bb/CSS3.svg)|![JavaScript](/uploads/c23bdea86d76ad6d6086855893e94d6a/JavaScript.png)|
 | ----- | --------------------------------------------------------------- | --- |
 | HTML5 | CSS3                                                            | JS  |
 
-|       |        |             |                   |
+|![React.svg](/uploads/f736e784898b0c84f3e78f1805e583e9/React.svg)|![recoil](/uploads/c9949797373b5dbbd5d77558dbdf79e2/recoil.png)|![reactu-query](/uploads/60cf208876b81c98477dadaba88ec26c/reactu-query.png)|![styled-components](/uploads/258dd18cd7a89b6cb3a3eb01b26fb687/styled-components.png)|
 | ----- | ------ | ----------- | ----------------- |
 | React | Recoil | React-Query | Styled-components |
 
-|         |       |         |          |
+|![sockjs](/uploads/34dabafeb8e1c43c45c70a99bf5c0bac/sockjs.png)|![axios](/uploads/a65ed9e296606d2422484a6071e528a2/axios.png)|![Node.js_logo.svg](/uploads/a14ce8434713f8e81d8a891d70fe43e1/Node.js_logo.svg)|![openvidu](/uploads/1e0b1b33cae37a737c61dd28dd9b189e/openvidu.png)|
 | ------- | ----- | ------- | -------- |
 | Sock.js | axios | Node.js | OpenVidu |
 
 #### Back-end
 
-|             |                 |        |           |
+|![spring-boot](/uploads/b45a7802ea5c3fb2e40a706f8d36c926/spring-boot.png)|![spring-security](/uploads/4f4ba1e398891b559b5b18adb702b225/spring-security.png)|![gradle](/uploads/b6db789ff4f01c74eb8ab6f5d2c7ad4f/gradle.png)|![Hibernate.svg](/uploads/d98355305f6b31e28353f31230ca6a85/Hibernate.svg)|
 | ----------- | --------------- | ------ | --------- |
 | Spring-Boot | Spring-Security | Gradle | Hibernate |
 
-|         |       |            |
-| ------- | ----- | ---------- |
-| Swagger | MySQL | Websockets |
+|![Swagger](/uploads/7a642019e9e6d3a835f66e94ce81253b/Swagger.png)|![MySQL.svg](/uploads/f0459c9c6e47705daff95499a43e9f18/MySQL.svg)|![png-transparent-websocket-hd-logo](/uploads/629dbb7c84f8813b4e16676ecf0887a1/png-transparent-websocket-hd-logo.png)|![redis.svg](/uploads/c674d5533141b74b155cc508e8ec7a19/redis.svg)|
+| ------- | ----- | ---------- |-----|
+| Swagger | MySQL | Websockets |redis|
 
 #### DevOps
 
-| ![docker.svg](/uploads/aa07f8e4e4ffd4f79b77e3ada0a7d60f/docker.svg) |  | ![NGiNX.svg](/uploads/4d7f545d4228c3111884ca64cccce36a/NGiNX.svg) |         |        |
+|![docker.svg](/uploads/ce207d1e1afd579f9763516b30851367/docker.svg)|![Jenkins](/uploads/fb6f61e245faefe649049a7525387f52/Jenkins.png)|![NGiNX.svg](/uploads/badbcef0c8d13620d4e36a4890433081/NGiNX.svg)|![EC2](/uploads/8f4b551a47e0d10a7f301cfb953f0373/EC2.png)|![S3](/uploads/f2b03de109e24226e2d491199e6c5187/S3.png)|
 | ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ------- | ------ |
 | Docker                                                              | Jenkins                                                                                   | NGiNX                                                             | aws EC2 | aws S3 |
 
