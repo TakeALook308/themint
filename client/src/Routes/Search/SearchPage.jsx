@@ -218,7 +218,7 @@ const SearchTabButton = styled.button`
     text-decoration: none;
   }
   &:hover {
-    color: ${(props) => props.theme.colors.mainMint};
+    color: ${(props) => props.theme.colors.subMint};
   }
   &:active {
     color: ${(props) => props.theme.colors.white};
