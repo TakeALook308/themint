@@ -20,11 +20,11 @@ function IsSellingCard({ auction, func }) {
             <AuctionInfoContainer>
               <div>
                 <h4>{auction.productName}</h4>
-                {auction.status === 1 && <p>{auction.finalPrice}원</p>}
-                {auction.status === 2 && <p>{auction.finalPrice}원</p>}
-                {auction.status === 3 && <p>{auction.finalPrice}원</p>}
-                {auction.status === 0 && <p>{auction.startPrice}원</p>}
-                {auction.status >= 4 && <p>{auction.startPrice}원</p>}
+                {auction.status === 1 && <p>{auction.finalPrice.toLocaleString()}원</p>}
+                {auction.status === 2 && <p>{auction.finalPrice.toLocaleString()}원</p>}
+                {auction.status === 3 && <p>{auction.finalPrice.toLocaleString()}원</p>}
+                {auction.status === 0 && <p>{auction.startPrice.toLocaleString()}원</p>}
+                {auction.status >= 4 && <p>{auction.startPrice.toLocaleString()}원</p>}
                 <AcutionTime>{auction.startTime}</AcutionTime>
                 <AuctionStatus auctionstrkey={auction.status}>
                   {auctionstr[auction.status]}
@@ -75,6 +75,7 @@ const CardContainer = styled.article`
     padding-top: 75%;
     position: relative;
     a {
+      cursor: default;
       &:first-child {
         > div {
           width: 100%;
@@ -189,11 +190,14 @@ const AuctionStatus = styled.div`
 `;
 
 const Plus = styled.button`
+  font-size: 30px;
   position: absolute;
   border-radius: 5px;
   padding: 5px;
-  bottom: 5%;
-  right: 35%;
+  width: 80%;
+  height: 30%;
+  bottom: 40%;
+  right: 10%;
   background-color: ${(props) => props.theme.colors.mainBlack};
   color: ${(props) => props.theme.colors.subMint};
   border: 1px solid ${(props) => props.theme.colors.subMint};

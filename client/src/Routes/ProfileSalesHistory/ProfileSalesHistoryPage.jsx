@@ -77,7 +77,7 @@ function ProfileSalesHistoryPage({ params }) {
       const response = await instance.patch(url, data);
       return response;
     };
-    console.log(getTrackingNo);
+
     const res = patchTrackingNo(`/api/delivery/trackingno`, getTrackingNo);
     res.then(() => {
       setIsModal((prev) => !prev);

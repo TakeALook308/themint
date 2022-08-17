@@ -58,7 +58,6 @@ function ProfilePurchaseHistoryPage({ params }) {
     const res = getPurchaseDetail(`/api/history/purchase/detail/${auction.historySeq}`);
     res.then((itemDetail) => {
       setPurchaseDetail(itemDetail.data); // 상세보기 내용을 salesDetail에 저장
-      console.log(itemDetail.data);
       setAuctionProductSeq(itemDetail.data.productSeq);
       onChange2({ target: { name: 'receiverSeq', value: itemDetail.data.sellerMemberSeq } });
       setDeliveryData((prevState) => {
@@ -171,6 +170,7 @@ function ProfilePurchaseHistoryPage({ params }) {
 
   const onClick = () => {
     const data = queryClient.getQueryData(['userInformation']);
+
     const newData = {
       productDeliverySeq: deliveryData.productDeliverySeq,
       name: data.memberName,
@@ -187,7 +187,6 @@ function ProfilePurchaseHistoryPage({ params }) {
     const res = patchDeliveryData(`/api/delivery`, newData);
     res.then(() => {
       setIsModal((prev) => !prev);
-      console.log(newData);
     });
     // 버튼 클릭하면 배송정보를 patch
   };
@@ -242,9 +241,7 @@ function ProfilePurchaseHistoryPage({ params }) {
     let score = clicked.filter(Boolean).length;
     onChange2({ target: { name: 'score', value: score } });
   };
-  const ConsoleD = () => {
-    console.log(searchDeliveryData);
-  };
+  const ConsoleD = () => {};
   return (
     <Container>
       <ButtonNav>
@@ -470,6 +467,12 @@ const Purchased = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
+  > textarea {
+    margin-bottom: 10px;
+  }
+  > p {
+    margin-bottom: 10px;
+  }
 `;
 
 // 별점기능
@@ -551,6 +554,7 @@ const shine = keyframes`
 `;
 
 const Button = styled.button`
+  margin-bottom: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
