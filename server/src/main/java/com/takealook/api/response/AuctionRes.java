@@ -32,8 +32,9 @@ public class AuctionRes {
     List<Product> productList;
     List<AuctionImage> auctionImageList;
     String profileUrl;
+    Boolean isMemberInterest;
 
-    public static AuctionRes of(Auction auction, List<Product> productList, List<AuctionImage> auctionImageList, Member member){
+    public static AuctionRes of(Auction auction, List<Product> productList, List<AuctionImage> auctionImageList, Member member, Boolean isMemberInterest){
         AuctionRes res = AuctionRes.builder()
                 .auctionSeq(auction.getSeq())
                 .hash(auction.getHash())
@@ -48,6 +49,7 @@ public class AuctionRes {
                 .productList(productList)
                 .auctionImageList(auctionImageList)
                 .profileUrl(member.getProfileUrl())
+                .isMemberInterest(isMemberInterest)
                 .build();
         return res;
     }

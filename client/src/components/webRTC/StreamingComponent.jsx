@@ -2,7 +2,7 @@ import axios from 'axios';
 import { OpenVidu } from 'openvidu-browser';
 import React, { Component } from 'react';
 import UserVideoComponent from './UserVideoComponent';
-
+import './UserVideo.css';
 const OPENVIDU_SERVER_URL = 'https://i7a308.p.ssafy.io:8443';
 const OPENVIDU_SERVER_SECRET = 'themint';
 
@@ -89,7 +89,6 @@ class StreamingComponent extends Component {
       },
       () => {
         var mySession = this.state.session;
-        console.log('mySession,', mySession);
 
         // --- 3) Specify the actions when events take place in the session ---
 
@@ -145,7 +144,7 @@ class StreamingComponent extends Component {
                   resolution: '640x480', // The resolution of your video
                   frameRate: 60, // The frame rate of your video
                   insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
-                  mirror: true, // Whether to mirror your local video or not
+                  mirror: false, // Whether to mirror your local video or not
                 });
 
                 // --- 6) Publish your stream ---
@@ -171,6 +170,7 @@ class StreamingComponent extends Component {
       },
     );
   }
+
   leaveSession() {
     // --- 7) Leave the session by calling 'disconnect' method over the Session object ---
 
@@ -231,7 +231,6 @@ class StreamingComponent extends Component {
   render() {
     const mySessionId = this.state.mySessionId;
     const myUserName = this.state.myUserName;
-    console.log('여기여기', this.props.deviceList);
 
     return (
       <div className="container">

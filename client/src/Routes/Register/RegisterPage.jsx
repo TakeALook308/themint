@@ -61,10 +61,6 @@ function RegisterPage() {
                 <h2>로그인</h2>
               </Link>
             </LinkContainer>
-            <SocialLoginContainer>
-              <SocialLogginButton text={'네이버로 회원가입'} social={'네이버'} />
-              <SocialLogginButton text={'카카오톡으로 회원가입'} social={'카카오톡'} />
-            </SocialLoginContainer>
           </>
         )}
         {step.step2 && <Register2 setUserInfo={setUserInfo} setStep={setStep} />}

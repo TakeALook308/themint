@@ -7,5 +7,4 @@ import lombok.Setter;
 @Setter
 public class ChatRoomRegisterPostReq {
     String roomId;
-    int type;
 }

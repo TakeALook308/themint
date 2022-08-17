@@ -19,9 +19,12 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Member findByPhone(String phone);
     Member findByMemberIdAndEmail(String memberId, String email);
 
+    List<Member> findAllByNicknameContainsAndNicknameIsNot(String word, String memberNick, Pageable pageable);
     List<Member> findAllByNicknameContains(String word, Pageable pageable);
-    @Transactional
-    void deleteMemberBySeq(Long memberSeq);
+    List<Member> findAll();
+//    @Transactional
+//    void deleteMemberBySeq(Long memberSeq);
+
     Member findByMemberNameAndPhone(String memberName, String Phone);
 
     @Transactional // update, delete 필수
@@ -43,5 +46,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Modifying(clearAutomatically = true) // 영속성 컨텍스트 초기화
     @Query("UPDATE Member SET phone = :phone WHERE seq = :seq")
     int updateMemberPhone(Long seq, String phone);
+
+    @Transactional // update, delete 필수
+    @Modifying(clearAutomatically = true) // 영속성 컨텍스트 초기화
+    @Query("UPDATE Member SET status = 0 WHERE seq = :seq")
+    int updateMemberStatus(Long seq);
 
 }
