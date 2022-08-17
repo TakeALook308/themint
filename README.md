@@ -62,7 +62,7 @@
 
 #### DevOps
 
-| ![docker.svg](/uploads/aa07f8e4e4ffd4f79b77e3ada0a7d60f/docker.svg) | <img src"/uploads/27c550bf5d81a8169e1ad494686cc6ab/Jenkins.png" width="300" height="300"> | ![NGiNX.svg](/uploads/4d7f545d4228c3111884ca64cccce36a/NGiNX.svg) |         |        |
+| ![docker.svg](/uploads/aa07f8e4e4ffd4f79b77e3ada0a7d60f/docker.svg) |  | ![NGiNX.svg](/uploads/4d7f545d4228c3111884ca64cccce36a/NGiNX.svg) |         |        |
 | ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ------- | ------ |
 | Docker                                                              | Jenkins                                                                                   | NGiNX                                                             | aws EC2 | aws S3 |
 
