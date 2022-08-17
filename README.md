@@ -86,6 +86,7 @@
 ![아키텍쳐](/uploads/d4e66e49e6b323f534e923ed42deee18/아키텍쳐.png)
 
 - ERD
+![ERD.PNG](/uploads/061557c0488fdf06b22a7fcf7b5a14ef/ERD.PNG.png)
 
 ![ERD.PNG](/uploads/061557c0488fdf06b22a7fcf7b5a14ef/ERD.PNG.png)
 
