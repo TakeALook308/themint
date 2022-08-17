@@ -18,6 +18,8 @@ class StreamingComponent extends Component {
       publisher: undefined,
       subscribers: [],
       makers: false,
+      videoEnabled: false,
+      audioEnabled: false,
     };
 
     this.joinSession = this.joinSession.bind(this);
@@ -27,12 +29,16 @@ class StreamingComponent extends Component {
     this.handleChangeUserName = this.handleChangeUserName.bind(this);
     this.handleMainVideoStream = this.handleMainVideoStream.bind(this);
     this.onbeforeunload = this.onbeforeunload.bind(this);
+    this.videoControll = this.videoControll.bind(this);
+    this.audioControll = this.audioControll.bind(this);
   }
 
   componentDidMount() {
     window.addEventListener('beforeunload', this.onbeforeunload);
     this.joinSession();
     // console.log('내 정보 확인', this.props.userInfo);
+    this.setState({ toggleVideo: this.publisher?.stream?.videoActive });
+    this.setState({ audioEnabled: this.state.publisher?.stream.audioActive });
   }
 
   componentWillUnmount() {
@@ -137,14 +143,14 @@ class StreamingComponent extends Component {
                 // Init a publisher passing undefined as targetElement (we don't want OpenVidu to insert a video
                 // element: we will manage it on our own) and with the desired properties
                 let publisher = this.OV.initPublisher(undefined, {
-                  audioSource: undefined, // The source of audio. If undefined default microphone
-                  videoSource: videoDevices[0].deviceId, // The source of video. If undefined default webcam
+                  audioSource: this.props.deviceList.microPhoneId, // The source of audio. If undefined default microphone
+                  videoSource: this.props.deviceList.videoId, // The source of video. If undefined default webcam
                   publishAudio: true, // Whether you want to start publishing with your audio unmuted or not
                   publishVideo: true, // Whether you want to start publishing with your video enabled or not
                   resolution: '640x480', // The resolution of your video
                   frameRate: 60, // The frame rate of your video
                   insertMode: 'APPEND', // How the video is inserted in the target element 'video-container'
-                  mirror: false, // Whether to mirror your local video or not
+                  mirror: true, // Whether to mirror your local video or not
                 });
 
                 // --- 6) Publish your stream ---
@@ -228,12 +234,30 @@ class StreamingComponent extends Component {
     }
   }
 
+  videoControll() {
+    this.setState({ videoEnabled: !this.state.publisher.stream.videoActive });
+    this.state.publisher?.publishVideo(!this.state.publisher.stream.videoActive);
+  }
+
+  audioControll() {
+    this.setState({ audioEnabled: !this.state.publisher.stream.audioActive });
+    this.state.publisher?.publishAudio(!this.state.publisher.stream.audioActive);
+  }
+
   render() {
     const mySessionId = this.state.mySessionId;
     const myUserName = this.state.myUserName;
+    console.log('audio', this.state.publisher?.stream?.audioActive);
+    console.log('video', this.state.publisher?.stream?.videoActive);
 
     return (
       <div className="container">
+        <button onClick={this.videoControll}>
+          {this.state.videoEnabled ? '카메라 off' : '카메라 on'}
+        </button>
+        <button onClick={this.audioControll}>
+          {this.state.audioEnabled ? '마이크 off' : '마이크 on'}
+        </button>
         {this.state.session !== undefined ? (
           <div id="session">
             <div id="video-container" className="col-md-6">
