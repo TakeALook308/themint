@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
 function ProductCard({ auction }) {
-  console.log(auction.startTime);
-
   const auctionDate = new Date(auction?.startTime);
-  console.log(auctionDate);
+
   const year = auctionDate.getFullYear();
   const month = String(auctionDate.getMonth() + 1).padStart(2, '0');
   const date = String(auctionDate.getDate()).padStart(2, '0');

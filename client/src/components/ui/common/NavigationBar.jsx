@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -9,6 +9,7 @@ import SubMenu from './SubMenu';
 import { HiSearch, HiOutlineChat } from 'react-icons/hi';
 import { AiOutlineUser } from 'react-icons/ai';
 import Notification from '../../Notification/Notification';
+import { useEffect } from 'react';
 
 function NavigationBar() {
   const loggedin = useRecoilValue(loggedinState);
@@ -16,6 +17,7 @@ function NavigationBar() {
   const [keyword, setKeyword] = useRecoilState(keywordState);
   const [key, setKey] = useState('');
   const location = useLocation();
+  const [searchParams] = useSearchParams();
 
   const navigate = useNavigate();
 
@@ -31,9 +33,15 @@ function NavigationBar() {
     });
   };
 
-  // if (!location.pathname.startsWith('/search')) {
-  //   setKey('');
-  // }
+  const searchParameter = searchParams.get('keyword');
+  useEffect(() => {
+    if (location.pathname === '/search') {
+      const word = searchParams.get('keyword');
+      setKey(word);
+    } else {
+      setKey('');
+    }
+  }, [searchParameter]);
 
   if (
     location.pathname.startsWith('/streamings') ||

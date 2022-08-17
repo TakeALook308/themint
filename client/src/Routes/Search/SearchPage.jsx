@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import styled, { css } from 'styled-components';
-import { NavLink, Route, Routes, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Container } from '../../style/common';
 import SkeletonAuctionCard from '../../components/CardList/SkeletonAuctionCard';
 import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
