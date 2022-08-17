@@ -9,7 +9,7 @@ import { AiOutlineBell } from 'react-icons/ai';
 function StreamingHeader({ auctionInfo, countSub }) {
   const navigate = useNavigate();
   const url = useLocation().pathname;
-  console.log(auctionInfo);
+  // console.log(auctionInfo);
   if (auctionInfo) {
     return (
       <Head>

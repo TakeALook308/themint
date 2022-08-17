@@ -6,7 +6,7 @@ import { fetchData } from '../../utils/apis/api';
 import { productApis } from '../../utils/apis/productApis';
 import GradientButton from '../../components/ButtonList/GradientButton';
 import { FaMinus, FaPlus } from 'react-icons/fa';
-function AuctionBidding({ products, sendPrice, price, producter, setNextProduct }) {
+function AuctionBidding({ products, sendPrice, price, producter, setNextProduct, auctionsHash }) {
   const [nowProduct, setNowProduct] = useState(-1); // 현재 상품 index
   const [nowPrice, setNowPrice] = useState(0); // 현재 상품의 가격
   const [myPrice, setMyPrice] = useState(0); // 응찰하고자 하는 가격
@@ -76,7 +76,7 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct 
 
     if (price[price.length - 1].price === -1) errorToast(`상품이 유찰되었습니다...😥`);
     else successToast(`${price[price.length - 1].nickname}님이 낙찰되셨습니다. 축하합니다🥳🎉🎊`);
-    if (producter)
+    if (producter) {
       fetchData
         .post(productApis.PRODUCT_SUCCESS_API, {
           memberSeq: price[price.length - 1].memberSeq,
@@ -86,6 +86,10 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct 
         .then(() => {
           setNextProduct(nowProduct);
         });
+      if (nowProduct === products.length - 1) {
+        fetchData.patch('/api/auction/end', { hash: auctionsHash });
+      }
+    }
   };
 
   const myRef = useRef(null);

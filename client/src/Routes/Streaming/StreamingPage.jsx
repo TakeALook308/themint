@@ -40,11 +40,11 @@ function StreamingPage(props) {
       setAuctionData({ memberSeq: res.data.memberSeq });
       setProducts(res.data.productList);
     });
-    console.log('잘 실행되나요?');
+    // console.log('잘 실행되나요?');
   }, [nextProduct]);
 
-  console.log(nextProduct);
-  console.log(products);
+  // console.log(nextProduct);
+  // console.log(products);
   let nickname = userInfo.nickname;
   let memberSeq = userInfo.memberSeq;
   let roomId = auctionId;
@@ -141,6 +141,7 @@ function StreamingPage(props) {
               newTime={newTime}
               producter={userInfo.memberSeq === auctionInfo.memberSeq ? true : false}
               setNextProduct={setNextProduct}
+              auctionsHash={auctionId}
             />
             <StreamChat sendMessage={sendMessage} chat={chat} userInfo={userInfo} />
           </Aside>
