@@ -42,8 +42,11 @@ const Wrapper = styled.main`
 `;
 
 const ProfileImgContainer = styled.div`
-  height: 100%;
+  display: flex;
+  align-items: center;
   width: 96px;
+  height: 100%;
+  margin: auto;
   overflow: hidden;
   border-radius: 50%;
   border: 2px solid ${(props) => props.theme.colors.subMint};
