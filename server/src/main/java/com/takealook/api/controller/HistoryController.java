@@ -84,11 +84,11 @@ public class HistoryController {
     public ResponseEntity<SalesDetailRes> getSalesDetail(@PathVariable("historySeq") Long historySeq){
         History history = historyService.getHistoryBySeq(historySeq);
         Product product = productService.getProductBySeq(history.getProductSeq());
-        System.out.println(product.getSeq());
+        Auction auction = auctionService.getAuctionBySeq(product.getAuctionSeq());
         Long memberseq = historyService.getPurchaseByProductSeq(product.getSeq()).getMemberSeq();
         Member member = memberService.getMemberByMemberSeq(memberseq);
         ProductDelivery productDelivery = productDeliveryService.getProductDeliveryByProductSeq(product.getSeq());
-        return ResponseEntity.status(200).body(SalesDetailRes.of(history, product, member, productDelivery));
+        return ResponseEntity.status(200).body(SalesDetailRes.of(auction.getHash(), history, product, member, productDelivery));
     }
 
     @GetMapping("/purchase/inprogress")
@@ -157,9 +157,10 @@ public class HistoryController {
     public ResponseEntity<PurchaseDetailRes> getPurchaseDetail(@PathVariable("historySeq") Long historySeq, @ApiIgnore Authentication authentication) {
         History history = historyService.getHistoryBySeq(historySeq);
         Product product = productService.getProductBySeq(history.getProductSeq());
+        Auction auction = auctionService.getAuctionBySeq(product.getAuctionSeq());
         Long sellerMemberSeq = historyService.getSalesByProductSeq(product.getSeq()).getMemberSeq();
         Member seller = memberService.getMemberByMemberSeq(sellerMemberSeq);
         ProductDelivery productDelivery = productDeliveryService.getProductDeliveryByProductSeq(product.getSeq());
-        return ResponseEntity.status(200).body(PurchaseDetailRes.of(history, product, productDelivery, seller));
+        return ResponseEntity.status(200).body(PurchaseDetailRes.of(auction.getHash(), history, product, productDelivery, seller));
     }
 }
