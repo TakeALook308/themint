@@ -71,7 +71,7 @@ function NavigationBar({ toggleNotification, setToggleNotifiaction }) {
           <NavItemIcon>
             {loggedin && (
               <>
-                <Link to="/">
+                <Link to="/talks">
                   <HiOutlineChat size={25} />
                 </Link>
                 <NotiContainer>

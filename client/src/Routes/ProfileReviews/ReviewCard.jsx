@@ -114,5 +114,5 @@ const ReviewText = styled.div`
 const StarContainer = styled.div`
   position: absolute;
   top: 0px;
-  left: 80px;
+  left: 150px;
 `;
