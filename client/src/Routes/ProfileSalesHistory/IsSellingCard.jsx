@@ -5,62 +5,120 @@ import { Link } from 'react-router-dom';
 function IsSellingCard({ auction, func }) {
   const auctionstr = ['판매중', '입금대기', '입금완료', '판매완료', '유찰', '거래취소'];
   return (
-    <CardContainer>
-      <div>
-        <Link to={`/auctions/${auction?.hash}`}>
+    <Wrapper>
+      {auction.status === 2 && (
+        <CardContainer>
           <div>
-            <picture>
-              <img
-                src={process.env.REACT_APP_IMAGE_URL + auction.auctionImage.imageUrl}
-                alt="옥션이미지"
-                width="400"
-                height="300"
-              />
-            </picture>
-            <AuctionInfoContainer>
+            <Link to="#">
               <div>
-                <h4>{auction.productName}</h4>
-                {auction.status === 1 && <p>{auction.finalPrice.toLocaleString()}원</p>}
-                {auction.status === 2 && <p>{auction.finalPrice.toLocaleString()}원</p>}
-                {auction.status === 3 && <p>{auction.finalPrice.toLocaleString()}원</p>}
-                {auction.status === 0 && <p>{auction.startPrice.toLocaleString()}원</p>}
-                {auction.status >= 4 && <p>{auction.startPrice.toLocaleString()}원</p>}
-                <AcutionTime>{auction.startTime}</AcutionTime>
-                <AuctionStatus auctionstrkey={auction.status}>
-                  {auctionstr[auction.status]}
-                </AuctionStatus>
+                <picture>
+                  <img
+                    src={process.env.REACT_APP_IMAGE_URL + auction.auctionImage.imageUrl}
+                    alt="옥션이미지"
+                    width="400"
+                    height="300"
+                  />
+                </picture>
+                <AuctionInfoContainer>
+                  <div>
+                    <h4>{auction.productName}</h4>
+                    {auction.status === 1 && <p>{auction.finalPrice.toLocaleString()}원</p>}
+                    {auction.status === 2 && <p>{auction.finalPrice.toLocaleString()}원</p>}
+                    {auction.status === 3 && <p>{auction.finalPrice.toLocaleString()}원</p>}
+                    {auction.status === 0 && <p>{auction.startPrice.toLocaleString()}원</p>}
+                    {auction.status >= 4 && <p>{auction.startPrice.toLocaleString()}원</p>}
+                    <AcutionTime>{auction.startTime}</AcutionTime>
+                    <AuctionStatus auctionstrkey={auction.status}>
+                      {auctionstr[auction.status]}
+                    </AuctionStatus>
+                  </div>
+                </AuctionInfoContainer>
               </div>
-            </AuctionInfoContainer>
+            </Link>
+            <Link to={`/profile/${auction?.memberSeq}`}>
+              <div>
+                <picture>
+                  <img
+                    src={process.env.REACT_APP_IMAGE_URL + auction.profileUrl}
+                    alt="유저 프로필"
+                    width="50"
+                    height="50"
+                  />
+                </picture>
+              </div>
+            </Link>
           </div>
-        </Link>
-        <Link to={`/profile/${auction?.memberSeq}`}>
+          {auction.status === 2 ? (
+            <Plus
+              type="button"
+              onClick={() => {
+                func(auction);
+              }}>
+              판매 상세
+            </Plus>
+          ) : null}
+        </CardContainer>
+      )}
+      {auction.status !== 2 && (
+        <CardContainer>
           <div>
-            <picture>
-              <img
-                src={process.env.REACT_APP_IMAGE_URL + auction.profileUrl}
-                alt="유저 프로필"
-                width="50"
-                height="50"
-              />
-            </picture>
+            <Link to={`/auctions/${auction?.hash}`}>
+              <div>
+                <picture>
+                  <img
+                    src={process.env.REACT_APP_IMAGE_URL + auction.auctionImage.imageUrl}
+                    alt="옥션이미지"
+                    width="400"
+                    height="300"
+                  />
+                </picture>
+                <AuctionInfoContainer>
+                  <div>
+                    <h4>{auction.productName}</h4>
+                    {auction.status === 1 && <p>{auction.finalPrice.toLocaleString()}원</p>}
+                    {auction.status === 2 && <p>{auction.finalPrice.toLocaleString()}원</p>}
+                    {auction.status === 3 && <p>{auction.finalPrice.toLocaleString()}원</p>}
+                    {auction.status === 0 && <p>{auction.startPrice.toLocaleString()}원</p>}
+                    {auction.status >= 4 && <p>{auction.startPrice.toLocaleString()}원</p>}
+                    <AcutionTime>{auction.startTime}</AcutionTime>
+                    <AuctionStatus auctionstrkey={auction.status}>
+                      {auctionstr[auction.status]}
+                    </AuctionStatus>
+                  </div>
+                </AuctionInfoContainer>
+              </div>
+            </Link>
+            <Link to={`/profile/${auction?.memberSeq}`}>
+              <div>
+                <picture>
+                  <img
+                    src={process.env.REACT_APP_IMAGE_URL + auction.profileUrl}
+                    alt="유저 프로필"
+                    width="50"
+                    height="50"
+                  />
+                </picture>
+              </div>
+            </Link>
           </div>
-        </Link>
-      </div>
-      {auction.status === 2 ? (
-        <Plus
-          type="button"
-          onClick={() => {
-            func(auction);
-          }}>
-          판매 상세
-        </Plus>
-      ) : null}
-    </CardContainer>
+          {auction.status === 2 ? (
+            <Plus
+              type="button"
+              onClick={() => {
+                func(auction);
+              }}>
+              판매 상세
+            </Plus>
+          ) : null}
+        </CardContainer>
+      )}
+    </Wrapper>
   );
 }
 
 export default IsSellingCard;
 
+const Wrapper = styled.div``;
 const CardContainer = styled.article`
   position: relative;
   width: 100%;

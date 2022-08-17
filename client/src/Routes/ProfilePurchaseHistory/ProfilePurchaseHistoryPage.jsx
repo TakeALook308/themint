@@ -18,6 +18,7 @@ import { myInformationState } from '../../atoms';
 import { useQuery } from 'react-query';
 import { ActiveInput } from '../../style/style';
 import MintButton from '../../components/ButtonList/MintButton';
+import { Link } from 'react-router-dom';
 
 function ProfilePurchaseHistoryPage({ params }) {
   const myInformation = useRecoilValue(myInformationState);
@@ -277,10 +278,16 @@ function ProfilePurchaseHistoryPage({ params }) {
                 <PutMoney>
                   <p>입금을 완료 하셨나요??</p>
                   <MintButton onClick={patchRemit} text="입금완료" size="30%" />
+                  <StyledLink to={`/auctions/${purchaseDetail?.hash}`}>
+                    제품 정보 상세보기
+                  </StyledLink>
                 </PutMoney>
               )}
               {purchaseDetail.status === 2 && (
                 <PutAddress>
+                  <StyledLink to={`/auctions/${purchaseDetail?.hash}`}>
+                    제품 정보 상세보기
+                  </StyledLink>
                   <h3>배송지를 입력해주세요!!!</h3>
                   <p>판매자 계좌 정보</p>
                   <SellerInfo>
@@ -323,6 +330,7 @@ function ProfilePurchaseHistoryPage({ params }) {
           )}
           {active === 'complete' && (
             <Purchased>
+              <StyledLink to={`/auctions/${purchaseDetail?.hash}`}>제품 정보 상세보기</StyledLink>
               <p>배송주소: {purchaseDetail.address}</p>
               <p>상세 배송주소: {purchaseDetail.addressDetail}</p>
               <p>배송조회</p>
@@ -448,6 +456,7 @@ const ModalMain = styled.main`
 `;
 
 const Purchasing = styled.div`
+  position: relative;
   width: 100%;
   > p {
     margin-bottom: 10px;
@@ -464,6 +473,7 @@ const Purchasing = styled.div`
 `;
 
 const Purchased = styled.div`
+  position: relative;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -579,4 +589,16 @@ const Button = styled.button`
     color: ${(props) => props.theme.colors.pointGray};
     cursor: not-allowed;
   }
+`;
+
+const StyledLink = styled(Link)`
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  padding: 5px 10px 5px 10px;
+  color: ${(props) => props.theme.colors.mainBlack};
+  background-color: ${(props) => props.theme.colors.subMint};
+  border-radius: 5px;
+  font-weight: bold;
+  margin-bottom: 10px;
 `;

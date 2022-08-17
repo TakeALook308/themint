@@ -6,6 +6,7 @@ import SkeletonAuctionCard from '../../components/CardList/SkeletonAuctionCard';
 import IsSellingCard from './IsSellingCard';
 import axios from 'axios';
 import Modal from '../../components/common/Modal';
+import { Link } from 'react-router-dom';
 
 // 판매중. 판매완료 구분 미해결
 function ProfileSalesHistoryPage({ params }) {
@@ -122,7 +123,10 @@ function ProfileSalesHistoryPage({ params }) {
           <p>{salesDetail.nickname}</p>
         </ModalProfile>
         <ModalMain>
-          <p>입금자명 : {salesDetail.remitName}</p>
+          <p>
+            입금자명 : {salesDetail.remitName}
+            <StyledLink to={`/auctions/${salesDetail?.hash}`}>제품 정보 상세보기</StyledLink>
+          </p>
           <p>입금자 전화번호: {salesDetail.phone}</p>
           <hr />
           <h3>구매자 배송지 </h3>
@@ -263,4 +267,16 @@ const Plus = styled.button`
   :hover {
     cursor: pointer;
   }
+`;
+
+const StyledLink = styled(Link)`
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  padding: 5px 10px 5px 10px;
+  color: ${(props) => props.theme.colors.mainBlack};
+  background-color: ${(props) => props.theme.colors.subMint};
+  border-radius: 5px;
+  font-weight: bold;
+  margin-bottom: 10px;
 `;
