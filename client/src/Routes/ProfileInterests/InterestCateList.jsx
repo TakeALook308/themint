@@ -4,6 +4,7 @@ import { instance } from '../../utils/apis/api';
 import InterestCateCard from './InterestCateCard';
 import { categories } from '../../utils/constants/constant';
 import GradientButton from '../../components/ButtonList/GradientButton';
+import { errorToast } from '../../lib/toast';
 
 function InterestCateList() {
   // 관심 카테고리 조회 API
@@ -30,6 +31,9 @@ function InterestCateList() {
       return response;
     };
     const res = addInterestCategory(`/api/interest/category/${cateSeq}`);
+    res.catch((error) => {
+      errorToast('이미 추가된 카테고리입니다');
+    });
     res.then(() => {
       const getCateList = async (url) => {
         const response = await instance.get(url);
@@ -90,7 +94,7 @@ const Container = styled.div`
 
 const SelectContainer = styled.div`
   display: flex;
-  width: 80%;
+  width: 50%;
   margin-bottom: 30px;
   > select {
     margin-right: 10px;
@@ -100,6 +104,6 @@ const SelectContainer = styled.div`
 
 const CardContainer = styled.main`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   grid-gap: 3rem;
 `;

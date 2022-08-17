@@ -15,7 +15,7 @@ import { MessageWrapper } from '../../style/common';
 import ValidationMessage from '../../components/common/ValidationMessage';
 import styled from 'styled-components';
 
-function Register3({ setUserInfo }) {
+function Register3({ setUserInfo, setStep }) {
   const [duplicatedNickname, setDuplicatedNickname] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [address, setAddress] = useState();
@@ -42,7 +42,9 @@ function Register3({ setUserInfo }) {
   } = useForm({
     defaultValues: {
       nickname: '',
+      zipCode: '',
       address: '',
+      addressDetail: '',
     },
     mode: 'onChange',
   });
@@ -124,7 +126,7 @@ function Register3({ setUserInfo }) {
               type="text"
               {...register('zipCode', {
                 required: REGISTER_MESSAGE.REQUIRED_ADDRESS,
-                disabled: true,
+                onChange: (e) => handleInput(e),
               })}
               disabled
               placeholder=" "
@@ -150,9 +152,7 @@ function Register3({ setUserInfo }) {
               name="address"
               id="address"
               type="text"
-              {...register('address', {
-                disabled: true,
-              })}
+              {...register('address', {})}
               placeholder=" "
             />
             <label htmlFor="address">주소</label>
@@ -163,7 +163,6 @@ function Register3({ setUserInfo }) {
               id="addressDetail"
               type="text"
               {...register('addressDetail')}
-              disabled
               placeholder=" "
             />
             <label htmlFor="addressDetail">상세주소</label>
