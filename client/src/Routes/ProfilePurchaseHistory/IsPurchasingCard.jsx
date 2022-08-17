@@ -3,18 +3,16 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
 function IsPurchasingCard({ auction, func }) {
-  // TODO: 데이터 교체하기
   const [statusNum, setStatusNum] = useState(0);
   useEffect(() => {
     setStatusNum(auction.status);
   });
-
   const auctionstr = ['판매중', '입금대기', '발송대기', '구매완료', '', '거래취소'];
 
   return (
     <CardContainer>
       <div>
-        <Link to="/">
+        <Link to={`/auctions/${auction?.hash}`}>
           <div>
             <picture>
               <img
@@ -36,7 +34,7 @@ function IsPurchasingCard({ auction, func }) {
             </AuctionInfoContainer>
           </div>
         </Link>
-        <Link to="/">
+        <Link to={`/profile/${auction?.memberSeq}`}>
           <div>
             <picture>
               <img
@@ -49,16 +47,25 @@ function IsPurchasingCard({ auction, func }) {
           </div>
         </Link>
       </div>
-      {auction.status <= 3 ? (
+      {auction.status === 1 ? (
         <Plus
           type="button"
           onClick={() => {
             func(auction);
           }}>
-          구매 정보 입력
+          입금 확인
         </Plus>
       ) : null}
-      {auction.status > 3 ? (
+      {auction.status === 2 ? (
+        <Plus
+          type="button"
+          onClick={() => {
+            func(auction);
+          }}>
+          배송 정보 입력
+        </Plus>
+      ) : null}
+      {auction.status === 3 ? (
         <Plus
           type="button"
           onClick={() => {
@@ -174,7 +181,7 @@ const AuctionInfoContainer = styled.div`
 const AcutionTime = styled.p`
   position: absolute;
   right: 5%;
-  top: -5%;
+  top: -1%;
   font-size: 12px;
 `;
 
@@ -194,13 +201,13 @@ const AuctionStatus = styled.div`
       : props.auctionstrkey === 1
       ? 'orange'
       : props.auctionstrkey === 2
-      ? 'orange'
-      : props.auctionstrkey === 3
       ? 'red'
+      : props.auctionstrkey === 3
+      ? 'brown'
       : 'black'};
 `;
 
-const Plus = styled.span`
+const Plus = styled.button`
   position: absolute;
   border-radius: 5px;
   padding: 5px;
@@ -209,4 +216,7 @@ const Plus = styled.span`
   background-color: ${(props) => props.theme.colors.mainBlack};
   color: ${(props) => props.theme.colors.subMint};
   border: 1px solid ${(props) => props.theme.colors.subMint};
+  :hover {
+    cursor: pointer;
+  }
 `;

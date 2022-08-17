@@ -16,7 +16,6 @@ function Register2({ setUserInfo, setStep }) {
   const [authNumber, setAuthNumber] = useState();
   const [isDuplicatedEmail, setIsDuplicatedEmail] = useState(false);
   const [isDuplicatedPhone, setIsDuplicatedPhone] = useState(false);
-
   const {
     register,
     watch,

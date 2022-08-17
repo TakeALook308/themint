@@ -35,6 +35,7 @@ public class Member{
     int score;
     int noticeKakao;
     int noticeEmail;
+    int status;
 
     @JsonIgnore
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

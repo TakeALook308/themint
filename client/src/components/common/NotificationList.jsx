@@ -20,15 +20,28 @@ function NotificationList({ setShow }) {
     <Modal
       onClick={(e) => {
         e.stopPropagation();
-        setShow(true);
       }}>
       {!notificationList?.length && <NotList>알림이 없습니다.</NotList>}
       {notificationList?.map((notification, i) => (
         <NotificationCard key={i}>
-          <NotificationButton to={`${notification.url}`}>
-            <p>{notification.title} 🔔</p>
-            <p>{notification.notification}</p>
-          </NotificationButton>
+          {notification.type === 1 && (
+            <>
+              <NotificationButton to={`${notification.url}`} onClick={() => setShow(false)}>
+                <p>{notification.title} 🔔</p>
+                <p>{notification.notification}</p>
+              </NotificationButton>
+            </>
+          )}
+          {notification.type === 2 && (
+            <>
+              <NotificationButton
+                to={`talks/${notification.roomId}`}
+                onClick={() => setShow(false)}>
+                <p>{notification.senderNickname}님의 메시지 🔔</p>
+                <p>{notification.previewMsg}</p>
+              </NotificationButton>
+            </>
+          )}
           <DeleteButton onClick={() => deleteNotification(i)}>
             <MdClose />
           </DeleteButton>
@@ -93,6 +106,19 @@ const Modal = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar,
+  &::-webkit-scrollbar-thumb {
+    overflow: visible;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(206, 206, 206, 0.7);
+    /* background-color: red; */
+  }
 `;
 
 const NotificationCard = styled.div`
@@ -119,6 +145,9 @@ const NotificationButton = styled(Link)`
     &:first-child {
       font-weight: bold;
       margin-bottom: 0.25rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     &:last-child {
       font-size: ${(props) => props.theme.fontSizes.small};

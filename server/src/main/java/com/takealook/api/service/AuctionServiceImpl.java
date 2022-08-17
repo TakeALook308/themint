@@ -37,6 +37,8 @@ public class AuctionServiceImpl implements AuctionService {
     AuctionImageRepository auctionImageRepository;
 
     @Autowired
+    NotificationService notificationService;
+    @Autowired
     S3FileService s3FileService;
 
     @Transactional
@@ -67,7 +69,8 @@ public class AuctionServiceImpl implements AuctionService {
 
         // 방금 저장한 경매 seq 뽑아서 product, auctionimage에 넣어야 함
         auction = auctionRepository.findFirstByMemberSeqOrderBySeqDesc(memberSeq);
-
+        // 관심 키워드 경매에 사용
+        List<String> productNameList = new ArrayList<>();
         for (ProductRegisterPostReq productRegisterPostReq : auctionRegisterPostReq.getProductList()) {
             Product product = Product.builder()
                     .auctionSeq(auction.getSeq())
@@ -77,10 +80,10 @@ public class AuctionServiceImpl implements AuctionService {
                     .status(0)
                     .build();
             productRepository.save(product);
+            productNameList.add(product.getProductName());
         }
-
         // 옥션 이미지 없을 시 기본이미지 넣기
-        if (multipartFileList.get(0).isEmpty()) {
+        if (multipartFileList == null) {
             auctionImageRepository.save(AuctionImage.builder()
                     .auctionSeq(auction.getSeq())
                     .imageUrl("/product/basic1.png")
@@ -100,6 +103,8 @@ public class AuctionServiceImpl implements AuctionService {
                 throw new RuntimeException(e);
             }
         }
+        notificationService.sendInterestCategoryNotificationMessage(auction.getTitle(), auction.getHash(), auction.getCategorySeq());
+        notificationService.sendInterestKeywordNotificationMessage(auction.getTitle(), auction.getHash(), productNameList);
         return auction;
     }
 
@@ -223,6 +228,7 @@ public class AuctionServiceImpl implements AuctionService {
         return auction;
     }
 
+    @Transactional
     @Override
     public void deleteAuction(Long auctionSeq) {
         Auction auction = auctionRepository.findBySeq(auctionSeq).orElse(null);

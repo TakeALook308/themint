@@ -22,6 +22,7 @@ function NotificationComponent({ toggleNotification, setShow }) {
     if (isLoggedin && myInformation?.memberId) {
       sock = new SockJS('https://i7a308.p.ssafy.io/api/ws-stomp');
       client = Stomp.over(sock);
+      client.debug = null;
       client.connect({}, () => {
         client.subscribe(
           `/sub/notice/${myInformation.memberId}`,
@@ -32,7 +33,17 @@ function NotificationComponent({ toggleNotification, setShow }) {
               `notificationList/${myInformation.memberId}`,
               JSON.stringify([messagedto, ...notificationList]),
             );
-            fireNotification('더민트', { body: `${messagedto.title}: ${messagedto.notification}` });
+            if (messagedto.type === 1) {
+              fireNotification('더민트', {
+                body: `${messagedto.title}: ${messagedto.notification}`,
+              });
+            }
+            if (messagedto.type === 2) {
+              fireNotification('더민트', {
+                body: `${messagedto.senderNickname} 메시지: ${messagedto.previewMsg}`,
+              });
+            }
+
             SetHasNewNotice(true);
           },
           (err) => {},

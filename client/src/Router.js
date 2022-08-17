@@ -29,11 +29,10 @@ import {
   SearchAuction,
   SearchProduct,
   SearchProfile,
-  Logout,
+  TalkRoom,
 } from './Routes/index';
 import { useRecoilValue } from 'recoil';
 import { loggedinState } from './atoms';
-import { useState } from 'react';
 
 function Router({ toggleNotification, setToggleNotifiaction }) {
   const loggedin = useRecoilValue(loggedinState);
@@ -57,18 +56,19 @@ function Router({ toggleNotification, setToggleNotifiaction }) {
             <Route path="profile/:userId/purchasehistory" element={<ProfilePurchaseHistory />} />
             <Route path="profile/:userId/interest" element={<ProfileInterest />} />
           </Route>
-          <Route path="accounts/" element={<Accounts />}>
+          <Route path="accounts" element={<Accounts />}>
             <Route path="edit" element={<AccountsEdit />} />
             <Route path="password" element={<AccountsPassword />} />
             <Route path="phone-number" element={<AccountsPhoneNumber />} />
             <Route path="withdrawl" element={<AccountsWithdrawl />} />
           </Route>
-          <Route path="talks" element={<Talks />} />
+          <Route path="talks" element={<Talks />}>
+            <Route path=":roomId" element={<TalkRoom />} />
+          </Route>
           <Route path="puchase-history/:purchaseId" element={<PurchaseHistoryDetail />} />
           <Route path="standby/:auctionId" element={<StandBy />} />
           <Route path="auctions/new" element={<AuctionCreate />} />
           <Route path="streamings/:auctionId" element={<Streaming />} />
-          <Route path="logout" element={<Logout />} />
         </Route>
         <Route path="main" element={<Main />} />
         <Route path="categories/:categoryId" element={<Category />} />

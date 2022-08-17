@@ -1,8 +1,34 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
+import { myInformationState } from '../../atoms';
+import { fetchData } from '../../utils/apis/api';
+import { socketApis } from '../../utils/apis/socketApis';
 
 function ProfileCard({ member }) {
+  const myInformation = useRecoilValue(myInformationState);
+  const navigate = useNavigate();
+
+  const getRoomId = async () => {
+    const body = {
+      memberSeq1: myInformation.memberSeq,
+      memberSeq2: member.memberSeq,
+    };
+    const response = await fetchData.post(socketApis.CHATROOM_CREATEION, body);
+
+    return response;
+  };
+  const moveToChatRoom = async () => {
+    try {
+      const response = await getRoomId();
+      const roomId = response.data.roomId;
+      navigate(`/talks/${roomId}`);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <Wrapper>
       <ProfileImgContainer>
@@ -23,7 +49,9 @@ function ProfileCard({ member }) {
       </ProfileImgContainer>
       <ProfileArticle>
         <p>{member.nickname}</p>
-        <StyledLink to="/talks/:userId">1:1 채팅</StyledLink>
+        {myInformation.memberSeq !== member.memberSeq && (
+          <StyledLink onClick={moveToChatRoom}>1:1 채팅</StyledLink>
+        )}
         <span>민트지수 {member.score}</span>
       </ProfileArticle>
     </Wrapper>
@@ -89,11 +117,14 @@ const ProfileArticle = styled.article`
   }
 `;
 
-const StyledLink = styled(Link)`
+const StyledLink = styled.button`
   padding: 5px 10px 5px 10px;
   color: ${(props) => props.theme.colors.mainBlack};
   background-color: ${(props) => props.theme.colors.subMint};
   border-radius: 5px;
   font-weight: bold;
   margin-bottom: 10px;
+  border: none;
+  outline: none;
+  cursor: pointer;
 `;

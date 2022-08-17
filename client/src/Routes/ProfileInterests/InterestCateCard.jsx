@@ -45,7 +45,6 @@ const Container = styled.div`
   background-color: ${(props) => props.theme.colors.pointBlack};
   padding: 10px 20px 10px 20px;
   border-radius: 10px;
-  margin-bottom: 10px;
 `;
 
 const IconContainer = styled.div`

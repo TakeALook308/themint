@@ -41,7 +41,7 @@ public class ProductController {
     @Autowired
     AuctionImageService auctionImageService;
 
-    @GetMapping
+    @GetMapping("/search")
     public ResponseEntity<ProductListRes> getProductList(@RequestParam(value = "word", required = false) String word, @RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort) {
         // [key] 경매임박순: startTime, 최신등록순: auctionSeq, 낮은가격순: startPrice, 인기순: interest, 판매자신뢰도순: score
         List<ProductListEntityRes> productListEntityResList = new ArrayList<>();

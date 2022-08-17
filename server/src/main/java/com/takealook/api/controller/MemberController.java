@@ -12,7 +12,11 @@ import com.takealook.common.exception.member.*;
 import com.takealook.common.model.response.BaseResponseBody;
 import com.takealook.common.util.JwtTokenUtil;
 import com.takealook.db.entity.Member;
+import com.takealook.db.entity.RefreshToken;
+import com.takealook.db.repository.RefreshTokenRepository;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,11 +28,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.annotation.Nullable;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -51,13 +57,30 @@ public class MemberController {
     @Autowired
     S3FileService s3FileService;
 
+    @Autowired
+    RefreshTokenRepository refreshTokenRepository;
+
+    @Autowired
+    JwtTokenUtil jwtTokenUtil;
+
     // 회원 가입
     @PostMapping
     public ResponseEntity<?> registerMember(@RequestBody MemberRegisterPostReq memberRegisterPostReq) {
         Member member = memberService.createMember(memberRegisterPostReq);
         // 회원가입 성공 시 자동 로그인
         if (member != null) {
-            return ResponseEntity.status(200).body(MemberLoginPostRes.of(JwtTokenUtil.getToken(member.getMemberId()), member.getSeq(), member.getMemberId(), member.getNickname()));
+            Map<String, String> tokens = JwtTokenUtil.generateTokenSet(member.getMemberId());
+            RefreshToken refreshToken = refreshTokenRepository.findByMemberSeq(member.getSeq()).orElse(null);
+            if(refreshToken != null){
+                refreshToken.setRefreshToken(tokens.get("refreshToken"));
+            } else{
+                refreshToken = RefreshToken.builder()
+                        .refreshToken(tokens.get("refreshToken"))
+                        .member(member)
+                        .build();
+            }
+            refreshTokenRepository.save(refreshToken);
+            return ResponseEntity.status(200).body(MemberLoginPostRes.of(tokens, member.getSeq(), member.getMemberId(), member.getNickname()));
         }
         return ResponseEntity.status(409).body(BaseResponseBody.of(409, "회원가입에 실패하였습니다."));
     }
@@ -68,12 +91,57 @@ public class MemberController {
         String memberId = memberLoginPostReq.getMemberId();
         String pwd = memberLoginPostReq.getPwd();
         Member member = memberService.getMemberByMemberId(memberId);
-        // 로그인 요청한 유저의 패스워드와 같은 경우 (유효한 패스워드인지 확인)
-        if (member != null && passwordEncoder.matches(pwd, member.getPwd())) {
-            return ResponseEntity.status(200).body(MemberLoginPostRes.of(JwtTokenUtil.getToken(memberId), member.getSeq(), member.getMemberId(), member.getNickname()));
+        // 유효하지 않는 아이디 또는 패스워드인 경우, 로그인 실패
+        if (member == null || !passwordEncoder.matches(pwd, member.getPwd()))
+            return ResponseEntity.status(409).body(BaseResponseBody.of(409, "로그인에 실패하였습니다. 아이디 또는 비밀번호를 확인해주세요."));
+        // 탈퇴한 회원일 경우
+        if (member.getStatus() == 0)
+            throw new MemberNotFoundException("member not found", ErrorCode.MEMBER_NOT_FOUND);
+        // 로그인 성공
+        Map<String, String> tokens = JwtTokenUtil.generateTokenSet(memberId);
+        RefreshToken refreshToken = refreshTokenRepository.findByMemberSeq(member.getSeq()).orElse(null);
+        if(refreshToken != null){
+            refreshToken.setRefreshToken("Bearer " + tokens.get("refreshToken"));
+        } else{
+            refreshToken = RefreshToken.builder()
+                    .refreshToken("Bearer " + tokens.get("refreshToken"))
+                    .member(member)
+                    .build();
         }
-        // 유효하지 않는 패스워드인 경우, 로그인 실패
-        return ResponseEntity.status(409).body(BaseResponseBody.of(409, "로그인에 실패하였습니다. 아이디 또는 비밀번호를 확인해주세요."));
+        refreshTokenRepository.save(refreshToken);
+        return ResponseEntity.status(200).body(MemberLoginPostRes.of(tokens, member.getSeq(), member.getMemberId(), member.getNickname()));
+    }
+
+    // JWT 토큰 재발급
+    @GetMapping(value = "/refresh")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "ACCESS-TOKEN", value = "access-token", required = true, dataType = "String", paramType = "header"),
+            @ApiImplicitParam(name = "REFRESH-TOKEN", value = "refresh-token", required = true, dataType = "String", paramType = "header")
+    })
+    public ResponseEntity<?> JwtTokenRefresh(@RequestHeader(value="ACCESS-TOKEN") String token,
+                                               @RequestHeader(value="REFRESH-TOKEN") String refreshToken ) throws Exception {
+        // refreshToken 정보 조회
+        RefreshToken refreshTokenCheck = refreshTokenRepository.findByRefreshToken(refreshToken).orElse(null);
+        if(refreshTokenCheck == null){
+            return ResponseEntity.status(401).body(BaseResponseBody.of(401, "REFRESH_ERROR"));
+        } else {
+            refreshToken = refreshTokenCheck.getRefreshToken();
+        }
+        Member member = refreshTokenCheck.getMember();
+
+        Boolean refTokenValid = jwtTokenUtil.reGenerateRefreshToken(member);
+        String accessToken = "";
+        if(refTokenValid){
+            RefreshToken updateRefToken = refreshTokenRepository.findByMemberSeq(member.getSeq()).orElse(null);
+            refreshToken = updateRefToken.getRefreshToken();
+            accessToken = JwtTokenUtil.getToken(refreshTokenCheck.getMember().getMemberId());
+        } else {
+            return ResponseEntity.status(401).body(BaseResponseBody.of(401, "ACCESS_ERROR"));
+        }
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("accessToken", accessToken);
+        tokens.put("refreshToken", refreshToken.replace("Bearer ", ""));
+        return ResponseEntity.status(200).body(MemberLoginPostRes.of(tokens, member.getSeq(), member.getMemberId(), member.getNickname()));
     }
 
 //    @GetMapping("/klogin")
@@ -88,16 +156,31 @@ public class MemberController {
 //    }
 
     // 회원 목록 검색
-    @GetMapping
-    public ResponseEntity<MemberListRes> getMemberList(@RequestParam(value = "word", required = false) String word, @RequestParam("page") int page, @RequestParam("size") int size) {
+    @GetMapping("/search")
+    public ResponseEntity<MemberListRes> getMemberList(@RequestParam(value = "word", required = false) String word, @RequestParam("page") int page, @RequestParam("size") int size, @ApiIgnore @Nullable Authentication authentication) {
         List<MemberListEntityRes> memberListEntityResList = new ArrayList<>();
         Boolean hasMore = false;
+        Member loginMember = null;
+        if(authentication != null){
+            MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
+            loginMember = memberService.getMemberByMemberSeq(memberDetails.getMemberSeq());
+        }
         Pageable pageable = PageRequest.of(page, size, Sort.by("score").descending());
-        List<Member> memberList = memberService.getMemberListByWord(word, pageable);
-        List<Member> hasMoreList = memberService.getMemberListByWord(word, PageRequest.of(page + 1, size, Sort.by("score").descending()));
+        List<Member> memberList = null;
+        List<Member> hasMoreList = null;
+        if(loginMember != null){
+            memberList = memberService.getMemberListByWord(word, loginMember.getNickname(), pageable);
+            hasMoreList = memberService.getMemberListByWord(word, loginMember.getNickname(), PageRequest.of(page + 1, size, Sort.by("score").descending()));
+        } else {
+            memberList = memberService.getMemberListByWord(word, pageable);
+            hasMoreList = memberService.getMemberListByWord(word, PageRequest.of(page + 1, size, Sort.by("score").descending()));
+        }
         if (hasMoreList.size() != 0) hasMore = true;
         for (Member member : memberList) {
-            memberListEntityResList.add(MemberListEntityRes.of(member));
+            // 탈퇴한 회원이면 리스트에 추가 x
+            if (member.getStatus() != 0) {
+                memberListEntityResList.add(MemberListEntityRes.of(member));
+            }
         }
         return ResponseEntity.status(200).body(MemberListRes.of(memberListEntityResList, hasMore));
     }
@@ -118,6 +201,9 @@ public class MemberController {
     @GetMapping("/{seq}")
     public ResponseEntity<MemberInfoRes> getMemberInfo(@PathVariable("seq") Long seq) {
         Member member = memberService.getMemberByMemberSeq(seq);
+        // seq에 해당하는 멤버가 없거나, 이미 탈퇴한 회원
+        if (member == null || member.getStatus() == 0)
+            throw new MemberNotFoundException("member not found", ErrorCode.MEMBER_NOT_FOUND);
         return ResponseEntity.status(200).body(MemberInfoRes.of(member));
     }
 
@@ -128,7 +214,7 @@ public class MemberController {
         Long memberSeq = memberDetails.getMemberSeq();
         Member member = memberService.getMemberByMemberSeq(memberSeq);
         if (member != null) {
-            if(member.getAccountNo() == null && memberUpdatePostReq.getAccountNo() != null){ // 계좌번호 원래 없었는데 입력하면 신뢰도 +3
+            if (member.getAccountNo() == null && memberUpdatePostReq.getAccountNo() != null) { // 계좌번호 원래 없었는데 입력하면 신뢰도 +3
                 memberService.updateMemberScore(memberSeq, 3);
             }
             memberService.updateMember(memberSeq, memberUpdatePostReq);
@@ -147,7 +233,7 @@ public class MemberController {
         if (member != null) {
             String result = s3FileService.uploadProfileImage(multipartFile, memberSeq);
             if (result == "fail") ResponseEntity.status(409).body(BaseResponseBody.of(409, "프로필 사진 변경에 실패하였습니다."));
-            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
+            return ResponseEntity.status(200).body(BaseResponseBody.of(200, result));
         }
         throw new MemberNotFoundException("member not found", ErrorCode.MEMBER_NOT_FOUND);
     }
@@ -159,7 +245,7 @@ public class MemberController {
         Long memberSeq = memberDetails.getMemberSeq();
         Member member = memberService.getMemberByMemberSeq(memberSeq);
         if (member != null) {
-           memberService.updateMemberPhone(memberSeq, phoneMap.get("phone"));
+            memberService.updateMemberPhone(memberSeq, phoneMap.get("phone"));
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
         }
         throw new MemberNotFoundException("member not found", ErrorCode.MEMBER_NOT_FOUND);
@@ -214,13 +300,14 @@ public class MemberController {
     /////////////////// 비밀번호 재설정 (비밀번호 찾기) end ////////////////////////
 
     // 회원 탈퇴
-    @DeleteMapping
+    @PatchMapping("/delete")
     public ResponseEntity<?> deleteMember(@ApiIgnore Authentication authentication) {
         MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
         Long memberSeq = memberDetails.getMemberSeq();
         Member member = memberService.getMemberByMemberSeq(memberSeq);
         if (member != null) {
-            memberService.deleteMember(member.getSeq());
+            // status 0으로 변경
+            memberService.updateMemberStatus(member.getSeq());
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
         }
         return ResponseEntity.status(409).body(BaseResponseBody.of(409, "회원 탈퇴에 실패하였습니다."));
