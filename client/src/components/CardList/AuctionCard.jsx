@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { resizeFile } from '../../utils/functions/resizeFile';
 
 function AuctionCard({ auction }) {
   const [auctionTime, setAuctionTime] = useState({ moreThenOneDay: false, time: '' });
+  const [image, setImage] = useState('');
 
   const CalculateTime = () => {
     const auctionStartTime = new Date(auction?.startTime);
@@ -36,6 +38,7 @@ function AuctionCard({ auction }) {
   useEffect(() => {
     CalculateTime();
   }, []);
+
   return (
     <CardContainer>
       <div>
@@ -45,7 +48,7 @@ function AuctionCard({ auction }) {
               <img
                 src={process.env.REACT_APP_IMAGE_URL + auction?.auctionImage?.imageUrl}
                 loading="lazy"
-                alt="닌텐도 스위치"
+                alt={auction.title}
                 width="400"
                 height="300"
               />

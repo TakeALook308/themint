@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { AiOutlineYoutube, AiOutlineInstagram } from 'react-icons/ai';
 import { BsChatLeftDots } from 'react-icons/bs';
 import { Link, useLocation } from 'react-router-dom';
+import Logo from '../../common/Logo';
 function Footer(props) {
   const location = useLocation();
 
@@ -15,7 +16,9 @@ function Footer(props) {
     return null;
   return (
     <Wrapper>
-      <FooterHeader>더민트</FooterHeader>
+      <FooterHeader>
+        <Logo size={'80px'} />
+      </FooterHeader>
       <FooterBody>
         <FooterText>
           <p>고객센터 | themint@mint.co.kr</p>
@@ -59,18 +62,6 @@ const Wrapper = styled.footer`
   margin: auto;
 `;
 
-const FooterHeader = styled.h1`
-  font-family: 'PyeongChangPeace-Bold';
-  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-02@1.0/PyeongChangPeace-Bold.woff2')
-    format('woff2');
-  font-weight: 700;
-  font-style: normal;
-  font-size: 24px;
-  color: ${(props) => props.theme.colors.mainMint};
-  margin-bottom: 20px;
-  margin-top: 20px;
-`;
-
 const FooterBody = styled.div`
   display: flex;
   flex-direction: row;
@@ -99,4 +90,8 @@ const FooterItem = styled.div`
   justify-content: space-between;
   margin-left: auto;
   align-items: center;
+`;
+
+const FooterHeader = styled.div`
+  padding: 1rem 0;
 `;

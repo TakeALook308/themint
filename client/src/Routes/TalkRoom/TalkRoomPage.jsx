@@ -108,6 +108,7 @@ function TalkRoomPage() {
 const ChatCard = ({ chat, previousChat, nextChat }) => {
   const myInformation = useRecoilValue(myInformationState);
   const date = new Date(chat.date);
+  const year = date.getFullYear();
   const month = date.getMonth();
   const days = date.getDate();
   const hour = date.getHours().toString().padStart(2, '0');
@@ -121,7 +122,7 @@ const ChatCard = ({ chat, previousChat, nextChat }) => {
   return (
     <>
       {(month !== previousMonth || days !== previousDays) && (
-        <Today>----------{`${month + 1}월 ${days}일`}-----------</Today>
+        <Today>{`${year}.${String(month + 1).padStart(2, '0')}.${days}.`}</Today>
       )}
       {chat.memberSeq === myInformation.memberSeq ? (
         <MyTalk>

@@ -1,15 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useQueryClient } from 'react-query';
-import { useRecoilState, useRecoilValue } from 'recoil';
 import styled from 'styled-components';
-import { getUserSelector, myInformationState } from '../../atoms';
-import { fetchData } from '../../utils/apis/api';
-import { userApis } from '../../utils/apis/userApis';
 import InformationEdit from './InformationEdit';
 import ProfileImage from './ProfileImage';
 
-function AccountsEditPage(props) {
+function AccountsEditPage() {
   const queryClient = useQueryClient();
 
   const userAllInfo = queryClient.getQueryData(['userInformation']);

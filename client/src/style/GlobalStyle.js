@@ -37,9 +37,6 @@ const GlobalStyles = createGlobalStyle`
   *[hidden] {
       display: none;
   }
-  body {
-    line-height: 1;
-  }
   menu, ol, ul {
     list-style: none;
   }
@@ -57,6 +54,9 @@ const GlobalStyles = createGlobalStyle`
   }
   * {
     box-sizing: border-box;
+  }
+  html, body {
+    scroll-behavior: smooth;
   }
   body {
     font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
