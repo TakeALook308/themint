@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-    List<Review> findAllByReceiverSeq(Long memberSeq);
+    List<Review> findAllByReceiverSeqOrderByDateDesc(Long memberSeq);
 }

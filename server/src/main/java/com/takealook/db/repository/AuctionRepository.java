@@ -18,7 +18,7 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
 
     Auction findBySeqAndMemberSeq(Long Seq, Long memberSeq);
     List<Auction> findAllByMemberSeq(Long memberSeq);
-    List<Auction> findAllByStatus(int status);
+    List<Auction> findAllByStatusOrderBySeqDesc(int status);
     List<Auction> findAllByStartTimeAfterAndStartTimeBeforeOrderByStartTimeAsc(String currentTime, String tomorrowTime, Pageable pageable);
     List<Auction> findAllByStatusOrStartTimeAfter(int status, String currentTime, Pageable pageable);
     List<Auction> findAllByStartTimeBeforeAndStatus(String currentTime, int status);

@@ -29,7 +29,7 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Override
     public List<Review> getReviewList(Long memberSeq) {
-        List<Review> reviewList = reviewRepository.findAllByReceiverSeq(memberSeq);
+        List<Review> reviewList = reviewRepository.findAllByReceiverSeqOrderByDateDesc(memberSeq);
         return reviewList;
     }
 }
