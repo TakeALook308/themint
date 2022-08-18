@@ -16,29 +16,39 @@ function AccountsPage() {
     return response?.data;
   };
 
-  const { isLoading, error, data, isFetching } = useQuery(['userInformation'], getUserInfo);
+  const {} = useQuery(['userInformation'], getUserInfo);
 
   return (
     <GridContainer>
       <article>
         <PageTitle>정보 수정</PageTitle>
       </article>
-      <article>
-        <NavStyle to="edit">회원 정보</NavStyle>
-        <NavStyle to="password">비밀번호 변경</NavStyle>
-        <NavStyle to="phone-number">전화번호 인증</NavStyle>
-        <NavStyle to="withdrawl">회원 탈퇴</NavStyle>
-      </article>
-      <article>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Routes>
-            <Route path="edit" element={<AccountsEdit />} />
-            <Route path="password" element={<AccountsPassword />} />
-            <Route path="phone-number" element={<AccountsPhoneNumber />} />
-            <Route path="withdrawl" element={<AccountsWithdrawl />} />
-          </Routes>
-        </Suspense>
-      </article>
+      <TabAndNestedSection>
+        <ul>
+          <li>
+            <NavStyle to="edit">회원 정보</NavStyle>
+          </li>
+          <li>
+            <NavStyle to="password">비밀번호 변경</NavStyle>
+          </li>
+          <li>
+            <NavStyle to="phone-number">전화번호 인증</NavStyle>
+          </li>
+          <li>
+            <NavStyle to="withdrawl">회원 탈퇴</NavStyle>
+          </li>
+        </ul>
+        <article>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Routes>
+              <Route path="edit" element={<AccountsEdit />} />
+              <Route path="password" element={<AccountsPassword />} />
+              <Route path="phone-number" element={<AccountsPhoneNumber />} />
+              <Route path="withdrawl" element={<AccountsWithdrawl />} />
+            </Routes>
+          </Suspense>
+        </article>
+      </TabAndNestedSection>
     </GridContainer>
   );
 }
@@ -46,26 +56,26 @@ function AccountsPage() {
 export default AccountsPage;
 
 const GridContainer = styled(Container)`
-  display: grid;
+  display: flex;
   width: 100%;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: 60px 90%;
-  gap: 10px 3rem;
-  > article {
-    &:nth-child(1) {
-      grid-column: 1 / 6;
-      grid-row: 1 / 2;
-    }
-    &:last-child {
-      grid-column: 2 / 6;
-      grid-row: 2 / 3;
-    }
-  }
+  flex-direction: column;
+  gap: 2rem;
 `;
 
 const PageTitle = styled.h2`
   font-size: ${(props) => props.theme.fontSizes.page};
   font-weight: bold;
+`;
+
+const TabAndNestedSection = styled.section`
+  display: flex;
+  gap: 2rem;
+  & > ul {
+    width: 200px;
+  }
+  & > article {
+    width: calc(100% - 200px);
+  }
 `;
 
 const NavStyle = styled(NavLink)`
@@ -75,7 +85,7 @@ const NavStyle = styled(NavLink)`
   padding: 1rem;
   color: ${(props) => props.theme.colors.white};
   width: 100%;
-  height: 60px;
+  height: 50px;
   font-size: ${(props) => props.theme.fontSizes.h5};
   font-weight: bold;
   background-color: ${(props) => props.theme.colors.mainBlack};

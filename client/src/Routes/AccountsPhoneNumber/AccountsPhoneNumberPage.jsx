@@ -211,4 +211,5 @@ const PhoneNumberDescriptionContainer = styled.ol`
   color: ${(props) => props.theme.colors.pointRed};
   line-height: 1.7;
   list-style-type: decimal;
+  list-style-position: inside;
 `;

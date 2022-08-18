@@ -178,6 +178,7 @@ const NavItemText = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-left: auto;
+  font-weight: bold;
 `;
 
 const NavItemIcon = styled.div`
@@ -186,6 +187,7 @@ const NavItemIcon = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-left: auto;
+  font-weight: bold;
 `;
 
 const NavbarDropdownContent = styled.ul`
@@ -198,6 +200,7 @@ const NavbarDropdownContent = styled.ul`
   right: 0;
   border-radius: 5px;
   transition: all 1s ease-in;
+  font-weight: bold;
   li {
     margin-bottom: 0.5rem;
   }

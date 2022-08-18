@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 function AuctionCard({ auction }) {
   const [auctionTime, setAuctionTime] = useState({ moreThenOneDay: false, time: '' });
+  const [image, setImage] = useState('');
 
   const CalculateTime = () => {
     const auctionStartTime = new Date(auction?.startTime);
@@ -21,7 +22,7 @@ function AuctionCard({ auction }) {
       const miniute = makeTwoDigitNumber(auctionStartTime.getMinutes());
 
       setAuctionTime({
-        time: `${year}년 ${month}월 ${date}일 ${hour}시 ${miniute}분`,
+        time: `${year}.${month}.${date}. ${hour}:${miniute}`,
         moreThenOneDay: true,
       });
     } else if (diffHour >= 1) {
@@ -36,6 +37,7 @@ function AuctionCard({ auction }) {
   useEffect(() => {
     CalculateTime();
   }, []);
+
   return (
     <CardContainer>
       <div>
@@ -45,7 +47,7 @@ function AuctionCard({ auction }) {
               <img
                 src={process.env.REACT_APP_IMAGE_URL + auction?.auctionImage?.imageUrl}
                 loading="lazy"
-                alt="닌텐도 스위치"
+                alt={auction.title}
                 width="400"
                 height="300"
               />
