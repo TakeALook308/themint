@@ -99,8 +99,8 @@
 
 - 아키텍처(Architecture)
 
-![아키텍쳐](/uploads/d4e66e49e6b323f534e923ed42deee18/아키텍쳐.png)
-새로운 버전 작성후 교체
+![아키텍처](/uploads/64ecb5b7ec6a5460816f2847143f7ed5/아키텍처.png)
+
 
 - ERD
 
