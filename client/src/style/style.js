@@ -4,6 +4,7 @@ export const Container = styled.main`
   max-width: 1024px;
   margin: 0 auto;
   padding-top: 80px;
+  min-height: calc(100vh - 261px);
 `;
 
 export const Title = styled.h3`
