@@ -5,6 +5,7 @@ import AuctionCard from '../../components/CardList/AuctionCard';
 import SkeletonAuctionCard from '../../components/CardList/SkeletonAuctionCard';
 import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
 import { auctionListApis } from '../../utils/apis/auctionApis';
+import Header from './Header';
 import { ListHeader, Wrapper } from './PostList';
 
 function InterestingList() {
@@ -12,13 +13,11 @@ function InterestingList() {
   return (
     <Wrapper>
       <hr></hr>
-      <ListHeader>
-        {myInformation?.nickname ? (
-          <h2>{myInformation.nickname}님의 관심 카테고리 경매</h2>
-        ) : (
-          <h3>추천 경매 목록</h3>
-        )}
-      </ListHeader>
+      {myInformation?.nickname ? (
+        <Header title={`${myInformation.nickname}님을 위한 추천 경매 목록`} />
+      ) : (
+        <Header title={'이런 경매는 어때요?'} />
+      )}
       <InfiniteAuctionList
         getUrl={auctionListApis.MAIN_CATEGORY_AUCTION_LIST(9)}
         queryKey={['interestingAuctionList']}
