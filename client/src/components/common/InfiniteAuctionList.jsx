@@ -90,6 +90,7 @@ const GridContainer = styled.div`
   grid-template-columns: ${(props) =>
     props.type === '프로필' ? 'repeat(4, 1fr)' : 'repeat(3, 1fr)'};
   grid-gap: 1rem;
+  margin-bottom: 1rem;
   @media screen and (max-width: 768px) {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -107,5 +108,5 @@ const NotExist = styled.p`
   width: 100%;
   text-align: center;
   font-size: ${(props) => props.theme.fontSizes.h5};
-  font-weight: ;
+  font-weight: bold;
 `;
