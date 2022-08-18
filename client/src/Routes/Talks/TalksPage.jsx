@@ -7,6 +7,7 @@ import { fetchData } from '../../utils/apis/api';
 import { socketApis } from '../../utils/apis/socketApis';
 import { MemoizedTalkCard } from './TalkCard';
 import { TbMoodSad } from 'react-icons/tb';
+import { Helmet } from 'react-helmet-async';
 
 function TalksPage() {
   const [roomInformationList, setRoomInformationList] = useState([]);
@@ -25,30 +26,35 @@ function TalksPage() {
   }, []);
 
   return (
-    <Container>
-      <TalkSection>
-        <TalksContainer>
-          <Title>채팅 목록</Title>
-          {roomInformationList.length === 0 && (
-            <>
-              <NotExist>
-                아직 개설된 채팅방이 없어요
-                <TbMoodSad />
-              </NotExist>
-            </>
-          )}
-          {roomInformationList?.map((roomInformation, idx) => (
-            <MemoizedTalkCard roomInformation={roomInformation} key={idx} />
-          ))}
-        </TalksContainer>
-        <RoutesContainer>
-          {!roomId && <BeforeChatRoom>다른 유저와 대화를 시작해보세요</BeforeChatRoom>}
-          <Routes>
-            <Route path=":talkId" element={<TalkRoom />} />
-          </Routes>
-        </RoutesContainer>
-      </TalkSection>
-    </Container>
+    <>
+      <Helmet>
+        <title>채팅 | 더민트</title>
+      </Helmet>
+      <Container>
+        <TalkSection>
+          <TalksContainer>
+            <Title>채팅 목록</Title>
+            {roomInformationList.length === 0 && (
+              <>
+                <NotExist>
+                  아직 개설된 채팅방이 없어요
+                  <TbMoodSad />
+                </NotExist>
+              </>
+            )}
+            {roomInformationList?.map((roomInformation, idx) => (
+              <MemoizedTalkCard roomInformation={roomInformation} key={idx} />
+            ))}
+          </TalksContainer>
+          <RoutesContainer>
+            {!roomId && <BeforeChatRoom>다른 유저와 대화를 시작해보세요</BeforeChatRoom>}
+            <Routes>
+              <Route path=":talkId" element={<TalkRoom />} />
+            </Routes>
+          </RoutesContainer>
+        </TalkSection>
+      </Container>
+    </>
   );
 }
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import SignContainer from '../../components/common/SignContainer';
 import EmailCheck from './EmailCheck';
 import NewPassword from './NewPassword';

@@ -8,6 +8,7 @@ import CateCardList from './CateCardList';
 import Dropdown from './SelectBox';
 import { Container } from '../../style/common';
 import { auctionListApis } from '../../utils/apis/auctionApis';
+import { Helmet } from 'react-helmet-async';
 
 function CategoryPage({ categoryName }) {
   const [categorySeq, setCategorySeq] = useState('0');
@@ -30,19 +31,24 @@ function CategoryPage({ categoryName }) {
     auctionListApis.CATEGORY_AUCTION_LIST(category, size, sort);
 
   return (
-    <Container>
-      <CateListContainer>
-        <CateCardList categoryName={categoryName} getCategorySeq={getCategorySeq} />
-      </CateListContainer>
-      <Dropdown getSortKey={getSortKey} />
-      <InfiniteAuctionList
-        getUrl={auctionListApis.CATEGORY_AUCTION_LIST(categorySeq, 12, sortKey)}
-        queryKey={[categorySeq + sortKey]}
-        CardComponent={AuctionCard}
-        SkeltonCardComponent={SkeletonAuctionCard}
-        text={'경매 목록이 없습니다.'}
-      />
-    </Container>
+    <>
+      <Helmet>
+        <title>경매목록 | 더민트</title>
+      </Helmet>
+      <Container>
+        <CateListContainer>
+          <CateCardList categoryName={categoryName} getCategorySeq={getCategorySeq} />
+        </CateListContainer>
+        <Dropdown getSortKey={getSortKey} />
+        <InfiniteAuctionList
+          getUrl={auctionListApis.CATEGORY_AUCTION_LIST(categorySeq, 12, sortKey)}
+          queryKey={[categorySeq + sortKey]}
+          CardComponent={AuctionCard}
+          SkeltonCardComponent={SkeletonAuctionCard}
+          text={'경매 목록이 없습니다.'}
+        />
+      </Container>
+    </>
   );
 }
 export default CategoryPage;

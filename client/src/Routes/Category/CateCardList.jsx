@@ -40,7 +40,7 @@ function CateCardList({ getCategorySeq, categoryName, key }) {
     <Container>
       <ListHeader>
         <h3>
-          카테고리&gt;
+          경매목록&gt;
           <span>{categoryNow}</span>
         </h3>
       </ListHeader>
