@@ -28,7 +28,7 @@ function TalksPage() {
     <Container>
       <TalkSection>
         <TalksContainer>
-          <Title>전체 대화</Title>
+          <Title>채팅 목록</Title>
           {roomInformationList.length === 0 && (
             <>
               <NotExist>

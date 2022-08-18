@@ -5,10 +5,6 @@ import Stomp from 'stompjs';
 import styled from 'styled-components';
 import { fetchData } from '../../utils/apis/api';
 import { socketApis } from '../../utils/apis/socketApis';
-
-// let sock;
-// let client;
-
 function TalkCard({ roomInformation }) {
   const [chatList, setChatList] = useState([]);
   const [sock, setSock] = useState();
