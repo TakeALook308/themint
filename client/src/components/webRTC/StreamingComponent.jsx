@@ -261,22 +261,25 @@ class StreamingComponent extends Component {
 
     return (
       <div className="container">
-        <div className="control-btn-box">
-          <button className="camerabtn" onClick={this.videoControll}>
-            {this.state.publisher?.stream?.videoActive ? (
-              <BsFillCameraVideoFill size={20} color="white"></BsFillCameraVideoFill>
-            ) : (
-              <BsFillCameraVideoOffFill size={20} color="white"></BsFillCameraVideoOffFill>
-            )}
-          </button>
-          <button className="micbtn" onClick={this.audioControll}>
-            {this.state.publisher?.stream?.audioActive ? (
-              <BsFillMicFill size={20} color="white"></BsFillMicFill>
-            ) : (
-              <BsFillMicMuteFill size={20} color="white"></BsFillMicMuteFill>
-            )}
-          </button>
-        </div>
+        {this.props.userInfo.memberSeq === this.props.auctionData.memberSeq && (
+          <div className="control-btn-box">
+            <button className="camerabtn" onClick={this.videoControll}>
+              {this.state.publisher?.stream?.videoActive ? (
+                <BsFillCameraVideoFill size={20} color="white"></BsFillCameraVideoFill>
+              ) : (
+                <BsFillCameraVideoOffFill size={20} color="white"></BsFillCameraVideoOffFill>
+              )}
+            </button>
+            <button className="micbtn" onClick={this.audioControll}>
+              {this.state.publisher?.stream?.audioActive ? (
+                <BsFillMicFill size={20} color="white"></BsFillMicFill>
+              ) : (
+                <BsFillMicMuteFill size={20} color="white"></BsFillMicMuteFill>
+              )}
+            </button>
+          </div>
+        )}
+
         {this.state.session !== undefined ? (
           <div id="session">
             <div id="video-container" className="col-md-6">
