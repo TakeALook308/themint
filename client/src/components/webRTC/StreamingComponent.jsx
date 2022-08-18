@@ -3,6 +3,12 @@ import { OpenVidu } from 'openvidu-browser';
 import React, { Component } from 'react';
 import UserVideoComponent from './UserVideoComponent';
 import './UserVideo.css';
+import {
+  BsFillMicFill,
+  BsFillMicMuteFill,
+  BsFillCameraVideoOffFill,
+  BsFillCameraVideoFill,
+} from 'react-icons/bs';
 const OPENVIDU_SERVER_URL = 'https://i7a308.p.ssafy.io:8443';
 const OPENVIDU_SERVER_SECRET = 'themint';
 
@@ -234,12 +240,19 @@ class StreamingComponent extends Component {
   videoControll() {
     this.setState({ videoEnabled: !this.state.publisher.stream.videoActive });
     this.state.publisher?.publishVideo(!this.state.publisher.stream.videoActive);
+
+    if (this.state.publisher?.stream?.videoActive)
+      document.querySelector('.camerabtn').style.background = '#2CDCB2';
+    else document.querySelector('.camerabtn').style.background = '#999999';
   }
 
   audioControll() {
     console.log(this.state.publisher.stream);
     this.setState({ audioEnabled: !this.state.publisher.stream.audioActive });
     this.state.publisher?.publishAudio(!this.state.publisher.stream.audioActive);
+    if (this.state.publisher?.stream?.audioActive)
+      document.querySelector('.micbtn').style.background = '#2CDCB2';
+    else document.querySelector('.micbtn').style.background = '#999999';
   }
 
   render() {
@@ -248,12 +261,22 @@ class StreamingComponent extends Component {
 
     return (
       <div className="container">
-        <button onClick={this.videoControll}>
-          {this.state.publisher?.stream?.videoActive ? '카메라 off' : '카메라 on'}
-        </button>
-        <button onClick={this.audioControll}>
-          {this.state.publisher?.stream?.audioActive ? '마이크 off' : '마이크 on'}
-        </button>
+        <div className="control-btn-box">
+          <button className="camerabtn" onClick={this.videoControll}>
+            {this.state.publisher?.stream?.videoActive ? (
+              <BsFillCameraVideoFill size={20} color="white"></BsFillCameraVideoFill>
+            ) : (
+              <BsFillCameraVideoOffFill size={20} color="white"></BsFillCameraVideoOffFill>
+            )}
+          </button>
+          <button className="micbtn" onClick={this.audioControll}>
+            {this.state.publisher?.stream?.audioActive ? (
+              <BsFillMicFill size={20} color="white"></BsFillMicFill>
+            ) : (
+              <BsFillMicMuteFill size={20} color="white"></BsFillMicMuteFill>
+            )}
+          </button>
+        </div>
         {this.state.session !== undefined ? (
           <div id="session">
             <div id="video-container" className="col-md-6">
