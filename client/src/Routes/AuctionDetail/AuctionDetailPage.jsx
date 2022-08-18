@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Container } from '../../style/style';
@@ -12,6 +12,8 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay, Navigation } from 'swiper';
 import { interestsApis } from '../../utils/apis/interestsApis';
 import { fetchData } from '../../utils/apis/api';
+import moment from 'moment';
+import { errorToast } from '../../lib/toast';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import './swiper.css';
@@ -21,6 +23,51 @@ function AuctionDetailPage(props) {
   const { auctionId } = useParams();
   const [auctionInfo, setAuctionInfo] = useState(null);
   const [interestAuction, setInterestAuction] = useState(false);
+  const [countDown, setCountDown] = useState('');
+
+  const countDownTimer = useCallback((date) => {
+    let _vDate = moment(date);
+    let _second = 1000;
+    let _minute = _second * 60;
+    let _hour = _minute * 60;
+    let _day = _hour * 24;
+    let timer;
+    function showRemaining() {
+      try {
+        let now = moment();
+        let distDt = _vDate - now - 600000;
+
+        if (distDt < 0) {
+          clearInterval(timer);
+          setCountDown(0);
+          return;
+        }
+        let days = Math.floor(distDt / _day);
+        let hours = Math.floor((distDt % _day) / _hour);
+        let minutes = Math.floor((distDt % _hour) / _minute);
+        let seconds = Math.floor((distDt % _minute) / _second);
+
+        let HapDate =
+          parseInt(days) +
+          '일 ' +
+          parseInt(hours) +
+          '시간 ' +
+          parseInt(minutes) +
+          '분 ' +
+          parseInt(seconds) +
+          '초 뒤 참여 가능';
+
+        setCountDown(HapDate);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    timer = setInterval(showRemaining, 1000);
+  }, []);
+
+  // console.log(new Date(auctionInfo?.startTime) - new Date(moment().format('YYYY-MM-DD HH:mm:ss')));
+  // console.log(auctionInfo?.startTime, moment().format('YYYY-MM-DD HH:mm:ss'));
+
   const setData = async () => {
     await fetchData
       .get(auctionApis.AUCTION_DETAIL_API(auctionId))
@@ -119,9 +166,14 @@ function AuctionDetailPage(props) {
                   <span
                     onClick={() => {
                       if (window.confirm('정말 삭제하시겠습니까?')) {
-                        fetchData.delete(auctionApis.AUCTION_DELETE_API(auctionId)).then(() => {
-                          navigate('/main');
-                        });
+                        fetchData
+                          .delete(auctionApis.AUCTION_DELETE_API(auctionId))
+                          .then(() => {
+                            navigate('/main');
+                          })
+                          .catch((e) => {
+                            errorToast('경매가 종료된 게시글은 삭제할 수 없습니다.');
+                          });
                       }
                     }}>
                     삭제
@@ -129,12 +181,22 @@ function AuctionDetailPage(props) {
                 </div>
               ) : null}
             </div>
-            <GradientButton
-              text="경매 참여"
-              onClick={() => {
-                if (auctionInfo.memberSeq === userInfo.memberSeq) navigate(`/standby/${auctionId}`);
-                else navigate(`/streamings/${auctionId}`);
-              }}></GradientButton>
+            {new Date(auctionInfo.startTime) - new Date(moment().format('YYYY-MM-DD HH:mm:ss')) >
+            600000 ? (
+              <GradientButton text={countDown} disabled={true}>
+                {countDownTimer(auctionInfo.startTime)}
+              </GradientButton>
+            ) : auctionInfo.status === 2 ? (
+              <GradientButton text="경매 종료" disabled={true} />
+            ) : (
+              <GradientButton
+                text="경매 참여"
+                onClick={() => {
+                  if (auctionInfo.memberSeq === userInfo.memberSeq)
+                    navigate(`/standby/${auctionId}`);
+                  else navigate(`/streamings/${auctionId}`);
+                }}></GradientButton>
+            )}
           </AuctionInfoBox>
         </AuctionMainInfo>
         <AuctionList>
@@ -276,6 +338,7 @@ const AuctionList = styled.div`
 
 const AuctionContent = styled.div`
   padding: 10px 0;
+
   p {
     font-size: 24px;
     font-weight: 700;
