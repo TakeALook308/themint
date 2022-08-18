@@ -56,7 +56,7 @@
 | ----------------------------------------------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------------- |
 | HTML5                                                             | CSS3                                                            | JS                                                                      |
 
-| ![React.svg](/uploads/f736e784898b0c84f3e78f1805e583e9/React.svg) |![Recoil.svg](/uploads/15dbe2500a8eb62af3f85df495d04a7b/Recoil.svg)| ![reactu-query](/uploads/60cf208876b81c98477dadaba88ec26c/reactu-query.png) | ![styled-components](/uploads/258dd18cd7a89b6cb3a3eb01b26fb687/styled-components.png) |
+| ![React.svg](/uploads/f736e784898b0c84f3e78f1805e583e9/React.svg) |![Recoil__2_.svg](/uploads/13dcb4f787c53157f2aa3a01a550d8fa/Recoil__2_.svg)| ![ReactQuery.svg](/uploads/ae10ec0b46910788419d2e9edec90b3b/ReactQuery.svg) |![Styled-components](/uploads/2d115666c181cc4d3bb930ea4d0289aa/Styled-components.png) |
 | ----------------------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
 | React                                                             | Recoil                                                          | React-Query                                                                 | Styled-components                                                                     |
 
