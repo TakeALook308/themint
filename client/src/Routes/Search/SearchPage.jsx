@@ -9,13 +9,11 @@ import AuctionCard from '../../components/CardList/AuctionCard';
 import ProductCard from './ProductCard';
 import ProfileSearchCard from './ProfileSearchCard';
 import { useRecoilState } from 'recoil';
-import { keywordState } from '../../atoms';
 
 function SearchPage(props) {
   const [sortKey, setSortKey] = useState('startTime');
   const [pageTitle, setPageTitle] = useState('경매 검색');
   const [searchParams] = useSearchParams();
-  const [keyword, setKeyword] = useRecoilState(keywordState);
   const key = searchParams.get('keyword');
   const type = searchParams.get('type');
   const navigate = useNavigate();
@@ -33,17 +31,6 @@ function SearchPage(props) {
     { value: 'startPrice', name: '낮은가격순' },
     { value: 'score', name: '판매자신뢰도순' },
   ];
-  useEffect(() => {
-    setKeyword({
-      keyword: key,
-      type: 'auction',
-    });
-    return () =>
-      setKeyword({
-        keyword: '',
-        type: 'auction',
-      });
-  }, []);
 
   const onChange = ({ target: { value } }) => {
     setSortKey(value);
@@ -63,10 +50,6 @@ function SearchPage(props) {
       pathname: '/search',
       search: `?type=auction&keyword=${key}`,
     });
-    setKeyword({
-      ...keyword,
-      type: 'auction',
-    });
   };
 
   const onClickProduct = () => {
@@ -75,10 +58,6 @@ function SearchPage(props) {
       pathname: '/search',
       search: `?type=product&keyword=${key}`,
     });
-    setKeyword({
-      ...keyword,
-      type: 'product',
-    });
   };
 
   const onClickProfile = () => {
@@ -86,10 +65,6 @@ function SearchPage(props) {
     navigate({
       pathname: '/search',
       search: `?type=member&keyword=${key}`,
-    });
-    setKeyword({
-      ...keyword,
-      type: 'member',
     });
   };
 
