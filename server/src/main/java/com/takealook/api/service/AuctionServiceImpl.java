@@ -41,7 +41,7 @@ public class AuctionServiceImpl implements AuctionService {
     @Autowired
     S3FileService s3FileService;
 
-    @Transactional
+//    @Transactional
     @Override
     public Auction createAuction(Long memberSeq, AuctionRegisterPostReq auctionRegisterPostReq, List<MultipartFile> multipartFileList) {
         String hash = HashUtil.MD5(LocalDateTime.now().toString() + memberSeq);
