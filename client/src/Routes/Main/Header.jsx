@@ -21,6 +21,6 @@ const ListHeader = styled.div`
   > h2 {
     font-size: ${(props) => props.theme.fontSizes.h4};
     font-weight: bold;
-    text-shadow: 1px 4px 4px ${(props) => props.theme.colors.mainMint};
+    text-shadow: 1px 4px 4px ${(props) => props.theme.colors.textGray};
   }
 `;

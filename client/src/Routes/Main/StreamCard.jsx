@@ -70,24 +70,24 @@ const Wrapper = styled.div`
   top: 0;
   display: flex;
   flex-direction: row;
+  background-color: ${(props) => props.theme.colors.subBlack};
 `;
 
 const ImgContainer = styled.div`
   width: 65%;
   border-radius: 15px 0 0 15px;
-  background-color: ${(props) => props.theme.colors.subBlack};
 `;
 
 const StyledImg = styled.img`
   width: 100%;
   height: 100%;
   border-radius: 15px 0 0 15px;
-  object-fit: contain !important;
+  object-fit: cover !important;
 `;
 
 const AuctionInfoContainer = styled.div`
   width: 35%;
-  background-color: ${(props) => props.theme.colors.mainBlack};
+  background: linear-gradient(270.38deg, #000000 2.06%, rgba(29, 29, 29, 0) 100%);
   text-align: left;
   border-radius: 0 15px 15px 0;
 `;

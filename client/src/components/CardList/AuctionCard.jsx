@@ -21,7 +21,7 @@ function AuctionCard({ auction }) {
       const miniute = makeTwoDigitNumber(auctionStartTime.getMinutes());
 
       setAuctionTime({
-        time: `${year}년 ${month}월 ${date}일 ${hour}시 ${miniute}분`,
+        time: `${year}.${month}.${date}. ${hour}:${miniute}`,
         moreThenOneDay: true,
       });
     } else if (diffHour >= 1) {
