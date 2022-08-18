@@ -297,7 +297,6 @@ function ProfilePurchaseHistoryPage({ params }) {
                     제품 정보 상세보기
                   </StyledLink>
                   <h3>배송지를 입력해주세요!!!</h3>
-
                   <ActiveInput active={true}>
                     <input
                       name="remitName"
@@ -534,7 +533,7 @@ const PutMoneyButton = styled.div`
 
 const PutAddress = styled.div`
   > h3 {
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     font-size: 20px;
     font-weight: bold;
   }
