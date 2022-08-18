@@ -99,6 +99,7 @@ const Modal = styled.div`
   padding: 0.5rem;
   z-index: 1;
   background-color: ${(props) => props.theme.colors.subBlack};
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   right: 0;
   border-radius: 5px;
   overflow-y: scroll;
@@ -128,6 +129,7 @@ const NotificationCard = styled.div`
   height: 50px;
   padding: 0.5rem;
   display: flex;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   button {
     border: none;
     background-color: transparent;

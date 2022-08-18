@@ -3,14 +3,13 @@ import styled from 'styled-components';
 import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
 import { auctionListApis } from '../../utils/apis/auctionApis';
 import SkeletonAuctionCard from '../../components/CardList/SkeletonAuctionCard';
+import Header from './Header';
 
 function PostList() {
   return (
     <Wrapper>
       <hr></hr>
-      <ListHeader>
-        <h2>실시간 임박 경매</h2>
-      </ListHeader>
+      <Header title={'실시간 경매 임박 목록'} />
       <InfiniteAuctionList
         getUrl={auctionListApis.AUCTION_LIST('', 9, 'main')}
         queryKey={['imminentAuctionList']}

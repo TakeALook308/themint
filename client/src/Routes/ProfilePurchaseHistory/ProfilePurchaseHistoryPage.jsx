@@ -4,7 +4,7 @@ import IsPurchasingCard from './IsPurchasingCard';
 import SkeletonAuctionCard from '../../components/CardList/SkeletonAuctionCard';
 import { instance } from '../../utils/apis/api';
 import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
-import Modal from '../../components/common/Modal';
+import Modal2 from '../../components/common/Modal2';
 import GradientButton from '../../components/ButtonList/GradientButton';
 import { FaStar } from 'react-icons/fa';
 import { MemoizedInformation } from '../AccountsEdit/Information';
@@ -18,8 +18,19 @@ import { myInformationState } from '../../atoms';
 import { useQuery } from 'react-query';
 import { ActiveInput } from '../../style/style';
 import MintButton from '../../components/ButtonList/MintButton';
+import { Link } from 'react-router-dom';
 
 function ProfilePurchaseHistoryPage({ params }) {
+  const myInformation = useRecoilValue(myInformationState);
+  const getUserInfo = async () => {
+    const response = await fetchData.get(userApis.USER_INFORMATION(myInformation?.memberSeq));
+    return response?.data;
+  };
+
+  const { isLoading, error, data, isFetching } = useQuery(['userInformation'], getUserInfo);
+  const queryClient = useQueryClient();
+  const userAllInfo = queryClient.getQueryData(['userInformation']);
+
   // 구매내역과 판매내역 차이 구분
   const [isPurchase, setIsPurchase] = useState('purchase');
   useEffect(() => {
@@ -36,7 +47,7 @@ function ProfilePurchaseHistoryPage({ params }) {
   const onSold = async () => {
     setActive('complete');
   };
-  // Modal 연결
+  // Modal2 연결
   const [purchaseDetail, setPurchaseDetail] = useState([]); // 판매내역 상세 내용 저장
   const [isModal, setIsModal] = useState(false);
 
@@ -48,27 +59,26 @@ function ProfilePurchaseHistoryPage({ params }) {
     const res = getPurchaseDetail(`/api/history/purchase/detail/${auction.historySeq}`);
     res.then((itemDetail) => {
       setPurchaseDetail(itemDetail.data); // 상세보기 내용을 salesDetail에 저장
-      console.log(itemDetail.data);
       setAuctionProductSeq(itemDetail.data.productSeq);
       onChange2({ target: { name: 'receiverSeq', value: itemDetail.data.sellerMemberSeq } });
       setDeliveryData((prevState) => {
         return { ...prevState, productDeliverySeq: itemDetail.data.productDeliverySeq };
       });
-      setDeliveryData((prevState) => {
-        return { ...prevState, name: userAllInfo.memberName };
-      });
-      setDeliveryData((prevState) => {
-        return { ...prevState, phone: userAllInfo.phone };
-      });
-      setDeliveryData((prevState) => {
-        return { ...prevState, address: userAllInfo.address };
-      });
-      setDeliveryData((prevState) => {
-        return { ...prevState, addressDetail: userAllInfo.addressDetail };
-      });
-      setDeliveryData((prevState) => {
-        return { ...prevState, zipCode: userAllInfo.zipCode };
-      });
+      // setDeliveryData((prevState) => {
+      //   return { ...prevState, name: userAllInfo.memberName };
+      // });
+      // setDeliveryData((prevState) => {
+      //   return { ...prevState, phone: userAllInfo.phone };
+      // });
+      // setDeliveryData((prevState) => {
+      //   return { ...prevState, address: userAllInfo.address };
+      // });
+      // setDeliveryData((prevState) => {
+      //   return { ...prevState, addressDetail: userAllInfo.addressDetail };
+      // });
+      // setDeliveryData((prevState) => {
+      //   return { ...prevState, zipCode: userAllInfo.zipCode };
+      // });
       setSearchDeliveryData((prevState) => {
         return { ...prevState, t_code: itemDetail.data.parcelCompanyCode };
       });
@@ -85,7 +95,6 @@ function ProfilePurchaseHistoryPage({ params }) {
   const [auctionProductSeq, setAuctionProductSeq] = useState(0);
 
   const patchRemit = () => {
-    console.log(auctionProductSeq);
     const getPatchRemit = async (url) => {
       const response = await instance.patch(url);
       return response;
@@ -144,14 +153,7 @@ function ProfilePurchaseHistoryPage({ params }) {
   };
 
   // 배송정보 수정
-  const myInformation = useRecoilValue(myInformationState);
-  const getUserInfo = async () => {
-    const response = await fetchData.get(userApis.USER_INFORMATION(myInformation?.memberSeq));
-    return response?.data;
-  };
-  const { isLoading, error, data, isFetching } = useQuery(['userInformation'], getUserInfo);
-  const queryClient = useQueryClient();
-  const userAllInfo = queryClient.getQueryData(['userInformation']);
+
   const [deliveryData, setDeliveryData] = useState({
     productDeliverySeq: 1,
     name: '',
@@ -163,32 +165,38 @@ function ProfilePurchaseHistoryPage({ params }) {
   });
   const onChange = (e) => {
     setDeliveryData((prevState) => {
-      console.log(e.target.value);
       return { ...prevState, remitName: e.target.value };
     });
   };
+
   const onClick = () => {
-    const { value, name } = deliveryData;
-    setDeliveryData({
-      ...deliveryData,
-      [name]: value,
-    });
-    console.log(deliveryData);
-    // 버튼 클릭하면 배송정보를 patch
-    const patchDeliveryData = async (url, data) => {
-      const response = await instance.patch(url, data);
+    const data = queryClient.getQueryData(['userInformation']);
+
+    const newData = {
+      productDeliverySeq: deliveryData.productDeliverySeq,
+      name: data.memberName,
+      remitName: deliveryData.remitName,
+      phone: data.phone,
+      address: data.address,
+      addressDetail: data.addressDetail,
+      zipCode: data.zipCode,
+    };
+    const patchDeliveryData = (url, data) => {
+      const response = instance.patch(url, data);
       return response;
     };
-    const res = patchDeliveryData(`/api/delivery`, deliveryData);
+    const res = patchDeliveryData(`/api/delivery`, newData);
     res.then(() => {
       setIsModal((prev) => !prev);
     });
+    // 버튼 클릭하면 배송정보를 patch
   };
+
   // 배송 조회
   const [searchDeliveryData, setSearchDeliveryData] = useState({
     t_key: 'F021Ir60YiVKvqs5Fx4AXw',
-    t_code: '04',
-    t_invoice: '113323452345',
+    t_code: '',
+    t_invoice: '',
   });
 
   // 리뷰 작성
@@ -206,7 +214,6 @@ function ProfilePurchaseHistoryPage({ params }) {
   };
   // 버튼 클릭하면 리뷰 정보를 post
   const postReview = () => {
-    console.log(reviewData);
     const postReviewData = async (url, data) => {
       const response = await instance.post(url, data);
       return response;
@@ -235,9 +242,7 @@ function ProfilePurchaseHistoryPage({ params }) {
     let score = clicked.filter(Boolean).length;
     onChange2({ target: { name: 'score', value: score } });
   };
-  const ConsoleD = () => {
-    console.log(searchDeliveryData);
-  };
+  const ConsoleD = () => {};
   return (
     <Container>
       <ButtonNav>
@@ -257,7 +262,7 @@ function ProfilePurchaseHistoryPage({ params }) {
         </StyledBtn>
       </ButtonNav>
       <InfiniteAuctionList
-        getUrl={getPurchaseUrl(params, 9)}
+        getUrl={getPurchaseUrl(9)}
         queryKey={[`${params}${active}${isPurchase}${isModal}`]}
         CardComponent={IsPurchasingCard}
         SkeltonCardComponent={SkeletonAuctionCard}
@@ -265,18 +270,26 @@ function ProfilePurchaseHistoryPage({ params }) {
         func={ModalHandler}
         active={active}
       />
-      <Modal open={isModal} close={ModalHandler} title="구매 내역 관리">
+      <Modal2 open={isModal} close={ModalHandler} title="구매 내역 관리">
         <ModalMain>
           {active === 'inprogress' && (
             <Purchasing>
               {purchaseDetail.status === 1 && (
                 <PutMoney>
                   <p>입금을 완료 하셨나요??</p>
-                  <MintButton onClick={patchRemit} text="입금완료" size="30%" />
+                  <PutMoneyButton>
+                    <MintButton onClick={patchRemit} text="입금완료" size="30%" />
+                  </PutMoneyButton>
+                  <StyledLink to={`/auctions/${purchaseDetail?.hash}`}>
+                    제품 정보 상세보기
+                  </StyledLink>
                 </PutMoney>
               )}
               {purchaseDetail.status === 2 && (
                 <PutAddress>
+                  <StyledLink to={`/auctions/${purchaseDetail?.hash}`}>
+                    제품 정보 상세보기
+                  </StyledLink>
                   <h3>배송지를 입력해주세요!!!</h3>
                   <p>판매자 계좌 정보</p>
                   <SellerInfo>
@@ -319,6 +332,7 @@ function ProfilePurchaseHistoryPage({ params }) {
           )}
           {active === 'complete' && (
             <Purchased>
+              <StyledLink to={`/auctions/${purchaseDetail?.hash}`}>제품 정보 상세보기</StyledLink>
               <p>배송주소: {purchaseDetail.address}</p>
               <p>상세 배송주소: {purchaseDetail.addressDetail}</p>
               <p>배송조회</p>
@@ -386,7 +400,7 @@ function ProfilePurchaseHistoryPage({ params }) {
             </Purchased>
           )}
         </ModalMain>
-      </Modal>
+      </Modal2>
     </Container>
   );
 }
@@ -444,6 +458,7 @@ const ModalMain = styled.main`
 `;
 
 const Purchasing = styled.div`
+  position: relative;
   width: 100%;
   > p {
     margin-bottom: 10px;
@@ -460,9 +475,16 @@ const Purchasing = styled.div`
 `;
 
 const Purchased = styled.div`
+  position: relative;
   width: 100%;
   display: flex;
   flex-direction: column;
+  > textarea {
+    margin-bottom: 10px;
+  }
+  > p {
+    margin-bottom: 10px;
+  }
 `;
 
 // 별점기능
@@ -500,8 +522,13 @@ const SellerInfo = styled.article`
 
 const PutMoney = styled.div`
   > p {
-    margin-bottom: 10px;
+    font-size: 20px;
+    margin-bottom: 20px;
   }
+`;
+const PutMoneyButton = styled.div`
+  width: 100%;
+  display: flex;
 `;
 
 const PutAddress = styled.div`
@@ -544,9 +571,12 @@ const shine = keyframes`
 `;
 
 const Button = styled.button`
-  margin: 10px 0px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: ${(props) => (props.size ? props.size : '30%')};
-  height: 25px;
+  height: 30px;
   background: ${(props) => props.theme.colors.gradientMintToPurple};
   border-radius: 5px;
   border: none;
@@ -566,4 +596,16 @@ const Button = styled.button`
     color: ${(props) => props.theme.colors.pointGray};
     cursor: not-allowed;
   }
+`;
+
+const StyledLink = styled(Link)`
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  padding: 5px 10px 5px 10px;
+  color: ${(props) => props.theme.colors.mainBlack};
+  background-color: ${(props) => props.theme.colors.subMint};
+  border-radius: 5px;
+  font-weight: bold;
+  margin-bottom: 10px;
 `;

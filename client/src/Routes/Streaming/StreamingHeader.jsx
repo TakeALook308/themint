@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { categories } from '../../utils/constants/constant';
 import { doCopy } from './TextCopy';
 import { BiLink } from 'react-icons/bi';
 import { BsDoorOpen, BsFileEarmarkText } from 'react-icons/bs';
-import { AiOutlineBell } from 'react-icons/ai';
+import Notification from '../../components/Notification/Notification';
 function StreamingHeader({ auctionInfo, countSub }) {
   const navigate = useNavigate();
   const url = useLocation().pathname;
@@ -29,7 +29,7 @@ function StreamingHeader({ auctionInfo, countSub }) {
               <span>링크 복사</span>
             </li>
             <li>
-              <AiOutlineBell size={25}></AiOutlineBell>
+              <Notification />
               <span>알림</span>
             </li>
             <li>

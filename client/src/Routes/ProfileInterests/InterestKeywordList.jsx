@@ -25,7 +25,6 @@ function InterestKeywordList() {
       errorToast('이미 추가된 키워드입니다');
     });
     res.then(() => {
-      console.log(keyword_name);
       const getKeyword = async (url) => {
         const response = await instance.get(url);
         return response;
@@ -39,7 +38,6 @@ function InterestKeywordList() {
   // 키보드 엔터로 키워드 추가
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
-      console.log(e.key);
       onClick();
     }
   };
@@ -114,12 +112,11 @@ const AddKeyword = styled.div`
 `;
 
 const InputBoxContainer = styled.div`
-  width: 30%;
+  width: 32%;
   margin-bottom: 30px;
   margin-right: 30px;
   > input {
     background-color: ${(props) => props.theme.colors.pointBlack};
-    padding-left: 15px;
     border-radius: 5px;
     border: none;
     width: 100%;
@@ -127,6 +124,7 @@ const InputBoxContainer = styled.div`
     font-size: 20px;
     outline: none;
     color: ${(props) => props.theme.colors.white};
+    padding-left: 15px;
   }
 `;
 

@@ -1,41 +1,47 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { keywordState, loggedinState, myInformationState } from '../../../atoms';
+import { keywordState, loggedinState, myInformationState, notificationState } from '../../../atoms';
 import Logo from '../../common/Logo';
 import SubMenu from './SubMenu';
 import { HiSearch, HiOutlineChat } from 'react-icons/hi';
 import { AiOutlineUser } from 'react-icons/ai';
-import NotificationComponent from './NotificationComponent';
-import NotificationList from '../../common/NotificationList';
+import Notification from '../../Notification/Notification';
+import { useEffect } from 'react';
 
-function NavigationBar({ toggleNotification, setToggleNotifiaction }) {
+function NavigationBar() {
   const loggedin = useRecoilValue(loggedinState);
   const myInformation = useRecoilValue(myInformationState);
   const [keyword, setKeyword] = useRecoilState(keywordState);
+  const [key, setKey] = useState('');
   const location = useLocation();
-  const onChangeSearch = (e) => {
-    e.preventDefault();
-    setKeyword({ ...keyword, keyword: e.target.value });
-  };
+  const [searchParams] = useSearchParams();
 
   const navigate = useNavigate();
-  const onClick = () => {
-    navigate({
-      pathname: '/search',
-      search: `?type=${keyword.type}&keyword=${keyword.keyword}`,
-    });
-  };
 
   const onSubmit = (e) => {
     e.preventDefault();
+    let word = key.trim();
+    if (!word) return;
+    setKey(word);
+    setKeyword((prev) => ({ ...prev, keyword: word }));
     navigate({
       pathname: '/search',
-      search: `?type=${keyword.type}&keyword=${keyword.keyword}`,
+      search: `?type=${keyword.type}&keyword=${word}`,
     });
   };
+
+  const searchParameter = searchParams.get('keyword');
+  useEffect(() => {
+    if (location.pathname === '/search') {
+      const word = searchParams.get('keyword');
+      setKey(word);
+    } else {
+      setKey('');
+    }
+  }, [searchParameter]);
 
   if (
     location.pathname.startsWith('/streamings') ||
@@ -51,13 +57,15 @@ function NavigationBar({ toggleNotification, setToggleNotifiaction }) {
         <Logo />
         <NavList>
           <NavSearch onSubmit={onSubmit}>
-            <HiSearch type="submit" aria-label="search" onClick={onClick} />
+            <Button type="submit" aria-label="search">
+              <HiSearch />
+            </Button>
             <SearchBox
               type="text"
-              value={keyword.keyword}
+              value={key}
               placeholder="검색하기"
               inputProps={{ 'aria-label': '검색하기' }}
-              onChange={onChangeSearch}
+              onChange={(e) => setKey(e.target.value)}
             />
           </NavSearch>
           <NavItemText>
@@ -74,13 +82,7 @@ function NavigationBar({ toggleNotification, setToggleNotifiaction }) {
                 <Link to="/talks">
                   <HiOutlineChat size={25} />
                 </Link>
-                <NotiContainer>
-                  <NotificationComponent
-                    toggleNotification={toggleNotification}
-                    setShow={setToggleNotifiaction}
-                  />
-                  {toggleNotification && <NotificationList setShow={setToggleNotifiaction} />}
-                </NotiContainer>
+                <Notification />
                 <SubContainer to={`profile/${myInformation.memberSeq}`}>
                   <AiOutlineUser size={25} />
                   <NavbarDropdownContent>
@@ -108,6 +110,14 @@ function NavigationBar({ toggleNotification, setToggleNotifiaction }) {
 }
 
 export default NavigationBar;
+
+const Button = styled.button`
+  border: none;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  color: ${(props) => props.theme.colors.white};
+`;
 
 const Container = styled.header`
   max-width: 100%;

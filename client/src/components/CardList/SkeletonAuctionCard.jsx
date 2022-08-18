@@ -48,7 +48,7 @@ const ShineBox = styled.div`
 const CardContainer = styled(ShineBox)`
   position: relative;
   width: 100%;
-  border-radius: 5px;
+  border-radius: 15px;
   overflow: hidden;
   > div {
     width: 100%;

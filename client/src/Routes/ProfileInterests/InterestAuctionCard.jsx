@@ -6,7 +6,6 @@ import { ImCross } from 'react-icons/im';
 function InterestAuctionCard({ auction, func }) {
   const [auctionTime, setAuctionTime] = useState({ moreThenOneDay: false, time: '' });
 
-  console.log(auction);
   const CalculateTime = () => {
     const auctionStartTime = new Date(auction?.startTime);
     const today = new Date();
