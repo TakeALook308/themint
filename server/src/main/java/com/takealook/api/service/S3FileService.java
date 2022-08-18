@@ -32,9 +32,7 @@ public class S3FileService {
     public String uploadProfileImage(MultipartFile multipartFile, Long memberSeq) throws Exception {
         String originalName = createFileName(multipartFile.getOriginalFilename()); // 파일 이름
         long size = multipartFile.getSize(); // 파일 크기
-        System.out.println(originalName);
         String extension = originalName.substring(originalName.lastIndexOf("."));
-        System.out.println(extension);
         if (!(extension.equals(".jpeg") || extension.equals(".JPEG") || extension.equals(".jpg")|| extension.equals(".JPG") || extension.equals(".png") || extension.equals(".PNG"))) {
             return "fail";
         }
@@ -58,6 +56,7 @@ public class S3FileService {
 
         for(MultipartFile multipartFile: multipartFileList) {
             String originalName = createFileName(multipartFile.getOriginalFilename()); // 파일 이름
+
             long size = multipartFile.getSize(); // 파일 크기
 
             ObjectMetadata objectMetaData = new ObjectMetadata();
