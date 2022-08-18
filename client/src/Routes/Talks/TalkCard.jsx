@@ -5,14 +5,11 @@ import Stomp from 'stompjs';
 import styled from 'styled-components';
 import { fetchData } from '../../utils/apis/api';
 import { socketApis } from '../../utils/apis/socketApis';
-
-let sock;
-let client;
-
 function TalkCard({ roomInformation }) {
   const [chatList, setChatList] = useState([]);
+  const [sock, setSock] = useState();
+  const [client, setClient] = useState();
   const { roomId } = useParams();
-
   useEffect(() => {
     (async () => {
       const body = { roomId: roomInformation?.roomId };
@@ -26,11 +23,13 @@ function TalkCard({ roomInformation }) {
   }, []);
 
   useEffect(() => {
-    sock = new SockJS('https://i7a308.p.ssafy.io/api/ws-stomp');
-    client = Stomp.over(sock);
-    client.debug = null;
-    client.connect({}, () => {
-      client.subscribe(
+    let socket = new SockJS('https://i7a308.p.ssafy.io/api/ws-stomp');
+    let newClient = Stomp.over(socket);
+    setSock(socket);
+    setClient(newClient);
+    newClient.debug = null;
+    newClient.connect({}, () => {
+      newClient.subscribe(
         '/sub/chat/room/' + roomInformation.roomId,
         function (message) {
           const messagedto = JSON.parse(message.body);
@@ -38,8 +37,10 @@ function TalkCard({ roomInformation }) {
         },
         (err) => {},
       );
-      return () => client.disconnect();
     });
+    return () => {
+      newClient.disconnect();
+    };
   }, []);
 
   return (

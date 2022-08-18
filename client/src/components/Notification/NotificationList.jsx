@@ -15,7 +15,6 @@ function NotificationList({ setShow }) {
     localStorage.setItem(`notificationList/${myInformation.memberId}`, JSON.stringify(list));
     setNotificationList(list);
   };
-
   return (
     <Modal
       onClick={(e) => {
@@ -35,7 +34,7 @@ function NotificationList({ setShow }) {
           {notification.type === 2 && (
             <>
               <NotificationButton
-                to={`talks/${notification.roomId}`}
+                to={`/talks/${notification.roomId}`}
                 onClick={() => setShow(false)}>
                 <p>{notification.senderNickname}님의 메시지 🔔</p>
                 <p>{notification.previewMsg}</p>

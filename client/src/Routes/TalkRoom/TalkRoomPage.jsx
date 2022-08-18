@@ -9,13 +9,16 @@ import { fetchData } from '../../utils/apis/api';
 import { socketApis } from '../../utils/apis/socketApis';
 import { IoIosSend } from 'react-icons/io';
 
-let sock;
-let client;
 function TalkRoomPage() {
   const myInformation = useRecoilValue(myInformationState);
   const [chatList, setChatList] = useState([]);
   const [chat, setChat] = useState('');
   const { roomId } = useParams();
+  const [sock, setSock] = useState();
+  const [client, setClient] = useState();
+
+  // let sock;
+  // let client;
   useEffect(() => {
     (async () => {
       const body = { roomId };
@@ -29,20 +32,27 @@ function TalkRoomPage() {
   }, [roomId]);
 
   useEffect(() => {
-    sock = new SockJS('https://i7a308.p.ssafy.io/api/ws-stomp');
-    client = Stomp.over(sock);
-    client.debug = null;
-    client.connect({}, () => {
-      client.subscribe(
+    let socket = new SockJS('https://i7a308.p.ssafy.io/api/ws-stomp');
+    let newClient = Stomp.over(socket);
+    setSock(socket);
+    setClient(newClient);
+    newClient.debug = null;
+    newClient.connect({}, () => {
+      newClient.subscribe(
         '/sub/chat/room/' + roomId,
         function (message) {
           const messagedto = JSON.parse(message.body);
-          setChatList((prev) => [...prev, messagedto]);
+          console.log(roomId === messagedto.roomId, roomId, messagedto.roomId);
+          if (roomId === messagedto.roomId) {
+            setChatList((prev) => [...prev, messagedto]);
+          }
         },
         (err) => {},
       );
-      return () => client.disconnect();
     });
+    return () => {
+      newClient.disconnect();
+    };
   }, [roomId]);
 
   const onSubmit = (e) => {
@@ -54,7 +64,7 @@ function TalkRoomPage() {
   };
 
   const sendMessage = (msg) => {
-    client.send(
+    client?.send(
       `/pub/chat/message`,
       {},
       JSON.stringify({
