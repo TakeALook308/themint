@@ -72,7 +72,7 @@
 
 #### Back-end
 
-| ![spring-boot](/uploads/b45a7802ea5c3fb2e40a706f8d36c926/spring-boot.png) | ![spring-security](/uploads/4f4ba1e398891b559b5b18adb702b225/spring-security.png) | ![gradle](/uploads/b6db789ff4f01c74eb8ab6f5d2c7ad4f/gradle.png) | ![Hibernate.svg](/uploads/d98355305f6b31e28353f31230ca6a85/Hibernate.svg) |
+|![SpringBott](/uploads/c8454351028ea4c41240abd8ae2251cd/SpringBott.png)| ![SpringSecurity](/uploads/ef8003e8c604df50d025c5c6543991f3/SpringSecurity.png) | ![gradle](/uploads/b6db789ff4f01c74eb8ab6f5d2c7ad4f/gradle.png) | ![Hibernate.svg](/uploads/d98355305f6b31e28353f31230ca6a85/Hibernate.svg) |
 | ------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------- |
 | Spring-Boot                                                               | Spring-Security                                                                   | Gradle                                                          | Hibernate                                                                 |
 
@@ -109,11 +109,11 @@
 
 ![ERD.PNG](/uploads/061557c0488fdf06b22a7fcf7b5a14ef/ERD.PNG.png)
 
-- WireFrame
-
 - 기능정의서
 
-![기능정의서](/uploads/94527793415fbc02aa2abce9f8f452a4/기능정의서.gif)
+- [기능정의서 보러가기 Click! 👈](https://docs.google.com/spreadsheets/d/1WtOWWiyUnZTOgblfpiHKq-SvshetPCISSpeZM4McLiA/edit#gid=976917220)
+
+
 
 ## 🎥UCC 영상
 
