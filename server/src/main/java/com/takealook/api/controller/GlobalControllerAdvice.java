@@ -1,7 +1,10 @@
 package com.takealook.api.controller;
 
+import com.takealook.common.exception.auction.AuctionDeleteFailException;
 import com.takealook.common.exception.auction.AuctionNotFoundException;
+import com.takealook.common.exception.auction.AuctionUpdateFailException;
 import com.takealook.common.exception.code.ErrorCode;
+import com.takealook.common.exception.history.HistoryNotFoundException;
 import com.takealook.common.exception.interest.InterestDuplicateException;
 import com.takealook.common.exception.member.*;
 import com.takealook.common.exception.product.ProductNotFoundException;
@@ -35,6 +38,20 @@ public class GlobalControllerAdvice {
     @ExceptionHandler(AuctionNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleAuctionNotFoundException(AuctionNotFoundException e){
         log.error("handleAuctionNotFoundException", e);
+        ErrorResponse response = new ErrorResponse(e.getErrorCode());
+        return new ResponseEntity<>(response, HttpStatus.valueOf(e.getErrorCode().getStatus()));
+    }
+
+    @ExceptionHandler(AuctionDeleteFailException.class)
+    public ResponseEntity<ErrorResponse> handleAuctionDeleteFailException(AuctionDeleteFailException e){
+        log.error("handleAuctionDeleteFailException", e);
+        ErrorResponse response = new ErrorResponse(e.getErrorCode());
+        return new ResponseEntity<>(response, HttpStatus.valueOf(e.getErrorCode().getStatus()));
+    }
+
+    @ExceptionHandler(AuctionUpdateFailException.class)
+    public ResponseEntity<ErrorResponse> handleAuctionUpdateFailException(AuctionUpdateFailException e){
+        log.error("handleAuctionUpdateFailException", e);
         ErrorResponse response = new ErrorResponse(e.getErrorCode());
         return new ResponseEntity<>(response, HttpStatus.valueOf(e.getErrorCode().getStatus()));
     }
@@ -76,10 +93,17 @@ public class GlobalControllerAdvice {
         return new ResponseEntity<>(response, HttpStatus.valueOf(e.getErrorCode().getStatus()));
     }
 
-    // 판매내역, 구매내역
     @ExceptionHandler(MemberNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleMemberNotFoundException(MemberNotFoundException e){
         log.error("handleMemberNotFoundException", e);
+        ErrorResponse response = new ErrorResponse(e.getErrorCode());
+        return new ResponseEntity<>(response, HttpStatus.valueOf(e.getErrorCode().getStatus()));
+    }
+
+    // 판매내역, 구매내역
+    @ExceptionHandler(HistoryNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleHistoryNotFoundException(HistoryNotFoundException e){
+        log.error("handleHistoryNotFoundException", e);
         ErrorResponse response = new ErrorResponse(e.getErrorCode());
         return new ResponseEntity<>(response, HttpStatus.valueOf(e.getErrorCode().getStatus()));
     }
