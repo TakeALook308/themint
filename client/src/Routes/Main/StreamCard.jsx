@@ -1,26 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import GradientButton from '../../components/ButtonList/GradientButton';
 
 function StreamCard({ auction }) {
-  const auctions = {
-    seq: 1,
-    memberSeq: 1,
-    title: '닌텐도 스위치 이것만 있으면 그냥 인생은 끝장난거 입니다.',
-    content:
-      '닌텐도 스위치 새로 나온 기종 지금 당장 구매하신다면 포켄몬 껴 드립니다.이게 글이 자꾸 늘어지다가 범위를 초과하면 알아서 없어져야 하는데과연 어디까지 글씨가 나오다가 사라질까요 알아맞춰 보세요 딩동댕동 삐뽀삐뽀삐!',
-    startTime: 'Thu Jul 28 2022 09:00:00 GMT+0900 ',
-    auctionImage: {
-      seq: 1,
-      imageUrl: 'https://images.gnwcdn.com/2022/articles/2022-07-01-15-35/hero_top_sp.jpg',
-    },
+  const navigate = useNavigate();
+  const onClick = () => {
+    navigate(`/streamings/${auction.hash}`);
   };
-  const profiles = {
-    nickName: '닉네임',
-    profileUrl:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiiGVRNg8egZNHf7d7-jeEA3JKgNTkStDZPQ&usqp=CAU',
-  };
-
   return (
     <Container>
       <Wrapper>
@@ -28,8 +15,8 @@ function StreamCard({ auction }) {
           <StyledImg
             src={process.env.REACT_APP_IMAGE_URL + auction.auctionImage?.imageUrl}
             alt={`${auction.title} 썸네일`}
-            width="400"
-            height="300"
+            width="200"
+            height="200"
           />
         </ImgContainer>
         <AuctionInfoContainer>
@@ -50,13 +37,11 @@ function StreamCard({ auction }) {
               </StreamProfile>
               <p>{auction.nickname}</p>
             </ProfileCard>
-            <p>{auctions.content}</p>
+            <p>{auction.content}</p>
           </AuctionText>
-          <Move to={`/streamings/${auction.hash}`}>
-            <StreamGo>
-              <p>경매참여</p>
-            </StreamGo>
-          </Move>
+          <ButtonContainer>
+            <GradientButton text={'경매참여'} size={'100px'} type={'button'} onClick={onClick} />
+          </ButtonContainer>
         </AuctionInfoContainer>
       </Wrapper>
     </Container>
@@ -71,36 +56,40 @@ const Container = styled.div`
   height: 0;
   padding-top: 65%;
   overflow: hidden;
-  background-color: ${(props) => props.theme.colors.mainBlack};
+  border-radius: 15px;
+  box-shadow: 20px 30px 4px rgba(0, 0, 0, 0.25);
+  margin-bottom: 2rem;
 `;
 
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
   position: absolute;
-  border-radius: 5px;
+  border-radius: 15px;
   left: 0;
   top: 0;
   display: flex;
   flex-direction: row;
-  border-radius: 10px;
-  background-color: ${(props) => props.theme.colors.mainBlack};
+  background-color: ${(props) => props.theme.colors.subBlack};
 `;
 
 const ImgContainer = styled.div`
   width: 65%;
+  border-radius: 15px 0 0 15px;
 `;
 
 const StyledImg = styled.img`
   width: 100%;
   height: 100%;
-  border-radius: 5px 0 0 5px;
+  border-radius: 15px 0 0 15px;
+  object-fit: cover !important;
 `;
 
 const AuctionInfoContainer = styled.div`
   width: 35%;
-  background-color: ${(props) => props.theme.colors.mainBlack};
+  background: linear-gradient(270.38deg, #000000 2.06%, rgba(29, 29, 29, 0) 100%);
   text-align: left;
+  border-radius: 0 15px 15px 0;
 `;
 
 const AuctionText = styled.div`
@@ -119,13 +108,13 @@ const AuctionText = styled.div`
   > p {
     font-size: ${(props) => props.theme.fontSizes.p};
     line-height: 20px;
-    overflow: hidden;
-    height: 50%;
-    white-space: wrap;
-    text-overflow: ellipsis;
-    word-wrap: break-word;
-    display: block;
+    width: 100%;
     display: -webkit-box;
+    word-wrap: break-word;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 `;
 
@@ -140,17 +129,24 @@ const ProfileCard = styled.div`
     font-size: 12px;
     margin-left: 10px;
   }
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    > p {
+      margin-left: 0;
+    }
+  }
 `;
 
 const StreamProfile = styled.div`
   width: 30px;
-  border: 2px solid transparent;
+  height: 30px;
   overflow: hidden;
   border-radius: 50%;
-  background-image: ${(props) =>
-    `linear-gradient(#fff, #fff), linear-gradient(to right, ${props.theme.colors.mainMint} 0%, ${props.theme.colors.subMint} 100%)`};
-  background-origin: border-box;
-  background-clip: content-box, border-box;
+  background-color: ${(props) => props.theme.colors.mainBlack};
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+
   > picture {
     position: relative;
     height: 100%;
@@ -162,23 +158,9 @@ const StreamProfile = styled.div`
   }
 `;
 
-const StreamGo = styled.div`
-  width: 50%;
-  height: fit-content;
-  margin: 0 auto;
-  background-color: ${(props) => props.theme.colors.mainBlack};
-  border: 2px solid ${(props) => props.theme.colors.subMint};
-  color: ${(props) => props.theme.colors.subMint};
-  border-radius: 5px;
-  text-align: center;
+const ButtonContainer = styled.div`
   display: flex;
-  align-items: center;
   justify-content: center;
-`;
-
-const Move = styled(Link)`
-  height: 20%;
-  display: flex;
   align-items: center;
-  justify-content: center;
+  height: 25%;
 `;

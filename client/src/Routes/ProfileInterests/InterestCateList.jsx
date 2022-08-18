@@ -4,6 +4,7 @@ import { instance } from '../../utils/apis/api';
 import InterestCateCard from './InterestCateCard';
 import { categories } from '../../utils/constants/constant';
 import GradientButton from '../../components/ButtonList/GradientButton';
+import { errorToast } from '../../lib/toast';
 
 function InterestCateList() {
   // 관심 카테고리 조회 API
@@ -30,6 +31,9 @@ function InterestCateList() {
       return response;
     };
     const res = addInterestCategory(`/api/interest/category/${cateSeq}`);
+    res.catch((error) => {
+      errorToast('이미 추가된 카테고리입니다');
+    });
     res.then(() => {
       const getCateList = async (url) => {
         const response = await instance.get(url);
@@ -72,7 +76,7 @@ function InterestCateList() {
             </option>
           ))}
         </select>
-        <GradientButton text={'카테고리 추가'} onClick={onClick} />
+        <GradientButton text={'카테고리 추가'} onClick={onClick} size="60%" />
       </SelectContainer>
       <CardContainer>
         {showCateList.map((keyword, i) => (
@@ -90,16 +94,28 @@ const Container = styled.div`
 
 const SelectContainer = styled.div`
   display: flex;
-  width: 80%;
+  width: 47%;
   margin-bottom: 30px;
   > select {
-    margin-right: 10px;
+    margin-right: 20px;
     width: 100%;
+    background-color: ${(props) => props.theme.colors.pointBlack};
+    border-radius: 5px;
+    border: none;
+    outline: none;
+    color: ${(props) => props.theme.colors.white};
+    width: 80%;
+    height: 40px;
+    font-size: 20px;
+    text-align: center;
+    > option {
+      border-radius: 5px;
+    }
   }
 `;
 
 const CardContainer = styled.main`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   grid-gap: 3rem;
 `;

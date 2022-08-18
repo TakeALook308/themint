@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import InterestKeyWordCard from './InterestKeyWordCard';
 import ActiveInputBox from '../../components/common/ActiveInputBox';
 import GradientButton from '../../components/ButtonList/GradientButton';
+import { errorToast } from '../../lib/toast';
 
 function InterestKeywordList() {
   const [addKeyword, setAddKeyword] = useState('');
@@ -15,14 +16,15 @@ function InterestKeywordList() {
   // 키워드 추가
   const onClick = () => {
     const keyword_name = addKeyword;
-    console.log(keyword_name);
     const addInterest = async (url) => {
       const response = await instance.post(url);
       return response;
     };
     const res = addInterest(`/api/interest/keyword/${keyword_name}`);
+    res.catch((error) => {
+      errorToast('이미 추가된 키워드입니다');
+    });
     res.then(() => {
-      console.log(keyword_name);
       const getKeyword = async (url) => {
         const response = await instance.get(url);
         return response;
@@ -32,6 +34,12 @@ function InterestKeywordList() {
         setShowKeyword(keywords.data.interestKeywordList);
       });
     });
+  };
+  // 키보드 엔터로 키워드 추가
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      onClick();
+    }
   };
   // 키워드 삭제 API
   const [deleteword, setDeleteword] = useState('');
@@ -68,11 +76,12 @@ function InterestKeywordList() {
     <Container>
       <AddKeyword>
         <InputBoxContainer>
-          <ActiveInputBox
+          <input
             name="InterestWord"
             type="text"
             placeholder="키워드를 추가하려면 입력하세요"
             onChange={onChange}
+            onKeyPress={handleKeyPress}
           />
         </InputBoxContainer>
         <ButtonContainer>
@@ -103,9 +112,20 @@ const AddKeyword = styled.div`
 `;
 
 const InputBoxContainer = styled.div`
-  width: 30%;
+  width: 32%;
   margin-bottom: 30px;
   margin-right: 30px;
+  > input {
+    background-color: ${(props) => props.theme.colors.pointBlack};
+    border-radius: 5px;
+    border: none;
+    width: 100%;
+    height: 40px;
+    font-size: 20px;
+    outline: none;
+    color: ${(props) => props.theme.colors.white};
+    padding-left: 15px;
+  }
 `;
 
 const ButtonContainer = styled.div`

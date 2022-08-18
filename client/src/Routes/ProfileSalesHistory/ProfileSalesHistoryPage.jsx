@@ -6,6 +6,7 @@ import SkeletonAuctionCard from '../../components/CardList/SkeletonAuctionCard';
 import IsSellingCard from './IsSellingCard';
 import axios from 'axios';
 import Modal from '../../components/common/Modal';
+import { Link } from 'react-router-dom';
 
 // 판매중. 판매완료 구분 미해결
 function ProfileSalesHistoryPage({ params }) {
@@ -37,9 +38,9 @@ function ProfileSalesHistoryPage({ params }) {
     res.then((itemDetail) => {
       setSalesDetail(itemDetail.data); // 상세보기 내용을 salesDetail에 저장
     });
+    onChange({ target: { name: 'productSeq', value: auction.productSeq } });
     setIsModal((prev) => !prev);
     setSalesDetail([]);
-    onChange({ target: { name: 'productSeq', value: auction.productSeq } });
   };
 
   // 송장번호 입력& PATCH 요청을 위한 getTrackingNo
@@ -77,9 +78,12 @@ function ProfileSalesHistoryPage({ params }) {
       const response = await instance.patch(url, data);
       return response;
     };
-    console.log(getTrackingNo);
-    // const res = patchTrackingNo(`/api/delivery/trackingno`, getTrackingNo);
-    // res.then(() => {});
+
+    const res = patchTrackingNo(`/api/delivery/trackingno`, getTrackingNo);
+    res.then(() => {
+      setIsModal((prev) => !prev);
+      setGetTrackingNo({});
+    });
   };
   return (
     <Container>
@@ -101,7 +105,7 @@ function ProfileSalesHistoryPage({ params }) {
       </ButtonNav>
       <InfiniteAuctionList
         getUrl={getUrl(params, 9)}
-        queryKey={[`${params}${active}`]}
+        queryKey={[`${params}${active}${isModal}`]}
         CardComponent={IsSellingCard}
         SkeltonCardComponent={SkeletonAuctionCard}
         text={'판매 내역이 없습니다'}
@@ -110,14 +114,26 @@ function ProfileSalesHistoryPage({ params }) {
       />
       <Modal open={isModal} close={ModalHandler} title="상품 관리">
         <ModalProfile>
-          <img src={process.env.REACT_APP_IMAGE_URL + salesDetail.profileUrl} alt="프로필이미지" />
+          <picture>
+            <img
+              src={process.env.REACT_APP_IMAGE_URL + salesDetail.profileUrl}
+              alt="프로필이미지"
+            />
+          </picture>
           <p>{salesDetail.nickname}</p>
         </ModalProfile>
         <ModalMain>
-          <p>입금자명 : {salesDetail.remitName}</p>
+          <p>
+            입금자명 : {salesDetail.remitName}
+            <StyledLink to={`/auctions/${salesDetail?.hash}`}>제품 정보 상세보기</StyledLink>
+          </p>
           <p>입금자 전화번호: {salesDetail.phone}</p>
-          <p>구매자 배송지: {salesDetail.address}</p>
-          <p>상세 배송지: {salesDetail.addressDetail}</p>
+          <hr />
+          <h3>구매자 배송지 </h3>
+          <p>우편번호: {salesDetail.zipCode}</p>
+          <p>
+            {salesDetail.address} {salesDetail.addressDetail}
+          </p>
           <select onChange={onChange} name="parcelCompanyCode" value={parcelCompanyCode}>
             <option value="none" hidden>
               택배 회사 선택
@@ -134,7 +150,7 @@ function ProfileSalesHistoryPage({ params }) {
             onChange={onChange}
             name="trackingNo"
             value={trackingNo}></input>
-          <button onClick={onClick}>송장번호 저장</button>
+          <Plus onClick={onClick}>송장번호 저장</Plus>
         </ModalMain>
       </Modal>
     </Container>
@@ -195,12 +211,22 @@ const ModalProfile = styled.div`
   justify-content: flex-start;
   align-items: center;
   margin-bottom: 20px;
-  > img {
+  > picture {
     width: 20%;
     height: 100%;
     border-radius: 50%;
     margin-right: 20px;
+    border: 2px solid ${(props) => props.theme.colors.subMint};
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    > img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+    }
   }
+
   > p {
     font-size: 24px;
     font-weight: bold;
@@ -209,7 +235,6 @@ const ModalProfile = styled.div`
 
 const ModalMain = styled.main`
   width: 100%;
-  height: 200px;
   > p {
     margin-bottom: 15px;
   }
@@ -226,6 +251,32 @@ const ModalMain = styled.main`
   > button {
     padding: 5px;
   }
+  > h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
 `;
 
-const IsSellingContainer = styled.div``;
+const Plus = styled.button`
+  border-radius: 5px;
+  padding: 5px;
+  background-color: ${(props) => props.theme.colors.mainBlack};
+  color: ${(props) => props.theme.colors.subMint};
+  border: 1px solid ${(props) => props.theme.colors.subMint};
+
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+const StyledLink = styled(Link)`
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  padding: 5px 10px 5px 10px;
+  color: ${(props) => props.theme.colors.mainBlack};
+  background-color: ${(props) => props.theme.colors.subMint};
+  border-radius: 5px;
+  font-weight: bold;
+  margin-bottom: 10px;
+`;

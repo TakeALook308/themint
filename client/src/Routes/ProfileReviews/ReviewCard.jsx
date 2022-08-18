@@ -6,22 +6,16 @@ import { Link } from 'react-router-dom';
 function ReviewCard({ review }) {
   return (
     <Wrapper>
-      <ProfileImgContainer>
-        <ProfileImg>
-          <div>
-            <Link to={`/profile/${review.writerSeq}`}>
-              <picture>
-                <img
-                  src={process.env.REACT_APP_IMAGE_URL + review.writerProfileUrl}
-                  alt="유저 프로필"
-                  width="168"
-                  height="168"
-                />
-              </picture>
-            </Link>
-          </div>
-        </ProfileImg>
-      </ProfileImgContainer>
+      <Link to={`/profile/${review.writerSeq}`}>
+        <ProfileImgContainer>
+          <img
+            src={process.env.REACT_APP_IMAGE_URL + review.writerProfileUrl}
+            alt="유저 프로필"
+            width="168"
+            height="168"
+          />
+        </ProfileImgContainer>
+      </Link>
       <ReviewArticle>
         <ReviewHeader>
           <Link to={`/profile/${review.writerSeq}`}>{review.writerNickname}</Link>
@@ -39,9 +33,8 @@ export default ReviewCard;
 
 const Wrapper = styled.main`
   width: 100%;
-  height: 165px;
+  height: 160px;
   display: flex;
-  align-items: center;
   background-color: ${(props) => props.theme.colors.subBlack};
   padding: 30px;
   border-radius: 10px;
@@ -49,37 +42,19 @@ const Wrapper = styled.main`
 `;
 
 const ProfileImgContainer = styled.div`
-  width: 10%;
-  height: 70%;
-`;
-
-const ProfileImg = styled.main`
   display: flex;
-  width: 100%;
+  align-items: center;
+  width: 96px;
   height: 100%;
-  border: 2px solid transparent;
+  margin: auto;
   overflow: hidden;
   border-radius: 50%;
-  background-image: ${(props) =>
-    `linear-gradient(#fff, #fff), linear-gradient(to right, ${props.theme.colors.mainMint} 0%, ${props.theme.colors.subMint} 100%)`};
-  background-origin: border-box;
-  background-clip: content-box, border-box;
-  > div {
-    position: relative;
+  border: 2px solid ${(props) => props.theme.colors.subMint};
+  > img {
+    object-fit: scale-down;
+    display: block;
     width: 100%;
     height: 100%;
-    padding-top: 100%;
-    picture {
-      position: absolute;
-      left: 0;
-      top: 0;
-      height: 100%;
-      width: 100%;
-      img {
-        width: 100%;
-        height: 100%;
-      }
-    }
   }
 `;
 
@@ -104,15 +79,8 @@ const ReviewHeader = styled.header`
   }
 `;
 
-const ReviewText = styled.div`
-  width: 100%;
-  height: 60%;
-  overflow: hidden;
-  line-height: 30px;
-`;
-
 const StarContainer = styled.div`
   position: absolute;
   top: 0px;
-  left: 80px;
+  left: 25%;
 `;

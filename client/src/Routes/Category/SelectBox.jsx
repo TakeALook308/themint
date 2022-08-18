@@ -19,8 +19,6 @@ const Dropdown = ({ getSortKey }) => {
   }, []);
 
   const onSelectItem = (e) => {
-    console.log(e.target.id);
-    console.log(e.target.innerText);
     setValue(e.target);
     setSortName(e.target.innerText);
 

@@ -44,7 +44,7 @@ function InfiniteAuctionList({
       },
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
-      refetchOnMount: false,
+      refetchOnMount: true,
       refetchInterval: 60 * 1000,
     },
   );
@@ -60,7 +60,7 @@ function InfiniteAuctionList({
   });
   return (
     <Container>
-      {data?.pages[0]?.data?.resultList.length < 1 && <p>{text}</p>}
+      {data?.pages[0]?.data?.resultList.length < 1 && <NotExist>{text}</NotExist>}
       {isLoading && <Loading />}
       {status === 'error' && <p>{error.message}</p>}
       {status === 'success' &&
@@ -90,6 +90,8 @@ const GridContainer = styled.div`
   grid-template-columns: ${(props) =>
     props.type === '프로필' ? 'repeat(4, 1fr)' : 'repeat(3, 1fr)'};
   grid-gap: 1rem;
+  margin-bottom: 1rem;
+  scroll-behavior: smooth;
   @media screen and (max-width: 768px) {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -101,4 +103,11 @@ const GridContainer = styled.div`
 const Container = styled.div`
   width: 100%;
   height: 100%;
+`;
+
+const NotExist = styled.p`
+  width: 100%;
+  text-align: center;
+  font-size: ${(props) => props.theme.fontSizes.h5};
+  font-weight: bold;
 `;

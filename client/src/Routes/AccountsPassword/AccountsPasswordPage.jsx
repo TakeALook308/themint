@@ -100,7 +100,7 @@ function AccountsPasswordPage() {
         </InputContainer>
 
         <InputContainer>
-          <label htmlFor="pwdCheck">새 비밀번호 확인</label>
+          <label htmlFor="pwdCheck">비밀번호 확인</label>
           <InputMessageContainer>
             <ActiveInputBox
               type="password"
@@ -136,6 +136,7 @@ const PasswordDescriptionContainer = styled.ul`
   color: ${(props) => props.theme.colors.pointRed};
   line-height: 1.7;
   list-style-type: disc;
+  list-style-position: inside;
 `;
 
 export const Form = styled.form`

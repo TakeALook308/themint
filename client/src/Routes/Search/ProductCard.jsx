@@ -1,10 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-function ProductCard({ auction, func }) {
-  // TODO: 데이터 교체하기
-  const [statusNum, setStatusNum] = useState(0);
+function ProductCard({ auction }) {
+  const auctionDate = new Date(auction?.startTime);
+
+  const year = auctionDate.getFullYear();
+  const month = String(auctionDate.getMonth() + 1).padStart(2, '0');
+  const date = String(auctionDate.getDate()).padStart(2, '0');
+  const hours = String(auctionDate.getHours()).padStart(2, '0');
+  const minutes = String(auctionDate.getMinutes()).padStart(2, '0');
   return (
     <CardContainer>
       <div>
@@ -20,9 +25,9 @@ function ProductCard({ auction, func }) {
             </picture>
             <AuctionInfoContainer>
               <div>
-                <h4>{auction.productName}</h4>
-                <p>{auction.startPrice}</p>
-                <AcutionTime>{auction.startTime}</AcutionTime>
+                <h3>{auction.productName}</h3>
+                <p>{auction.startPrice.toLocaleString()}원</p>
+                <AcutionTime>{`경매 시작: ${year}.${month}.${date} ${hours}:${minutes}`}</AcutionTime>
               </div>
             </AuctionInfoContainer>
           </div>
@@ -49,9 +54,10 @@ export default ProductCard;
 const CardContainer = styled.article`
   position: relative;
   width: 100%;
-  border-radius: 5px;
+  border-radius: 15px;
   overflow: hidden;
   transition: all 0.3s ease-in;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   &:hover {
     transform: scale(1.03);
   }
@@ -84,13 +90,9 @@ const CardContainer = styled.article`
         bottom: 20px;
         right: 5%;
         width: 15%;
-        border: 2px solid transparent;
         overflow: hidden;
         border-radius: 50%;
-        background-image: ${(props) =>
-          `linear-gradient(#fff, #fff), linear-gradient(to right, ${props.theme.colors.mainMint} 0%, ${props.theme.colors.subMint} 100%)`};
-        background-origin: border-box;
-        background-clip: content-box, border-box;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
         > div {
           position: relative;
           width: 100%;
@@ -124,7 +126,7 @@ const AuctionInfoContainer = styled.div`
   );
   left: 0;
   bottom: 0;
-  padding: 5%;
+  padding: 0.5rem 5%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -134,19 +136,19 @@ const AuctionInfoContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    h4 {
+    h3 {
       font-weight: bold;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      font-size: 20px;
+      font-size: ${(props) => props.theme.fontSizes.p};
+    }
+    p {
+      font-size: 12px;
     }
   }
 `;
 
 const AcutionTime = styled.p`
-  position: absolute;
-  right: 5%;
-  top: -5%;
   font-size: 12px;
 `;

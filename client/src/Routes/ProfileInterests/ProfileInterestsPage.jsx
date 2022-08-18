@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import InterestKeywordList from './InterestKeywordList';
-import { myInformationState } from '../../atoms';
-import { useRecoilValue } from 'recoil';
-import InterestAuctionList from './InterestAuctionList';
 import InterestCateList from './InterestCateList';
+import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
+import SkeletonAuctionCard from '../../components/CardList/SkeletonAuctionCard';
+import InterestAuctionCard from './InterestAuctionCard';
+import { instance } from '../../utils/apis/api';
+import { useLocation } from 'react-router-dom';
 
 function ProfileInterestsPage({ params }) {
+  const location = useLocation();
   const [active, setActive] = useState(1);
-  // 사용자와 프로필페이지 일치여부 확인
-  const myInformation = useRecoilValue(myInformationState);
-  const strMemberSeq = `${myInformation.memberSeq}`;
-
   const onKeyword = () => {
     setActive(1);
   };
@@ -22,6 +21,23 @@ function ProfileInterestsPage({ params }) {
 
   const onAuction = () => {
     setActive(3);
+  };
+  const [isDeleted, setIsDeleted] = useState(true);
+  const getUrl = (size) => {
+    return (page) => `/api/interest/auction?page=0&size=${size}`;
+  };
+
+  const deleteAuction = (auction) => {
+    const deleteInterest = async (url) => {
+      const response = await instance.delete(url);
+      return response;
+    };
+    const res = deleteInterest(`/api/interest/auction/${auction.hash}`);
+    res.then(() => {
+      setIsDeleted((prev) => {
+        setIsDeleted(!prev);
+      });
+    });
   };
   return (
     <Container>
@@ -48,13 +64,20 @@ function ProfileInterestsPage({ params }) {
           경매
         </StyledBtn>
       </ButtonNav>
-      {params === strMemberSeq && (
-        <InterestContainer>
-          {active === 1 && <InterestKeywordList />}
-          {active === 2 && <InterestCateList />}
-          {active === 3 && <InterestAuctionList />}
-        </InterestContainer>
-      )}
+      <InterestContainer>
+        {active === 1 && <InterestKeywordList active={active} />}
+        {active === 2 && <InterestCateList active={active} />}
+        {active === 3 && (
+          <InfiniteAuctionList
+            getUrl={getUrl(params, 9)}
+            queryKey={[`${isDeleted}${active}${location.pathname}${params}`]}
+            CardComponent={InterestAuctionCard}
+            SkeltonCardComponent={SkeletonAuctionCard}
+            text={'관심 경매 내역이 없습니다'}
+            func={deleteAuction}
+          />
+        )}
+      </InterestContainer>
     </Container>
   );
 }

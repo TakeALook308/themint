@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import styled, { css } from 'styled-components';
-import { NavLink, Route, Routes, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Container } from '../../style/common';
 import SkeletonAuctionCard from '../../components/CardList/SkeletonAuctionCard';
 import InfiniteAuctionList from '../../components/common/InfiniteAuctionList';
@@ -19,6 +19,7 @@ function SearchPage(props) {
   const key = searchParams.get('keyword');
   const type = searchParams.get('type');
   const navigate = useNavigate();
+
   const auctionSortKeys = [
     { value: 'startTime', name: '경매임박순' },
     { value: 'seq', name: '최신등록순' },
@@ -217,7 +218,7 @@ const SearchTabButton = styled.button`
     text-decoration: none;
   }
   &:hover {
-    color: ${(props) => props.theme.colors.mainMint};
+    color: ${(props) => props.theme.colors.subMint};
   }
   &:active {
     color: ${(props) => props.theme.colors.white};

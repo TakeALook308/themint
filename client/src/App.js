@@ -7,7 +7,7 @@ import { ToastContainer } from 'react-toastify';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { HelmetProvider } from 'react-helmet-async';
 import { useSetRecoilState } from 'recoil';
-import { myInformationState } from './atoms';
+import { myInformationState, notificationState } from './atoms';
 import { getCookie } from './utils/functions/cookies';
 import { fetchData } from './utils/apis/api';
 import { userApis } from './utils/apis/userApis';
@@ -17,7 +17,7 @@ function App() {
   const [queryClient] = useState(() => new QueryClient());
   const [loading, setLoading] = useState(false);
   const token = getCookie('accessToken');
-  const [toggleNotification, setToggleNotifiaction] = useState(false);
+  const setNotificationEnabled = useSetRecoilState(notificationState);
 
   useEffect(() => {
     (async () => {
@@ -38,7 +38,7 @@ function App() {
       <Suspense fullback={<h1>Loading...</h1>}>
         <Container
           onClick={(e) => {
-            setToggleNotifiaction(false);
+            setNotificationEnabled(false);
           }}>
           <ToastContainer
             position="top-center"
@@ -53,10 +53,7 @@ function App() {
           />
           {loading && (
             <QueryClientProvider client={queryClient}>
-              <Router
-                toggleNotification={toggleNotification}
-                setToggleNotifiaction={setToggleNotifiaction}
-              />
+              <Router />
               <ReactQueryDevtools initialIsOpen={false} />
             </QueryClientProvider>
           )}
@@ -69,6 +66,7 @@ function App() {
 export default App;
 
 const Container = styled.div`
+  scroll-behavior: smooth;
   margin-left: auto;
   margin-right: auto;
 `;

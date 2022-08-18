@@ -17,7 +17,7 @@ function Rating() {
 
   useEffect(() => {
     sendReview();
-  }, [clicked]); //컨디마 컨디업
+  }, [clicked]);
 
   const sendReview = () => {
     // 별점을 부모 컴포넌트에 넘겨주기

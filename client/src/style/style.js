@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 
 export const Container = styled.main`
+  max-width: 1024px;
+  margin: 0 auto;
   padding-top: 80px;
 `;
 
@@ -21,6 +23,7 @@ export const ActiveInput = styled.div`
     color: ${(props) => props.theme.colors.white};
     width: 100%;
     outline: none;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 
     &:focus ~ label,
     &:not(:placeholder-shown) ~ label {

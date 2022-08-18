@@ -35,7 +35,7 @@ const usePushNotification = () => {
       badge: 'https://s3-themint.s3.ap-northeast-2.amazonaws.com/member/basic5.png',
       icon: 'https://s3-themint.s3.ap-northeast-2.amazonaws.com/member/basic5.png',
       silent: false,
-      requireInteraction: true,
+      requireInteraction: false,
       ...options,
     };
 

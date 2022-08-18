@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 function AuctionCard({ auction }) {
   const [auctionTime, setAuctionTime] = useState({ moreThenOneDay: false, time: '' });
+  const [image, setImage] = useState('');
 
   const CalculateTime = () => {
     const auctionStartTime = new Date(auction?.startTime);
@@ -21,7 +22,7 @@ function AuctionCard({ auction }) {
       const miniute = makeTwoDigitNumber(auctionStartTime.getMinutes());
 
       setAuctionTime({
-        time: `${year}년 ${month}월 ${date}일 ${hour}시 ${miniute}분`,
+        time: `${year}.${month}.${date}. ${hour}:${miniute}`,
         moreThenOneDay: true,
       });
     } else if (diffHour >= 1) {
@@ -36,6 +37,7 @@ function AuctionCard({ auction }) {
   useEffect(() => {
     CalculateTime();
   }, []);
+
   return (
     <CardContainer>
       <div>
@@ -45,7 +47,7 @@ function AuctionCard({ auction }) {
               <img
                 src={process.env.REACT_APP_IMAGE_URL + auction?.auctionImage?.imageUrl}
                 loading="lazy"
-                alt="닌텐도 스위치"
+                alt={auction.title}
                 width="400"
                 height="300"
               />
@@ -54,7 +56,7 @@ function AuctionCard({ auction }) {
               <div>
                 <p>{auction?.title || auction?.productName}</p>
                 <AuctionTimeMessage time={auctionTime.moreThenOneDay}>
-                  경매시작: {auctionTime.time}
+                  {auction?.status === 1 ? '실시간 경매 진행 중' : `경매시작: ${auctionTime.time}`}
                 </AuctionTimeMessage>
               </div>
             </AuctionInfoContainer>
@@ -82,10 +84,12 @@ export default AuctionCard;
 const CardContainer = styled.article`
   position: relative;
   width: 100%;
-  border-radius: 5px;
+  border-radius: 15px;
   overflow: hidden;
   transition: all 0.3s ease-in;
   background-color: ${(props) => props.theme.colors.textGray};
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.75));
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.75);
 
   &:hover {
     transform: scale(1.03);
@@ -119,13 +123,9 @@ const CardContainer = styled.article`
         bottom: 20px;
         right: 5%;
         width: 15%;
-        border: 2px solid transparent;
         overflow: hidden;
         border-radius: 50%;
-        background-image: ${(props) =>
-          `linear-gradient(#fff, #fff), linear-gradient(to right, ${props.theme.colors.mainMint} 0%, ${props.theme.colors.subMint} 100%)`};
-        background-origin: border-box;
-        background-clip: content-box, border-box;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
         > div {
           position: relative;
           width: 100%;
@@ -136,10 +136,10 @@ const CardContainer = styled.article`
             top: 0;
             height: 100%;
             width: 100%;
-            background-color: ${(props) => props.theme.colors.textGray};
             img {
               width: 100%;
               height: 100%;
+              object-fit: contain;
             }
           }
         }
@@ -171,11 +171,16 @@ const AuctionInfoContainer = styled.div`
     flex-direction: column;
     justify-content: space-evenly;
     p {
-      font-weight: bold;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      font-size: ${(props) => props.theme.fontSizes.p};
+      &:first-child {
+        font-weight: bold;
+        font-size: ${(props) => props.theme.fontSizes.p};
+      }
+      &:last-child {
+        font-size: 12px;
+      }
     }
   }
 `;

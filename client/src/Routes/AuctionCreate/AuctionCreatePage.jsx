@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Container, Title } from '../../style/style';
 import { categories } from '../../utils/constants/constant';
@@ -10,21 +10,35 @@ import { auctionApis } from '../../utils/apis/auctionApis';
 import { postData } from '../../utils/apis/api';
 import { useNavigate } from 'react-router-dom';
 import GradientButton from '../../components/ButtonList/GradientButton';
+import { AiOutlineDownload, AiFillPlusCircle } from 'react-icons/ai';
+
 function AuctionCreatePage(props) {
   const navigate = useNavigate();
-  const onDrop = (acceptedFiles) => {
-    let temp = [...productList];
-    acceptedFiles.map((item) => temp.push(item));
-    setAuctionImageList(temp);
-  };
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { acceptedFiles, getRootProps, getInputProps, isDragActive } = useDropzone({
+    acceptedFiles: '.jpeg,.png,.gif',
+    maxFilesize: 5,
+  });
   const [auctionImageList, setAuctionImageList] = useState([]);
+  useEffect(() => {
+    let temp = [...auctionImageList];
+    acceptedFiles.map((item) => {
+      temp.push(item);
+    });
+    setAuctionImageList(temp);
+  }, [acceptedFiles]);
+
+  useEffect(() => {
+    handleImageUpload(auctionImageList);
+  }, [auctionImageList]);
+  // console.log(auctionImageList);
+
+  // const [auctionImageList, setAuctionImageList] = useState([]);
+  const d = new Date();
   const [inputAuction, setInputAuction] = useState({
     categorySeq: 1,
     title: '',
     content: '',
-    startTime: '',
+    startTime: new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, -1),
     productList: [],
   });
 
@@ -65,6 +79,7 @@ function AuctionCreatePage(props) {
       });
       setProductName('');
       setStartPrice('');
+      // scrollRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -79,10 +94,26 @@ function AuctionCreatePage(props) {
     setIsModal((prev) => !prev);
   };
 
-  // const reader = new FileReader();
-  // reader.onload = () =>
-  //   (document.querySelector('.img_box').style.backgrondImage = `url(${reader.result})`);
-  // reader.readAsDataURL(auctionImageList[0]);
+  const [imageSrc, setImageSrc] = useState([]);
+  const handleImageUpload = (files) => {
+    const fileArr = files;
+    let fileURLs = [];
+    let file;
+    let filesLength = fileArr.length > 10 ? 10 : fileArr.length;
+    for (let i = 0; i < filesLength; i++) {
+      file = fileArr[i];
+      let reader = new FileReader();
+      reader.onload = () => {
+        // console.log(reader.result);
+        fileURLs[i] = reader.result;
+        setImageSrc([...fileURLs]);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // const scrollRef = useRef();
+
   return (
     <Container>
       <Title>경매 생성</Title>
@@ -109,7 +140,8 @@ function AuctionCreatePage(props) {
             .then((res) => {
               // console.log(inputAuction);
               alert('성공');
-              navigate(`/auctions/${res.data}`);
+              if (reservation) navigate(`/auctions/${res.data}`);
+              else navigate(`/standby/${res.data}`);
             })
             .catch(() => {
               // console.log(inputAuction);
@@ -130,13 +162,40 @@ function AuctionCreatePage(props) {
         <Div>
           <Label>사진 업로드</Label>
           <FileUpload>
-            <div {...getRootProps()}>
-              <input {...getInputProps()} />
-              {isDragActive ? <p>Drop the files here ...</p> : <div>파일을 추가해주세요</div>}
-            </div>
-            {auctionImageList.map((item, i) => (
-              <div key={i}>{item.path}</div>
-            ))}
+            {auctionImageList.length === 0 ? ( //사진 없을 때
+              <div {...getRootProps()} className="emptyfile">
+                <input {...getInputProps()} />
+
+                {isDragActive ? (
+                  <div className="nofile">
+                    <AiOutlineDownload size={50}></AiOutlineDownload>
+                  </div>
+                ) : (
+                  <div className="nofile">
+                    <AiFillPlusCircle size={50}></AiFillPlusCircle>
+                  </div>
+                )}
+              </div>
+            ) : (
+              //사진 있을 때
+              <div className="filelist">
+                <div {...getRootProps()}>
+                  <input {...getInputProps()} />
+                  {isDragActive ? (
+                    <AiOutlineDownload size={50}></AiOutlineDownload>
+                  ) : (
+                    <AiFillPlusCircle size={50}></AiFillPlusCircle>
+                  )}
+                </div>
+                {imageSrc.length !== 0
+                  ? imageSrc.map((item, i) => (
+                      <div key={i}>
+                        <img src={item} alt="preview-img" />
+                      </div>
+                    ))
+                  : null}
+              </div>
+            )}
           </FileUpload>
         </Div>
 
@@ -181,7 +240,7 @@ function AuctionCreatePage(props) {
           />
         </Div>
 
-        <Div>
+        {/* <Div>
           <Label>
             상품 ({productList.length})
             <Plus type="button" onClick={ModalHandler}>
@@ -190,13 +249,75 @@ function AuctionCreatePage(props) {
           </Label>
 
           <ProductTable productList={productList} />
+        </Div> */}
+
+        <Div>
+          <Label>상품 ({productList.length})</Label>
+
+          {/* <TableBox ref={scrollRef}> */}
+          <TableBox>
+            <Table>
+              <colgroup>
+                <col width="70%" />
+                <col width="30%" />
+                <col width="0%" />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>이름</th>
+                  <th>시작가</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {productList.map((item, i) => (
+                  <tr key={i}>
+                    <td>{item.productName}</td>
+                    <td>{item.startPrice.toLocaleString()}</td>
+                    <td>{<Minus onClick={() => deleteProducts(i)}>-</Minus>}</td>
+                  </tr>
+                ))}
+                <tr>
+                  <td>
+                    <input
+                      type="text"
+                      value={productName}
+                      onChange={(e) => setProductName(e.target.value)}
+                    />
+                  </td>
+                  <td>
+                    <input type="hidden" />
+                    <input
+                      type="number"
+                      value={startPrice}
+                      onChange={(e) => setStartPrice(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          createProducts();
+                        }
+                      }}
+                    />
+                  </td>
+                  <td>
+                    {
+                      <Upload type="button" onClick={createProducts}>
+                        +
+                      </Upload>
+                    }
+                  </td>
+                </tr>
+              </tbody>
+            </Table>
+          </TableBox>
         </Div>
+
         <SubmitBox>
           <GradientButton type="submit" text="생성" />
         </SubmitBox>
       </form>
 
-      <Modal open={isModal} close={ModalHandler} title="상품 관리">
+      {/* <Modal open={isModal} close={ModalHandler} title="상품 관리">
         <Label>상품 ({productList.length})</Label>
         <ProductTable
           productList={productList}
@@ -216,10 +337,145 @@ function AuctionCreatePage(props) {
           onChange={(e) => setStartPrice(e.target.value)}
         />
         <Button onClick={createProducts}>추가</Button>
-      </Modal>
+      </Modal> */}
     </Container>
   );
 }
+const TableBox = styled.div`
+  max-height: 200px;
+  overflow: overlay;
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar,
+  &::-webkit-scrollbar-thumb {
+    overflow: visible;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(13, 12, 15, 0.4);
+  }
+`;
+
+const Table = styled.table`
+  width: 100%;
+  background-color: ${(props) => props.theme.colors.pointBlack};
+  border-radius: 5px;
+
+  & tr td,
+  tr th {
+    padding: 10px;
+    text-align: center;
+    input {
+      outline: none;
+      background-color: ${(props) => props.theme.colors.subBlack};
+      color: ${(props) => props.theme.colors.white};
+      border: 1px solid ${(props) => props.theme.colors.mainBlack};
+      height: 25px;
+      border-radius: 5px;
+      font-size: 16px;
+      width: 180px;
+      text-align: center;
+    }
+    input[type='number']::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+    }
+  }
+  tr th {
+    box-sizing: border-box;
+    font-weight: 700;
+    background-color: ${(props) => props.theme.colors.pointBlack};
+    border-bottom: 1px solid ${(props) => props.theme.colors.mainBlack};
+  }
+  tr th:nth-child(1),
+  tr td:nth-child(1) {
+    border-right: 1px dashed ${(props) => props.theme.colors.mainBlack};
+  }
+`;
+
+const Minus = styled.button`
+  background-color: ${(props) => props.theme.colors.pointRed};
+  border: none;
+  border-radius: 3px;
+  font-weight: 700;
+  cursor: pointer;
+  color: ${(props) => props.theme.colors.white};
+`;
+
+const Upload = styled.button`
+  background-color: ${(props) => props.theme.colors.subMint};
+  border: none;
+  border-radius: 3px;
+  font-weight: 700;
+  cursor: pointer;
+  color: ${(props) => props.theme.colors.mainBlack};
+`;
+
+const FileUpload = styled.div`
+  width: 100%;
+  height: 250px;
+  border-radius: 5px;
+  background-color: ${(props) => props.theme.colors.pointBlack};
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  justify-content: center;
+  /* place-items: center; */
+  .emptyfile {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    .nofile {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+  }
+  margin: 0 auto;
+  .filelist {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 30px;
+    padding: 10px;
+    & > div:first-child {
+      cursor: pointer;
+    }
+
+    & > div {
+      width: 180px;
+      height: 120px;
+      overflow: hidden;
+      background-color: ${(props) => props.theme.colors.pointGray};
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+    }
+  }
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar,
+  &::-webkit-scrollbar-thumb {
+    overflow: visible;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(13, 12, 15, 0.4);
+  }
+`;
+
 const Button = styled.button`
   display: block;
   margin: 40px auto 20px;
@@ -269,7 +525,7 @@ const Select = styled.select`
   background-position: 99%;
   background-size: 15px 12px;
   background-color: ${(props) => props.theme.colors.pointBlack};
-
+  outline: none;
   & option {
     display: block;
     padding: 10px;
@@ -291,28 +547,12 @@ const SubmitBox = styled.div`
 const Div = styled.div`
   padding: 15px 80px;
   position: relative;
-`;
 
-const FileUpload = styled.div`
-  width: 100%;
-  height: 200px;
-  border-radius: 5px;
-  background-color: ${(props) => props.theme.colors.pointBlack};
-  overflow-y: auto;
-  overflow-x: hidden;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  place-items: center;
-  div {
-    width: 150px;
-    height: 100px;
-    white-space: normal;
-    word-break: break-all;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  input[type='datetime-local'] {
+    width: 50%;
   }
 `;
+
 const Textarea = styled.textarea`
   width: 100%;
   background-color: ${(props) => props.theme.colors.pointBlack};
@@ -323,6 +563,7 @@ const Textarea = styled.textarea`
   resize: none;
   font-family: Pretendard;
   font-size: 14px;
+  outline: none;
 `;
 const Label = styled.p`
   font-size: 20px;

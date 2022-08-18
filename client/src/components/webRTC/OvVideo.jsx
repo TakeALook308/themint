@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import styled from 'styled-components';
 
 export default class OpenViduVideoComponent extends Component {
   constructor(props) {
@@ -19,6 +20,12 @@ export default class OpenViduVideoComponent extends Component {
   }
 
   render() {
-    return <video autoPlay={true} ref={this.videoRef} />;
+    return <Video autoPlay={true} ref={this.videoRef} />;
   }
 }
+
+const Video = styled.video`
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg); /* Safari and Chrome */
+  -moz-transform: rotateY(180deg); /* Firefox */
+`;

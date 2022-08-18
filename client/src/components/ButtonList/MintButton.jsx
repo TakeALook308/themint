@@ -20,4 +20,5 @@ const Button = styled.button`
   cursor: pointer;
   font-size: ${(props) => props.theme.fontSizes.p};
   font-weight: 600;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 `;
