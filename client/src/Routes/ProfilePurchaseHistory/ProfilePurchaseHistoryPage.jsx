@@ -277,6 +277,12 @@ function ProfilePurchaseHistoryPage({ params }) {
               {purchaseDetail.status === 1 && (
                 <PutMoney>
                   <p>입금을 완료 하셨나요??</p>
+                  <p>판매자 계좌 정보</p>
+                  <SellerInfo>
+                    <p>은행명: {bankList[purchaseDetail.bankCode]}</p>
+                    <p>계좌번호: {purchaseDetail.accountNo}</p>
+                    <p>계좌소유주: {purchaseDetail.name}</p>
+                  </SellerInfo>
                   <PutMoneyButton>
                     <MintButton onClick={patchRemit} text="입금완료" size="30%" />
                   </PutMoneyButton>
@@ -291,12 +297,7 @@ function ProfilePurchaseHistoryPage({ params }) {
                     제품 정보 상세보기
                   </StyledLink>
                   <h3>배송지를 입력해주세요!!!</h3>
-                  <p>판매자 계좌 정보</p>
-                  <SellerInfo>
-                    <p>은행명: {bankList[purchaseDetail.bankCode]}</p>
-                    <p>계좌번호: {purchaseDetail.accountNo}</p>
-                    <p>계좌소유주: {purchaseDetail.name}</p>
-                  </SellerInfo>
+
                   <ActiveInput active={true}>
                     <input
                       name="remitName"
