@@ -43,11 +43,12 @@ const CardContainer = styled.article`
   overflow: hidden;
   transition: all 0.3s ease-in;
   background: rgba(73, 73, 73, 0.35);
-  box-shadow: 0 8px 32px 0 rgba(21, 47, 37, 0.37);
+  box-shadow: 0 16px 64px 32px rgba(21, 47, 37, 0.37);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 1rem;
   &:hover {
     transform: scale(1.03);
   }
@@ -76,7 +77,7 @@ const ProfileImgContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 1rem;
+  margin-bottom: 0.5rem;
 `;
 
 const ProfileImg = styled.div`
@@ -87,13 +88,10 @@ const ProfileImg = styled.div`
   width: 100%;
   height: 100%;
   overflow: hidden;
-  border: 5px solid transparent;
   border-radius: 50%;
-  background-image: ${(props) =>
-    `linear-gradient(#fff, #fff), linear-gradient(to right, ${props.theme.colors.mainMint} 0%, ${props.theme.colors.subMint} 100%)`};
-  background-origin: border-box;
-  background-clip: content-box, border-box;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  background-color: transparent;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25),
+    0px 4px 4px rgba(0, 0, 0, 0.25);
   > div {
     position: relative;
     width: 100%;
@@ -105,7 +103,6 @@ const ProfileImg = styled.div`
       height: 100%;
       width: 100%;
       object-fit: contain;
-      background-color: ${(props) => props.theme.colors.textGray};
       img {
         width: 100%;
         height: 100%;

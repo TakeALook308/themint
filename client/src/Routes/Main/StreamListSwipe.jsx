@@ -10,12 +10,15 @@ import { Navigation, EffectCoverflow } from 'swiper';
 import { useQuery } from 'react-query';
 import { fetchData } from '../../utils/apis/api';
 import { auctionListApis } from '../../utils/apis/auctionApis';
-function StreamList(props) {
+import { useMediaQuery } from 'react-responsive';
+import Header from './Header';
+function StreamList() {
+  const isTabletOrMobile = useMediaQuery({ query: '(max-width: 768px)' });
   const getLiveAuctionList = async () => {
     const response = await fetchData.get(auctionListApis.LIVE_AUCTION_LIST);
     return response?.data;
   };
-  const { isLoading, isError, data, error } = useQuery(['liveAuctionList'], getLiveAuctionList, {
+  const { isLoading, data } = useQuery(['liveAuctionList'], getLiveAuctionList, {
     refetchInterval: 60 * 1000,
     refetchOnWindowFocus: false,
     retry: 0,
@@ -26,39 +29,62 @@ function StreamList(props) {
 
   return (
     <Wrapper>
-      <ListHeader>
-        <h2>실시간 경매 ON</h2>
-      </ListHeader>
+      <Header title={'실시간 경매 ON'} />
       {isLoading && <span>Loading...</span>}
       {!isLoading && !data?.length && <p>실시간 진행중인 경매가 없습니다.</p>}
-      {data && (
-        <SwipeContainer>
-          <Swiper
-            effect={'coverflow'}
-            coverflowEffect={{
-              rotate: 50,
-              stretch: 100,
-              depth: 130,
-              modifier: 1,
-            }}
-            watchOverflow={true}
-            navigation={true}
-            centeredSlides={true}
-            initialSlide={2}
-            slidesPerView={2}
-            spaceBetween={0}
-            allowTouchMove={false}
-            loop={true}
-            modules={[Navigation, EffectCoverflow]}
-            className="mySwiper">
-            {data.map((auction, idx) => (
-              <SwiperSlide key={idx}>
-                <StreamCard auction={auction} />
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </SwipeContainer>
-      )}
+      {data &&
+        (isTabletOrMobile ? (
+          <SwipeContainer>
+            <Swiper
+              navigation={true}
+              initialSlide={1}
+              allowTouchMove={false}
+              loop={true}
+              autoplay={{
+                delay: 5000,
+                disableOnInteraction: false,
+              }}
+              modules={[Navigation, EffectCoverflow]}
+              className="mySwiper">
+              {data?.map((auction, idx) => (
+                <SwiperSlide key={idx}>
+                  <StreamCard auction={auction} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </SwipeContainer>
+        ) : (
+          <SwipeContainer>
+            <Swiper
+              coverflowEffect={{
+                rotate: 50,
+                stretch: 100,
+                depth: 130,
+                modifier: 1,
+              }}
+              watchOverflow={true}
+              navigation={true}
+              centeredSlides={true}
+              initialSlide={2}
+              effect={'coverflow'}
+              slidesPerView={2}
+              spaceBetween={0}
+              allowTouchMove={false}
+              loop={true}
+              autoplay={{
+                delay: 5000,
+                disableOnInteraction: false,
+              }}
+              modules={[Navigation, EffectCoverflow]}
+              className="mySwiper">
+              {data.map((auction, idx) => (
+                <SwiperSlide key={idx}>
+                  <StreamCard auction={auction} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </SwipeContainer>
+        ))}
     </Wrapper>
   );
 }
@@ -68,7 +94,7 @@ export default StreamList;
 const Wrapper = styled.article`
   max-width: 1024px;
   margin: auto;
-  margin-bottom: 4rem;
+  margin-bottom: 2rem;
 `;
 
 const SwipeContainer = styled.div`
@@ -81,12 +107,14 @@ const SwiperSlideContainer = styled(SwiperSlide)`
 
 const ListHeader = styled.div`
   display: flex;
-  justify-content: space-between;
+  width: 100%;
+  justify-content: center;
   align-items: baseline;
   margin-bottom: 20px;
   margin-top: 20px;
-  > h3 {
-    font-size: 20px;
+  > h2 {
+    font-size: ${(props) => props.theme.fontSizes.h4};
     font-weight: bold;
+    text-shadow: 1px 4px 4px ${(props) => props.theme.colors.mainMint};
   }
 `;
