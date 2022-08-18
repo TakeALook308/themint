@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import NavigationBar from './components/ui/common/NavigationBar';
 import Footer from './components/ui/common/Footer';
 import ProtectedRoute from './components/routes/ProtectedRoute';
@@ -33,15 +33,22 @@ import {
 } from './Routes/index';
 import { useRecoilValue } from 'recoil';
 import { loggedinState } from './atoms';
+import { useLayoutEffect } from 'react';
 
-function Router({ toggleNotification, setToggleNotifiaction }) {
+const Wrapper = ({ children }) => {
+  const location = useLocation();
+  useLayoutEffect(() => {
+    document.documentElement.scrollTo(0, 0);
+  }, [location.pathname]);
+  return children;
+};
+
+function Router() {
   const loggedin = useRecoilValue(loggedinState);
+
   return (
     <BrowserRouter>
-      <NavigationBar
-        toggleNotification={toggleNotification}
-        setToggleNotifiaction={setToggleNotifiaction}
-      />
+      <NavigationBar />
       <Routes>
         <Route path="" element={<Main />} />
         <Route element={<ProtectedRoute loggedin={!loggedin} />}>

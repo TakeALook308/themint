@@ -9,6 +9,7 @@ import ProfilePurchaseHistoryPage from '../ProfilePurchaseHistory/ProfilePurchas
 import ProfileInterestsPage from '../ProfileInterests/ProfileInterestsPage';
 import { myInformationState } from '../../atoms';
 import { useRecoilValue } from 'recoil';
+import { Helmet } from 'react-helmet-async';
 
 function ProfilePage(props) {
   // 사용자와 프로필페이지 일치여부 확인
@@ -29,53 +30,61 @@ function ProfilePage(props) {
   }, [params]);
 
   return (
-    <Container>
-      <Header>
-        <h2>프로필</h2>
-        <ProfileCardContainer>
-          <ProfileCard member={member} />
-        </ProfileCardContainer>
-        {params.userId === strMemberSeq && (
-          <HeaderContainer>
-            <NavStyle
-              className={(props) => {
-                return `${props.isActive ? 'isActive ' : ''}iconContainer`;
-              }}
-              end
-              to="">
-              리뷰
-            </NavStyle>
-            <NavStyle to="saleshistory">판매내역</NavStyle>
-            <NavStyle to="purchasehistory">구매내역</NavStyle>
-            <NavStyle to="interest">관심</NavStyle>
-          </HeaderContainer>
-        )}
-        {params.userId !== strMemberSeq && (
-          <HeaderContainer>
-            <NavStyle2
-              className={(props) => {
-                return `${props.isActive ? 'isActive ' : ''}iconContainer`;
-              }}
-              end
-              to="">
-              리뷰
-            </NavStyle2>
-            <NavStyle2 to="saleshistory">판매내역</NavStyle2>
-          </HeaderContainer>
-        )}
-      </Header>
-      <StyledMain>
-        <Routes>
-          <Route path="" element={<ProfileReviewsPage params={params.userId} />} />
-          <Route path="saleshistory" element={<ProfileSalesHistoryPage params={params.userId} />} />
-          <Route
-            path="purchasehistory"
-            element={<ProfilePurchaseHistoryPage params={params.userId} />}
-          />
-          <Route path="interest" element={<ProfileInterestsPage params={params.userId} />} />
-        </Routes>
-      </StyledMain>
-    </Container>
+    <>
+      <Helmet>
+        <title>프로필 | 더민트</title>
+      </Helmet>
+      <Container>
+        <Header>
+          <h2>프로필</h2>
+          <ProfileCardContainer>
+            <ProfileCard member={member} />
+          </ProfileCardContainer>
+          {params.userId === strMemberSeq && (
+            <HeaderContainer>
+              <NavStyle
+                className={(props) => {
+                  return `${props.isActive ? 'isActive ' : ''}iconContainer`;
+                }}
+                end
+                to="">
+                리뷰
+              </NavStyle>
+              <NavStyle to="saleshistory">판매내역</NavStyle>
+              <NavStyle to="purchasehistory">구매내역</NavStyle>
+              <NavStyle to="interest">관심</NavStyle>
+            </HeaderContainer>
+          )}
+          {params.userId !== strMemberSeq && (
+            <HeaderContainer>
+              <NavStyle2
+                className={(props) => {
+                  return `${props.isActive ? 'isActive ' : ''}iconContainer`;
+                }}
+                end
+                to="">
+                리뷰
+              </NavStyle2>
+              <NavStyle2 to="saleshistory">판매내역</NavStyle2>
+            </HeaderContainer>
+          )}
+        </Header>
+        <StyledMain>
+          <Routes>
+            <Route path="" element={<ProfileReviewsPage params={params.userId} />} />
+            <Route
+              path="saleshistory"
+              element={<ProfileSalesHistoryPage params={params.userId} />}
+            />
+            <Route
+              path="purchasehistory"
+              element={<ProfilePurchaseHistoryPage params={params.userId} />}
+            />
+            <Route path="interest" element={<ProfileInterestsPage params={params.userId} />} />
+          </Routes>
+        </StyledMain>
+      </Container>
+    </>
   );
 }
 export default ProfilePage;

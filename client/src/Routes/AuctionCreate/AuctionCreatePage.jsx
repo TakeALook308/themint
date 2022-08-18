@@ -11,6 +11,7 @@ import { postData } from '../../utils/apis/api';
 import { useNavigate } from 'react-router-dom';
 import GradientButton from '../../components/ButtonList/GradientButton';
 import { AiOutlineDownload, AiFillPlusCircle } from 'react-icons/ai';
+import { Helmet } from 'react-helmet-async';
 
 function AuctionCreatePage(props) {
   const navigate = useNavigate();
@@ -116,6 +117,9 @@ function AuctionCreatePage(props) {
 
   return (
     <Container>
+      <Helmet>
+        <title>경매생성 | 더민트</title>
+      </Helmet>
       <Title>경매 생성</Title>
       <form
         onSubmit={(e) => {

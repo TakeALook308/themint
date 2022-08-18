@@ -70,7 +70,7 @@ function NavigationBar() {
           </NavSearch>
           <NavItemText>
             <Link to={`/categories/0`}>
-              <p>카테고리</p>
+              <p>경매목록</p>
             </Link>
             <Link to="/auctions/new">
               <p>경매생성</p>
