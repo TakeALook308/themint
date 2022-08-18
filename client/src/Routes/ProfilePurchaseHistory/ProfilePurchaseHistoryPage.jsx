@@ -374,7 +374,7 @@ function ProfilePurchaseHistoryPage({ params }) {
                   배송 조회
                 </Button>
               </form>
-              <p>리뷰 작성</p>
+              <h3>리뷰 작성</h3>
               <p>별점을 선택해 주세요!</p>
               <Stars>
                 {ARRAY.map((el, idx) => {
@@ -483,6 +483,10 @@ const Purchased = styled.div`
     margin-bottom: 10px;
   }
   > p {
+    margin-bottom: 10px;
+  }
+  > h3 {
+    font-size: 20px;
     margin-bottom: 10px;
   }
 `;
@@ -601,7 +605,7 @@ const Button = styled.button`
 const StyledLink = styled(Link)`
   position: absolute;
   right: 10px;
-  top: 10px;
+  top: 0px;
   padding: 5px 10px 5px 10px;
   color: ${(props) => props.theme.colors.mainBlack};
   background-color: ${(props) => props.theme.colors.subMint};
