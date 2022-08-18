@@ -10,4 +10,6 @@ public interface NotificationService {
     ChannelTopic getTopic(String memberId);
     void sendInterestCategoryNotificationMessage(String title, String hash, Long categorySeq);
     void sendInterestKeywordNotificationMessage(String title, String hash, List<String> productNameList);
+
+    void sendSuccessfulBidNotificationMessage(String memberId, Long memgerSeq, int price);
 }
