@@ -32,7 +32,6 @@ public class ChatMessageController {
     ChatMessageService chatMessageService;
     @Autowired
     NotificationService notificationService;
-
     @Autowired
     MemberService memberService;
 
