@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { resizeFile } from '../../utils/functions/resizeFile';
 
 function AuctionCard({ auction }) {
   const [auctionTime, setAuctionTime] = useState({ moreThenOneDay: false, time: '' });
