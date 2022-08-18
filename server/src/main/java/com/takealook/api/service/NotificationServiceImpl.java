@@ -93,4 +93,16 @@ public class NotificationServiceImpl implements NotificationService{
             redisPublisher.publish(topics.get(memberId), notificationMessage);
         }
     }
+
+    @Override
+    public void sendSuccessfulBidNotificationMessage(String memberId, Long memberSeq, int price) {
+        NotificationMessage notificationMessage = NotificationMessage.builder()
+                .memberId(memberId)
+                .title("낙찰에 성공했습니다!")
+                .url("/profile/" + memberSeq + "/purchasehistory")
+                .notification("구매 정보를 입력해주세요.")
+                .type(1)
+                .build();
+        redisPublisher.publish(topics.get(memberId), notificationMessage);
+    }
 }
