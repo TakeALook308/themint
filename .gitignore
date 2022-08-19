@@ -7,6 +7,7 @@ build/
 frontend/
 *.gz
 *.log
+**/application.properties
 
 ### STS ###
 .apt_generated
