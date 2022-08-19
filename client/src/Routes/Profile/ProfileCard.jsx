@@ -68,7 +68,7 @@ const animateDot = (num) => keyframes`
     transform: rotate(0deg);
   }
   100% {
-    transform: rotate(calc(-3.6deg * ${num}));
+    transform: rotate(calc(3.6deg * ${num}));
   }
 `;
 
@@ -89,7 +89,7 @@ const ProfileImgContainer = styled.div`
   gap: 5px;
   .pop {
     background-color: ${(props) =>
-      props.num > 0 ? props.theme.colors.subMint : props.theme.colors.pointRed};
+      props.num >= 0 ? props.theme.colors.subMint : props.theme.colors.pointRed};
     color: ${(props) => props.theme.colors.mainBlack};
     padding: 0 5px;
     border-radius: 3px;
@@ -108,7 +108,7 @@ const ProfileImg = styled.main`
     height: 140px;
     inset: 5px;
     z-index: 5;
-    transform: rotate(calc(-3.6deg * var(--num)));
+    transform: rotate(calc(3.6deg * var(--num)));
     animation: ${(props) => animateDot(props.num)} 1s linear forwards;
   }
 
@@ -122,9 +122,9 @@ const ProfileImg = styled.main`
     height: 10px;
     border-radius: 50%;
     background-color: ${(props) =>
-      props.num > 0 ? props.theme.colors.subMint : props.theme.colors.pointRed};
+      props.num >= 0 ? props.theme.colors.subMint : props.theme.colors.pointRed};
     box-shadow: 0 0 8px
-      ${(props) => (props.num > 0 ? props.theme.colors.subMint : props.theme.colors.pointRed)};
+      ${(props) => (props.num >= 0 ? props.theme.colors.subMint : props.theme.colors.pointRed)};
   }
 
   img {
@@ -151,9 +151,9 @@ const ProfileImg = styled.main`
       transform: translate(5px, 5px);
       &:nth-child(2) {
         stroke: ${(props) =>
-          props.num > 0 ? props.theme.colors.subMint : props.theme.colors.pointRed};
+          props.num >= 0 ? props.theme.colors.subMint : props.theme.colors.pointRed};
         stroke-dasharray: 440;
-        stroke-dashoffset: calc(440 + (440 * var(--num)) / 100);
+        stroke-dashoffset: calc(440 - (440 * var(--num)) / 100);
 
         opacity: 0;
         animation: ${animateLine} 0.5s linear forwards;

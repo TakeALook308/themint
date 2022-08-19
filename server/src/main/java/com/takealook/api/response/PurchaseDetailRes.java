@@ -13,6 +13,7 @@ import lombok.Setter;
 @Builder
 public class PurchaseDetailRes {
     // 계좌, 입금자명, 배송정보,
+    String hash;
     Long historySeq;
     Long productSeq;
     Long productDeliverySeq;
@@ -29,8 +30,9 @@ public class PurchaseDetailRes {
     String parcelCompanyCode;
     String trackingNo;
 
-    public static PurchaseDetailRes of(History history, Product product, ProductDelivery productDelivery, Member seller){
+    public static PurchaseDetailRes of(String hash, History history, Product product, ProductDelivery productDelivery, Member seller){
         PurchaseDetailRes res = PurchaseDetailRes.builder()
+                .hash(hash)
                 .historySeq(history.getSeq())
                 .productSeq(history.getProductSeq())
                 .productDeliverySeq(productDelivery.getSeq())

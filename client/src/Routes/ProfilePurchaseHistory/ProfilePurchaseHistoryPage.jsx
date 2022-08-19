@@ -35,7 +35,7 @@ function ProfilePurchaseHistoryPage({ params }) {
   const [isPurchase, setIsPurchase] = useState('purchase');
   useEffect(() => {
     setIsPurchase('purchase');
-  });
+  }, []);
   const getPurchaseUrl = (size) => {
     return (page) => `/api/history/${isPurchase}/${active}?page=${page}&size=${size}`;
   };
@@ -169,6 +169,12 @@ function ProfilePurchaseHistoryPage({ params }) {
     });
   };
 
+  useEffect(() => {
+    if (purchaseDetail.remitName) {
+      setDeliveryData((prev) => ({ ...prev, remitName: purchaseDetail.remitName }));
+    }
+  }, [purchaseDetail]);
+
   const onClick = () => {
     const data = queryClient.getQueryData(['userInformation']);
 
@@ -277,6 +283,12 @@ function ProfilePurchaseHistoryPage({ params }) {
               {purchaseDetail.status === 1 && (
                 <PutMoney>
                   <p>입금을 완료 하셨나요??</p>
+                  <p>판매자 계좌 정보</p>
+                  <SellerInfo>
+                    <p>은행명: {bankList[purchaseDetail.bankCode]}</p>
+                    <p>계좌번호: {purchaseDetail.accountNo}</p>
+                    <p>계좌소유주: {purchaseDetail.name}</p>
+                  </SellerInfo>
                   <PutMoneyButton>
                     <MintButton onClick={patchRemit} text="입금완료" size="30%" />
                   </PutMoneyButton>
@@ -291,12 +303,6 @@ function ProfilePurchaseHistoryPage({ params }) {
                     제품 정보 상세보기
                   </StyledLink>
                   <h3>배송지를 입력해주세요!!!</h3>
-                  <p>판매자 계좌 정보</p>
-                  <SellerInfo>
-                    <p>은행명: {bankList[purchaseDetail.bankCode]}</p>
-                    <p>계좌번호: {purchaseDetail.accountNo}</p>
-                    <p>계좌소유주: {purchaseDetail.name}</p>
-                  </SellerInfo>
                   <ActiveInput active={true}>
                     <input
                       name="remitName"
@@ -304,6 +310,7 @@ function ProfilePurchaseHistoryPage({ params }) {
                       type="text"
                       autoComplete="off"
                       required
+                      value={deliveryData.remitName}
                       onChange={onChange}
                       placeholder=""
                     />
@@ -374,7 +381,7 @@ function ProfilePurchaseHistoryPage({ params }) {
                   배송 조회
                 </Button>
               </form>
-              <p>리뷰 작성</p>
+              <h3>리뷰 작성</h3>
               <p>별점을 선택해 주세요!</p>
               <Stars>
                 {ARRAY.map((el, idx) => {
@@ -485,6 +492,10 @@ const Purchased = styled.div`
   > p {
     margin-bottom: 10px;
   }
+  > h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
 `;
 
 // 별점기능
@@ -533,7 +544,7 @@ const PutMoneyButton = styled.div`
 
 const PutAddress = styled.div`
   > h3 {
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     font-size: 20px;
     font-weight: bold;
   }
@@ -601,7 +612,7 @@ const Button = styled.button`
 const StyledLink = styled(Link)`
   position: absolute;
   right: 10px;
-  top: 10px;
+  top: 0px;
   padding: 5px 10px 5px 10px;
   color: ${(props) => props.theme.colors.mainBlack};
   background-color: ${(props) => props.theme.colors.subMint};

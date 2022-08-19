@@ -14,8 +14,8 @@ import { useEffect } from 'react';
 function NavigationBar() {
   const loggedin = useRecoilValue(loggedinState);
   const myInformation = useRecoilValue(myInformationState);
-  const [keyword, setKeyword] = useRecoilState(keywordState);
   const [key, setKey] = useState('');
+  const [type, setType] = useState('auction');
   const location = useLocation();
   const [searchParams] = useSearchParams();
 
@@ -26,20 +26,23 @@ function NavigationBar() {
     let word = key.trim();
     if (!word) return;
     setKey(word);
-    setKeyword((prev) => ({ ...prev, keyword: word }));
     navigate({
       pathname: '/search',
-      search: `?type=${keyword.type}&keyword=${word}`,
+      search: `?type=${type}&keyword=${word}`,
     });
+    console.log('adasd');
   };
 
   const searchParameter = searchParams.get('keyword');
   useEffect(() => {
     if (location.pathname === '/search') {
       const word = searchParams.get('keyword');
+      const newType = searchParams.get('type');
       setKey(word);
+      setType(newType);
     } else {
       setKey('');
+      setType('auction');
     }
   }, [searchParameter]);
 
@@ -70,7 +73,7 @@ function NavigationBar() {
           </NavSearch>
           <NavItemText>
             <Link to={`/categories/0`}>
-              <p>카테고리</p>
+              <p>경매목록</p>
             </Link>
             <Link to="/auctions/new">
               <p>경매생성</p>
@@ -178,6 +181,7 @@ const NavItemText = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-left: auto;
+  font-weight: bold;
 `;
 
 const NavItemIcon = styled.div`
@@ -186,6 +190,7 @@ const NavItemIcon = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-left: auto;
+  font-weight: bold;
 `;
 
 const NavbarDropdownContent = styled.ul`
@@ -198,6 +203,7 @@ const NavbarDropdownContent = styled.ul`
   right: 0;
   border-radius: 5px;
   transition: all 1s ease-in;
+  font-weight: bold;
   li {
     margin-bottom: 0.5rem;
   }

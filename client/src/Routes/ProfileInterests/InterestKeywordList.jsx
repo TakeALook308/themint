@@ -79,13 +79,13 @@ function InterestKeywordList() {
           <input
             name="InterestWord"
             type="text"
-            placeholder="키워드를 추가하려면 입력하세요"
+            placeholder="키워드 입력"
             onChange={onChange}
             onKeyPress={handleKeyPress}
           />
         </InputBoxContainer>
         <ButtonContainer>
-          <GradientButton text={'키워드 추가'} onClick={onClick} />
+          <GradientButton text={'추가'} onClick={onClick} size="60px" fontsize="14px" />
         </ButtonContainer>
       </AddKeyword>
 
@@ -112,7 +112,7 @@ const AddKeyword = styled.div`
 `;
 
 const InputBoxContainer = styled.div`
-  width: 32%;
+  width: 200px;
   margin-bottom: 30px;
   margin-right: 30px;
   > input {
@@ -121,7 +121,7 @@ const InputBoxContainer = styled.div`
     border: none;
     width: 100%;
     height: 40px;
-    font-size: 20px;
+    font-size: 16px;
     outline: none;
     color: ${(props) => props.theme.colors.white};
     padding-left: 15px;

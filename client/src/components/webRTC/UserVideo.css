@@ -47,3 +47,31 @@ p {
     position: relative;
   }
 }
+
+.control-btn-box {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+  position: absolute;
+  bottom: 17px;
+}
+
+.micbtn,
+.camerabtn {
+  z-index: 10;
+  border: none;
+  padding-top: 5px;
+  background-color: #2cdcb2;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.camerabtn {
+}
+
+.micbtn {
+}

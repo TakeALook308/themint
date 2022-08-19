@@ -66,6 +66,7 @@ function App() {
 export default App;
 
 const Container = styled.div`
+  scroll-behavior: smooth;
   margin-left: auto;
   margin-right: auto;
 `;
