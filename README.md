@@ -162,7 +162,7 @@ $ npm start
 
 <br />
 
-**Main Server 실행**
+**Server 실행**
 
 1. 원격 저장소 복제
 
@@ -196,7 +196,7 @@ $ cd "Themint Backend"
 $ ./gradlew clean build
 ```
 
-6. 빌드 폴더 이동 후 war 파일 실행
+6. 빌드 폴더 이동 후 jar 파일 실행
 
 ```git
 $ cd build
