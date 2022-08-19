@@ -76,6 +76,7 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct,
 
     if (price[price.length - 1].price === -1) errorToast(`상품이 유찰되었습니다...😥`);
     else successToast(`${price[price.length - 1].nickname}님이 낙찰되셨습니다. 축하합니다🥳🎉🎊`);
+
     if (producter) {
       fetchData
         .post(productApis.PRODUCT_SUCCESS_API, {
@@ -126,7 +127,7 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct,
             </div>
           </div>
         </AuctionInfo>
-        <Timer delay="30" ref={myRef} finishAuction={finishAuction}></Timer>
+        <Timer delay="15" ref={myRef} finishAuction={finishAuction}></Timer>
         <PriceList ref={priceEndRef}>
           {price.map((item, i) => {
             if (i !== 0) {
