@@ -35,7 +35,7 @@ function ProfilePurchaseHistoryPage({ params }) {
   const [isPurchase, setIsPurchase] = useState('purchase');
   useEffect(() => {
     setIsPurchase('purchase');
-  });
+  }, []);
   const getPurchaseUrl = (size) => {
     return (page) => `/api/history/${isPurchase}/${active}?page=${page}&size=${size}`;
   };
@@ -168,6 +168,12 @@ function ProfilePurchaseHistoryPage({ params }) {
       return { ...prevState, remitName: e.target.value };
     });
   };
+
+  useEffect(() => {
+    if (purchaseDetail.remitName) {
+      setDeliveryData((prev) => ({ ...prev, remitName: purchaseDetail.remitName }));
+    }
+  }, [purchaseDetail]);
 
   const onClick = () => {
     const data = queryClient.getQueryData(['userInformation']);
@@ -304,6 +310,7 @@ function ProfilePurchaseHistoryPage({ params }) {
                       type="text"
                       autoComplete="off"
                       required
+                      value={deliveryData.remitName}
                       onChange={onChange}
                       placeholder=""
                     />
