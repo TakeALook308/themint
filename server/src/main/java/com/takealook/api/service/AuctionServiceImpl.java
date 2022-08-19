@@ -41,7 +41,7 @@ public class AuctionServiceImpl implements AuctionService {
     @Autowired
     S3FileService s3FileService;
 
-    @Transactional
+//    @Transactional
     @Override
     public Auction createAuction(Long memberSeq, AuctionRegisterPostReq auctionRegisterPostReq, List<MultipartFile> multipartFileList) {
         String hash = HashUtil.MD5(LocalDateTime.now().toString() + memberSeq);
@@ -129,7 +129,7 @@ public class AuctionServiceImpl implements AuctionService {
     // 실시간 경매 조회
     @Override
     public List<Auction> getLiveAuctionList() {
-        List<Auction> auctionList = auctionRepository.findAllByStatus(1);
+        List<Auction> auctionList = auctionRepository.findAllByStatusOrderBySeqDesc(1);
         return auctionList;
     }
 

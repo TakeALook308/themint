@@ -44,6 +44,9 @@ public class HistoryController {
     @Autowired
     ProductDeliveryService productDeliveryService;
 
+    @Autowired
+    NotificationService notificationService;
+
     @GetMapping("/sales/inprogress/{memberSeq}")
     public ResponseEntity<HistoryListRes> getSalesHistoryInprogress(@PathVariable("memberSeq") Long memberSeq, @RequestParam("page") int page, @RequestParam("size") int size) {
         List<HistoryListEntityRes> historyListEntityResList = new ArrayList<>();
@@ -140,18 +143,19 @@ public class HistoryController {
             return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
         }
 
-        // 낙찰
-        // 1. history에 구매 내역 추가하고,  2. productDelivery 추가 자동으로 추가하고,  3. product status 1로 바꾸고,  4. product finalPrice 낙찰가로 업데이트.
-        int result = historyService.registerPurchaseHistory(purchaseRegisterPostReq);
-        Member member = memberService.getMemberByMemberSeq(purchaseRegisterPostReq.getMemberSeq());
+    // 낙찰
+    // 1. history에 구매 내역 추가하고,  2. productDelivery 추가 자동으로 추가하고,  3. product status 1로 바꾸고,  4. product finalPrice 낙찰가로 업데이트. 5. 낙찰 알림 전송
+    int result = historyService.registerPurchaseHistory(purchaseRegisterPostReq);
+    Member member = memberService.getMemberByMemberSeq(purchaseRegisterPostReq.getMemberSeq());
         productDeliveryService.setMemberInfo(member, purchaseRegisterPostReq.getProductSeq());
         productService.updateStatus(purchaseRegisterPostReq.getProductSeq(), 1); // 1: 입금대기
         productService.updateFinalPrice(purchaseRegisterPostReq.getProductSeq(), purchaseRegisterPostReq.getFinalPrice());
+        notificationService.sendSuccessfulBidNotificationMessage(member.getMemberId(), member.getSeq(), purchaseRegisterPostReq.getFinalPrice());
         if (result == 1) {
-            return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
-        }
-        return ResponseEntity.status(409).body(BaseResponseBody.of(409, "상품 구매에 실패하였습니다."));
+        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
     }
+        return ResponseEntity.status(409).body(BaseResponseBody.of(409, "상품 구매에 실패하였습니다."));
+}
 
     @GetMapping("/purchase/detail/{historySeq}")
     public ResponseEntity<PurchaseDetailRes> getPurchaseDetail(@PathVariable("historySeq") Long historySeq, @ApiIgnore Authentication authentication) {
