@@ -170,7 +170,35 @@ $ npm start
 $ git clone https://lab.ssafy.com/s07-webmobile1-sub2/S07P12A308.git
 ```
 
-2. application.properties 작성 후 실행
+2. 프로젝터 폴더 > src > main > resources 이동
+
+```git
+$ cd "Themint Backend"
+$ cd src
+$ cd main
+$ cd resources
 ```
-/exec/포팅매뉴얼 참고하여 application.properties 작성 후 실행
+
+3. 프로젝트 실행을 위한 application.properties 파일 작성
+
+ - /exec/포팅매뉴얼 참고하여 application.properties 작성 후 실행
+
+
+4. 프로젝트 폴더 루트 경로로 이동
+
+```git
+$ cd "Themint Backend"
+```
+
+5. 프로젝트 빌드
+
+```git
+$ ./gradlew clean build
+```
+
+6. 빌드 폴더 이동 후 war 파일 실행
+
+```git
+$ cd build
+$ java -jar [파일명].jar
 ```
