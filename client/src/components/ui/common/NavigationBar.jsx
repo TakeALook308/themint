@@ -14,8 +14,8 @@ import { useEffect } from 'react';
 function NavigationBar() {
   const loggedin = useRecoilValue(loggedinState);
   const myInformation = useRecoilValue(myInformationState);
-  const [keyword, setKeyword] = useRecoilState(keywordState);
   const [key, setKey] = useState('');
+  const [type, setType] = useState('auction');
   const location = useLocation();
   const [searchParams] = useSearchParams();
 
@@ -26,20 +26,23 @@ function NavigationBar() {
     let word = key.trim();
     if (!word) return;
     setKey(word);
-    setKeyword((prev) => ({ ...prev, keyword: word }));
     navigate({
       pathname: '/search',
-      search: `?type=${keyword.type}&keyword=${word}`,
+      search: `?type=${type}&keyword=${word}`,
     });
+    console.log('adasd');
   };
 
   const searchParameter = searchParams.get('keyword');
   useEffect(() => {
     if (location.pathname === '/search') {
       const word = searchParams.get('keyword');
+      const newType = searchParams.get('type');
       setKey(word);
+      setType(newType);
     } else {
       setKey('');
+      setType('auction');
     }
   }, [searchParameter]);
 

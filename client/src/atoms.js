@@ -19,14 +19,6 @@ export const myInformationState = atom({
   },
 });
 
-export const keywordState = atom({
-  key: `keyword/${v1()}`,
-  default: {
-    keyword: '',
-    type: 'auction',
-  },
-});
-
 export const timeState = atom({
   key: 'timeState',
   default: 0,
