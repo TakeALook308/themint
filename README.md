@@ -170,4 +170,7 @@ $ npm start
 $ git clone https://lab.ssafy.com/s07-webmobile1-sub2/S07P12A308.git
 ```
 
-2. 프로젝트 폴더
+2. application.properties 작성 후 실행
+```
+/exec/포팅매뉴얼 참고하여 application.properties 작성 후 실행
+```
