@@ -12,7 +12,7 @@ function InterestKeyWordCard({ keyword, getData }) {
     <Container>
       {keyword}
       <IconContainer>
-        <ImCross onClick={onClick} color="FFFFFF" />
+        <ImCross size="12" onClick={onClick} color="FFFFFF" />
       </IconContainer>
     </Container>
   );
@@ -22,10 +22,10 @@ export default InterestKeyWordCard;
 const Container = styled.div`
   display: flex;
   justify-content: space-between;
-  font-size: 20px;
+  font-size: 18px;
   width: 100%;
   background-color: ${(props) => props.theme.colors.pointBlack};
-  padding: 10px 20px 10px 20px;
+  padding: 15px 20px;
   border-radius: 10px;
 `;
 

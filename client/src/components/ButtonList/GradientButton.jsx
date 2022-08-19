@@ -1,9 +1,9 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 
-function GradientButton({ text, type, onClick, size, disabled }) {
+function GradientButton({ text, type, onClick, size, disabled, fontsize }) {
   return (
-    <Button type={type} onClick={onClick} size={size} disabled={disabled}>
+    <Button type={type} onClick={onClick} size={size} disabled={disabled} fontsize={fontsize}>
       {text}
     </Button>
   );
@@ -31,7 +31,7 @@ export const Button = styled.button`
   border: none;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   color: ${(props) => props.theme.colors.white};
-  font-size: ${(props) => props.theme.fontSizes.h5};
+  font-size: ${(props) => (props.fontsize ? props.fontsize : props.theme.fontSizes.h5)};
   font-weight: bold;
   cursor: pointer;
   background-size: 200% 200%;

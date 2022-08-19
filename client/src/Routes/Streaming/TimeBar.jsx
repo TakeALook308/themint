@@ -10,7 +10,7 @@ function TimeBar(props) {
   return (
     <TimeBarBox>
       <BsAlarm size={20}></BsAlarm>
-      <Progress value={auctionTime.toFixed(1)} max="30">
+      <Progress value={auctionTime.toFixed(1)} max="15">
         {auctionTime.toFixed(1)}
       </Progress>
       <span>{auctionTime.toFixed(1)} 초</span>
@@ -41,7 +41,7 @@ const Progress = styled.progress`
   }
   &::-webkit-progress-value {
     background: ${(props) =>
-      props.value > 10
+      props.value > 5
         ? 'linear-gradient(90deg,rgba(44, 220, 178, 1) 0%, rgba(153, 232, 232, 1) 100%)'
         : 'linear-gradient(90deg, rgba(235,62,62,1) 0%, rgba(245,129,129,1) 100%)'};
     border-radius: 5px;
