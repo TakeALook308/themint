@@ -311,12 +311,12 @@ const AuctionInfo = styled.div`
     gap: 10px;
     height: 80px;
     & > p {
-      width: 100px;
-      white-space: nowrap;
+      /* width: 100px; */
+      /* white-space: nowrap; */
       font-size: 20px;
       font-weight: 700;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      /* overflow: hidden; */
+      /* text-overflow: ellipsis; */
     }
     & > div {
       display: flex;
