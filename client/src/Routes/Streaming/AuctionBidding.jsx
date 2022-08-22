@@ -15,9 +15,9 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct,
   const [AuctionStart, setAuctionStart] = useState(false); //상품별 경매 진행 여부
   const [AuctionEnd, setAuctionEnd] = useState(false); //모든 상품의 경매가 진행되었는지 여부
 
-  useEffect(() => {
-    console.log(nowProduct);
-  }, [nowProduct]);
+  // useEffect(() => {
+  //   console.log(nowProduct);
+  // }, [nowProduct]);
 
   useEffect(() => {
     if (price.length > 0) {
