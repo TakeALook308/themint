@@ -369,7 +369,7 @@ function ProfilePurchaseHistoryPage({ params }) {
                   <p>{purchaseDetail.addressDetail}</p>
                 </div>
                 <form
-                  action="http://info.sweettracker.co.kr/tracking/2"
+                  action="http://info.sweettracker.co.kr/tracking/5"
                   method="post"
                   target="_blank">
                   <div className="form-group">
