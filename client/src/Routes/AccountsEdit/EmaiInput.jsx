@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import MintButton from '../../components/ButtonList/MintButton';
-import DefaultButton from '../../components/common/DefaultButton';
 import ValidationMessage from '../../components/common/ValidationMessage';
 import { MessageWrapper } from '../../style/common';
 import { ActiveInput } from '../../style/style';
