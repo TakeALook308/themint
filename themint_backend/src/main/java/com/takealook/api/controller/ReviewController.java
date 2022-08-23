@@ -2,6 +2,7 @@ package com.takealook.api.controller;
 
 import com.takealook.api.request.ReviewRegisterPostReq;
 import com.takealook.api.response.ReviewListEntityRes;
+import com.takealook.api.response.ReviewRes;
 import com.takealook.api.service.MemberService;
 import com.takealook.api.service.ReviewService;
 import com.takealook.common.auth.MemberDetails;
@@ -38,6 +39,12 @@ public class ReviewController {
             reviewListEntityResList.add(ReviewListEntityRes.of(writer, review));
         }
         return ResponseEntity.status(200).body(reviewListEntityResList);
+    }
+
+    @GetMapping("/detail/{memberSeq}/{productSeq}")
+    public ResponseEntity<ReviewRes> getReviewDetail(@PathVariable("memberSeq") Long memberSeq, @PathVariable("productSeq") Long productSeq) {
+        Review review = reviewService.getReview(memberSeq, productSeq);
+        return ResponseEntity.status(200).body(ReviewRes.of(review));
     }
 
     @PostMapping
