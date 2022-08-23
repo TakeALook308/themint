@@ -11,7 +11,7 @@ export const Container = styled.main`
 `;
 
 export const MessageWrapper = styled.div`
-  height: 2rem;
+  min-height: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
