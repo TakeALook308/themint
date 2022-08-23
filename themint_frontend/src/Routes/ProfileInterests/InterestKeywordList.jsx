@@ -10,7 +10,6 @@ function InterestKeywordList() {
   const [addKeyword, setAddKeyword] = useState('');
   const [showKeyword, setShowKeyword] = useState([]);
   const onChange = (e) => {
-    console.log(e.target.value);
     setAddKeyword(e.target.value);
   };
   // 키워드 추가

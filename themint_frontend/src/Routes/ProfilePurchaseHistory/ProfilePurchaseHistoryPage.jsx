@@ -33,7 +33,15 @@ function ProfilePurchaseHistoryPage({ params }) {
 
   // 구매내역과 판매내역 차이 구분
   const [isPurchase, setIsPurchase] = useState('purchase');
-  const [isReview, setIsReview] = useState(false);
+  const [reviewDetail, setReviewDetail] = useState('');
+  const [stars, setStars] = useState([false, false, false, false, false]);
+  const [reviewData, setReviewData] = useState({
+    content: '',
+    receiverSeq: 1,
+    productSeq: 1,
+    score: 1,
+  });
+
   useEffect(() => {
     setIsPurchase('purchase');
   }, []);
@@ -62,7 +70,6 @@ function ProfilePurchaseHistoryPage({ params }) {
       setPurchaseDetail(itemDetail.data); // 상세보기 내용을 salesDetail에 저장
       setAuctionProductSeq(itemDetail.data.productSeq);
       onChange2({ target: { name: 'receiverSeq', value: itemDetail.data.sellerMemberSeq } });
-      onChange2({ target: { name: 'productSeq', value: itemDetail.data.productSeq } });
       setDeliveryData((prevState) => {
         return { ...prevState, productDeliverySeq: itemDetail.data.productDeliverySeq };
       });
@@ -95,13 +102,22 @@ function ProfilePurchaseHistoryPage({ params }) {
         `/api/review/detail/${itemDetail.data.sellerMemberSeq}/${itemDetail.data.productSeq}`,
       );
       res.then((reviewDetail) => {
-        console.log(reviewDetail);
+        onChange2({ target: { name: 'receiverSeq', value: itemDetail.data.sellerMemberSeq } });
+        // onChange2({ target: { name: 'productSeq', value: itemDetail.data.productSeq } });
+        setReviewDetail(reviewDetail.data);
+        let clickStates = [...stars];
+        for (let i = 0; i < reviewDetail.data.score; i++) {
+          clickStates[i] = true;
+        }
+        setStars(clickStates);
       });
     });
 
     setIsModal((prev) => !prev);
     setPurchaseDetail([]);
     setReviewData([]);
+    setReviewDetail([]);
+    setStars([false, false, false, false, false]);
   };
   // 입금완료
   const [auctionProductSeq, setAuctionProductSeq] = useState(0);
@@ -218,12 +234,7 @@ function ProfilePurchaseHistoryPage({ params }) {
   });
 
   // 리뷰 작성
-  const [reviewData, setReviewData] = useState({
-    content: '',
-    receiverSeq: 1,
-    productSeq: 1,
-    score: 1,
-  });
+
   const { content, score } = reviewData;
   const onChange2 = ({ target: { name, value } }) => {
     setReviewData({
@@ -232,7 +243,8 @@ function ProfilePurchaseHistoryPage({ params }) {
     });
   };
   // 버튼 클릭하면 리뷰 정보를 post
-  const postReview = () => {
+  const postReview = ({ target: { name, value } }) => {
+    reviewData.productSeq = value;
     const postReviewData = async (url, data) => {
       const response = await instance.post(url, data);
       return response;
@@ -396,7 +408,33 @@ function ProfilePurchaseHistoryPage({ params }) {
                 </form>
               </div>
 
-              {isReview ? null : (
+              {reviewDetail.content != null ? (
+                <>
+                  <p>작성한 리뷰</p>
+
+                  <div>
+                    <div className="review">
+                      <div className="reviewbox">
+                        <Stars>
+                          {ARRAY.map((el, idx) => {
+                            return (
+                              <FaStar key={idx} size="25" className={stars[el] && 'yellowStar'} />
+                            );
+                          })}
+                        </Stars>
+                      </div>
+
+                      <textarea
+                        type="text"
+                        name="content"
+                        value={reviewDetail.content}
+                        cols="70"
+                        rows="4"
+                        disabled></textarea>
+                    </div>
+                  </div>
+                </>
+              ) : (
                 <>
                   <p>리뷰 작성</p>
 
@@ -415,7 +453,12 @@ function ProfilePurchaseHistoryPage({ params }) {
                             );
                           })}
                         </Stars>
-                        <Button onClick={postReview}>작성</Button>
+                        <Button
+                          onClick={postReview}
+                          name="productSeq"
+                          value={purchaseDetail.productSeq}>
+                          작성
+                        </Button>
                       </div>
 
                       <textarea
