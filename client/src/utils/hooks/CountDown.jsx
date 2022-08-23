@@ -20,7 +20,6 @@ const CountDown = ({ isAuthenticating, setIsAuthenticating }) => {
 
   useEffect(() => {
     if (isAuthenticating && time.current < 0) {
-      console.log('타임 아웃');
       clearInterval(timerId.current);
       setIsAuthenticating(false);
       time.current = 180;

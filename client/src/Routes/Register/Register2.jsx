@@ -24,7 +24,6 @@ function Register2({ setUserInfo, setStep }) {
     register,
     watch,
     setError,
-    trigger,
     handleSubmit,
     formState: { errors },
   } = useForm({
@@ -55,6 +54,10 @@ function Register2({ setUserInfo, setStep }) {
   const onInvalid = () => {
     if (authNumber && enteredAuthNum.current !== authNumber) {
       errorToast('인증번호가 틀렸습니다.');
+      return;
+    }
+    if (enteredAuthNum.current !== authNumber) {
+      errorToast('인증번호를 확인해주세요.');
       return;
     }
   };
@@ -91,14 +94,16 @@ function Register2({ setUserInfo, setStep }) {
     setAuthNumber(String(response.data));
   };
 
-  const debouncePhoneChange = async (value) =>
-    await checkMemberInfo(
+  const debouncePhoneChange = async (value) => {
+    setAuthNumber(null);
+    return await checkMemberInfo(
       value,
       userApis.PHONE_DUPLICATE_CEHCK_API(value),
       setIsDuplicatedPhone,
       'phone',
       REGISTER_MESSAGE.DUPLICATED_PHONE,
     );
+  };
 
   const debouncedValidateEmail = useMemo(
     () => debounce((e) => debounceEmailChange(e.target.value), 500),
