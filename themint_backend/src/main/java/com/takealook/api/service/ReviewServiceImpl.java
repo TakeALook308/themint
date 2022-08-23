@@ -30,7 +30,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Review getReview(Long memberseq, Long productSeq) {
-        Review review = reviewRepository.findByReceiverSeqAndProductSeq(memberseq, productSeq);
+        Review review = reviewRepository.findByReceiverSeqAndProductSeq(memberseq, productSeq).orElse(null);
         return review;
     }
 

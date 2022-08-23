@@ -15,6 +15,7 @@ public class ReviewRes {
     String date;
 
     public static ReviewRes of(Review review){
+        if(review == null) return ReviewRes.builder().build();
         ReviewRes res = ReviewRes.builder()
                 .content(review.getContent())
                 .score(review.getScore())
