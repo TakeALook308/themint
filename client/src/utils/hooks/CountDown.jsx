@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 const CountDown = ({ isAuthenticating, setIsAuthenticating }) => {
-  const [minutes, setMinutes] = useState(3);
+  const [minutes, setMinutes] = useState(1);
   const [seconds, setSeconds] = useState(0);
-  const time = useRef(180);
+  const time = useRef(60);
   const timerId = useRef(null);
 
   useEffect(() => {
@@ -22,7 +22,7 @@ const CountDown = ({ isAuthenticating, setIsAuthenticating }) => {
     if (isAuthenticating && time.current < 0) {
       clearInterval(timerId.current);
       setIsAuthenticating(false);
-      time.current = 180;
+      time.current = 60;
     }
   }, [seconds, isAuthenticating]);
 

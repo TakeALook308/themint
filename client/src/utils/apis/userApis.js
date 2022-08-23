@@ -9,7 +9,7 @@ export const userApis = {
   AUTH_EMAIL: '/api/member/password/check',
   PASSWORD_CHANGE: '/api/member/password/change',
   PASSWORD: '/api/member/password',
-  PHONE_CHANGE: '/api/member/phone',
+  PHONE_AUTHNUMBER_CHECK: '/api/member/sms/auth',
   FIND_ID: '/api/member/id',
   SCORE_CHANGE: '/api/member/score',
   DELETE_USER: '/api/member/delete',
