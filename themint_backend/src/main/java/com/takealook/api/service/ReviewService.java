@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface ReviewService {
     void registerReview(Long writerSeq, ReviewRegisterPostReq reviewRegisterPostReq);
+    Review getReview(Long memberseq, Long productSeq);
     List<Review> getReviewList(Long memberSeq);
 }
