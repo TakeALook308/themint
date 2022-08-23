@@ -78,7 +78,7 @@ const LinkContainer = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  gap: 0.5rem;
+  /* gap: 0.5rem; */
   a {
     position: relative;
     color: ${(props) => props.theme.colors.white};

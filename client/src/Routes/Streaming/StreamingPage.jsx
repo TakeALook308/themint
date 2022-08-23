@@ -10,12 +10,10 @@ import { deviceListState, myInformationState, timeState } from '../../atoms';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { useParams } from 'react-router-dom';
-import { getData } from '../../utils/apis/api';
 import { fetchData } from '../../utils/apis/api';
 import { auctionApis } from '../../utils/apis/auctionApis';
 import moment from 'moment';
 import TimeBar from './TimeBar';
-import { chatApis } from '../../utils/apis/chatApis';
 let sock;
 let client;
 function StreamingPage(props) {
@@ -35,7 +33,7 @@ function StreamingPage(props) {
   ]);
 
   useEffect(() => {
-    getData(auctionApis.AUCTION_DETAIL_API(auctionId)).then((res) => {
+    fetchData.get(auctionApis.AUCTION_DETAIL_API(auctionId)).then((res) => {
       setAuctionInfo(res.data);
       setAuctionData({ memberSeq: res.data.memberSeq });
       setProducts(res.data.productList);
