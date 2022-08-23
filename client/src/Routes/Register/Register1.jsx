@@ -53,7 +53,10 @@ function Register1({ setUserInfo, setStep }) {
   };
 
   const debouncedValidateID = useMemo(
-    () => debounce(async (value) => await checkMemberId(value), 700),
+    () =>
+      debounce(async (e) => {
+        await checkMemberId(e.target.value);
+      }, 500),
     [],
   );
 
@@ -82,7 +85,7 @@ function Register1({ setUserInfo, setStep }) {
                 value: REGEX.ID,
                 message: REGISTER_MESSAGE.ONLY_ENGLISH_AND_NUMBER,
               },
-              validate: debouncedValidateID,
+              onChange: debouncedValidateID,
             })}
             placeholder=" "
             required
