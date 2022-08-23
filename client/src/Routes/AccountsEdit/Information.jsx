@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
+import MintButton from '../../components/ButtonList/MintButton';
 import DefaultButton from '../../components/common/DefaultButton';
 import { errorToast, successToast } from '../../lib/toast';
 import { fetchData } from '../../utils/apis/api';
@@ -43,10 +44,10 @@ const Information = ({ icon, textList, onClick, Component, userAllInfo, type }) 
               <MemoizedTextConatiner textList={textList} />
             </TextConatiners>
           )}
-          <DefaultButton
-            title={'수정'}
+          <MintButton
+            text={'수정'}
             type="button"
-            widthValue="70px"
+            size="70px"
             onClick={onClick ? onClick : () => setEditMode(true)}
           />
         </NotEditMode>

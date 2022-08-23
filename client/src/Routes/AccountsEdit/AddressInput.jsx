@@ -15,7 +15,6 @@ function AddressInput({ text, setEditMode, changeInformation }) {
 
   const handleInput = (e) => {
     console.log(e);
-    // setAddress(e.target.value);
   };
 
   const togglePostCode = () => {
@@ -107,13 +106,8 @@ function AddressInput({ text, setEditMode, changeInformation }) {
         </AddressContainer>
       </InputContainer>
       <ButtonContainer>
-        <DefaultButton
-          title={'취소'}
-          type="button"
-          widthValue="70px"
-          onClick={() => setEditMode(false)}
-        />
-        <DefaultButton title={'변경'} type="submit" widthValue="70px" disabled={isSubmitting} />
+        <MintButton text={'취소'} type="button" size="70px" onClick={() => setEditMode(false)} />
+        <MintButton text={'변경'} type="submit" size="70px" disabled={isSubmitting} />
       </ButtonContainer>
     </FormContainer>
   );
