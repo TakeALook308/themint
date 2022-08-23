@@ -33,6 +33,7 @@ function ProfilePurchaseHistoryPage({ params }) {
 
   // 구매내역과 판매내역 차이 구분
   const [isPurchase, setIsPurchase] = useState('purchase');
+  const [isReview, setIsReview] = useState(false);
   useEffect(() => {
     setIsPurchase('purchase');
   }, []);
@@ -61,6 +62,7 @@ function ProfilePurchaseHistoryPage({ params }) {
       setPurchaseDetail(itemDetail.data); // 상세보기 내용을 salesDetail에 저장
       setAuctionProductSeq(itemDetail.data.productSeq);
       onChange2({ target: { name: 'receiverSeq', value: itemDetail.data.sellerMemberSeq } });
+      onChange2({ target: { name: 'productSeq', value: itemDetail.data.productSeq } });
       setDeliveryData((prevState) => {
         return { ...prevState, productDeliverySeq: itemDetail.data.productDeliverySeq };
       });
@@ -84,6 +86,16 @@ function ProfilePurchaseHistoryPage({ params }) {
       });
       setSearchDeliveryData((prevState) => {
         return { ...prevState, t_invoice: itemDetail.data.trackingNo };
+      });
+      const getReviewData = async (url) => {
+        const response = await instance.get(url);
+        return response;
+      };
+      const res = getReviewData(
+        `/api/review/detail/${itemDetail.data.sellerMemberSeq}/${itemDetail.data.productSeq}`,
+      );
+      res.then((reviewDetail) => {
+        console.log(reviewDetail);
       });
     });
 
@@ -209,6 +221,7 @@ function ProfilePurchaseHistoryPage({ params }) {
   const [reviewData, setReviewData] = useState({
     content: '',
     receiverSeq: 1,
+    productSeq: 1,
     score: 1,
   });
   const { content, score } = reviewData;
@@ -383,36 +396,40 @@ function ProfilePurchaseHistoryPage({ params }) {
                 </form>
               </div>
 
-              <p>리뷰 작성</p>
+              {isReview ? null : (
+                <>
+                  <p>리뷰 작성</p>
 
-              <div>
-                <div className="review">
-                  <div className="reviewbox">
-                    <Stars>
-                      {ARRAY.map((el, idx) => {
-                        return (
-                          <FaStar
-                            key={idx}
-                            size="25"
-                            onClick={() => handleStarClick(el)}
-                            className={clicked[el] && 'yellowStar'}
-                          />
-                        );
-                      })}
-                    </Stars>
-                    <Button onClick={postReview}>작성</Button>
+                  <div>
+                    <div className="review">
+                      <div className="reviewbox">
+                        <Stars>
+                          {ARRAY.map((el, idx) => {
+                            return (
+                              <FaStar
+                                key={idx}
+                                size="25"
+                                onClick={() => handleStarClick(el)}
+                                className={clicked[el] && 'yellowStar'}
+                              />
+                            );
+                          })}
+                        </Stars>
+                        <Button onClick={postReview}>작성</Button>
+                      </div>
+
+                      <textarea
+                        type="text"
+                        onChange={onChange2}
+                        name="content"
+                        value={content}
+                        cols="70"
+                        rows="4"
+                        placeholder="리뷰를 작성해주세요."></textarea>
+                    </div>
                   </div>
-
-                  <textarea
-                    type="text"
-                    onChange={onChange2}
-                    name="content"
-                    value={content}
-                    cols="70"
-                    rows="4"
-                    placeholder="리뷰를 작성해주세요."></textarea>
-                </div>
-              </div>
+                </>
+              )}
             </Purchased>
           )}
         </ModalMain>

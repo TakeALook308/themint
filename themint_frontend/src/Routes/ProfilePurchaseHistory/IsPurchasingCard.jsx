@@ -194,8 +194,7 @@ const AuctionStatus = styled.div`
   position: absolute;
   display: flex;
   justify-content: center;
-  width: 25%;
-  height: 25%;
+  padding: 5px 8px;
   right: 5%;
   top: -180%;
   border-radius: 10px;
@@ -204,12 +203,12 @@ const AuctionStatus = styled.div`
     props.auctionstrkey === 0
       ? 'green'
       : props.auctionstrkey === 1
-      ? 'orange'
+      ? '#D28484'
       : props.auctionstrkey === 2
-      ? 'red'
+      ? '#7CA981'
       : props.auctionstrkey === 3
-      ? 'brown'
-      : 'black'};
+      ? '#2874A6'
+      : 'dimgray'};
 `;
 
 const Plus = styled.button`
