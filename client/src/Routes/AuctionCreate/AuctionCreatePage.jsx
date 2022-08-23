@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import GradientButton from '../../components/ButtonList/GradientButton';
 import { AiOutlineDownload, AiFillPlusCircle } from 'react-icons/ai';
 import { Helmet } from 'react-helmet-async';
+import moment from 'moment';
 
 function AuctionCreatePage(props) {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ function AuctionCreatePage(props) {
     maxFilesize: 5,
   });
   const [auctionImageList, setAuctionImageList] = useState([]);
+  const productRef = useRef(null);
   useEffect(() => {
     let temp = [...auctionImageList];
     acceptedFiles.map((item) => {
@@ -37,7 +39,7 @@ function AuctionCreatePage(props) {
     categorySeq: 1,
     title: '',
     content: '',
-    startTime: new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, -1),
+    startTime: new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, -8),
     productList: [],
   });
 
@@ -111,7 +113,14 @@ function AuctionCreatePage(props) {
     }
   };
 
-  // const scrollRef = useRef();
+  const scrollRef = useRef(null);
+  const scrollToBottom = () => {
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [productList]);
 
   return (
     <Container>
@@ -226,7 +235,7 @@ function AuctionCreatePage(props) {
 
         <Div>
           <Label style={{ display: 'inline-block', lineHeight: '24px', verticalAlign: 'middle' }}>
-            예약
+            예약{console.log(startTime, inputAuction.startTime)}
           </Label>
           <CheckBox
             type="checkbox"
@@ -258,7 +267,7 @@ function AuctionCreatePage(props) {
           <Label>상품 ({productList.length})</Label>
 
           {/* <TableBox ref={scrollRef}> */}
-          <TableBox>
+          <TableBox ref={scrollRef}>
             <Table>
               <colgroup>
                 <col width="70%" />
@@ -286,6 +295,7 @@ function AuctionCreatePage(props) {
                       type="text"
                       value={productName}
                       onChange={(e) => setProductName(e.target.value)}
+                      ref={productRef}
                     />
                   </td>
                   <td>
@@ -298,6 +308,7 @@ function AuctionCreatePage(props) {
                         if (e.key === 'Enter') {
                           e.preventDefault();
                           createProducts();
+                          productRef.current.focus();
                         }
                       }}
                     />

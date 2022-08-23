@@ -23,6 +23,7 @@ function StreamingPage(props) {
   const [auctionData, setAuctionData] = useState({});
   const [nextProduct, setNextProduct] = useState(-1);
   const deviceList = useRecoilValue(deviceListState);
+  const [productNum, setProductNUm] = useState(-1);
   // const [products, setProducts] = useState([]);
   const [products, setProducts] = useState([
     {
@@ -141,6 +142,7 @@ function StreamingPage(props) {
               setNextProduct={setNextProduct}
               auctionsHash={auctionId}
             />
+            {console.log(productNum)}
             <StreamChat sendMessage={sendMessage} chat={chat} userInfo={userInfo} />
           </Aside>
         </Main>
