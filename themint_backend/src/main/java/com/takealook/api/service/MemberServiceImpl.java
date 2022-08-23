@@ -39,7 +39,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member createMember(MemberRegisterPostReq memberRegisterPostReq) {
         int randomIdx = new Random().nextInt(6);
-        String profileUrl = "/member/basic" + randomIdx + ".png";
+        String profileUrl = "/member/basic" + randomIdx + 1 + ".png";
         Member member = Member.builder()
                 .memberId(memberRegisterPostReq.getMemberId())
                 .pwd(passwordEncoder.encode(memberRegisterPostReq.getPwd()))
