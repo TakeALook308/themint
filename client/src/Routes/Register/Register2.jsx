@@ -13,10 +13,9 @@ import StepSignal from './StepSignal';
 import ValidationMessage from '../../components/common/ValidationMessage';
 import CountDown from '../../utils/hooks/CountDown';
 import { useRef } from 'react';
-import { errorToast } from '../../lib/toast';
+import { errorToast, successToast } from '../../lib/toast';
 
 function Register2({ setUserInfo, setStep }) {
-  const [authNumber, setAuthNumber] = useState();
   const [isDuplicatedEmail, setIsDuplicatedEmail] = useState(true);
   const [isDuplicatedPhone, setIsDuplicatedPhone] = useState(true);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
@@ -38,13 +37,23 @@ function Register2({ setUserInfo, setStep }) {
   const enteredAuthNum = useRef({});
   enteredAuthNum.current = watch('authNumber', '');
 
-  const onValid = (data) => {
+  const onValid = async (data) => {
     if (isDuplicatedEmail) {
-      setError('email', { message: REGISTER_MESSAGE.DUPLICATED_ID }, { shouldFocus: true });
+      setError('email', { message: REGISTER_MESSAGE.DUPLICATED_EMAIL }, { shouldFocus: true });
       return;
     }
-    if (authNumber && enteredAuthNum.current !== authNumber) {
-      errorToast('인증번호가 틀렸습니다.');
+    if (isDuplicatedPhone) {
+      setError('phone', { message: REGISTER_MESSAGE.DUPLICATED_PHONE }, { shouldFocus: true });
+      return;
+    }
+    const body = { phone: data.phone, authNum: enteredAuthNum.current };
+    try {
+      const response = await fetchData.post(userApis.PHONE_AUTHNUMBER_CHECK, body);
+      if (response.status === 200) {
+        successToast('전화번호 변경에 성공하였습니다.');
+      }
+    } catch (err) {
+      errorToast('인증번호를 확인해주세요.');
       return;
     }
     setUserInfo((prev) => ({ ...prev, ...data }));
@@ -52,12 +61,8 @@ function Register2({ setUserInfo, setStep }) {
   };
 
   const onInvalid = () => {
-    if (authNumber && enteredAuthNum.current !== authNumber) {
-      errorToast('인증번호가 틀렸습니다.');
-      return;
-    }
-    if (enteredAuthNum.current !== authNumber) {
-      errorToast('인증번호를 확인해주세요.');
+    if (isDuplicatedPhone) {
+      setError('phone', { message: REGISTER_MESSAGE.DUPLICATED_PHONE }, { shouldFocus: true });
       return;
     }
   };
@@ -91,11 +96,9 @@ function Register2({ setUserInfo, setStep }) {
     const response = await fetchData.post(userApis.PHONE_CERTIFICATE_API, {
       phone: watch().phone,
     });
-    setAuthNumber(String(response.data));
   };
 
   const debouncePhoneChange = async (value) => {
-    setAuthNumber(null);
     return await checkMemberInfo(
       value,
       userApis.PHONE_DUPLICATE_CEHCK_API(value),
@@ -222,10 +225,6 @@ function Register2({ setUserInfo, setStep }) {
             type="text"
             {...register('authNumber', {
               required: REGISTER_MESSAGE.REQUIRED_CERTIFICATION_NUMBER,
-              validate: {
-                certi: (value) =>
-                  value !== authNumber ? REGISTER_MESSAGE.FAILED_CERTICATION_NUMBER : true,
-              },
             })}
             placeholder=" "
             autoComplete="off"
@@ -233,15 +232,7 @@ function Register2({ setUserInfo, setStep }) {
           />
           <label htmlFor="authNumber">인증번호</label>
         </ActiveInput>
-        <MessageWrapper>
-          {/* <ValidationMessage text={errors?.authNumber?.message} state={'fail'} />
-          {watch().authNumber && !errors?.authNumber && (
-            <ValidationMessage
-              text={REGISTER_MESSAGE.VALIDATED_CERTICATION_NUMBER}
-              state={'pass'}
-            />
-          )} */}
-        </MessageWrapper>
+        <MessageWrapper></MessageWrapper>
         <StepSignal step={'register2'} />
         <GradientButton text={'다음'} type={'submit'} />
       </div>

@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { Register1, Register2, Register3 } from '.';
 import { userApis } from '../../utils/apis/userApis';
 import { fetchData } from '../../utils/apis/api';
-import SocialLogginButton from '../../components/ButtonList/SocialLogginButton';
 import SignContainer from '../../components/common/SignContainer';
 import { PAGES } from '../../utils/constants/constant';
 import { Helmet } from 'react-helmet-async';
@@ -23,8 +22,8 @@ function RegisterPage() {
     phone: '',
   });
   const [step, setStep] = useState({
-    step1: false,
-    step2: true,
+    step1: true,
+    step2: false,
     step3: false,
   });
 

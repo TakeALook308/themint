@@ -92,19 +92,17 @@ function AccountsPhoneNumberPage() {
       setError('phone', { message: REGISTER_MESSAGE.DUPLICATED_PHONE });
       return;
     }
-    const body = { phone: data.phone, authNumber: authNumber.current };
-    setTimeout(async () => {
-      try {
-        const response = await fetchData.post(userApis.PHONE_AUTHNUMBER_CHECK, body);
-        if (response.status === 200) {
-          successToast('전화번호 변경에 성공하였습니다.');
-          setValue('phone', '');
-          setValue('authNumber', '');
-        }
-      } catch (err) {
-        errorToast('인증번호를 확인해주세요.');
+    const body = { phone: data.phone, authNum: authNumber.current };
+    try {
+      const response = await fetchData.post(userApis.PHONE_AUTHNUMBER_CHECK, body);
+      if (response.status === 200) {
+        successToast('전화번호 변경에 성공하였습니다.');
+        setValue('phone', '');
+        setValue('authNumber', '');
       }
-    }, 1000);
+    } catch (err) {
+      errorToast('인증번호를 확인해주세요.');
+    }
   };
 
   const onInValid = () => {
