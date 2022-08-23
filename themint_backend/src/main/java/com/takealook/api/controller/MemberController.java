@@ -3,6 +3,7 @@ package com.takealook.api.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.takealook.api.request.*;
 import com.takealook.api.response.*;
+import com.takealook.api.service.AuthService;
 import com.takealook.api.service.MemberService;
 import com.takealook.api.service.S3FileService;
 import com.takealook.api.service.SmsService;
@@ -11,6 +12,7 @@ import com.takealook.common.exception.code.ErrorCode;
 import com.takealook.common.exception.member.*;
 import com.takealook.common.model.response.BaseResponseBody;
 import com.takealook.common.util.JwtTokenUtil;
+import com.takealook.db.entity.Auth;
 import com.takealook.db.entity.Member;
 import com.takealook.db.entity.RefreshToken;
 import com.takealook.db.repository.RefreshTokenRepository;
@@ -55,6 +57,8 @@ public class MemberController {
     SmsService smsService;
 
     @Autowired
+    AuthService authService;
+    @Autowired
     S3FileService s3FileService;
 
     @Autowired
@@ -71,9 +75,9 @@ public class MemberController {
         if (member != null) {
             Map<String, String> tokens = JwtTokenUtil.generateTokenSet(member.getMemberId());
             RefreshToken refreshToken = refreshTokenRepository.findByMemberSeq(member.getSeq()).orElse(null);
-            if(refreshToken != null){
+            if (refreshToken != null) {
                 refreshToken.setRefreshToken(tokens.get("refreshToken"));
-            } else{
+            } else {
                 refreshToken = RefreshToken.builder()
                         .refreshToken(tokens.get("refreshToken"))
                         .member(member)
@@ -100,9 +104,9 @@ public class MemberController {
         // 로그인 성공
         Map<String, String> tokens = JwtTokenUtil.generateTokenSet(memberId);
         RefreshToken refreshToken = refreshTokenRepository.findByMemberSeq(member.getSeq()).orElse(null);
-        if(refreshToken != null){
+        if (refreshToken != null) {
             refreshToken.setRefreshToken("Bearer " + tokens.get("refreshToken"));
-        } else{
+        } else {
             refreshToken = RefreshToken.builder()
                     .refreshToken("Bearer " + tokens.get("refreshToken"))
                     .member(member)
@@ -118,11 +122,11 @@ public class MemberController {
             @ApiImplicitParam(name = "ACCESS-TOKEN", value = "access-token", required = true, dataType = "String", paramType = "header"),
             @ApiImplicitParam(name = "REFRESH-TOKEN", value = "refresh-token", required = true, dataType = "String", paramType = "header")
     })
-    public ResponseEntity<?> JwtTokenRefresh(@RequestHeader(value="ACCESS-TOKEN") String token,
-                                               @RequestHeader(value="REFRESH-TOKEN") String refreshToken ) throws Exception {
+    public ResponseEntity<?> JwtTokenRefresh(@RequestHeader(value = "ACCESS-TOKEN") String token,
+                                             @RequestHeader(value = "REFRESH-TOKEN") String refreshToken) throws Exception {
         // refreshToken 정보 조회
         RefreshToken refreshTokenCheck = refreshTokenRepository.findByRefreshToken(refreshToken).orElse(null);
-        if(refreshTokenCheck == null){
+        if (refreshTokenCheck == null) {
             return ResponseEntity.status(401).body(BaseResponseBody.of(401, "REFRESH_ERROR"));
         } else {
             refreshToken = refreshTokenCheck.getRefreshToken();
@@ -131,7 +135,7 @@ public class MemberController {
 
         Boolean refTokenValid = jwtTokenUtil.reGenerateRefreshToken(member);
         String accessToken = "";
-        if(refTokenValid){
+        if (refTokenValid) {
             RefreshToken updateRefToken = refreshTokenRepository.findByMemberSeq(member.getSeq()).orElse(null);
             refreshToken = updateRefToken.getRefreshToken();
             accessToken = JwtTokenUtil.getToken(refreshTokenCheck.getMember().getMemberId());
@@ -161,14 +165,14 @@ public class MemberController {
         List<MemberListEntityRes> memberListEntityResList = new ArrayList<>();
         Boolean hasMore = false;
         Member loginMember = null;
-        if(authentication != null){
+        if (authentication != null) {
             MemberDetails memberDetails = (MemberDetails) authentication.getDetails();
             loginMember = memberService.getMemberByMemberSeq(memberDetails.getMemberSeq());
         }
         Pageable pageable = PageRequest.of(page, size, Sort.by("score").descending());
         List<Member> memberList = null;
         List<Member> hasMoreList = null;
-        if(loginMember != null){
+        if (loginMember != null) {
             memberList = memberService.getMemberListByWord(word, loginMember.getNickname(), pageable);
             hasMoreList = memberService.getMemberListByWord(word, loginMember.getNickname(), PageRequest.of(page + 1, size, Sort.by("score").descending()));
         } else {
@@ -269,15 +273,37 @@ public class MemberController {
     /////////////////// 비밀번호 재설정 (비밀번호 찾기) start ////////////////////////
     // 1. 아이디, 이메일 체크 + 인증번호 전송
     @PostMapping("/password/check")
-    public ResponseEntity<?> checkEmail(@RequestBody MemberSetNewPwdCheckPostReq memberSetNewPwdCheckPostReq) {
+    public ResponseEntity<?> checkEmailAndSendAuthNum(@RequestBody MemberSetNewPwdCheckPostReq memberSetNewPwdCheckPostReq) {
         // 아이디-이메일 체크
         Member member = memberService.getMemberByMemberIdAndEmail(memberSetNewPwdCheckPostReq);
+        if (member == null)
+            throw new MemberNotFoundException("member not found", ErrorCode.MEMBER_NOT_FOUND);
+        String email = member.getEmail();
+
+        if (authService.getAuth(email) != null) {
+            authService.deleteAuth(email);
+        }
         // 메일로 인증번호 전송
         int randNum = ThreadLocalRandom.current().nextInt(100000, 1000000);
         int result = memberService.sendEmail(randNum, member.getEmail());
         // 메일 전송 실패 시
         if (result == 0) return ResponseEntity.status(409).body(BaseResponseBody.of(409, "메일 전송에 실패하였습니다."));
-        return ResponseEntity.status(200).body(MemberRandomNumberRes.of(randNum));
+        authService.insertAuth(email, randNum);
+        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "메일 전송에 성공하였습니다."));
+    }
+
+    @PostMapping("/password/check/auth")
+    public ResponseEntity<?> emailAuth(@RequestBody AuthEmailPostReq authEmailPostReq) {
+        String email = authEmailPostReq.getEmail();
+        int authNum = authEmailPostReq.getAuthNum();
+        int num = authService.getAuth(email).getAuthNum();
+        if (num != authNum) {
+            return ResponseEntity.status(409).body(BaseResponseBody.of(409, "인증번호 인증에 실패하였습니다."));
+        }
+        if (authService.getAuth(email) != null) {
+            authService.deleteAuth(email);
+        }
+        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "인증번호 인증에 성공하였습니다."));
     }
 
 //    // 2. 인증번호 확인
@@ -379,15 +405,34 @@ public class MemberController {
         return ResponseEntity.status(200).body(BaseResponseBody.of(200, "success"));
     }
 
-    // 문자 인증
+    // 문자 인증번호 발송
     @PostMapping("/sms")
-    public ResponseEntity<?> smsAuth(@RequestBody Map<String, String> phoneMap) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
+    public ResponseEntity<?> smsAuthNumSend(@RequestBody Map<String, String> phoneMap) throws UnsupportedEncodingException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
+        String phone = phoneMap.get("phone");
         int randNum = ThreadLocalRandom.current().nextInt(100000, 1000000);
-
-        SendSmsRes sendSmsRes = smsService.sendSms(phoneMap.get("phone"), String.valueOf(randNum));
-        if (sendSmsRes.getStatusName().equals("fail"))
+        if (authService.getAuth(phone) != null) {
+            authService.deleteAuth(phone);
+        }
+        SendSmsRes sendSmsRes = smsService.sendSms(phone, String.valueOf(randNum));
+        if (("fail").equals(sendSmsRes.getStatusName()))
             return ResponseEntity.status(409).body(BaseResponseBody.of(409, "인증번호 전송에 실패하였습니다."));
-        return ResponseEntity.status(200).body(randNum);
+        authService.insertAuth(phone, randNum);
+        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "인증번호 전송에 성공하였습니다."));
+    }
+
+    // 문자 인증번호 확인
+    @PostMapping("/sms/auth")
+    public ResponseEntity<?> smsAuth(@RequestBody AuthPhonePostReq authPhonePostReq) {
+        String phone = authPhonePostReq.getPhone();
+        int authNum = authPhonePostReq.getAuthNum();
+        int num = authService.getAuth(phone).getAuthNum();
+        if (num != authNum) {
+            return ResponseEntity.status(409).body(BaseResponseBody.of(409, "인증번호 인증에 실패하였습니다."));
+        }
+        if (authService.getAuth(phone) != null) {
+            authService.deleteAuth(phone);
+        }
+        return ResponseEntity.status(200).body(BaseResponseBody.of(200, "인증번호 인증에 성공하였습니다."));
     }
 
     // 로그인 멤버 기본 정보 받기
