@@ -26,7 +26,6 @@ function StreamingPage(props) {
   const [nextProduct, setNextProduct] = useState(-1);
   const deviceList = useRecoilValue(deviceListState);
   const [productNum, setProductNUm] = useState(-1);
-  // const [products, setProducts] = useState([]);
   const [products, setProducts] = useState([
     {
       productName: 'error',
@@ -34,6 +33,14 @@ function StreamingPage(props) {
       status: -1,
     },
   ]);
+
+  let nickname = userInfo.nickname;
+  let memberSeq = userInfo.memberSeq;
+  let roomId = auctionId;
+  const [chat, setChat] = useState([]);
+  const [priceList, setPriceList] = useState([]);
+  const [newTime, setNewTime] = useState(moment());
+  const setAuctionTime = useSetRecoilState(timeState);
 
   useEffect(() => {
     getData(auctionApis.AUCTION_DETAIL_API(auctionId)).then((res) => {
@@ -43,17 +50,6 @@ function StreamingPage(props) {
     });
     // console.log('잘 실행되나요?');
   }, [nextProduct]);
-
-  // console.log(nextProduct);
-  // console.log(products);
-  let nickname = userInfo.nickname;
-  let memberSeq = userInfo.memberSeq;
-  let roomId = auctionId;
-  const [chat, setChat] = useState([]);
-  const [priceList, setPriceList] = useState([]);
-  const [newTime, setNewTime] = useState(moment());
-  // const []
-  const setAuctionTime = useSetRecoilState(timeState);
 
   //처음 접속했을 때
   useEffect(() => {
@@ -144,7 +140,6 @@ function StreamingPage(props) {
               setNextProduct={setNextProduct}
               auctionsHash={auctionId}
             />
-            {console.log(productNum)}
             <StreamChat sendMessage={sendMessage} chat={chat} userInfo={userInfo} />
           </Aside>
         </Main>
