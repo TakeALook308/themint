@@ -204,7 +204,7 @@ const AuctionStatus = styled.div`
     props.auctionstrkey === 0
       ? 'green'
       : props.auctionstrkey === 1
-      ? 'orange'
+      ? '#5ba5d2'
       : props.auctionstrkey === 2
       ? 'red'
       : props.auctionstrkey === 3
