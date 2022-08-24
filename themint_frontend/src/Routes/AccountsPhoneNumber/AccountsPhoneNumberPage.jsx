@@ -11,7 +11,7 @@ import { fetchData } from '../../utils/apis/api';
 import { userApis } from '../../utils/apis/userApis';
 import { REGEX, REGISTER_MESSAGE } from '../../utils/constants/constant';
 import debounce from '../../utils/functions/debounce';
-import CountDown from '../../utils/hooks/CountDown';
+import CountDown from '../../components/common/CountDown';
 import {
   ButtonContainer,
   Container,

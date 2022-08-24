@@ -11,7 +11,7 @@ import { REGEX, REGISTER_MESSAGE, STANDARD } from '../../utils/constants/constan
 import debounce from '../../utils/functions/debounce';
 import StepSignal from './StepSignal';
 import ValidationMessage from '../../components/common/ValidationMessage';
-import CountDown from '../../utils/hooks/CountDown';
+import CountDown from '../../components/common/CountDown';
 import { useRef } from 'react';
 import { errorToast, successToast } from '../../lib/toast';
 
