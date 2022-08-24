@@ -3,11 +3,9 @@ import styled from 'styled-components';
 import { Container, Title } from '../../style/style';
 import { categories } from '../../utils/constants/constant';
 import ActiveInputBox from '../../components/common/ActiveInputBox';
-import ProductTable from './ProductTable';
-import Modal from '../../components/common/Modal';
 import { useDropzone } from 'react-dropzone';
 import { auctionApis } from '../../utils/apis/auctionApis';
-import { postData } from '../../utils/apis/api';
+import { fetchData } from '../../utils/apis/api';
 import { useNavigate } from 'react-router-dom';
 import GradientButton from '../../components/ButtonList/GradientButton';
 import { AiOutlineDownload, AiFillPlusCircle } from 'react-icons/ai';
@@ -145,11 +143,12 @@ function AuctionCreatePage(props) {
             new Blob([JSON.stringify(inputAuction)], { type: 'application/json' }),
           );
           // console.log(formData.get('file'), formData.get('key'));
-          postData(auctionApis.AUCTION_CREATE_API, formData, {
-            headers: {
-              'Content-Type': `multipart/form-data`,
-            },
-          })
+          fetchData
+            .post(auctionApis.AUCTION_CREATE_API, formData, {
+              headers: {
+                'Content-Type': `multipart/form-data`,
+              },
+            })
             .then((res) => {
               // console.log(inputAuction);
               alert('성공');
@@ -236,7 +235,7 @@ function AuctionCreatePage(props) {
 
         <Div>
           <Label style={{ display: 'inline-block', lineHeight: '24px', verticalAlign: 'middle' }}>
-            예약{console.log(startTime, inputAuction.startTime)}
+            예약
           </Label>
           <CheckBox
             type="checkbox"
@@ -297,10 +296,14 @@ function AuctionCreatePage(props) {
                       value={productName}
                       onChange={(e) => setProductName(e.target.value)}
                       ref={productRef}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                        }
+                      }}
                     />
                   </td>
                   <td>
-                    <input type="hidden" />
                     <input
                       type="number"
                       value={startPrice}

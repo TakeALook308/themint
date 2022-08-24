@@ -7,7 +7,6 @@ const getAccessToken = () => {
   return accessToken;
 };
 
-// TODO: Backend refresh 로직따라 삭제 가능
 const getLocalRefreshToken = () => {
   const refreshToken = localStorage.getItem('refreshToken');
   return refreshToken;
@@ -21,7 +20,6 @@ export const removeRefreshToken = () => {
   localStorage.removeItem('refreshToken');
 };
 
-// TODO: Backend refresh 로직따라 변경 가능
 const getNewAccessToken = () => {
   return axiosInstance.get('/api/member/refresh', {
     headers: {
@@ -59,7 +57,6 @@ instance.interceptors.request.use(
   },
 );
 
-// TODO: Backend 로직따라서 refreshtoken이 없을 경우 변경될 수 있음.
 instance.interceptors.response.use(
   (res) => {
     return res;
@@ -102,9 +99,3 @@ export const fetchData = {
   patch: async (url, body, option) => await instance.patch(url, body, option),
   delete: async (url, body, option) => await instance.delete(url, body, option),
 };
-
-export const getData = async (url, option) => await instance.get(url, option);
-export const postData = async (url, body, option) => await instance.post(url, body, option);
-export const patchData = async (url, body, option) => await instance.patch(url, body, option);
-export const putData = async (url, body, option) => await instance.put(url, body, option);
-export const deleteData = async (url, body, option) => await instance.delete(url, body, option);

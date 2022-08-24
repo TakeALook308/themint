@@ -76,7 +76,7 @@ function Register3({ setUserInfo, setStep }) {
   };
 
   const debounceCheckNickname = useMemo(
-    () => debounce(async (value) => await checkNickname(value), 1000),
+    () => debounce(async (e) => await checkNickname(e.target.value), 1000),
     [],
   );
 
@@ -105,7 +105,7 @@ function Register3({ setUserInfo, setStep }) {
                 value: REGEX.NICKNAME,
                 message: REGISTER_MESSAGE.NICKNAME_STANDARD,
               },
-              validate: debounceCheckNickname,
+              onChange: debounceCheckNickname,
             })}
             placeholder=" "
             required

@@ -10,12 +10,10 @@ import { deviceListState, myInformationState, timeState } from '../../atoms';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { useParams } from 'react-router-dom';
-import { getData } from '../../utils/apis/api';
 import { fetchData } from '../../utils/apis/api';
 import { auctionApis } from '../../utils/apis/auctionApis';
 import moment from 'moment';
 import TimeBar from './TimeBar';
-import { chatApis } from '../../utils/apis/chatApis';
 let sock;
 let client;
 function StreamingPage(props) {
@@ -26,7 +24,6 @@ function StreamingPage(props) {
   const [nextProduct, setNextProduct] = useState(-1);
   const deviceList = useRecoilValue(deviceListState);
   const [productNum, setProductNUm] = useState(-1);
-  // const [products, setProducts] = useState([]);
   const [products, setProducts] = useState([
     {
       productName: 'error',
@@ -35,25 +32,22 @@ function StreamingPage(props) {
     },
   ]);
 
-  useEffect(() => {
-    getData(auctionApis.AUCTION_DETAIL_API(auctionId)).then((res) => {
-      setAuctionInfo(res.data);
-      setAuctionData({ memberSeq: res.data.memberSeq });
-      setProducts(res.data.productList);
-    });
-    // console.log('잘 실행되나요?');
-  }, [nextProduct]);
-
-  // console.log(nextProduct);
-  // console.log(products);
   let nickname = userInfo.nickname;
   let memberSeq = userInfo.memberSeq;
   let roomId = auctionId;
   const [chat, setChat] = useState([]);
   const [priceList, setPriceList] = useState([]);
   const [newTime, setNewTime] = useState(moment());
-  // const []
   const setAuctionTime = useSetRecoilState(timeState);
+
+  useEffect(() => {
+    fetchData.get(auctionApis.AUCTION_DETAIL_API(auctionId)).then((res) => {
+      setAuctionInfo(res.data);
+      setAuctionData({ memberSeq: res.data.memberSeq });
+      setProducts(res.data.productList);
+    });
+    // console.log('잘 실행되나요?');
+  }, [nextProduct]);
 
   //처음 접속했을 때
   useEffect(() => {
@@ -144,7 +138,6 @@ function StreamingPage(props) {
               setNextProduct={setNextProduct}
               auctionsHash={auctionId}
             />
-            {console.log(productNum)}
             <StreamChat sendMessage={sendMessage} chat={chat} userInfo={userInfo} />
           </Aside>
         </Main>

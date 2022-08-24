@@ -11,6 +11,7 @@ import { fetchData } from '../../utils/apis/api';
 import { userApis } from '../../utils/apis/userApis';
 import { REGEX, REGISTER_MESSAGE } from '../../utils/constants/constant';
 import debounce from '../../utils/functions/debounce';
+import CountDown from '../../utils/hooks/CountDown';
 import {
   ButtonContainer,
   Container,
@@ -21,28 +22,8 @@ import {
 import { InputContainer as InputWrapper } from '../Register/Register2';
 
 function AccountsPhoneNumberPage() {
-  const [authNumber, setAuthNumber] = useState();
   const [isDuplicatedPhone, setIsDuplicatedPhone] = useState(false);
-  // const [min, setMin] = useState(3);
-  // const [sec, setSec] = useState(0);
-  // const time = useRef(180);
-  // const timerId = useRef(null);
-
-  // useEffect(() => {
-  //   timerId.current = setInterval(() => {
-  //     setMin(parseInt(time.current / 60));
-  //     setSec(time.current % 60);
-  //     time.current -= 1;
-  //   }, 1000);
-  //   return () => clearInterval(timerId.current);
-  // }, []);
-
-  // useEffect(() => {
-  //   if (time.current <= 0) {
-  //     console.log('타임아웃');
-  //     clearInterval(timerId.current);
-  //   }
-  // }, [sec]);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
 
   const {
     register,
@@ -58,6 +39,9 @@ function AccountsPhoneNumberPage() {
     mode: 'onChange',
   });
 
+  const authNumber = useRef({});
+  authNumber.current = watch('authNumber', null);
+
   const checkMemberInfo = async (value, url, setState, key, errorMessage) => {
     if (!value || errors[key]) return;
     try {
@@ -71,17 +55,18 @@ function AccountsPhoneNumberPage() {
     }
   };
 
-  const debouncePhoneChange = async (value) =>
-    await checkMemberInfo(
+  const debouncePhoneChange = async (value) => {
+    return await checkMemberInfo(
       value,
       userApis.PHONE_DUPLICATE_CEHCK_API(value),
       setIsDuplicatedPhone,
       'phone',
       REGISTER_MESSAGE.DUPLICATED_PHONE,
     );
+  };
 
   const debouncedValidatePhoneNumber = useMemo(
-    () => debounce((value) => debouncePhoneChange(value), 700),
+    () => debounce((e) => debouncePhoneChange(e.target.value), 500),
     [],
   );
 
@@ -92,37 +77,39 @@ function AccountsPhoneNumberPage() {
         value: REGEX.PHONE,
         message: REGISTER_MESSAGE.PHONE_STANDARD,
       },
-      validate: debouncedValidatePhoneNumber,
+      onChange: debouncedValidatePhoneNumber,
     }),
   };
 
   const authRegister = {
     ...register('authNumber', {
       required: REGISTER_MESSAGE.REQUIRED_CERTIFICATION_NUMBER,
-      validate: {
-        certi: (value) =>
-          value !== authNumber ? REGISTER_MESSAGE.FAILED_CERTICATION_NUMBER : true,
-      },
     }),
   };
 
   const onValid = async (data) => {
-    const body = { phone: data.phone };
-    setTimeout(async () => {
-      try {
-        const response = await fetchData.patch(userApis.PHONE_CHANGE, body);
-        if (response.status === 200) {
-          successToast('전화번호 변경에 성공하였습니다.');
-          setValue('phone', '');
-          setValue('authNumber', '');
-        }
-      } catch (err) {
-        errorToast('전화번호 변경에 실패하였습니다.');
+    if (isDuplicatedPhone) {
+      setError('phone', { message: REGISTER_MESSAGE.DUPLICATED_PHONE });
+      return;
+    }
+    const body = { phone: data.phone, authNum: authNumber.current };
+    try {
+      const response = await fetchData.post(userApis.PHONE_AUTHNUMBER_CHECK, body);
+      if (response.status === 200) {
+        successToast('전화번호 변경에 성공하였습니다.');
+        setValue('phone', '');
+        setValue('authNumber', '');
       }
-    }, 1000);
+    } catch (err) {
+      errorToast('인증번호를 확인해주세요.');
+    }
   };
 
   const onInValid = () => {
+    if (isDuplicatedPhone) {
+      setError('phone', { message: REGISTER_MESSAGE.DUPLICATED_PHONE });
+      return;
+    }
     if (errors?.authNumber?.message) {
       errorToast(errors?.authNumber?.message);
     }
@@ -135,11 +122,11 @@ function AccountsPhoneNumberPage() {
     event.preventDefault();
     if (!phone.current) return;
     if (errors.phone) return;
+    setIsAuthenticating(true);
     try {
       const response = await fetchData.post(userApis.PHONE_CERTIFICATE_API, {
         phone: phone.current,
       });
-      setAuthNumber(String(response.data));
     } catch (err) {
       if (err.response.status) {
       }
@@ -166,21 +153,28 @@ function AccountsPhoneNumberPage() {
                 name="phone"
                 placeholder={'전화번호를 입력하세요.'}
                 register={phoneRegister}
-                disabled={authNumber}
+                disabled={isAuthenticating}
               />
               <MintButton
                 text={'인증'}
                 type={'button'}
                 onClick={certificatePhoneNumber}
-                disabled={authNumber}
+                disabled={isDuplicatedPhone || isAuthenticating}
               />
             </InputWrapper>
             <MessageWrapper>
               <ValidationMessage text={errors?.phone?.message} state={'fail'} />
               {watch().phone && !errors?.phone && (
-                <ValidationMessage text={REGISTER_MESSAGE.VALIDATED_PHONE} state={'pass'} />
+                <>
+                  <ValidationMessage text={REGISTER_MESSAGE.VALIDATED_PHONE} state={'pass'} />
+                  {isAuthenticating && (
+                    <CountDown
+                      isAuthenticating={isAuthenticating}
+                      setIsAuthenticating={setIsAuthenticating}
+                    />
+                  )}
+                </>
               )}
-              {authNumber && <ValidationMessage text={'인증번호를 확인해주세요.'} state={'pass'} />}
             </MessageWrapper>
           </InputMessageContainer>
         </InputContainer>
