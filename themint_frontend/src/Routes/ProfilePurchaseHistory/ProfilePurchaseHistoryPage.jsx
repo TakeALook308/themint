@@ -234,7 +234,6 @@ function ProfilePurchaseHistoryPage({ params }) {
   });
 
   // 리뷰 작성
-
   const { content, score } = reviewData;
   const onChange2 = ({ target: { name, value } }) => {
     setReviewData({
@@ -656,6 +655,7 @@ const SellerInfo = styled.article`
   /* padding-top: 5px;
   padding-bottom: 5px; */
   margin-bottom: 10px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   > p {
     padding: 5px 10px 5px 10px;
   }

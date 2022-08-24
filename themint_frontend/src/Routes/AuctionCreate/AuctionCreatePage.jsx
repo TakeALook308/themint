@@ -235,7 +235,7 @@ function AuctionCreatePage(props) {
 
         <Div>
           <Label style={{ display: 'inline-block', lineHeight: '24px', verticalAlign: 'middle' }}>
-            예약{console.log(startTime, inputAuction.startTime)}
+            예약
           </Label>
           <CheckBox
             type="checkbox"
@@ -296,10 +296,14 @@ function AuctionCreatePage(props) {
                       value={productName}
                       onChange={(e) => setProductName(e.target.value)}
                       ref={productRef}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                        }
+                      }}
                     />
                   </td>
                   <td>
-                    <input type="hidden" />
                     <input
                       type="number"
                       value={startPrice}
