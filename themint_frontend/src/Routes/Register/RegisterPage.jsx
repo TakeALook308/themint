@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { Register1, Register2, Register3 } from '.';
 import { userApis } from '../../utils/apis/userApis';
 import { fetchData } from '../../utils/apis/api';
-import SocialLogginButton from '../../components/ButtonList/SocialLogginButton';
 import SignContainer from '../../components/common/SignContainer';
 import { PAGES } from '../../utils/constants/constant';
 import { Helmet } from 'react-helmet-async';
@@ -79,7 +78,7 @@ const LinkContainer = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  gap: 0.5rem;
+  /* gap: 0.5rem; */
   a {
     position: relative;
     color: ${(props) => props.theme.colors.white};

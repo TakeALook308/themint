@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import DefaultButton from '../../components/common/DefaultButton';
+import MintButton from '../../components/ButtonList/MintButton';
 import ValidationMessage from '../../components/common/ValidationMessage';
 import { MessageWrapper } from '../../style/common';
 import { ActiveInput } from '../../style/style';
@@ -17,7 +17,6 @@ function EmaiInput({ text, setEditMode, changeInformation }) {
     setError,
     watch,
     handleSubmit,
-    trigger,
     formState: { errors, isSubmitting },
   } = useForm({ defaultValues: { email: text[0] }, mode: 'onChange' });
 
@@ -85,13 +84,8 @@ function EmaiInput({ text, setEditMode, changeInformation }) {
         </MessageWrapper>
       </InputContainer>
       <ButtonContainer>
-        <DefaultButton
-          title={'취소'}
-          type="button"
-          widthValue="70px"
-          onClick={() => setEditMode(false)}
-        />
-        <DefaultButton title={'변경'} type="submit" widthValue="70px" disabled={isSubmitting} />
+        <MintButton text={'취소'} type="button" size="70px" onClick={() => setEditMode(false)} />
+        <MintButton text={'변경'} type="submit" size="70px" disabled={isSubmitting} />
       </ButtonContainer>
     </FormContainer>
   );

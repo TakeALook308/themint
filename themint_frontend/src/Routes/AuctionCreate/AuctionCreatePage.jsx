@@ -3,15 +3,14 @@ import styled from 'styled-components';
 import { Container, Title } from '../../style/style';
 import { categories } from '../../utils/constants/constant';
 import ActiveInputBox from '../../components/common/ActiveInputBox';
-import ProductTable from './ProductTable';
-import Modal from '../../components/common/Modal';
 import { useDropzone } from 'react-dropzone';
 import { auctionApis } from '../../utils/apis/auctionApis';
-import { postData } from '../../utils/apis/api';
+import { fetchData } from '../../utils/apis/api';
 import { useNavigate } from 'react-router-dom';
 import GradientButton from '../../components/ButtonList/GradientButton';
 import { AiOutlineDownload, AiFillPlusCircle } from 'react-icons/ai';
 import { Helmet } from 'react-helmet-async';
+import moment from 'moment';
 
 function AuctionCreatePage(props) {
   const navigate = useNavigate();
@@ -20,6 +19,7 @@ function AuctionCreatePage(props) {
     maxFilesize: 5,
   });
   const [auctionImageList, setAuctionImageList] = useState([]);
+  const productRef = useRef(null);
   useEffect(() => {
     let temp = [...auctionImageList];
     acceptedFiles.map((item) => {
@@ -39,7 +39,7 @@ function AuctionCreatePage(props) {
     categorySeq: 1,
     title: '',
     content: '',
-    startTime: new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, -1),
+    startTime: new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, -8),
     productList: [],
   });
 
@@ -113,7 +113,14 @@ function AuctionCreatePage(props) {
     }
   };
 
-  // const scrollRef = useRef();
+  const scrollRef = useRef(null);
+  const scrollToBottom = () => {
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [productList]);
 
   return (
     <Container>
@@ -136,11 +143,12 @@ function AuctionCreatePage(props) {
             new Blob([JSON.stringify(inputAuction)], { type: 'application/json' }),
           );
           // console.log(formData.get('file'), formData.get('key'));
-          postData(auctionApis.AUCTION_CREATE_API, formData, {
-            headers: {
-              'Content-Type': `multipart/form-data`,
-            },
-          })
+          fetchData
+            .post(auctionApis.AUCTION_CREATE_API, formData, {
+              headers: {
+                'Content-Type': `multipart/form-data`,
+              },
+            })
             .then((res) => {
               // console.log(inputAuction);
               alert('성공');
@@ -259,7 +267,7 @@ function AuctionCreatePage(props) {
           <Label>상품 ({productList.length})</Label>
 
           {/* <TableBox ref={scrollRef}> */}
-          <TableBox>
+          <TableBox ref={scrollRef}>
             <Table>
               <colgroup>
                 <col width="70%" />
@@ -287,10 +295,15 @@ function AuctionCreatePage(props) {
                       type="text"
                       value={productName}
                       onChange={(e) => setProductName(e.target.value)}
+                      ref={productRef}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                        }
+                      }}
                     />
                   </td>
                   <td>
-                    <input type="hidden" />
                     <input
                       type="number"
                       value={startPrice}
@@ -299,6 +312,7 @@ function AuctionCreatePage(props) {
                         if (e.key === 'Enter') {
                           e.preventDefault();
                           createProducts();
+                          productRef.current.focus();
                         }
                       }}
                     />

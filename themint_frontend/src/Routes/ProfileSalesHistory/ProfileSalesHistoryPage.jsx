@@ -74,6 +74,9 @@ function ProfileSalesHistoryPage({ params }) {
 
   // 버튼 클릭하면 송장번호를 patch
   const onClick = () => {
+    if (trackingNo === '' || parcelCompanyCode === '') {
+      return;
+    }
     const patchTrackingNo = async (url, data) => {
       const response = await instance.patch(url, data);
       return response;

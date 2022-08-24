@@ -24,8 +24,8 @@ function AuctionList({ products, auctionId }) {
             <li key={i}>
               <p>{item.productName}</p>
               <span>{item.startPrice.toLocaleString()}원~</span>
-              {item.status === 1 ? <Finish>끝났습니다</Finish> : null}
-              {item.status === 4 ? <Finish>유찰입니다</Finish> : null}
+              {item.status === 1 ? <Finish>낙찰 성공!</Finish> : null}
+              {item.status === 4 ? <Finish>낙찰 실패...</Finish> : null}
             </li>
           ))}
         </List>
@@ -100,6 +100,7 @@ const Finish = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: 10px;
 `;
 
 export default AuctionList;

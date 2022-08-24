@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { IoClose } from 'react-icons/io5';
 
 function Modal2(props) {
   const { open, close, title } = props;
@@ -10,7 +11,9 @@ function Modal2(props) {
           <section onClick={(e) => e.stopPropagation()}>
             <header>
               <p>{title}</p>
-              <span onClick={close}>x</span>
+              <span onClick={close}>
+                <IoClose size={20} color="#ffffff"></IoClose>
+              </span>
             </header>
             <main>{props.children}</main>
           </section>

@@ -16,8 +16,8 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct,
   const [AuctionEnd, setAuctionEnd] = useState(false); //모든 상품의 경매가 진행되었는지 여부
 
   // useEffect(() => {
-  //   console.log(products);
-  // }, []);
+  //   console.log(nowProduct);
+  // }, [nowProduct]);
 
   useEffect(() => {
     if (price.length > 0) {
@@ -31,6 +31,19 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct,
           setMyPrice(products[price[0].index].startPrice);
           successToast('💸경매가 시작되었습니다💸');
           // console.log('살려주세요');
+        }
+      } else if (price[price.length - 1].price === -2) {
+        //경매 종료 신호가 왔을 때
+        stopClick();
+        setAuctionStart(false);
+        if (nowProduct === products.length - 1) setAuctionEnd(true);
+        if (toggle === 1) {
+          if (price[price.length - 2].price === -1) {
+            errorToast(`상품이 유찰되었습니다...😥`);
+          } else
+            successToast(
+              `${price[price.length - 2].nickname}님이 낙찰되셨습니다. 축하합니다🥳🎉🎊`,
+            );
         }
       } else {
         setNowPrice(price[price.length - 1].price);
@@ -74,10 +87,9 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct,
     stopClick();
     setAuctionStart(false);
 
-    if (price[price.length - 1].price === -1) errorToast(`상품이 유찰되었습니다...😥`);
-    else successToast(`${price[price.length - 1].nickname}님이 낙찰되셨습니다. 축하합니다🥳🎉🎊`);
-
     if (producter) {
+      sendPrice(-2, nowProduct, products[nowProduct].seq);
+
       fetchData
         .post(productApis.PRODUCT_SUCCESS_API, {
           memberSeq: price[price.length - 1].memberSeq,
@@ -115,7 +127,7 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct,
     scrollToBottom();
   }, [price]);
 
-  if (price[0] && !AuctionEnd)
+  if (price[0])
     return (
       <Article>
         <AuctionInfo>
@@ -130,7 +142,7 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct,
         <Timer delay="15" ref={myRef} finishAuction={finishAuction}></Timer>
         <PriceList ref={priceEndRef}>
           {price.map((item, i) => {
-            if (i !== 0) {
+            if (item.price > -1) {
               return (
                 <p key={i}>
                   {item.nickname} 님 <b>{item.price.toLocaleString()}원</b> 입찰
@@ -202,15 +214,10 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct,
             </BidBtn>
           </Bidding>
         )}
+        {AuctionEnd ? <Finish>경매가 종료되었습니다.</Finish> : null}
       </Article>
     );
-  else if (AuctionEnd) {
-    return (
-      <Article>
-        <div className="prev">모든 경매가 종료되었습니다.</div>
-      </Article>
-    );
-  } else {
+  else {
     return (
       <Article>
         <div className="prev">경매 시작 전입니다.</div>
@@ -223,6 +230,20 @@ function AuctionBidding({ products, sendPrice, price, producter, setNextProduct,
     );
   }
 }
+
+const Finish = styled.div`
+  position: absolute;
+  background-color: rgba(10, 10, 10, 0.6);
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+`;
 
 const shine = keyframes`
    0% {
@@ -258,6 +279,7 @@ const BidBtn = styled.button`
   }
 `;
 const Article = styled.article`
+  position: relative;
   height: 300px;
   background-color: ${(props) => props.theme.colors.subBlack};
   border-radius: 10px;
@@ -289,12 +311,12 @@ const AuctionInfo = styled.div`
     gap: 10px;
     height: 80px;
     & > p {
-      width: 100px;
-      white-space: nowrap;
+      /* width: 100px; */
+      /* white-space: nowrap; */
       font-size: 20px;
       font-weight: 700;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      /* overflow: hidden; */
+      /* text-overflow: ellipsis; */
     }
     & > div {
       display: flex;

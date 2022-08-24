@@ -33,6 +33,15 @@ function ProfilePurchaseHistoryPage({ params }) {
 
   // 구매내역과 판매내역 차이 구분
   const [isPurchase, setIsPurchase] = useState('purchase');
+  const [reviewDetail, setReviewDetail] = useState('');
+  const [stars, setStars] = useState([false, false, false, false, false]);
+  const [reviewData, setReviewData] = useState({
+    content: '',
+    receiverSeq: 1,
+    productSeq: 1,
+    score: 1,
+  });
+
   useEffect(() => {
     setIsPurchase('purchase');
   }, []);
@@ -85,11 +94,30 @@ function ProfilePurchaseHistoryPage({ params }) {
       setSearchDeliveryData((prevState) => {
         return { ...prevState, t_invoice: itemDetail.data.trackingNo };
       });
+      const getReviewData = async (url) => {
+        const response = await instance.get(url);
+        return response;
+      };
+      const res = getReviewData(
+        `/api/review/detail/${itemDetail.data.sellerMemberSeq}/${itemDetail.data.productSeq}`,
+      );
+      res.then((reviewDetail) => {
+        onChange2({ target: { name: 'receiverSeq', value: itemDetail.data.sellerMemberSeq } });
+        // onChange2({ target: { name: 'productSeq', value: itemDetail.data.productSeq } });
+        setReviewDetail(reviewDetail.data);
+        let clickStates = [...stars];
+        for (let i = 0; i < reviewDetail.data.score; i++) {
+          clickStates[i] = true;
+        }
+        setStars(clickStates);
+      });
     });
 
     setIsModal((prev) => !prev);
     setPurchaseDetail([]);
     setReviewData([]);
+    setReviewDetail([]);
+    setStars([false, false, false, false, false]);
   };
   // 입금완료
   const [auctionProductSeq, setAuctionProductSeq] = useState(0);
@@ -206,11 +234,6 @@ function ProfilePurchaseHistoryPage({ params }) {
   });
 
   // 리뷰 작성
-  const [reviewData, setReviewData] = useState({
-    content: '',
-    receiverSeq: 1,
-    score: 1,
-  });
   const { content, score } = reviewData;
   const onChange2 = ({ target: { name, value } }) => {
     setReviewData({
@@ -219,7 +242,8 @@ function ProfilePurchaseHistoryPage({ params }) {
     });
   };
   // 버튼 클릭하면 리뷰 정보를 post
-  const postReview = () => {
+  const postReview = ({ target: { name, value } }) => {
+    reviewData.productSeq = value;
     const postReviewData = async (url, data) => {
       const response = await instance.post(url, data);
       return response;
@@ -344,7 +368,7 @@ function ProfilePurchaseHistoryPage({ params }) {
                   <p>{purchaseDetail.addressDetail}</p>
                 </div>
                 <form
-                  action="http://info.sweettracker.co.kr/tracking/2"
+                  action="http://info.sweettracker.co.kr/tracking/5"
                   method="post"
                   target="_blank">
                   <div className="form-group">
@@ -383,36 +407,71 @@ function ProfilePurchaseHistoryPage({ params }) {
                 </form>
               </div>
 
-              <p>리뷰 작성</p>
+              {reviewDetail.content != null ? (
+                <>
+                  <p>작성한 리뷰</p>
 
-              <div>
-                <div className="review">
-                  <div className="reviewbox">
-                    <Stars>
-                      {ARRAY.map((el, idx) => {
-                        return (
-                          <FaStar
-                            key={idx}
-                            size="25"
-                            onClick={() => handleStarClick(el)}
-                            className={clicked[el] && 'yellowStar'}
-                          />
-                        );
-                      })}
-                    </Stars>
-                    <Button onClick={postReview}>작성</Button>
+                  <div>
+                    <div className="review">
+                      <div className="reviewbox">
+                        <Stars>
+                          {ARRAY.map((el, idx) => {
+                            return (
+                              <FaStar key={idx} size="25" className={stars[el] && 'yellowStar'} />
+                            );
+                          })}
+                        </Stars>
+                      </div>
+
+                      <textarea
+                        type="text"
+                        name="content"
+                        value={reviewDetail.content}
+                        cols="70"
+                        rows="4"
+                        disabled></textarea>
+                    </div>
                   </div>
+                </>
+              ) : (
+                <>
+                  <p>리뷰 작성</p>
 
-                  <textarea
-                    type="text"
-                    onChange={onChange2}
-                    name="content"
-                    value={content}
-                    cols="70"
-                    rows="4"
-                    placeholder="리뷰를 작성해주세요."></textarea>
-                </div>
-              </div>
+                  <div>
+                    <div className="review">
+                      <div className="reviewbox">
+                        <Stars>
+                          {ARRAY.map((el, idx) => {
+                            return (
+                              <FaStar
+                                key={idx}
+                                size="25"
+                                onClick={() => handleStarClick(el)}
+                                className={clicked[el] && 'yellowStar'}
+                              />
+                            );
+                          })}
+                        </Stars>
+                        <Button
+                          onClick={postReview}
+                          name="productSeq"
+                          value={purchaseDetail.productSeq}>
+                          작성
+                        </Button>
+                      </div>
+
+                      <textarea
+                        type="text"
+                        onChange={onChange2}
+                        name="content"
+                        value={content}
+                        cols="70"
+                        rows="4"
+                        placeholder="리뷰를 작성해주세요."></textarea>
+                    </div>
+                  </div>
+                </>
+              )}
             </Purchased>
           )}
         </ModalMain>
@@ -596,6 +655,7 @@ const SellerInfo = styled.article`
   /* padding-top: 5px;
   padding-bottom: 5px; */
   margin-bottom: 10px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   > p {
     padding: 5px 10px 5px 10px;
   }

@@ -11,16 +11,18 @@ import { REGEX, REGISTER_MESSAGE, STANDARD } from '../../utils/constants/constan
 import debounce from '../../utils/functions/debounce';
 import StepSignal from './StepSignal';
 import ValidationMessage from '../../components/common/ValidationMessage';
+import CountDown from '../../components/common/CountDown';
+import { useRef } from 'react';
+import { errorToast, successToast } from '../../lib/toast';
 
 function Register2({ setUserInfo, setStep }) {
-  const [authNumber, setAuthNumber] = useState();
-  const [isDuplicatedEmail, setIsDuplicatedEmail] = useState(false);
-  const [isDuplicatedPhone, setIsDuplicatedPhone] = useState(false);
+  const [isDuplicatedEmail, setIsDuplicatedEmail] = useState(true);
+  const [isDuplicatedPhone, setIsDuplicatedPhone] = useState(true);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
   const {
     register,
     watch,
     setError,
-    trigger,
     handleSubmit,
     formState: { errors },
   } = useForm({
@@ -32,14 +34,37 @@ function Register2({ setUserInfo, setStep }) {
     mode: 'onChange',
   });
 
-  const onValid = (data) => {
+  const enteredAuthNum = useRef({});
+  enteredAuthNum.current = watch('authNumber', '');
+
+  const onValid = async (data) => {
     if (isDuplicatedEmail) {
-      setError('email', { message: REGISTER_MESSAGE.DUPLICATED_ID }, { shouldFocus: true });
+      setError('email', { message: REGISTER_MESSAGE.DUPLICATED_EMAIL }, { shouldFocus: true });
       return;
     }
-    trigger('authNumber');
+    if (isDuplicatedPhone) {
+      setError('phone', { message: REGISTER_MESSAGE.DUPLICATED_PHONE }, { shouldFocus: true });
+      return;
+    }
+    const body = { phone: data.phone, authNum: enteredAuthNum.current };
+    try {
+      const response = await fetchData.post(userApis.PHONE_AUTHNUMBER_CHECK, body);
+      if (response.status === 200) {
+        successToast('전화번호 변경에 성공하였습니다.');
+      }
+    } catch (err) {
+      errorToast('인증번호를 확인해주세요.');
+      return;
+    }
     setUserInfo((prev) => ({ ...prev, ...data }));
     setStep((prev) => ({ ...prev, step2: false, step3: true }));
+  };
+
+  const onInvalid = () => {
+    if (isDuplicatedPhone) {
+      setError('phone', { message: REGISTER_MESSAGE.DUPLICATED_PHONE }, { shouldFocus: true });
+      return;
+    }
   };
 
   const checkMemberInfo = async (value, url, setState, key, errorMessage) => {
@@ -66,34 +91,35 @@ function Register2({ setUserInfo, setStep }) {
 
   const certificatePhoneNumber = async (event) => {
     event.preventDefault();
+    setIsAuthenticating(true);
     if (errors.phone) return;
     const response = await fetchData.post(userApis.PHONE_CERTIFICATE_API, {
       phone: watch().phone,
     });
-    setAuthNumber(String(response.data));
   };
 
-  const debouncePhoneChange = async (value) =>
-    await checkMemberInfo(
+  const debouncePhoneChange = async (value) => {
+    return await checkMemberInfo(
       value,
       userApis.PHONE_DUPLICATE_CEHCK_API(value),
       setIsDuplicatedPhone,
       'phone',
       REGISTER_MESSAGE.DUPLICATED_PHONE,
     );
+  };
 
   const debouncedValidateEmail = useMemo(
-    () => debounce((value) => debounceEmailChange(value), 700),
+    () => debounce((e) => debounceEmailChange(e.target.value), 500),
     [],
   );
 
   const debouncedValidatePhoneNumber = useMemo(
-    () => debounce((value) => debouncePhoneChange(value), 700),
+    () => debounce((e) => debouncePhoneChange(e.target.value), 500),
     [],
   );
 
   return (
-    <form onSubmit={handleSubmit(onValid)}>
+    <form onSubmit={handleSubmit(onValid, onInvalid)}>
       <div>
         <ActiveInput active={true}>
           <input
@@ -135,7 +161,7 @@ function Register2({ setUserInfo, setStep }) {
                 value: REGEX.EMAIL,
                 message: REGISTER_MESSAGE.EMAIL_STANDARD,
               },
-              validate: debouncedValidateEmail,
+              onChange: debouncedValidateEmail,
             })}
             placeholder=" "
             required
@@ -145,7 +171,9 @@ function Register2({ setUserInfo, setStep }) {
         <MessageWrapper>
           <ValidationMessage text={errors?.email?.message} state={'fail'} />
           {watch().email && !errors?.email && (
-            <ValidationMessage text={REGISTER_MESSAGE.VALIDATED_EMAIL} state={'pass'} />
+            <>
+              <ValidationMessage text={REGISTER_MESSAGE.VALIDATED_EMAIL} state={'pass'} />
+            </>
           )}
         </MessageWrapper>
         <InputContainer>
@@ -160,20 +188,34 @@ function Register2({ setUserInfo, setStep }) {
                   value: REGEX.PHONE,
                   message: REGISTER_MESSAGE.PHONE_STANDARD,
                 },
-                validate: debouncedValidatePhoneNumber,
+                onChange: debouncedValidatePhoneNumber,
               })}
               placeholder=" "
               autoComplete="off"
               required
+              disabled={isAuthenticating}
             />
             <label htmlFor="phone">전화번호</label>
           </ActiveInput>
-          <MintButton text={'인증'} type={'button'} onClick={certificatePhoneNumber} />
+          <MintButton
+            text={'인증'}
+            type={'button'}
+            onClick={certificatePhoneNumber}
+            disabled={isDuplicatedPhone || isAuthenticating}
+          />
         </InputContainer>
         <MessageWrapper>
           <ValidationMessage text={errors?.phone?.message} state={'fail'} />
           {watch().phone && !errors?.phone && (
-            <ValidationMessage text={REGISTER_MESSAGE.VALIDATED_PHONE} state={'pass'} />
+            <>
+              <ValidationMessage text={REGISTER_MESSAGE.VALIDATED_PHONE} state={'pass'} />
+              {isAuthenticating && (
+                <CountDown
+                  isAuthenticating={isAuthenticating}
+                  setIsAuthenticating={setIsAuthenticating}
+                />
+              )}
+            </>
           )}
         </MessageWrapper>
         <ActiveInput active={true}>
@@ -183,10 +225,6 @@ function Register2({ setUserInfo, setStep }) {
             type="text"
             {...register('authNumber', {
               required: REGISTER_MESSAGE.REQUIRED_CERTIFICATION_NUMBER,
-              validate: {
-                certi: (value) =>
-                  value !== authNumber ? REGISTER_MESSAGE.FAILED_CERTICATION_NUMBER : true,
-              },
             })}
             placeholder=" "
             autoComplete="off"
@@ -194,15 +232,7 @@ function Register2({ setUserInfo, setStep }) {
           />
           <label htmlFor="authNumber">인증번호</label>
         </ActiveInput>
-        <MessageWrapper>
-          <ValidationMessage text={errors?.authNumber?.message} state={'fail'} />
-          {watch().authNumber && !errors?.authNumber && (
-            <ValidationMessage
-              text={REGISTER_MESSAGE.VALIDATED_CERTICATION_NUMBER}
-              state={'pass'}
-            />
-          )}
-        </MessageWrapper>
+        <MessageWrapper></MessageWrapper>
         <StepSignal step={'register2'} />
         <GradientButton text={'다음'} type={'submit'} />
       </div>
