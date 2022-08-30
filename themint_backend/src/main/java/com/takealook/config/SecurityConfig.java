@@ -25,14 +25,14 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
  */
 @Configuration
 @EnableWebSecurity
-@AllArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    @Autowired
-    private MemberDetailService memberDetailService;
+    final
+	MemberService memberService;
 
-    @Autowired
-    private MemberService memberService;
+	public MemberDetailService(MemberService memberService) {
+		this.memberService = memberService;
+	}
 
     // Password 인코딩 방식에 BCrypt 암호화 방식 사용
     @Bean
