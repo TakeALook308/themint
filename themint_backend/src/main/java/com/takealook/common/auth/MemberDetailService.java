@@ -14,8 +14,12 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class MemberDetailService implements UserDetailsService{
-	@Autowired
+	final
 	MemberService memberService;
+
+	public MemberDetailService(MemberService memberService) {
+		this.memberService = memberService;
+	}
 	
     @Override
     public UserDetails loadUserByUsername(String memberId) throws UsernameNotFoundException {
