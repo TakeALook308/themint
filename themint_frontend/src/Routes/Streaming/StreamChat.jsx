@@ -21,7 +21,6 @@ function StreamChat({ sendMessage, chat, userInfo }) {
   // const scrollRef = useRef();
   return (
     <Article>
-      {/* <ul ref={scrollRef}> */}
       <div className="uld" ref={messagesEndRef}>
         {chat.map((item, i) => {
           if (item.type === 0) {
@@ -158,7 +157,7 @@ const YourBox = styled.div`
 const SendBox = styled.form`
   width: 100%;
   display: flex;
-  padding: 0 5px;
+  padding: 0 5px 10px 5px;
   gap: 10px;
   input {
     flex-grow: 1;

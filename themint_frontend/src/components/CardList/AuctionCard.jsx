@@ -14,7 +14,7 @@ function AuctionCard({ auction }) {
     const diffHour = Math.floor((diff / (1000 * 60 * 60)) % 24);
     const diffMin = Math.floor((diff / (1000 * 60)) % 60);
 
-    if (diffDay > 1) {
+    if (diffDay >= 1) {
       const year = auctionStartTime.getFullYear();
       const month = makeTwoDigitNumber(auctionStartTime.getMonth() + 1);
       const date = makeTwoDigitNumber(auctionStartTime.getDate());

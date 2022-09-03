@@ -33,6 +33,15 @@ function ProfilePurchaseHistoryPage({ params }) {
 
   // 구매내역과 판매내역 차이 구분
   const [isPurchase, setIsPurchase] = useState('purchase');
+  const [reviewDetail, setReviewDetail] = useState('');
+  const [stars, setStars] = useState([false, false, false, false, false]);
+  const [reviewData, setReviewData] = useState({
+    content: '',
+    receiverSeq: 1,
+    productSeq: 1,
+    score: 1,
+  });
+
   useEffect(() => {
     setIsPurchase('purchase');
   }, []);
@@ -85,11 +94,30 @@ function ProfilePurchaseHistoryPage({ params }) {
       setSearchDeliveryData((prevState) => {
         return { ...prevState, t_invoice: itemDetail.data.trackingNo };
       });
+      const getReviewData = async (url) => {
+        const response = await instance.get(url);
+        return response;
+      };
+      const res = getReviewData(
+        `/api/review/detail/${itemDetail.data.sellerMemberSeq}/${itemDetail.data.productSeq}`,
+      );
+      res.then((reviewDetail) => {
+        onChange2({ target: { name: 'receiverSeq', value: itemDetail.data.sellerMemberSeq } });
+        // onChange2({ target: { name: 'productSeq', value: itemDetail.data.productSeq } });
+        setReviewDetail(reviewDetail.data);
+        let clickStates = [...stars];
+        for (let i = 0; i < reviewDetail.data.score; i++) {
+          clickStates[i] = true;
+        }
+        setStars(clickStates);
+      });
     });
 
     setIsModal((prev) => !prev);
     setPurchaseDetail([]);
     setReviewData([]);
+    setReviewDetail([]);
+    setStars([false, false, false, false, false]);
   };
   // 입금완료
   const [auctionProductSeq, setAuctionProductSeq] = useState(0);
@@ -206,11 +234,6 @@ function ProfilePurchaseHistoryPage({ params }) {
   });
 
   // 리뷰 작성
-  const [reviewData, setReviewData] = useState({
-    content: '',
-    receiverSeq: 1,
-    score: 1,
-  });
   const { content, score } = reviewData;
   const onChange2 = ({ target: { name, value } }) => {
     setReviewData({
@@ -219,7 +242,8 @@ function ProfilePurchaseHistoryPage({ params }) {
     });
   };
   // 버튼 클릭하면 리뷰 정보를 post
-  const postReview = () => {
+  const postReview = ({ target: { name, value } }) => {
+    reviewData.productSeq = value;
     const postReviewData = async (url, data) => {
       const response = await instance.post(url, data);
       return response;
@@ -282,51 +306,48 @@ function ProfilePurchaseHistoryPage({ params }) {
             <Purchasing>
               {purchaseDetail.status === 1 && (
                 <PutMoney>
-                  <p>입금을 완료 하셨나요??</p>
                   <p>판매자 계좌 정보</p>
                   <SellerInfo>
-                    <p>은행명: {bankList[purchaseDetail.bankCode]}</p>
-                    <p>계좌번호: {purchaseDetail.accountNo}</p>
-                    <p>계좌소유주: {purchaseDetail.name}</p>
+                    <p>은행명 : {bankList[purchaseDetail.bankCode]}</p>
+                    <p>계좌번호 : {purchaseDetail.accountNo}</p>
+                    <p>계좌소유주 : {purchaseDetail.name}</p>
                   </SellerInfo>
                   <PutMoneyButton>
-                    <MintButton onClick={patchRemit} text="입금완료" size="30%" />
+                    <GradientButton onClick={patchRemit} text="입금완료" size="30%" />
                   </PutMoneyButton>
-                  <StyledLink to={`/auctions/${purchaseDetail?.hash}`}>
-                    제품 정보 상세보기
-                  </StyledLink>
+                  <StyledLink to={`/auctions/${purchaseDetail?.hash}`}>상품 정보</StyledLink>
                 </PutMoney>
               )}
               {purchaseDetail.status === 2 && (
                 <PutAddress>
-                  <StyledLink to={`/auctions/${purchaseDetail?.hash}`}>
-                    제품 정보 상세보기
-                  </StyledLink>
-                  <h3>배송지를 입력해주세요!!!</h3>
-                  <ActiveInput active={true}>
-                    <input
-                      name="remitName"
-                      id="remitName"
-                      type="text"
-                      autoComplete="off"
-                      required
-                      value={deliveryData.remitName}
-                      onChange={onChange}
-                      placeholder=""
-                    />
-                    <label htmlFor="nickname">입금자명</label>
-                  </ActiveInput>
+                  <StyledLink to={`/auctions/${purchaseDetail?.hash}`}>상품 정보</StyledLink>
+                  <p>입금자명</p>
+                  <div className="depositor">
+                    <ActiveInput>
+                      <input
+                        name="remitName"
+                        id="remitName"
+                        type="text"
+                        autoComplete="off"
+                        required
+                        value={deliveryData.remitName}
+                        onChange={onChange}
+                        placeholder="입금자명"
+                      />
+                    </ActiveInput>
+                  </div>
                   <p>배송 정보 입력</p>
-                  <MemoizedInformation
-                    icon={<BsHouseFill aria-label="주소" />}
-                    textList={[
-                      userAllInfo?.zipCode,
-                      userAllInfo?.address,
-                      userAllInfo?.addressDetail,
-                    ]}
-                    Component={AddressInput}
-                    userAllInfo={userAllInfo}
-                  />
+                  <div className="input-delivery">
+                    <MemoizedInformation
+                      textList={[
+                        userAllInfo?.zipCode,
+                        userAllInfo?.address,
+                        userAllInfo?.addressDetail,
+                      ]}
+                      Component={AddressInput}
+                      userAllInfo={userAllInfo}
+                    />
+                  </div>
                   <ButtonContainer>
                     <GradientButton
                       onClick={onClick}
@@ -339,71 +360,118 @@ function ProfilePurchaseHistoryPage({ params }) {
           )}
           {active === 'complete' && (
             <Purchased>
-              <StyledLink to={`/auctions/${purchaseDetail?.hash}`}>제품 정보 상세보기</StyledLink>
-              <p>배송주소: {purchaseDetail.address}</p>
-              <p>상세 배송주소: {purchaseDetail.addressDetail}</p>
-              <p>배송조회</p>
-              <form
-                action="http://info.sweettracker.co.kr/tracking/2"
-                method="post"
-                target="_blank">
-                <div className="form-group">
-                  <input
-                    type="hidden"
-                    className="form-control"
-                    id="t_key"
-                    name="t_key"
-                    placeholder="제공받은 APIKEY"
-                    value={'F021Ir60YiVKvqs5Fx4AXw'}
-                  />
+              <StyledLink to={`/auctions/${purchaseDetail?.hash}`}>상품 정보</StyledLink>
+              <p>배송 관리</p>
+              <div className="delivery">
+                <div>
+                  <p>{purchaseDetail.address}</p>
+                  <p>{purchaseDetail.addressDetail}</p>
                 </div>
-                <div className="form-group">
-                  <input
-                    type="hidden"
-                    className="form-control"
-                    name="t_code"
-                    id="t_code"
-                    placeholder="택배사 코드"
-                    value={searchDeliveryData.t_code}
-                  />
-                </div>
-                <div className="form-group">
-                  <input
-                    type="hidden"
-                    className="form-control"
-                    name="t_invoice"
-                    id="t_invoice"
-                    placeholder="운송장 번호"
-                    value={searchDeliveryData.t_invoice}
-                  />
-                </div>
-                <Button type="submit" className="btn btn-default" onClick={ConsoleD}>
-                  배송 조회
-                </Button>
-              </form>
-              <h3>리뷰 작성</h3>
-              <p>별점을 선택해 주세요!</p>
-              <Stars>
-                {ARRAY.map((el, idx) => {
-                  return (
-                    <FaStar
-                      key={idx}
-                      size="25"
-                      onClick={() => handleStarClick(el)}
-                      className={clicked[el] && 'yellowStar'}
+                <form
+                  action="http://info.sweettracker.co.kr/tracking/5"
+                  method="post"
+                  target="_blank">
+                  <div className="form-group">
+                    <input
+                      type="hidden"
+                      className="form-control"
+                      id="t_key"
+                      name="t_key"
+                      placeholder="제공받은 APIKEY"
+                      value={'F021Ir60YiVKvqs5Fx4AXw'}
                     />
-                  );
-                })}
-              </Stars>
-              <textarea
-                type="text"
-                onChange={onChange2}
-                name="content"
-                value={content}
-                cols="70"
-                rows="4"
-                placeholder="리뷰를 작성해 주세요"></textarea>
-              <Button onClick={postReview}>리뷰작성</Button>
+                  </div>
+                  <div className="form-group">
+                    <input
+                      type="hidden"
+                      className="form-control"
+                      name="t_code"
+                      id="t_code"
+                      placeholder="택배사 코드"
+                      value={searchDeliveryData.t_code}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <input
+                      type="hidden"
+                      className="form-control"
+                      name="t_invoice"
+                      id="t_invoice"
+                      placeholder="운송장 번호"
+                      value={searchDeliveryData.t_invoice}
+                    />
+                  </div>
+                  <Button type="submit" className="btn btn-default" onClick={ConsoleD}>
+                    배송 조회
+                  </Button>
+                </form>
+              </div>
+
+              {reviewDetail.content != null ? (
+                <>
+                  <p>작성한 리뷰</p>
+
+                  <div>
+                    <div className="review">
+                      <div className="reviewbox">
+                        <Stars>
+                          {ARRAY.map((el, idx) => {
+                            return (
+                              <FaStar key={idx} size="25" className={stars[el] && 'yellowStar'} />
+                            );
+                          })}
+                        </Stars>
+                      </div>
+
+                      <textarea
+                        type="text"
+                        name="content"
+                        value={reviewDetail.content}
+                        cols="70"
+                        rows="4"
+                        disabled></textarea>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p>리뷰 작성</p>
+
+                  <div>
+                    <div className="review">
+                      <div className="reviewbox">
+                        <Stars>
+                          {ARRAY.map((el, idx) => {
+                            return (
+                              <FaStar
+                                key={idx}
+                                size="25"
+                                onClick={() => handleStarClick(el)}
+                                className={clicked[el] && 'yellowStar'}
+                              />
+                            );
+                          })}
+                        </Stars>
+                        <Button
+                          onClick={postReview}
+                          name="productSeq"
+                          value={purchaseDetail.productSeq}>
+                          작성
+                        </Button>
+                      </div>
+
+                      <textarea
+                        type="text"
+                        onChange={onChange2}
+                        name="content"
+                        value={content}
+                        cols="70"
+                        rows="4"
+                        placeholder="리뷰를 작성해주세요."></textarea>
+                    </div>
+                  </div>
+                </>
+              )}
             </Purchased>
           )}
         </ModalMain>
@@ -486,12 +554,70 @@ const Purchased = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  > textarea {
-    margin-bottom: 10px;
-  }
   > p {
-    margin-bottom: 10px;
+    font-size: 20px;
+    font-weight: 600;
+    padding-bottom: 10px;
   }
+  .delivery {
+    background-color: ${(props) => props.theme.colors.pointBlack};
+    display: flex;
+    padding: 0 20px;
+    border-radius: 10px;
+    height: 100px;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    p {
+      padding: 5px 0;
+    }
+    button {
+      width: 100px;
+      font-size: 16px;
+      /* padding: 15px; */
+    }
+  }
+
+  .review {
+    background-color: ${(props) => props.theme.colors.pointBlack};
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 20px;
+    border-radius: 10px;
+    height: 165px;
+    gap: 10px;
+
+    .reviewbox {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      button {
+        width: 60px;
+        font-size: 16px;
+        margin: 0;
+      }
+    }
+    textarea {
+      height: 80px;
+      background-color: ${(props) => props.theme.colors.pointGray};
+      border: none;
+      outline: none;
+      border-radius: 5px;
+      padding: 10px;
+      resize: none;
+      color: ${(props) => props.theme.colors.white};
+      font-family: Pretendard;
+      font-size: 16px;
+    }
+  }
+  /* > textarea {
+    margin-bottom: 10px;
+  } */
+  /* > p {
+    margin-bottom: 10px;
+  } */
   > h3 {
     font-size: 20px;
     margin-bottom: 10px;
@@ -501,7 +627,9 @@ const Purchased = styled.div`
 // 별점기능
 const Stars = styled.div`
   display: flex;
-  margin-bottom: 10px;
+  justify-content: center;
+  align-items: center;
+
   & svg {
     color: gray;
     cursor: pointer;
@@ -523,9 +651,11 @@ const Stars = styled.div`
 const SellerInfo = styled.article`
   background-color: ${(props) => props.theme.colors.pointBlack};
   border-radius: 10px;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  padding: 10px;
+  /* padding-top: 5px;
+  padding-bottom: 5px; */
   margin-bottom: 10px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   > p {
     padding: 5px 10px 5px 10px;
   }
@@ -534,21 +664,42 @@ const SellerInfo = styled.article`
 const PutMoney = styled.div`
   > p {
     font-size: 20px;
+    font-weight: 600;
     margin-bottom: 20px;
   }
 `;
 const PutMoneyButton = styled.div`
   width: 100%;
   display: flex;
+  justify-content: center;
+  padding-top: 15px;
 `;
 
 const PutAddress = styled.div`
-  > h3 {
-    margin-bottom: 20px;
-    font-size: 20px;
-    font-weight: bold;
+  .depositor {
+    padding: 10px 0;
+  }
+  .input-delivery {
+    background-color: ${(props) => props.theme.colors.pointBlack};
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    button {
+      margin: auto 0;
+      margin-right: 30px;
+      background-color: ${(props) => props.theme.colors.subMint};
+      border: none;
+      color: ${(props) => props.theme.colors.mainBlack};
+      font-weight: 600;
+      width: 65px;
+    }
   }
   > p {
+    font-size: 20px;
+    font-weight: 600;
     margin-bottom: 10px;
   }
   > div {
@@ -564,7 +715,7 @@ const PutAddress = styled.div`
 `;
 
 const ButtonContainer = styled.div`
-  margin-top: 10px;
+  margin-top: 20px;
   display: flex;
   justify-content: center;
 `;
@@ -611,12 +762,14 @@ const Button = styled.button`
 
 const StyledLink = styled(Link)`
   position: absolute;
-  right: 10px;
-  top: 0px;
-  padding: 5px 10px 5px 10px;
+  left: 150px;
+  top: -47px;
+  padding: 5px;
+  /* padding: 5px 10px 5px 10px; */
   color: ${(props) => props.theme.colors.mainBlack};
   background-color: ${(props) => props.theme.colors.subMint};
   border-radius: 5px;
   font-weight: bold;
   margin-bottom: 10px;
+  font-size: 12px;
 `;

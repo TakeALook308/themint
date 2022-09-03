@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
-import DefaultButton from '../../components/common/DefaultButton';
+import MintButton from '../../components/ButtonList/MintButton';
 import ValidationMessage from '../../components/common/ValidationMessage';
 import { MessageWrapper } from '../../style/common';
 import { ActiveInput } from '../../style/style';
@@ -95,14 +95,14 @@ function NicknameInput({ text, setEditMode, changeInformation }) {
         </MessageWrapper>
       </InputContainer>
       <ButtonContainer>
-        <DefaultButton
-          title={'취소'}
+        <MintButton
+          text={'취소'}
           type="button"
-          widthValue="70px"
+          size="70px"
           onClick={() => setEditMode(false)}
           disabled={isSubmitting}
         />
-        <DefaultButton title={'변경'} type="submit" widthValue="70px" />
+        <MintButton text={'변경'} type="submit" size="70px" />
       </ButtonContainer>
     </FormContainer>
   );

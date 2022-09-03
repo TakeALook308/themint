@@ -21,6 +21,7 @@ public class Review {
     Long seq;
     Long writerSeq;
     Long receiverSeq;
+    Long productSeq;
     String content;
     int score;
     String date;

@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
-public class ReviewServiceImpl implements ReviewService{
+public class ReviewServiceImpl implements ReviewService {
 
     @Autowired
     ReviewRepository reviewRepository;
@@ -21,10 +21,17 @@ public class ReviewServiceImpl implements ReviewService{
         reviewRepository.save(Review.builder()
                 .receiverSeq(reviewRegisterPostReq.getReceiverSeq())
                 .writerSeq(writerSeq)
+                .productSeq(reviewRegisterPostReq.getProductSeq())
                 .content(reviewRegisterPostReq.getContent())
                 .score(reviewRegisterPostReq.getScore())
                 .date(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .build());
+    }
+
+    @Override
+    public Review getReview(Long memberseq, Long productSeq) {
+        Review review = reviewRepository.findByReceiverSeqAndProductSeq(memberseq, productSeq).orElse(null);
+        return review;
     }
 
     @Override

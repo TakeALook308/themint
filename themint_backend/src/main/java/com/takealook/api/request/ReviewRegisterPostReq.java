@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class ReviewRegisterPostReq {
     Long receiverSeq;
+    Long productSeq;
     String content;
     int score;
 }

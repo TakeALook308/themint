@@ -14,7 +14,6 @@ import { errorToast, infoToast, successToast } from '../../lib/toast';
 function EmailCheck({ memberId, setMemberId, setIsPassed }) {
   const [email, setEmail] = useState('');
   const [isEmailed, setIsEmailed] = useState(false);
-  const [authNum, setAuthNum] = useState();
   const {
     register,
     handleSubmit,
@@ -27,12 +26,22 @@ function EmailCheck({ memberId, setMemberId, setIsPassed }) {
   id.current = watch('memberId', '');
   const auth = useRef({});
   auth.current = watch('email', '');
+  const enteredAuthNumber = useRef({});
+  enteredAuthNumber.current = watch('authNumber', null);
 
-  const onValid = () => {
+  const onValid = async () => {
     trigger('authNumber');
     if (errors?.authNumber) return;
-    setIsPassed(true);
-    successToast(REGISTER_MESSAGE.VALIDATED_EMAIL_AUTH);
+    const body = { email: auth.current, authNum: enteredAuthNumber.current };
+    try {
+      const response = await fetchData.post(userApis.EMAIL_AUTHNUMBER_CHECK, body);
+      if (response.status === 200) {
+        setIsPassed(true);
+        successToast(REGISTER_MESSAGE.VALIDATED_EMAIL_AUTH);
+      }
+    } catch (err) {
+      errorToast('인증번호를 확인해주세요.');
+    }
   };
 
   const setTimer = () => {
@@ -57,7 +66,6 @@ function EmailCheck({ memberId, setMemberId, setIsPassed }) {
         setEmail(auth.current);
         setMemberId(id.current);
         setIsEmailed(true);
-        setAuthNum(String(response.data?.randNum));
         setTimer();
       }
     } catch (err) {
@@ -133,16 +141,13 @@ function EmailCheck({ memberId, setMemberId, setIsPassed }) {
             type="text"
             {...register('authNumber', {
               required: REGISTER_MESSAGE.REQUIRED_EMAIL_AUTH,
-              validate: (value) => (value !== authNum ? REGISTER_MESSAGE.FAILED_EMAIL_AUTH : true),
             })}
             placeholder=" "
             required
           />
           <label htmlFor="authNumber">인증번호</label>
         </ActiveInput>
-        <MessageWrapper>
-          <ValidationMessage text={errors?.authNumber?.message} state={'fail'} />
-        </MessageWrapper>
+        <MessageWrapper></MessageWrapper>
         <GradientButton text={'인증번호 확인하기'} type={'submit'} />
       </div>
     </form>

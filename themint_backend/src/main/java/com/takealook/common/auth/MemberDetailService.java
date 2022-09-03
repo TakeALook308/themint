@@ -3,6 +3,7 @@ package com.takealook.common.auth;
 import com.takealook.api.service.MemberService;
 import com.takealook.db.entity.Member;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,8 +15,12 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class MemberDetailService implements UserDetailsService{
-	@Autowired
+	final
 	MemberService memberService;
+
+	public MemberDetailService(@Lazy MemberService memberService) {
+		this.memberService = memberService;
+	}
 	
     @Override
     public UserDetails loadUserByUsername(String memberId) throws UsernameNotFoundException {
