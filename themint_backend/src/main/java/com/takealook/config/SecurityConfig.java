@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -25,14 +26,16 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
  */
 @Configuration
 @EnableWebSecurity
-@AllArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    @Autowired
     private MemberDetailService memberDetailService;
+    private final MemberService memberService;
 
     @Autowired
-    private MemberService memberService;
+    public SecurityConfig(@Lazy MemberDetailService memberDetailService, @Lazy MemberService memberService) {
+        this.memberDetailService = memberDetailService;
+        this.memberService = memberService;
+    }
 
     // Password 인코딩 방식에 BCrypt 암호화 방식 사용
     @Bean
