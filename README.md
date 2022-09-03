@@ -3,6 +3,10 @@
   <img src="README.assets/themintlogo.png" alt="themint" width="300px"  />
   <br />
   <h1>THE MINT : 더민트</h1>
+    <div>
+    <img src="https://img.shields.io/badge/NGINX-Active-2ea04?&logo=nginx&logoColor=white" alt="NGINX" />
+    <img src="https://img.shields.io/github/v/release/TakeALook308/themint?color=%23068fc6" alt="GitHub release (latest by date)" />
+  </div>
   <br />
 </div>
 
@@ -14,9 +18,9 @@
 4. [**주요 기능**](#4)
 5. [**프로젝트 구성도**](#5)
 6. [**UCC 영상**](#6)
-7. [**개발 팀 소개**](#9)
-8. [**개발 기간 및 일정**](#10)
-9. [**실행 방법**](#11)
+7. [**개발 팀 소개**](#7)
+8. [**개발 기간 및 일정**](#8)
+9. [**실행 방법**](#9)
 
 <br />
 
