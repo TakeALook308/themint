@@ -1,9 +1,7 @@
 package com.takealook.api.service;
 
 import com.takealook.api.request.PurchaseRegisterPostReq;
-import com.takealook.db.entity.AuctionImage;
 import com.takealook.db.entity.History;
-import com.takealook.db.entity.Member;
 import com.takealook.db.entity.Product;
 import org.springframework.data.domain.Pageable;
 
