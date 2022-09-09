@@ -3,7 +3,6 @@ package com.takealook.api.service;
 import com.takealook.api.request.PurchaseRegisterPostReq;
 import com.takealook.common.exception.code.ErrorCode;
 import com.takealook.common.exception.history.HistoryNotFoundException;
-import com.takealook.db.entity.AuctionImage;
 import com.takealook.db.entity.History;
 import com.takealook.db.entity.Product;
 import com.takealook.db.repository.HistoryRepository;
