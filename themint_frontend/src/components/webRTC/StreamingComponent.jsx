@@ -9,7 +9,7 @@ import {
   BsFillCameraVideoOffFill,
   BsFillCameraVideoFill,
 } from 'react-icons/bs';
-const OPENVIDU_SERVER_URL = 'https://i7a308.p.ssafy.io:8443';
+const OPENVIDU_SERVER_URL = 'https://themint-auction.shop:8443';
 const OPENVIDU_SERVER_SECRET = 'themint';
 
 class StreamingComponent extends Component {
