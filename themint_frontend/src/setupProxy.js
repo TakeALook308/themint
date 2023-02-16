@@ -6,7 +6,7 @@ module.exports = function (app) {
   app.use(
     '/api',
     createProxyMiddleware({
-      target: 'https://i7a308.p.ssafy.io',
+      target: 'https://themint-auction.shop',
       changeOrigin: true,
     }),
   );
