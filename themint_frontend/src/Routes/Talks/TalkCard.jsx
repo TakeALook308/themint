@@ -23,7 +23,7 @@ function TalkCard({ roomInformation }) {
   }, []);
 
   useEffect(() => {
-    let socket = new SockJS('https://i7a308.p.ssafy.io/api/ws-stomp');
+    let socket = new SockJS('https://themint-auction.shop/api/ws-stomp');
     let newClient = Stomp.over(socket);
     setSock(socket);
     setClient(newClient);
