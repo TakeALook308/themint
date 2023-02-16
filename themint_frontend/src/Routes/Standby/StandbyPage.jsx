@@ -20,7 +20,7 @@ import { socketApis } from '../../utils/apis/socketApis';
 import { Helmet } from 'react-helmet-async';
 import UserVideo from '../../components/webRTC/UserVideo';
 
-const OPENVIDU_SERVER_URL = 'https://i7a308.p.ssafy.io:8443';
+const OPENVIDU_SERVER_URL = 'https://themint-auction.shop:8443';
 const OPENVIDU_SERVER_SECRET = 'themint';
 
 function StandbyPage() {
